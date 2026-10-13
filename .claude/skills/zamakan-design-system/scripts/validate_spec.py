@@ -98,6 +98,23 @@ def semantic_checks(spec, root=None):
             need_color(cid, f"graphic_elements/{g['id']}")
     for cid in spec.get("iconography", {}).get("colors", []):
         need_color(cid, "iconography")
+    radii = {r["id"] for r in spec.get("radii", [])}
+    levels = {(t["level"], t["script"]) for t in spec.get("type_scale", [])}
+    dupes(spec.get("components", []), "component")
+    for c in spec.get("components", []):
+        where = f"components/{c['id']}"
+        for k in ("background", "text", "border_color"):
+            if k in c:
+                need_color(c[k], where)
+        if "radius" in c and c["radius"] not in radii:
+            errors.append(f"{where}: unknown radius id '{c['radius']}'")
+        ty = c.get("typography")
+        if ty and (ty["level"], ty["script"]) not in levels:
+            errors.append(f"{where}: no type_scale entry for {ty['level']}/{ty['script']}")
+        if "background" in c and "text" in c:
+            ratio = contrast_ratio(colors.get(c["text"], {}).get("hex", "#000000"), colors.get(c["background"], {}).get("hex", "#FFFFFF"))
+            if ratio < 4.5:
+                warnings.append(f"contrast: component {c['id']} text on background = {ratio:.2f}:1 ({wcag_grade(ratio)})")
 
     # provenance
     for path, item in walk_items(spec):
@@ -145,9 +162,10 @@ def semantic_checks(spec, root=None):
 
     # contrast of role pairs (warning only; rules may restrict usage)
     roles = {r["role"]: r["color"] for r in spec.get("color_roles", [])}
+    # intended pairings only: normal text on light backgrounds, inverse text on inverse backgrounds
     bgs = [r for r in roles if r.startswith(("background", "surface"))]
-    for t in [r for r in roles if r.startswith("text") and "inverse" not in r]:
-        for b in bgs:
+    for t in [r for r in roles if r.startswith("text")]:
+        for b in [b for b in bgs if ("inverse" in b) == ("inverse" in t)]:
             if roles[t] in colors and roles[b] in colors:
                 ratio = contrast_ratio(colors[roles[t]]["hex"], colors[roles[b]]["hex"])
                 if ratio < 4.5:

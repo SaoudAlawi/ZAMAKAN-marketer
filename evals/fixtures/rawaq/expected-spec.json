@@ -377,7 +377,7 @@
       ]
     },
     {
-      "role": "brand-alt",
+      "role": "brand-secondary",
       "color": "cardamom-green",
       "usage": "Depth, reversed panels",
       "status": "extracted",
@@ -1719,6 +1719,68 @@
       "usage": "Saffron divider rule",
       "status": "extracted",
       "confidence": "high",
+      "sources": [
+        {
+          "file": "Rawaq_Brand_Guidelines_v2.1.pdf",
+          "page": 14,
+          "method": "text"
+        }
+      ]
+    }
+  ],
+  "components": [
+    {
+      "id": "button-primary",
+      "description": "Primary call-to-action button",
+      "background": "date-brown",
+      "text": "sand",
+      "radius": "sm",
+      "typography": {
+        "level": "label",
+        "script": "latin"
+      },
+      "padding_px": [
+        12,
+        24
+      ],
+      "status": "proposed",
+      "confidence": "medium",
+      "rationale": "Not specified. Brand colour with reversed Sand type (AAA contrast), proposed 8px radius, label style."
+    },
+    {
+      "id": "button-primary-ar",
+      "description": "Primary CTA, Arabic",
+      "background": "date-brown",
+      "text": "sand",
+      "radius": "sm",
+      "typography": {
+        "level": "label",
+        "script": "arabic"
+      },
+      "padding_px": [
+        12,
+        24
+      ],
+      "status": "proposed",
+      "confidence": "medium",
+      "rationale": "Arabic counterpart of button-primary using the Arabic label style."
+    }
+  ],
+  "missing_assets": [
+    {
+      "asset": "Reversed horizontal logo (SVG)",
+      "needed_for": "Storefront fascia shown on Date Brown",
+      "sources": [
+        {
+          "file": "Rawaq_Brand_Guidelines_v2.1.pdf",
+          "page": 18,
+          "method": "vision"
+        }
+      ]
+    },
+    {
+      "asset": "Mashrabiya pattern tile (SVG)",
+      "needed_for": "Backgrounds per Graphic Elements page",
       "sources": [
         {
           "file": "Rawaq_Brand_Guidelines_v2.1.pdf",

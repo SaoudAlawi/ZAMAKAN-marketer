@@ -101,6 +101,15 @@ Things to notice:
     {"id": "md", "value": "12px", "usage": "Cards, buttons", "status": "extracted",
      "sources": [{"file": "Noor_Brand_Book.pdf", "page": 11, "method": "vision", "note": "rounded cards in UI mock-ups"}]}
   ],
+  "components": [
+    {"id": "button-primary", "description": "Primary CTA", "background": "noor-teal", "text": "pearl", "radius": "md",
+     "typography": {"level": "body", "script": "latin"}, "padding_px": [12, 20], "status": "proposed", "confidence": "medium",
+     "rationale": "Guideline shows no buttons; brand colour + inverse text (contrast 5.1:1), the stated 12px card radius."}
+  ],
+  "missing_assets": [
+    {"asset": "Reversed (Pearl) logo SVG", "needed_for": "Teal backgrounds shown on p5",
+     "sources": [{"file": "Noor_Brand_Book.pdf", "page": 5, "method": "vision"}]}
+  ],
   "conflicts": [
     {"topic": "Noor Teal HEX",
      "values": [{"value": "#127C80", "source": {"file": "Noor_Brand_Book.pdf", "page": 6}},
@@ -121,4 +130,6 @@ Things to notice:
 | Rule visible only in a flattened page image | extracted | `method: vision`, page |
 | Reversed symbol file supplied, rules only stated for the reversed lockup | derived | cite both |
 | Arabic type sizes missing, Latin given | proposed | rationale cites the bilingual rule or the 10% convention |
-| No spacing / radii / shadows in guideline | proposed | rationale ties values to brand evidence |
+| No spacing / radii / shadows / buttons in guideline | proposed | rationale ties values to brand evidence |
+| Guideline uses artwork that wasn't supplied | n/a | `missing_assets` (+ open question if it blocks work) |
+| Logo PNG with an opaque background baked in | extracted/derived | its own variant, approved only on that colour |

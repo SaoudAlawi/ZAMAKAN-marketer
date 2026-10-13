@@ -27,7 +27,8 @@ summary; run them instead of re-implementing what they do.
 2. Output goes to `clients/<slug>/design-system/`, and scratch work goes to `clients/<slug>/design-system/_work/`.
 3. Dependencies: `python3 -c "import pymupdf, fontTools, PIL, jsonschema, yaml, playwright"`.
    If any are missing, run `pip install -r requirements.txt` from the repo root. Rendering needs
-   Chromium; if Playwright can't find one, set `ZAMAKAN_CHROMIUM=/path/to/chrome`.
+   Chromium. The scripts find Playwright's browser or a system Chrome on their own. Only if a script reports
+   "No usable Chromium" should you set `ZAMAKAN_CHROMIUM` to the browser **executable**, not its folder.
 
 ## 1. Extract (one command)
 
@@ -70,19 +71,29 @@ Judgement rules:
   mock-ups and raster logos. Record the conflict in `conflicts` with `needs_client_confirmation: true`
   and add it to `open_questions`. The chosen hex must be the one used in `colors`.
 - **Roles.** Map the guideline's own statements ("body text is Charcoal", "Sand is our canvas") to
-  `color_roles`: at least `text-primary`, `background`, `brand`, `accent`, plus `text-heading`,
-  `text-inverse` and `surface` when stated.
+  `color_roles`, using the **canonical role names** so every client looks the same to other agents:
+  `text-primary`, `text-heading`, `text-secondary`, `text-inverse`, `text-link`, `background`,
+  `background-inverse`, `surface`, `surface-alt`, `brand`, `brand-secondary`, `accent`,
+  `accent-secondary`, `divider`, `border`, `success`, `warning`, `error`. Prefix anything else with `x-`.
+  At minimum set `text-primary`, `background`, `brand` and `accent`.
 - **Fonts.** Take weights and roles from the guideline text. PDF-embedded font names hide weights.
   Use the digest's font table for files and script coverage. If a font named in the guideline
   has no file, still list it, leave out `files`, and add an open question.
 - **Type scale.** Record both scripts when given. If only Latin sizes exist, propose Arabic sizes
   using the guideline's own bilingual rules, or ~10% larger with looser leading if none.
-- **Logos.** One variant per distinct artwork. Put the SVG and PNG of the same artwork in one variant.
+- **Logos.** One variant per distinct artwork. Put the SVG and PNG of the same artwork in one variant,
+  **unless the PNG has an opaque background baked in** (the digest shows `bg` ≠ transparent). That PNG
+  is its own variant, approved only on that background colour, or a consumer will put a brown box on green.
   Check colourway against the logo contact sheet; the digest's colourway guess is a hint, not truth.
   Approved and forbidden backgrounds, minimum sizes, clear space and misuse come from the guideline.
-- **Gaps worth proposing** (digital work needs them): spacing scale, UI radii, shadow. Propose
-  sparingly and consistently with the brand. Don't propose brand rules the client never made, such as
+- **Gaps worth proposing** (digital work needs them): spacing scale, UI radii, shadow, and a primary
+  button in `components` (one per script if the label styles differ). Propose sparingly and consistently with the brand. Don't propose brand rules the client never made, such as
   new colours, new logo variants or new fonts.
+- **Missing assets.** When the guideline uses artwork the pack lacks (a reversed horizontal logo,
+  a pattern tile, icon files), list it in `missing_assets`, and as an open question if it blocks work.
+- **Shapes CSS can't express directly.** Write the closest CSS in `radii[].value`, e.g. an arch top
+  (semicircle) = `9999px 9999px 0 0`, and describe the true rule in `graphic_elements`.
+- **Sources for non-PDF files** (logos, fonts) cite the file path without `page`.
 - **Scope is visual.** Skip tone of voice and messaging; keep only `visual_personality` keywords.
 
 ## 3. Validate, then build

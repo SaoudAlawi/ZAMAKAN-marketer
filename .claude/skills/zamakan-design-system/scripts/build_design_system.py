@@ -153,6 +153,26 @@ def build_tokens(spec):
             e["zamakan"]["css"] = b["value"]
             t["border"][b["id"]] = {"$type": "border", "$description": b.get("usage", ""),
                                     "$value": _border(b["value"]), "$extensions": e}
+    if spec.get("components"):
+        lvl = {(x["level"], x["script"]): x for x in spec["type_scale"]}
+        t["component"] = {}
+        for c in spec["components"]:
+            g = {"$description": c.get("description", c.get("usage", "")), "$extensions": ext(c)}
+            if "background" in c:
+                g["background"] = {"$type": "color", "$value": "{color.%s}" % c["background"]}
+            if "text" in c:
+                g["text"] = {"$type": "color", "$value": "{color.%s}" % c["text"]}
+            if "border_color" in c:
+                g["border-color"] = {"$type": "color", "$value": "{color.%s}" % c["border_color"]}
+            if "border_width_px" in c:
+                g["border-width"] = {"$type": "dimension", "$value": dim(c["border_width_px"])}
+            if "radius" in c:
+                g["radius"] = {"$type": "dimension", "$value": "{radius.%s}" % c["radius"]}
+            if c.get("typography") and (c["typography"]["level"], c["typography"]["script"]) in lvl:
+                g["typography"] = {"$type": "typography", "$value": "{type.%s.%s}" % (c["typography"]["script"], c["typography"]["level"])}
+            for i, v in enumerate(c.get("padding_px", [])):
+                g[f"padding-{['top', 'right', 'bottom', 'left'][i] if len(c['padding_px']) == 4 else i}"] = {"$type": "dimension", "$value": dim(v)}
+            t["component"][c["id"]] = g
     return t
 
 
@@ -225,6 +245,24 @@ def build_css(spec, font_assets):
         if s["script"] == "arabic":
             decl += " direction: rtl;"
         L.append(f".z-{s['script']}-{s['level']} {{ {decl} }}")
+    for c in spec.get("components", []):
+        decl = []
+        if "background" in c:
+            decl.append(f"background: var(--color-{c['background']});")
+        if "text" in c:
+            decl.append(f"color: var(--color-{c['text']});")
+        if "border_color" in c or "border_width_px" in c:
+            bc = f"var(--color-{c['border_color']})" if "border_color" in c else "currentColor"
+            decl.append(f"border: {c.get('border_width_px', 1)}px solid {bc};")
+        if "radius" in c:
+            decl.append(f"border-radius: var(--radius-{c['radius']});")
+        if c.get("padding_px"):
+            decl.append("padding: " + " ".join(f"{v}px" for v in c["padding_px"]) + ";")
+        ty = c.get("typography")
+        if ty:
+            p = f"--type-{ty['script']}-{ty['level']}"
+            decl.append(f"font-family: var({p}-family); font-size: var({p}-size); line-height: var({p}-line); font-weight: var({p}-weight);")
+        L.append(f".z-{c['id']} {{ {' '.join(decl)} }}")
     _ = fonts
     return "\n".join(L) + "\n"
 
@@ -250,6 +288,7 @@ def build_manifest(spec, logo_assets, font_assets):
                   | {"files": font_assets.get(f["id"], [])} for f in spec["fonts"]],
         "formats": spec.get("layout", {}).get("formats", []) and [
             {k: v for k, v in f.items() if k not in ("sources", "confidence")} for f in spec["layout"]["formats"]],
+        "missing_assets": spec.get("missing_assets", []),
         "graphic_elements": [{k: g[k] for k in ("id", "name", "description", "usage", "colors") if k in g}
                              for g in spec.get("graphic_elements", [])],
     }
@@ -290,6 +329,10 @@ def build_sources(spec, contrast):
         L.append("")
     if spec.get("open_questions"):
         L += ["## Open questions for the client", ""] + [f"- {q}" for q in spec["open_questions"]] + [""]
+    if spec.get("missing_assets"):
+        L += ["## Missing assets (ask the client)", ""]
+        L += [f"- **{m['asset']}**: needed for {m['needed_for']}" + (f" ({src_str(m)})" if m.get("sources") else "")
+              for m in spec["missing_assets"]] + [""]
     L += ["## Proposed values (not in client files)", "", "| item | value | rationale |", "|---|---|---|"]
     for path, it in walk_items(spec):
         if it["status"] == "proposed":
@@ -310,7 +353,7 @@ def build_sources(spec, contrast):
     L += ["", "AA needs 4.5 for body text, 3 for large text (≥24px, or ≥18.66px bold).", "",
           "## All values", "", "| item | value | status | conf. | source |", "|---|---|---|---|---|"]
     for path, it in walk_items(spec):
-        L.append(f"| `{path}` | {_val(it)} | {it['status']} | {it.get('confidence', '')} | {src_str(it) or '—'} |")
+        L.append(f"| `{path}` | {_val(it)} | {it['status']} | {it.get('confidence', '')} | {src_str(it) or ('*' + it.get('rationale', '')[:80] + '*' if it.get('rationale') else '—')} |")
     return "\n".join(L) + "\n"
 
 
@@ -340,8 +383,8 @@ def build_design_md(spec):
     fm = {"version": "alpha", "name": spec["client"]["name"],
           "description": f"Visual identity of {spec['client']['name']}. Generated by {TOOL}; source of truth is spec.json."}
     col = {c["id"]: c["hex"] for c in spec["colors"]}  # palette first; semantic names reference it
-    mapping = [("primary", ["brand"]), ("secondary", ["brand-alt", "brand-secondary"]), ("tertiary", ["accent"]),
-               ("neutral", ["text-primary"]), ("surface", ["background"]), ("on-surface", ["text-primary"]),
+    mapping = [("primary", ["brand"]), ("secondary", ["brand-secondary"]), ("tertiary", ["accent"]),
+               ("neutral", ["text-primary"]), ("surface", ["surface", "background"]), ("on-surface", ["text-primary"]),
                ("background", ["background"]), ("on-background", ["text-primary"]), ("on-primary", ["text-inverse"])]
     for key, cands in mapping:
         r = next((roles[c] for c in cands if c in roles), None)
@@ -373,13 +416,27 @@ def build_design_md(spec):
         steps = ["xxs", "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl", "5xl"]
         fm["spacing"] = {steps[i] if i < len(steps) else f"s{i}": f"{v}px" for i, v in enumerate(spec["spacing"]["scale_px"])}
     comps = {}
-    if "primary" in col and "on-primary" in col:
+    lvlname = lambda ty: (("ar-" if ty["script"] == "arabic" else "") + names.get(ty["level"], ty["level"]))  # noqa: E731
+    for c in spec.get("components", []):
+        d = {}
+        if "background" in c:
+            d["backgroundColor"] = "{colors.%s}" % c["background"]
+        if "text" in c:
+            d["textColor"] = "{colors.%s}" % c["text"]
+        if c.get("typography") and lvlname(c["typography"]) in typo:
+            d["typography"] = "{typography.%s}" % lvlname(c["typography"])
+        if c.get("radius") in rounded:
+            d["rounded"] = "{rounded.%s}" % c["radius"]
+        if c.get("padding_px"):
+            d["padding"] = f"{c['padding_px'][0]}px"
+        comps[c["id"]] = d
+    if not comps and "primary" in col and "on-primary" in col:
         comps["button-primary"] = {"backgroundColor": "{colors.primary}", "textColor": "{colors.on-primary}",
                                    "typography": "{typography.label-md}" if "label-md" in typo else None}
         if rounded:
             comps["button-primary"]["rounded"] = "{rounded.%s}" % ("sm" if "sm" in rounded else next(iter(rounded)))
         comps["button-primary"] = {k: v for k, v in comps["button-primary"].items() if v}
-    if "surface" in col:
+    if not spec.get("components") and "surface" in col:
         comps["card"] = {"backgroundColor": "{colors.surface}", "textColor": "{colors.on-surface}"}
     if comps:
         fm["components"] = comps
@@ -421,8 +478,12 @@ def build_design_md(spec):
     for g in spec.get("graphic_elements", []):
         B.append(f"- **{g['name']}**: {g['description']} {g.get('usage', '')}")
     if comps:
-        B += ["", "## Components", "", "Components are *derived* from colour roles and type tokens; the client guideline "
-              "does not define UI components."]
+        B += ["", "## Components", ""]
+        if spec.get("components"):
+            B += [f"- **{c['id']}**: {c.get('description', c.get('usage', ''))}" + (" *(proposed)*" if c["status"] == "proposed" else "")
+                  for c in spec["components"]]
+        else:
+            B.append("Components are *derived* from colour roles and type tokens; the client guideline does not define UI components.")
     B += ["", "## Do's and Don'ts", ""]
     B += rules(spec.get("color_rules", []) + spec["logo"].get("misuse", []) + spec["logo"].get("rules", []))
     front = yaml.safe_dump(fm, sort_keys=False, allow_unicode=True, width=1000)
@@ -476,6 +537,12 @@ def build_preview(spec, manifest, contrast, css_name="tokens.css"):
     rd = "".join(f'<div class="rd" style="border-radius:{r["value"]};{"box-shadow:" + spec["shadows"][0]["value"] if spec.get("shadows") else ""}">'
                  f'<small>{r["id"]}<br>{e(r["value"])}{badge(r)}</small></div>' for r in spec.get("radii", []))
     not_text = {roles.get(k) for k in ("background", "surface", "text-inverse")}
+    comp_html = ""
+    if spec.get("components"):
+        comp_html = "<h2>Components</h2><div style='display:flex;gap:16px;flex-wrap:wrap;align-items:center'>" + "".join(
+            f'<div><div class="z-{c["id"]}{" z-ar" if (c.get("typography") or {}).get("script") == "arabic" else ""}">'
+            f'{"اطلب الآن" if (c.get("typography") or {}).get("script") == "arabic" else "Order now"}</div>'
+            f'<small>{c["id"]}{badge(c)}</small></div>' for c in spec["components"]) + "</div>"
     shadow_note = "".join(f'<p><small>shadow <code>{s["id"]}</code>: {e(s["value"])}{badge(s)}</small></p>' for s in spec.get("shadows", []))
     poor = [r for r in contrast if r["bg"] in (roles.get("background"), roles.get("surface"))
             and r["fg"] not in not_text and r["grade"] == "fail"]
@@ -527,6 +594,7 @@ h2{{font-family:{head_font};color:{head_fg};font-size:22px;margin:40px 0 12px;bo
 {"<p>⚠ Low contrast on main background (avoid for text): " + ", ".join(f"{r['fg']} on {r['bg']} {r['ratio']}" for r in poor) + "</p>" if poor else ""}
 <h2>Typography</h2>{ty}
 <h2>Logos</h2><div class="lgs">{lg}</div>
+{comp_html}
 <div class="two"><div><h2>Spacing</h2>{sp or "<p>—</p>"}<h2>Radii &amp; shadow</h2><div class="rds">{rd}</div>{shadow_note}</div>
 <div><h2>Token demo: primary social format</h2>{post}<small>{fmt.get('name', '')} {fmt['width_px']}×{fmt['height_px']}, margin & logo placement from tokens</small></div></div>
 {"<h2>Conflicts</h2><ul>" + conflicts + "</ul>" if conflicts else ""}

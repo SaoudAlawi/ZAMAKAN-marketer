@@ -69,7 +69,7 @@ spec = {
         {"role": "background", "color": "sand", "usage": "Default canvas", **X(11)},
         {"role": "surface", "color": "off-white", "usage": "Alternative light background", **X(8)},
         {"role": "brand", "color": "date-brown", "usage": "Logo and brand moments", **X(4)},
-        {"role": "brand-alt", "color": "cardamom-green", "usage": "Depth, reversed panels", **X(11)},
+        {"role": "brand-secondary", "color": "cardamom-green", "usage": "Depth, reversed panels", **X(11)},
         {"role": "accent", "color": "saffron", "usage": "Highlights, prices, dividers — never body text", **X(11)},
     ],
     "color_proportions_pct": {"sand": 60, "date-brown": 25, "cardamom-green": 10, "saffron": 5},
@@ -192,6 +192,19 @@ spec = {
     ],
     "borders": [
         {"id": "hairline", "value": "1px solid #E3A33B", "usage": "Saffron divider rule", **X(14)},
+    ],
+    "components": [
+        {"id": "button-primary", "description": "Primary call-to-action button", "background": "date-brown", "text": "sand",
+         "radius": "sm", "typography": {"level": "label", "script": "latin"}, "padding_px": [12, 24],
+         **P("Not specified. Brand colour with reversed Sand type (AAA contrast), proposed 8px radius, label style.")},
+        {"id": "button-primary-ar", "description": "Primary CTA, Arabic", "background": "date-brown", "text": "sand",
+         "radius": "sm", "typography": {"level": "label", "script": "arabic"}, "padding_px": [12, 24],
+         **P("Arabic counterpart of button-primary using the Arabic label style.")},
+    ],
+    "missing_assets": [
+        {"asset": "Reversed horizontal logo (SVG)", "needed_for": "Storefront fascia shown on Date Brown",
+         "sources": src(18, "vision")},
+        {"asset": "Mashrabiya pattern tile (SVG)", "needed_for": "Backgrounds per Graphic Elements page", "sources": src(14)},
     ],
     "conflicts": [
         {"topic": "Saffron HEX", "values": [{"value": "#E3A33B", "source": {"file": G, "page": 9, "method": "text"}},

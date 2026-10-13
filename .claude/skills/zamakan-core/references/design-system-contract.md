@@ -37,7 +37,7 @@ Every value carries a `status`:
 - `proposed`: the client's files are silent; the agent proposed it, with a rationale.
   Use it, but don't present it to the client as their rule. Flag it if it drives a key decision.
 
-Open conflicts and questions are listed in `sources.md`. If your output depends on one
+Open conflicts, open questions and **missing assets** are listed in `sources.md`. If your output depends on one
 (e.g. a disputed colour), mention it in your delivery notes.
 
 ## Token naming (stable API)
@@ -45,7 +45,8 @@ Open conflicts and questions are listed in `sources.md`. If your output depends 
 |---|---|---|
 | `color.<id>` | `--color-<id>` | Raw palette colour (e.g. `color.date-brown`) |
 | `color.<id>-<pct>` | `--color-<id>-<pct>` | Tint step, if defined |
-| `role.<role>` | `--role-<role>` | Semantic alias: `text-primary`, `text-heading`, `text-inverse`, `background`, `surface`, `brand`, `accent`, … |
+| `role.<role>` | `--role-<role>` | Semantic alias. Canonical names: `text-primary`, `text-heading`, `text-secondary`, `text-inverse`, `text-link`, `background`, `background-inverse`, `surface`, `surface-alt`, `brand`, `brand-secondary`, `accent`, `accent-secondary`, `divider`, `border`, `success`, `warning`, `error`; client-specific extras start with `x-` |
+| `component.<id>.*` | `.z-<id>` class | Component styles (e.g. `button-primary`), referencing colour/radius/type tokens |
 | `font.<id>` | `--font-<id>` | Font family stack incl. fallbacks |
 | `type.<script>.<level>` | `--type-<script>-<level>-{size,line,weight,family}` | Typography style; script ∈ `latin`, `arabic` |
 | `space.<n>` | `--space-<n>` | Spacing scale step (index, from 1) |

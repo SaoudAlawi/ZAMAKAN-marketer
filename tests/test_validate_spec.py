@@ -129,3 +129,27 @@ def test_spec_guide_example_is_valid():
     block = guide.split("```json", 1)[1].split("```", 1)[0]
     errors, _ = validate(json.loads(block))  # no --root: example files don't exist on disk
     assert errors == []
+
+
+def test_noncanonical_role_rejected_but_x_prefix_allowed(gold):
+    gold["color_roles"][0]["role"] = "body-copy"
+    errors, _ = validate(gold, ROOT)
+    assert any("schema" in e and "color_roles/0/role" in e for e in errors)
+    gold["color_roles"][0]["role"] = "x-body-copy"
+    errors, _ = validate(gold, ROOT)
+    assert errors == []
+
+
+def test_component_refs_checked(gold):
+    gold["components"][0]["radius"] = "huge"
+    gold["components"][1]["typography"] = {"level": "jumbo", "script": "arabic"}
+    errors, _ = validate(gold, ROOT)
+    assert any("unknown radius id 'huge'" in e for e in errors)
+    assert any("no type_scale entry for jumbo/arabic" in e for e in errors)
+
+
+def test_inverse_backgrounds_not_paired_with_normal_text(gold):
+    gold["color_roles"].append({"role": "background-inverse", "color": "date-brown", "status": "extracted",
+                                "sources": [{"file": "Rawaq_Brand_Guidelines_v2.1.pdf", "page": 11}]})
+    _, warnings = validate(gold, ROOT)
+    assert not any("background-inverse" in w for w in warnings)

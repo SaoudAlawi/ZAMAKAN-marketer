@@ -118,7 +118,9 @@ def test_sources_lists_conflicts_and_proposals(ds):
     s = (out / "sources.md").read_text()
     assert "Saffron HEX" in s and "Needs client confirmation" in s
     proposed_rows = re.findall(r"^\| `[^`]+` \|.*\|$", s.split("## Proposed values")[1].split("##")[0], re.M)
-    assert len(proposed_rows) == 4
+    from validate_spec import walk_items
+    n_proposed = sum(1 for _, it in walk_items(json.loads(GOLD.read_text())) if it["status"] == "proposed")
+    assert len(proposed_rows) == n_proposed >= 4
     assert "1.8 fail" in s  # saffron on sand
 
 
@@ -172,3 +174,20 @@ def test_preview_rendered(ds):
     from PIL import Image
     w, h = Image.open(out / "preview.png").size
     assert w == 1280 and h > 1500
+
+
+def test_components_exported(ds):
+    out, _ = ds
+    t = json.loads((out / "tokens.json").read_text())
+    b = t["component"]["button-primary"]
+    assert b["background"]["$value"] == "{color.date-brown}" and b["typography"]["$value"] == "{type.latin.label}"
+    assert ".z-button-primary {" in (out / "tokens.css").read_text()
+    fm = yaml.safe_load((out / "DESIGN.md").read_text().split("---")[1])
+    assert fm["components"]["button-primary"]["typography"] == "{typography.label-md}"
+    assert fm["components"]["button-primary-ar"]["typography"] == "{typography.ar-label-md}"
+
+
+def test_missing_assets_reported(ds):
+    out, _ = ds
+    assert "Reversed horizontal logo" in (out / "sources.md").read_text()
+    assert json.loads((out / "manifest.json").read_text())["missing_assets"]
