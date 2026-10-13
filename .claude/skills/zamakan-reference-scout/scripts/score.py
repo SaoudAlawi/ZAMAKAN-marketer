@@ -75,11 +75,15 @@ def score(c, b, terms, this_year):
         flags.append("touches avoid-list: " + ", ".join(avoid_hits))
     if re.search(r"\bai (ad|commercial|generated)|i created an ai", t):
         flags.append("AI demo / not a real campaign?")
+    elif c.get("source") == "youtube" and re.search(
+            r"\bnews\b|news agency|updates? tv|\bvlog|reaction|review|tutorial|how to|compilation|fan ?made|\bshorts?\b",
+            (c.get("title", "") + " " + c.get("channel", "")).lower()):
+        flags.append("probably not a campaign (news/vlog/compilation)")
     parts = {"relevance": round(rel, 1), "region": region, "freshness": round(fresh, 1)}
     if reach is not None:
         parts["reach"] = round(reach, 1)
     total = 0.45 * rel + 0.25 * region + 0.2 * fresh + 0.1 * (reach if reach is not None else 2.5)
-    total -= 0.8 * ("student work" in flags) + 1.5 * any(f.startswith("AI demo") for f in flags)
+    total -= 0.8 * ("student work" in flags) + 1.5 * any(f.startswith(("AI demo", "probably not")) for f in flags)
     return round(total, 2), parts, flags, hits
 
 

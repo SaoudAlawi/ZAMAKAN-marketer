@@ -30,7 +30,9 @@ Rendering uses Playwright with the preinstalled Chromium (`/opt/pw-browsers/chro
 - Explain in plain language; the user is an agency person, not necessarily a developer.
 
 ## Next step
-Feature 2, step 3: output builders (board HTML, deck, report, territories.md) from references.json.
-Step 2 scripts are done (see PLAN §3b "Source notes" for how each site behaves).
+Feature 2, step 4: SKILL.md for zamakan-reference-scout (4 modes, asks which outputs) + references
+(sources guide, analysis framework, Gulf calendar & cultural-fit guide), then an end-to-end run.
+Steps 1–3 are done: contract, scripts (PLAN §3b "Source notes"), output builders. `library/references.jsonl`
+is committed on purpose (shared agency library); a real sample run is in evals/fixtures/scout/.
 The test brief is `evals/fixtures/scout/rawaq-ramadan-brief.{md,json}`. Apify was skipped by the user, so
 competitor watch uses web search plus the ad-library pages that can be opened.

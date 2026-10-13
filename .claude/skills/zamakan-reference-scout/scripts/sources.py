@@ -107,7 +107,7 @@ def parse_generic(html, url):
 # ------------------------------------------------------------------ Ads of the World
 AOTW_RX = {  # the site's standard summary sentence, matched piece by piece (wording varies)
     "when": re.compile(r"campaign titled '(?P<title>.+?)' was published in (?P<country>[^.]+?) in (?P<month>[A-Za-z]+), (?P<year>\d{4})\."),
-    "brand": re.compile(r"created for the brand: (?P<brand>.+?)(?:, by ad agency: (?P<agency>.+?))?\s*,?\s*\.\s"),
+    "brand": re.compile(r"created for the brands?: (?P<brand>.+?)(?:, by ad (?:agency|agencies|school): (?P<agency>.+?))?\s*,?\s*\.\s"),
     "media": re.compile(r"This (?P<medium>[^.']+?) (?:medium|media) campaign is related to the (?P<industry>.+?) industr(?:y|ies)"),
     "assets": re.compile(r"contains (?P<assets>\d+) media assets?"),
 }
@@ -135,9 +135,13 @@ def parse_aotw_campaign(html, url):
         rec.update(country_name=_clean(g["country"]), country=country_code(g["country"]),
                    year=int(g["year"]), month=MONTHS.get(g["month"].lower()))
     if g.get("brand"):
-        rec["brand"] = _clean(g["brand"]).rstrip(",")
+        names = [x.strip() for x in re.split(r",\s*(?:and\s+)?|\s+and\s+", _clean(g["brand"]).rstrip(",")) if x.strip()]
+        rec["brand"] = names[-1] if len(names) == 2 and names[-1] in names[0] else names[0]  # "Al-Futtaim IKEA and IKEA" -> IKEA
+        if len(names) > 1:
+            rec["brands"] = names
+            rec["brand_raw"] = _clean(g["brand"]).rstrip(",")  # e.g. one organisation whose name contains commas
     if g.get("agency"):
-        rec["agency"] = _clean(g["agency"])
+        rec["agency"] = _clean(g["agency"]).replace(" and ", ", ")
     if g.get("medium"):
         labels = [x.strip() for x in re.split(r",\s*(?:and\s+)?|\s+and\s+", g["medium"]) if x.strip()]
         rec["medium_label"] = _clean(g["medium"])
@@ -146,11 +150,11 @@ def parse_aotw_campaign(html, url):
     if g.get("assets"):
         rec["media_assets"] = int(g["assets"])
     if g:
-        rec["kind"] = "student" if re.search(r"\bstudent campaign titled", flat) else "professional"
-    else:  # older pages: fall back to the og:title "Brand: Title • Ads of the World"
-        ogt = (rec.get("title") or "").split(" • ")[0]
-        if ": " in ogt:
-            rec["brand"], rec["title"] = [x.strip() for x in ogt.split(": ", 1)]
+        rec["kind"] = "student" if re.search(r"\bstudent campaign titled|by ad school", flat) else "professional"
+    ogt = (_meta(s, "og:title") or "").split(" • ")[0]
+    if not rec.get("brand") and ": " in ogt:  # pages without the summary sentence: "Brand: Title • Ads of the World"
+        rec["brand"], t = [x.strip() for x in ogt.split(": ", 1)]
+        rec["title"] = rec.get("title") if g.get("title") else t
     if " • " in (rec.get("title") or ""):
         rec["title"] = rec["title"].split(" • ")[0].split(": ", 1)[-1]
     desc = re.search(r"\| Description \| (.+?) \| This\s+(?:professional|student)", text, re.S)
