@@ -178,7 +178,7 @@ Harder eval checks: insights with sources, competitor coverage, recommendation p
 | 2b | **Scope switch** `gcc` / `mena` / `global` in brief and run: scoring weights, search plan (global award shows, more languages), cultural fit still judged for the client's market | scorer + validator tests | ✅ |
 | 2c | **DESIGN.md theming** for board and deck: ZAMAKAN house DESIGN.md (default), the client's own `design-system/DESIGN.md` when it exists, or any of the 84 in [awesome-design-md](https://github.com/voltagent/awesome-design-md) (MIT) by name | renders in 3 themes; house file passes Google's linter | ✅ |
 | 2d | **Awesome-style library**: one `REFERENCE.md` analysis per campaign + a browsable `library/README.md` index by category, market and moment | export tests | ⬜ |
-| 2e | **Outputs v2**: insights first, competitor table, recommendation, before-kickoff list; board + deck by default for kickoffs; deck redesign | build tests + visual review | ⬜ |
+| 2e | **Outputs v2**: insights first, competitor table, recommendation, before-kickoff list; board + deck by default for kickoffs; deck redesign | build tests + visual review | ✅ |
 | 2f | **Benchmark suite + scorecard**: 5 scenarios (GCC brief, global creative question, competitor watch, pitch, global-scope brief), with vs without skill, repeated runs; quality, real-link rate, consistency, time, tokens; scorecard page tracked across iterations | grader tests; then the benchmark run | ⬜ |
 
 ## 4. Build steps & test gates (Feature 1)
@@ -231,6 +231,18 @@ The no-skill baseline did several generic things worth building into the skill:
 - 2026-10-13: Re-scoped to the sub-skill architecture; built the Rawaq sample package and answer key.
 - 2026-10-13: Feature 2 (reference scout) defined; network limits of the cloud environment noted.
 - 2026-10-13: Step 2 done. Design: the agent writes only spec.json + brand.md; scripts generate the rest.
+- 2026-10-13: Scout 2e done (user moved it before 2d): outputs wear the client's brand and are checked for beauty.
+  `brandkit.py` reads the whole feature-1 design system: logo variant approved for each background (manifest), the
+  client's own font files (subset + embedded in the board, installed for the deck PDF), colours by role, panel radius,
+  divider, shadow and the signature element (Rawaq's arch frames the cover image, once, as its guideline says). Missing
+  assets (mashrabiya tile) are reported, never drawn. New board (`render_board.py`) and deck (`render_deck.py`, 19
+  slides) follow the kickoff story: insights → recommendation → territories → competitors → patterns → deep dives →
+  references (R01…) → before kickoff. `check_outputs.py` renders desktop + phone + every slide and fails on sideways
+  scroll, broken images, clipped text, low contrast, unloaded fonts, wrongly set Arabic; a sabotaged board is caught
+  in tests. House style ships its OFL fonts. SKILL.md 0.3.0: scope question, strategy layer, build → check → look →
+  deliver; kickoff default outputs board + deck. 140 tests pass. Weak spots: no ZAMAKAN logo file yet (house outputs
+  show a wordmark-free cover); deck text fitting is estimated, not measured; proprietary fonts of borrowed looks fall
+  back to system fonts.
 - 2026-10-13: Scout 2c done: boards and decks take their look from a DESIGN.md (`theme.py`, `build_outputs.py --design`).
   Order: `--design` > the client's own `design-system/DESIGN.md` (found automatically) > ZAMAKAN house style
   (`assets/zamakan.DESIGN.md`, 0 errors / 0 warnings in Google's linter). `awesome:<name>` pulls any of the 84

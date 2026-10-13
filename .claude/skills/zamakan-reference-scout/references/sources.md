@@ -10,6 +10,7 @@ Tested live from this environment (October 2026). Each source is listed with wha
 5. Trade press and newsrooms (MENA first)
 6. Live competitor activity
 7. Query patterns per ring (English + Arabic)
+8. Scope: GCC, MENA or global
 
 ---
 
@@ -82,3 +83,17 @@ Write 8–15 queries before collecting, and mix languages.
 
 Seasonal moments to search: Ramadan, Eid al-Fitr, Eid al-Adha, Saudi Founding Day (22 Feb), Saudi National Day (23 Sep),
 Riyadh Season, back to school, White Friday. Check the dates in `gulf-culture.md`.
+
+## 8. Scope: GCC, MENA or global
+`brief.scope` changes where the rings look; cultural fit is always judged for the client's own market.
+
+| Scope | direct | category / adjacent | wildcard | Languages |
+|---|---|---|---|---|
+| `gcc` (default) | KSA + GCC | GCC first, then MENA and the world | anywhere | EN + AR |
+| `mena` | KSA + GCC | Egypt, Levant and Maghreb as well as the GCC (`countries/egypt`, `jordan`, `lebanon`, `morocco`) | anywhere | EN + AR (+ FR for the Maghreb) |
+| `global` | KSA + GCC (the client still competes at home) | the best work from **≥3 regions**: AotW `regions/europe`, `north-america`, `latin-america`, `asia`, `far-east` | Cannes Lions, D&AD, One Show, Effies Grand Prix and gold | EN + AR + the language of the strongest market for the idea (e.g. ES/PT for Latin America, FR, JA) |
+
+Global tips: search award winners by year and medium (`"Cannes Lions" <year> Grand Prix <category>`, `"D&AD" <year> pencil <category>`,
+`"Effie" <year> gold <category>`), then find the case film on Ads of the World, YouTube or Vimeo. A global reference needs a
+`why_relevant` that says what translates to the client's market and what doesn't. `validate_run.py` warns when a global
+run covers fewer than 3 regions.

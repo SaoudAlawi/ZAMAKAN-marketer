@@ -2,7 +2,7 @@
 name: zamakan-reference-scout
 description: "Find real campaign references and creative inspiration, then turn them into strategy: a verified reference set (Ads of the World, YouTube, Vimeo, award shows, trade press, competitor ads), quick cards and deep teardowns, patterns, white space and 3-5 creative territories, delivered as a visual board, client deck and/or report plus files other agents can use. Use this whenever someone asks for references, inspiration, a mood board of campaigns, a swipe file, 'what have others done for Ramadan / National Day / a launch', 'show me the best ads about X', competitor ads or what competitors are running, references for a pitch or a creative kickoff, or creative territories grounded in real work. Saudi/GCC-aware, searches in English and Arabic, and never invents campaigns: every reference is checked against its live page."
 metadata:
-  version: 0.2.0
+  version: 0.3.0
 ---
 
 # ZAMAKAN Reference Scout
@@ -43,9 +43,10 @@ Work out the **mode**:
 
 Write `$JOB/brief.json` (schema: `schemas/brief.schema.json`), using the user's words for `question`.
 **Ask the user once, up front:** anything missing that changes the search (market, moment, competitors,
-what to avoid) and **which outputs they want: board, deck, report** (any combination). If you
-can't ask (autonomous run), use these defaults: `brief`/`creative-question` → board, `pitch` → deck + board,
-`competitor-watch` → report. Set `outputs_defaulted: true` in brief.json and mention it in your final message.
+what to avoid), the **scope** (`gcc`, `mena` or `global`: where to look for work; default `gcc`) and **which outputs
+they want: board, deck, report** (any combination). If you can't ask (autonomous run), use these defaults:
+`brief`/`pitch` → board + deck (a kickoff needs both), `creative-question` → board, `competitor-watch` → report + board.
+Set `outputs_defaulted: true` in brief.json and mention it in your final message.
 
 ## 2. Check the agency library first
 
@@ -65,6 +66,10 @@ Earlier runs may already hold verified, analysed references. Reuse them (re-veri
 
 Write 8–15 queries before collecting, **including Arabic ones** (e.g. «إعلان رمضان قهوة», «حملة رمضانية»).
 `references/sources.md` has the commands, slugs and query patterns per source, so read it the first time.
+**Scope** changes where `category`, `adjacent` and `wildcard` look (`direct` always stays in the client's market):
+`mena` adds Egypt, the Levant and the Maghreb; `global` needs the best work from at least 3 regions plus the big award
+shows, and queries in the language of the strongest market for the idea. See `sources.md` §8. `score.py` weights regions
+by scope.
 
 ## 4. Collect candidates (cheap first)
 
@@ -120,6 +125,17 @@ awards, KPIs, directors or dates; `fetch_meta` gives you what the page states.
 - **territories** (`brief`/`pitch`): 3–5, each with an English **and Arabic** name, a 1–2 sentence thesis,
   why it fits this client, the references it stands on, 2–3 example executions, and risks.
 
+Then the strategy layer, which the board and deck open with (`brief`/`pitch`; useful in the other modes too):
+- **insights**: 3–5 audience or market truths, each a full sentence with `source_url`, `source_name` and `date`, taken
+  only from pages you opened (trade press, research, a case page). No source → it's not an insight, leave it out.
+- **competitor check**: every competitor named in the brief gets a `competitor_summary` entry, even when you found
+  nothing: `found_campaign: false`, what you `checked`, and a note. "Not found" is a finding; silence is not.
+- **recommendation**: which territories to brief and how they combine (`summary`, `territory_ids`, `rationale`
+  citing insights or white space). Take a position; the creative team needs a starting point.
+- **before_kickoff**: what someone must watch, confirm or ask before this goes in front of the client
+  (unwatched videos, social feeds search can't see, client policies the idea depends on).
+References get short codes (R01…) automatically in every output, so cite them freely in conversation.
+
 ## 8. Write, verify, validate
 
 Write `$JOB/references.json` (schema: `schemas/references.schema.json`; a complete real example is in
@@ -133,13 +149,23 @@ Read the verify report. `rejected` → drop it or find the real URL. `unverified
 match the page, or drop it. A `note` about an extra link (e.g. a press article with its own headline) is fine
 as long as the primary link matches. Fix every validation error and judge the warnings.
 
-## 9. Deliver
+## 9. Build, check, deliver
 
 ```bash
-python3 $SCOUT/scripts/build_outputs.py $JOB/references.json --out $JOB --formats <board,deck,report> \
-        --brief $JOB/brief.json --client-name "<Client name>"
+python3 $SCOUT/scripts/build_outputs.py $JOB/references.json --out $JOB --formats <board,deck,report> --brief $JOB/brief.json
+python3 $SCOUT/scripts/check_outputs.py $JOB          # beauty + brand check; writes $JOB/check/*.png
 python3 $SCOUT/scripts/library.py add $JOB/references.json --client <slug>
 ```
+**The outputs wear the client's brand.** When `clients/<slug>/design-system/` exists (made by `zamakan-design-system`),
+the board and deck take everything from it: the logo variant approved for each background, the client's own font files,
+colours by role, corner style, divider and signature graphic element. Without one they use the ZAMAKAN house style.
+Never draw a missing brand asset yourself: `build_outputs.py` prints what the design system lists as missing; pass that on.
+
+**Look before you deliver.** `check_outputs.py` catches sideways scrolling, broken images, clipped text, low contrast,
+fonts that didn't load and wrongly set Arabic, and exits 1 on errors. Then open `$JOB/check/board-desktop.png`,
+`board-phone.png` and `deck-sheet.png` and look at them as a creative director would: does it feel like the brand,
+is anything empty, cramped or repeated? Fix the content (shorter thesis, better thumbnail) and rebuild; don't hand-edit
+the generated files.
 The board and deck take their look from a DESIGN.md: the client's own `design-system/DESIGN.md` if it exists,
 else the ZAMAKAN house style. If the user asks for another look, add `--design awesome:<brand>` (any folder name in
 github.com/VoltAgent/awesome-design-md, e.g. `awesome:nike`) or `--design <path/to/DESIGN.md>`. A brand look is for

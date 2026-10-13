@@ -30,8 +30,9 @@ Rendering uses Playwright with the preinstalled Chromium (`/opt/pw-browsers/chro
 - Explain in plain language; the user is an agency person, not necessarily a developer.
 
 ## Next step
-Feature 2 (reference scout) iteration 2: implement PLAN §3c (insights, competitor check, recommendation,
-before-kickoff list, deck by default, better deck design), harder grader checks, then re-run with/without skill.
-Iteration-1 comparison: https://claude.ai/artifact/UAd8URauEJzTHKWNeAGJ4Q. The test brief is
-`evals/fixtures/scout/rawaq-ramadan-brief.{md,json}`; grader `evals/grade_scout.py`. Run test agents with
-ZAMAKAN_LIBRARY and ZAMAKAN_SCOUT_CACHE pointing into their sandbox (the committed library holds the sample run).
+Feature 2 (reference scout) iteration 2: 2a, 2b, 2c and 2e are done (PLAN §3d). Next: 2d (awesome-style reference
+library: one REFERENCE.md per campaign + a browsable library index), then 2f (benchmark suite + scorecard; tell the
+user the token cost before launching agent runs). Outputs are built by `build_outputs.py` (brand kit from the client's
+design system) and must pass `check_outputs.py`. The test brief is `evals/fixtures/scout/rawaq-ramadan-brief.{md,json}`;
+grader `evals/grade_scout.py`. Run test agents with ZAMAKAN_LIBRARY and ZAMAKAN_SCOUT_CACHE pointing into their sandbox
+(the committed library holds the sample run).

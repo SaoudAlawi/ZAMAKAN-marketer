@@ -60,3 +60,23 @@ A territory is a space for ideas, not one execution. Each one needs:
 - **risks**: cultural, competitive or practical.
 
 Make territories distinct from each other: a safe one, a bold one, and an unexpected one is a good spread.
+
+## Insights (3–5, they open the board and deck)
+A truth about the audience or the market that a strategist would put on slide 2, with a source a client can check:
+- Good: "Saudi Ramadan engagement peaks at night: CST points to 9:00–11:00pm as peak usage hours." (Campaign ME, 2026-02-05)
+- Not an insight: "Ramadan is a time of togetherness." (no source, and everybody knows it)
+Only use pages you opened. Mix kinds: culture (how people behave), data (a number), category (what brands do and why).
+Give the date; a 2019 statistic in a 2027 plan needs saying.
+
+## Competitors
+One `competitor_summary` entry per named competitor: what you checked and when, whether you found a campaign for this
+moment, what they own (one line), messaging pillars, and the reference ids. "None found" is a result to report.
+
+## Recommendation
+Pick. Name the lead territory, what supports it, and why, citing an insight or a white space and the competitor gap:
+"Brief 'The after-taraweeh run' as the idea, with 'Who hosts tonight?' as its social engine…" A list of all territories
+is not a recommendation.
+
+## Before kickoff
+The honest to-do list: videos nobody has watched yet, social feeds web search can't see, client policies an idea
+depends on, rights questions. Short, concrete, owner-able.

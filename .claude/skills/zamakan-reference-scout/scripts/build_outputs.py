@@ -5,13 +5,15 @@ Usage:
   python build_outputs.py <references.json> --out <job_dir> [--formats board,deck,report] [--brief brief.json]
                           [--client-name "Rawaq Coffee Roasters"] [--design zamakan|awesome:<name>|<DESIGN.md>] [--no-pdf]
 
-Always writes territories.md (for agents). Formats (ask the user which they want):
-  board   board.html: self-contained visual board (thumbnails embedded, filters by ring/region/media)
-  deck    deck.pptx (editable, 16:9) + deck.pdf when LibreOffice is available
-  report  report.md: written analysis (patterns, white space, territories, teardowns, all references)
-Look (board and deck) comes from a DESIGN.md: --design if given, else the client's design-system/DESIGN.md found
-above --out (clients/<slug>/...), else the ZAMAKAN house style. awesome:<name> uses a brand from
-github.com/VoltAgent/awesome-design-md (e.g. awesome:nike); see theme.py.
+Always writes territories.md (for agents). Formats (ask the user; kickoffs default to board,deck):
+  board   board.html: self-contained, on-brand board (render_board.py): insights, recommendation, territories,
+          competitors, patterns, deep dives, every reference (R01…) with filters, before-kickoff list
+  deck    deck.pptx (editable, 16:9, render_deck.py) + deck.pdf when LibreOffice is available
+  report  report.md: the same story in writing
+Then run check_outputs.py <job_dir> and look at the screenshots it writes before delivering.
+Look (board and deck) comes from the brand kit (brandkit.py): --design if given, else the client's design system
+found above --out (clients/<slug>/design-system/: logos, font files, colours by role, shapes, graphic elements),
+else the ZAMAKAN house style. awesome:<name> borrows a look from github.com/VoltAgent/awesome-design-md.
 Refuses to build if validate_run.py reports errors. Rejected references are never shown.
 """
 import argparse
@@ -27,8 +29,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _web  # noqa: E402
-from theme import choose as choose_theme, font_links, load as load_theme, lum, mix, stack  # noqa: E402
-from validate_run import GCC, validate  # noqa: E402
+from brandkit import load_kit  # noqa: E402
+from validate_run import GCC, REGION, validate  # noqa: E402
 
 RING_LABEL = {"direct": "Direct · same category, GCC", "category": "Category · worldwide",
               "adjacent": "Adjacent · shared insight", "wildcard": "Wildcard · craft & ambition"}
@@ -89,6 +91,34 @@ def thumb_bytes(ref, cache_dir):
     return buf.getvalue()
 
 
+REGION_NAME = {"gcc": "GCC", "mena": "Wider MENA", "europe": "Europe", "americas": "Americas", "asia-pacific": "Asia-Pacific",
+               "africa": "Africa", "other": "Rest of world"}
+
+
+def region_of(r):
+    return REGION.get(r.get("country"), "other")
+
+
+def ref_codes(run):
+    """Stable short codes R01… in ring order (direct first), used in every output so people can say 'look at R07'."""
+    order = [r for k in RING_ORDER for r in run["references"] if r["ring"] == k]
+    return {r["id"]: f"R{i:02d}" for i, r in enumerate(order, 1)}
+
+
+def lead_order(run, has_img):
+    """Up to 3 references per territory, ordered so each territory opens on a different picture where possible
+    (images first, then references not yet used as another territory's lead)."""
+    byid = {r["id"]: r for r in run["references"]}
+    used, out = set(), {}
+    for t in run.get("territories", []):
+        rs = [byid[i] for i in t["reference_ids"] if i in byid]
+        rs.sort(key=lambda r: (not has_img.get(r["id"]), r["id"] in used))
+        if rs:
+            used.add(rs[0]["id"])
+        out[t["id"]] = rs[:3]
+    return out
+
+
 def meta_line(r):
     bits = [r.get("agency"), r.get("country"), str(r.get("year") or "")]
     return " · ".join(b for b in bits if b)
@@ -105,6 +135,7 @@ def link_label(r):
 # ------------------------------------------------------------------ territories.md
 def build_territories(run, brief=None, client_name=None):
     byid = {r["id"]: r for r in run["references"]}
+    codes = ref_codes(run)
     L = [f"# Creative territories: {display_title(run, brief, client_name)}", "",
          f"Run `{run['run']['id']}` · mode {run['run']['mode']} · {len(run['references'])} references "
          f"({sum(r['status'] == 'verified' for r in run['references'])} verified). Generated from references.json.", ""]
@@ -116,13 +147,18 @@ def build_territories(run, brief=None, client_name=None):
         for rid in t["reference_ids"]:
             r = byid.get(rid)
             if r:
-                L.append(f"- {r['brand']}: *{r['title']}* ({meta_line(r)}). {r['card']['idea']} {primary_url(r)}")
+                L.append(f"- {codes[rid]} {r['brand']}: *{r['title']}* ({meta_line(r)}). {r['card']['idea']} {primary_url(r)}")
         for k, lab in (("example_executions", "Example executions"), ("risks", "Risks")):
             if t.get(k):
                 L += ["", f"**{lab}:**"] + [f"- {x}" for x in t[k]]
         L.append("")
     if run.get("white_space"):
         L += ["## White space", ""] + [f"- {w}" for w in run["white_space"]] + [""]
+    rec = run.get("recommendation")
+    if rec:
+        names = {t["id"]: t["name"] for t in run.get("territories", [])}
+        L += ["## Recommendation", "", rec["summary"], "", "Territories: " + ", ".join(names.get(i, i) for i in rec.get("territory_ids", [])),
+              "", f"Why: {rec.get('rationale', '')}", ""]
     return "\n".join(L)
 
 
@@ -140,8 +176,22 @@ def build_report(run, brief, client_name):
           f"{len(refs)} references ({sum(r['status'] == 'verified' for r in refs)} verified against their live pages), "
           f"{sum(r.get('country') in GCC for r in refs)} from the GCC. Rings: "
           + ", ".join(f"{k} {v}" for k, v in rings.items()) + ".", ""]
+    codes = ref_codes(run)
+    if run.get("insights"):
+        L += ["## Insights", ""] + [f"{n}. {x['text']} ([{x.get('source_name') or 'source'}]({x['source_url']})"
+                                    + (f", {x['date']}" if x.get("date") else "") + ")" for n, x in enumerate(run["insights"], 1)] + [""]
+    rec = run.get("recommendation")
+    if rec:
+        names = {t["id"]: t["name"] for t in run.get("territories", [])}
+        L += ["## Recommendation", "", f"**{rec['summary']}**", "",
+              "Territories: " + ", ".join(names.get(i, i) for i in rec.get("territory_ids", [])), "", f"Why: {rec.get('rationale', '')}", ""]
+    if run.get("competitor_summary"):
+        L += ["## Competitors", "", "| Competitor | Campaign found | What they own | References | Checked |", "|---|---|---|---|---|"]
+        L += [f"| {c['advertiser']} | {'Yes' if c.get('found_campaign') else 'None found'} | {c.get('notes', '')} | "
+              f"{', '.join(codes[i] for i in c.get('reference_ids', []) if i in codes) or '–'} | {c.get('checked', '')} |"
+              for c in run["competitor_summary"]] + [""]
     if run.get("patterns"):
-        L += ["## Patterns", ""] + [f"- {p['pattern']} ({', '.join(byid[i]['brand'] for i in p['reference_ids'] if i in byid)})"
+        L += ["## Patterns", ""] + [f"- {p['pattern']} ({', '.join(codes[i] + ' ' + byid[i]['brand'] for i in p['reference_ids'] if i in byid)})"
                                     for p in run["patterns"]] + [""]
     if run.get("white_space"):
         L += ["## White space", ""] + [f"- {w}" for w in run["white_space"]] + [""]
@@ -150,7 +200,7 @@ def build_report(run, brief, client_name):
         L += ["## Deep dives", ""]
         for rid in run["top"]:
             r, td = byid[rid], byid[rid]["teardown"]
-            L += [f"### {r['brand']}: {r['title']}", "", f"{meta_line(r)} · [{link_label(r)}]({primary_url(r)})", "",
+            L += [f"### {codes[rid]} · {r['brand']}: {r['title']}", "", f"{meta_line(r)} · [{link_label(r)}]({primary_url(r)})", "",
                   f"- **Insight:** {td['insight']}", f"- **Idea:** {td['idea']}", f"- **Execution:** {td['execution']}"]
             for k in ("channels", "tone", "results"):
                 if td.get(k):
@@ -165,9 +215,11 @@ def build_report(run, brief, client_name):
         rs = [r for r in refs if r["ring"] == ring]
         if not rs:
             continue
-        L += [f"### {RING_LABEL[ring]}", "", "| Brand | Campaign | Agency · country · year | Idea | Link |", "|---|---|---|---|---|"]
-        L += [f"| {r['brand']} | {r['title']} | {meta_line(r)} | {r['card']['idea']} | [{link_label(r)}]({primary_url(r)}) |" for r in rs]
+        L += [f"### {RING_LABEL[ring]}", "", "| Code | Brand | Campaign | Agency · country · year | Idea | Link |", "|---|---|---|---|---|---|"]
+        L += [f"| {codes[r['id']]} | {r['brand']} | {r['title']} | {meta_line(r)} | {r['card']['idea']} | [{link_label(r)}]({primary_url(r)}) |" for r in rs]
         L.append("")
+    if run.get("before_kickoff"):
+        L += ["## Before kickoff", ""] + [f"- [ ] {q}" for q in run["before_kickoff"]] + [""]
     if run.get("open_questions"):
         L += ["## Open questions", ""] + [f"- {q}" for q in run["open_questions"]] + [""]
     L += ["---", f"*Method: searched {', '.join(run['run'].get('queries', [])[:8])}. Every link was checked against its live page.*"]
@@ -175,267 +227,34 @@ def build_report(run, brief, client_name):
 
 
 # ------------------------------------------------------------------ board.html
-BOARD_CSS = """
-*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 var(--body)}
-.wrap{max-width:1240px;margin:0 auto;padding-inline:20px;padding-block:36px 64px;display:grid;gap:44px}
-h1{font:var(--disp-w) clamp(26px,3.6vw,38px)/1.15 var(--disp);margin:0;text-wrap:balance} h2{font:var(--disp-w) 22px/1.25 var(--disp);margin:0 0 14px}
-.eyebrow{font:600 11px/1 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
-.lede{color:var(--muted);max-width:75ch;margin:8px 0 0} .ar{font-family:var(--ar);direction:rtl}
-.stats{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px} .stat{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:10px 14px}
-.stat b{font-size:20px;font-variant-numeric:tabular-nums;display:block}.stat span{color:var(--muted);font-size:12px}
-.terr{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
-.tcard{background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:6px;padding:18px;display:grid;gap:10px;align-content:start}
-.tcard h3{margin:0;font:var(--disp-w) 19px/1.25 var(--disp)} .tcard .ar{color:var(--muted);font:600 16px/1.5 var(--ar-disp)}
-.tcard p{margin:0} .tcard small{color:var(--muted)} .strip{display:flex;gap:6px;flex-wrap:wrap}
-.strip a{display:block;width:72px;aspect-ratio:4/3;border-radius:3px;overflow:hidden;background:var(--chip)} .strip img{width:100%;height:100%;object-fit:cover}
-ul.tight{margin:0;padding-left:18px;display:grid;gap:4px;font-size:14px}
-.dive{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:20px;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:18px}
-.dive img{width:100%;border-radius:4px;display:block} .dive dl{margin:0;display:grid;grid-template-columns:130px 1fr;gap:6px 14px;font-size:14px}
-.dive dt{color:var(--muted);font-weight:600}.dive dd{margin:0} .dives{display:grid;gap:14px}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:16px} .box{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:16px}
-.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px} .filters button{font:500 13px var(--body);border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:20px;padding:5px 12px;cursor:pointer}
-.filters button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)} .filters button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:6px;overflow:hidden;display:flex;flex-direction:column}
-.card .img{aspect-ratio:16/10;background:var(--chip)} .card .img img{width:100%;height:100%;object-fit:cover;display:block}
-.card .body{padding:12px 14px 14px;display:grid;gap:6px;flex:1;align-content:start} .card h4{margin:0;font-size:15px;line-height:1.3}
-.card .brand{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)} .card .meta{font-size:12px;color:var(--muted)}
-.card p{margin:0;font-size:14px} .card .why{color:var(--muted);font-size:13px} .card a.go{font-size:13px;font-weight:600;color:var(--accent-text);text-decoration:none;margin-top:4px}
-.badges{display:flex;gap:6px;flex-wrap:wrap} .badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;background:var(--chip);color:var(--ink)}
-.ring-direct{background:var(--direct);color:var(--on-direct)}.ring-category{background:var(--category);color:var(--on-category)}
-.ring-adjacent{background:var(--adjacent);color:var(--on-adjacent)}.ring-wildcard{background:var(--wildcard);color:var(--on-wildcard)}
-.badge.ok{color:var(--ok)} .card[hidden]{display:none!important}
-footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:16px}
-@media (max-width:760px){.dive{grid-template-columns:1fr}.two{grid-template-columns:1fr}.dive dl{grid-template-columns:1fr}}
-"""
-
-def board_root(th):
-    """CSS custom properties from a DESIGN.md theme (see theme.py). One look, as the design system defines it."""
-    v = {"bg": th["bg"], "panel": th["panel"], "ink": th["ink"], "muted": th["muted"], "line": th["line"], "accent": th["accent"],
-         "accent-text": th["accent_text"], "chip": th["chip"], "ok": th["accent_text"],
-         **th["ring"], **{f"on-{k}": c for k, c in th["ring_on"].items()},
-         "disp": stack(th["display_font"], th["ar_display_font"]), "body": stack(th["body_font"], th["ar_body_font"]),
-         "ar": stack(th["ar_body_font"], th["body_font"]), "ar-disp": stack(th["ar_display_font"], th["ar_body_font"]), "disp-w": th["display_weight"]}
-    scheme = "dark" if lum(th["bg"]) < 0.2 else "light"
-    return ":root{" + ";".join(f"--{k}:{c}" for k, c in v.items()) + f";color-scheme:{scheme}}}"
-
-
-BOARD_JS = """
-const state={ring:'all',region:'all'};
-function apply(){document.querySelectorAll('.card').forEach(c=>{
- const okR=state.ring==='all'||c.dataset.ring===state.ring; const okG=state.region==='all'||c.dataset.region===state.region;
- c.hidden=!(okR&&okG);});
- const n=[...document.querySelectorAll('.card')].filter(c=>!c.hidden).length; document.getElementById('count').textContent=n;}
-document.querySelectorAll('.filters button').forEach(b=>b.addEventListener('click',()=>{
- const k=b.dataset.k; state[k]=b.dataset.v; document.querySelectorAll(`.filters button[data-k="${k}"]`).forEach(x=>x.setAttribute('aria-pressed',x===b));apply();}));
-apply();
-"""
-
-
-def build_board(run, brief, client_name, thumbs_dir, th=None):
-    th = th or load_theme("zamakan")
-    refs = run["references"]
-    byid = {r["id"]: r for r in refs}
+def build_board(run, brief, client_name, thumbs_dir, kit=None):
+    import types
+    import render_board
+    kit = kit or load_kit("zamakan")
     img = {}
-    for r in refs:
+    for r in run["references"]:
         b = thumb_bytes(r, thumbs_dir)
         img[r["id"]] = "data:image/jpeg;base64," + base64.b64encode(b).decode() if b else ""
-
-    def pic(r, cls=""):
-        return f'<img src="{img[r["id"]]}" alt="{E(r["brand"])}: {E(r["title"])}" loading="lazy"{cls}>' if img[r["id"]] else ""
-
-    terr = ""
-    for t in run.get("territories", []):
-        strip = "".join(f'<a href="#ref-{rid}" title="{E(byid[rid]["brand"])}: {E(byid[rid]["title"])}">{pic(byid[rid])}</a>'
-                        for rid in t["reference_ids"] if rid in byid)
-        extra = "".join(f'<div><small>{lab}</small><ul class="tight">{"".join(f"<li>{E(x)}</li>" for x in t[k])}</ul></div>'
-                        for k, lab in (("example_executions", "Example executions"), ("risks", "Watch-outs")) if t.get(k))
-        terr += (f'<article class="tcard"><div><h3>{E(t["name"])}</h3>'
-                 + (f'<div class="ar">{E(t["name_ar"])}</div>' if t.get("name_ar") else "")
-                 + f'</div><p>{E(t["thesis"])}</p>' + (f'<p><small>Why Rawaq: </small>{E(t["why_this_client"])}</p>'.replace("Rawaq", E(client_name.split()[0]) if client_name else "this client") if t.get("why_this_client") else "")
-                 + f'<div class="strip">{strip}</div>{extra}</article>')
-    dives = ""
-    for rid in run.get("top", []):
-        r, td = byid[rid], byid[rid]["teardown"]
-        rows = [("Insight", td["insight"]), ("Idea", td["idea"]), ("Execution", td["execution"])]
-        rows += [(k.title(), td[k]) for k in ("channels", "tone", "results") if td.get(k)]
-        rows += [("Borrow", "; ".join(td["transferable"])), (f"Saudi fit {td['cultural_fit']['score']}/5", td["cultural_fit"]["notes"])]
-        if td.get("risks"):
-            rows.append(("Risks", "; ".join(td["risks"])))
-        dives += (f'<article class="dive" id="dive-{rid}"><div>{pic(r)}<p class="meta" style="margin:8px 0 0">'
-                  f'<b>{E(r["brand"])}</b>: {E(r["title"])}<br><small>{E(meta_line(r))}</small><br>'
-                  f'<a href="{E(primary_url(r))}" target="_blank" rel="noopener">{link_label(r)} ↗</a></p></div>'
-                  f'<dl>{"".join(f"<dt>{E(k)}</dt><dd>{E(v)}</dd>" for k, v in rows)}</dl></article>')
-    cards = ""
-    for ring in RING_ORDER:
-        for r in [x for x in refs if x["ring"] == ring]:
-            region = "gcc" if r.get("country") in GCC else "other"
-            cards += (f'<article class="card" id="ref-{r["id"]}" data-ring="{ring}" data-region="{region}">'
-                      f'<div class="img">{pic(r)}</div><div class="body"><div class="badges"><span class="badge ring ring-{ring}">{ring}</span>'
-                      + ('<span class="badge ok">✓ verified</span>' if r["status"] == "verified" else '<span class="badge">unverified</span>')
-                      + (f'<span class="badge">top pick</span>' if r["id"] in run.get("top", []) else "")
-                      + f'</div><div class="brand">{E(r["brand"])}</div><h4>{E(r["title"])}</h4><div class="meta">{E(meta_line(r))}</div>'
-                      f'<p>{E(r["card"]["idea"])}</p><p class="why">{E(r["card"]["why_relevant"])}</p>'
-                      f'<a class="go" href="{E(primary_url(r))}" target="_blank" rel="noopener">{link_label(r)} ↗</a></div></article>')
-    ring_btns = "".join(f'<button data-k="ring" data-v="{k}" aria-pressed="false">{k.title()} ({sum(r["ring"] == k for r in refs)})</button>'
-                        for k in RING_ORDER if any(r["ring"] == k for r in refs))
-    patterns = "".join(f"<li>{E(p['pattern'])}</li>" for p in run.get("patterns", []))
-    white = "".join(f"<li>{E(w)}</li>" for w in run.get("white_space", []))
-    brief_bits = " · ".join(E(brief[k]) for k in ("moment", "objective", "audience") if brief and brief.get(k))
-    n_ver = sum(r["status"] == "verified" for r in refs)
-    title = display_title(run, brief, client_name)
-    return f"""<title>{E(title)}</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-{font_links(th)}
-<style>{board_root(th)}{BOARD_CSS}</style>
-<div class="wrap">
-<header><div class="eyebrow">Reference scout · {E(run['run']['mode'])} · {E(run['run'].get('created', ''))}</div>
-<h1>{E(display_title(run, brief, client_name))}</h1><p class="lede">{brief_bits}</p>
-<div class="stats"><div class="stat"><b>{len(refs)}</b><span>references</span></div><div class="stat"><b>{n_ver}</b><span>verified live</span></div>
-<div class="stat"><b>{sum(r.get('country') in GCC for r in refs)}</b><span>from the GCC</span></div><div class="stat"><b>{len(run.get('territories', []))}</b><span>territories</span></div></div></header>
-<section><h2>Creative territories</h2><div class="terr">{terr}</div></section>
-<section class="two"><div class="box"><h2>Patterns</h2><ul class="tight">{patterns}</ul></div><div class="box"><h2>White space</h2><ul class="tight">{white}</ul></div></section>
-{f'<section><h2>Deep dives</h2><div class="dives">{dives}</div></section>' if dives else ''}
-<section><h2>All references (<span id="count">{len(refs)}</span>)</h2>
-<div class="filters" role="toolbar" aria-label="Filter references"><button data-k="ring" data-v="all" aria-pressed="true">All rings</button>{ring_btns}
-<span style="width:12px"></span><button data-k="region" data-v="all" aria-pressed="true">All regions</button><button data-k="region" data-v="gcc" aria-pressed="false">GCC</button><button data-k="region" data-v="other" aria-pressed="false">Rest of world</button></div>
-<div class="grid">{cards}</div></section>
-<footer>{''.join(f'<p>Open question: {E(q)}</p>' for q in run.get('open_questions', []))}
-<p>Every reference links to its original page and was checked live. Thumbnails © their owners, internal reference use only. Generated by zamakan-reference-scout.</p>
-<p>Styled with the {E(th["name"])} DESIGN.md{' from VoltAgent/awesome-design-md (MIT); brand look used for internal presentation only' if 'awesome-design-md' in th['origin'] else ''}.</p></footer>
-</div><script>{BOARD_JS}</script>"""
+    h = types.SimpleNamespace(display_title=display_title, meta_line=meta_line, primary_url=primary_url, link_label=link_label,
+                              region_of=region_of, REGION_NAME=REGION_NAME, lead_order=lead_order)
+    return render_board.build(run, brief, client_name, kit, img, ref_codes(run), h)
 
 
 # ------------------------------------------------------------------ deck.pptx
-def build_deck(run, brief, client_name, thumbs_dir, path, th=None):
-    from pptx import Presentation
-    from pptx.dml.color import RGBColor
-    from pptx.enum.text import PP_ALIGN
-    from pptx.util import Emu, Pt
-    th = th or load_theme("zamakan")
-    rgb = lambda h: RGBColor.from_string(h.lstrip("#").upper())  # noqa: E731
-    INK, MUTED, ACCENT, BG, DARK, ON_DARK, CHIP = (rgb(th[k]) for k in ("ink", "muted", "accent_text", "bg", "dark", "on_dark", "chip"))
-    ON_DARK_MUTED = rgb(mix(th["on_dark"], th["dark"], 0.35))
-    DISP, BODY, AR = th["display_font"], th["body_font"], th["ar_display_font"]
-    prs = Presentation()
-    prs.slide_width, prs.slide_height = Emu(12192000), Emu(6858000)
-    W, H = prs.slide_width, prs.slide_height
-    blank = prs.slide_layouts[6]
-    refs = run["references"]
-    byid = {r["id"]: r for r in refs}
-    cm = lambda v: Emu(int(v * 360000))  # noqa: E731
-
-    def slide(bg=BG):
-        s = prs.slides.add_slide(blank)
-        s.background.fill.solid()
-        s.background.fill.fore_color.rgb = bg
-        return s
-
-    def text(s, x, y, w, h, t, size=16, bold=False, color=INK, align=None, rtl=False, font=None):
-        font = font or (AR if rtl else DISP if size >= 22 else BODY)
-        tb = s.shapes.add_textbox(cm(x), cm(y), cm(w), cm(h))
-        tf = tb.text_frame
-        tf.word_wrap = True
-        lines = t if isinstance(t, list) else [t]
-        for i, line in enumerate(lines):
-            p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
-            p.text = line
-            p.font.size, p.font.bold, p.font.color.rgb, p.font.name = Pt(size), bold, color, font
-            if align or rtl:
-                p.alignment = PP_ALIGN.RIGHT if rtl else align
-        return tb
-
-    def picture(s, r, x, y, w, h):
-        b = thumb_bytes(r, thumbs_dir)
-        if not b:
-            box = s.shapes.add_shape(1, cm(x), cm(y), cm(w), cm(h))
-            box.fill.solid()
-            box.fill.fore_color.rgb = CHIP
-            box.line.fill.background()
-            return
-        from PIL import Image
-        iw, ih = Image.open(io.BytesIO(b)).size
-        scale = min(w / iw, h / ih)
-        pw, ph = iw * scale, ih * scale
-        s.shapes.add_picture(io.BytesIO(b), cm(x + (w - pw) / 2), cm(y + (h - ph) / 2), cm(pw), cm(ph))
-
-    def link(s, x, y, r):
-        tb = text(s, x, y, 12, 0.8, f"{link_label(r)} ↗", 11, True, ACCENT)
-        tb.text_frame.paragraphs[0].runs[0].hyperlink.address = primary_url(r)
-
-    # 1 title
-    s = slide(DARK)
-    text(s, 2, 1.6, 26, 1, "REFERENCE SCOUT", 12, True, ON_DARK_MUTED)
-    text(s, 2, 2.6, 28, 6, display_title(run, brief, client_name), 34, True, ON_DARK, font=DISP)
-    text(s, 2, 15.5, 28, 1.5, f"{client_name or ''} · {run['run'].get('created', '')}", 14, False, ON_DARK_MUTED)
-    # 2 brief + method
-    s = slide()
-    text(s, 2, 1.4, 28, 1.2, "The brief", 28, True)
-    rows = [f"{k.title()}: {brief[k] if isinstance(brief[k], str) else ', '.join(brief[k])}"
-            for k in ("objective", "audience", "moment", "channels", "competitors", "avoid") if brief and brief.get(k)]
-    text(s, 2, 3.2, 16, 12, rows or [run["run"].get("question", "")], 14)
-    n_ver = sum(r["status"] == "verified" for r in refs)
-    rings = [f"{RING_LABEL[k]}: {sum(r['ring'] == k for r in refs)}" for k in RING_ORDER]
-    text(s, 19.5, 3.2, 12, 1, "How we searched", 14, True, ACCENT)
-    text(s, 19.5, 4.2, 12, 11, [f"{len(refs)} references, {n_ver} verified live", f"{sum(r.get('country') in GCC for r in refs)} from the GCC", ""] + rings, 13)
-    # 3 patterns & white space
-    s = slide()
-    text(s, 2, 1.4, 28, 1.2, "What the category does, and what nobody does", 26, True)
-    text(s, 2, 3.4, 14, 1, "Patterns", 14, True, ACCENT)
-    text(s, 2, 4.4, 14, 12, [f"• {p['pattern']}" for p in run.get("patterns", [])], 14)
-    text(s, 17.5, 3.4, 14, 1, "White space", 14, True, ACCENT)
-    text(s, 17.5, 4.4, 14, 12, [f"• {w}" for w in run.get("white_space", [])], 14)
-    # territories
-    for i, t in enumerate(run.get("territories", []), 1):
-        s = slide()
-        text(s, 2, 1.2, 20, 0.8, f"TERRITORY {i}", 11, True, ACCENT)
-        text(s, 2, 2.0, 16.5, 1.6, t["name"], 30, True)
-        if t.get("name_ar"):
-            text(s, 2, 3.5, 16.5, 1.4, t["name_ar"], 22, True, MUTED, rtl=True)
-        text(s, 2, 5.2, 16, 3.4, t["thesis"], 18)
-        body = []
-        if t.get("why_this_client"):
-            body += [f"Why: {t['why_this_client']}", ""]
-        body += [f"• {x}" for x in t.get("example_executions", [])]
-        body += [f"⚠ {x}" for x in t.get("risks", [])]
-        text(s, 2, 9.0, 16, 8.5, body, 13, color=MUTED)
-        rs = [byid[rid] for rid in t["reference_ids"] if rid in byid][:3]
-        for j, r in enumerate(rs):
-            y = 1.4 + j * 5.6
-            picture(s, r, 19.5, y, 6.6, 4.4)
-            text(s, 26.4, y, 5.6, 3.2, [r["brand"], r["title"]], 11, False, INK)
-            link(s, 26.4, y + 3.4, r)
-    # deep dives
-    for rid in run.get("top", []):
-        r, td = byid[rid], byid[rid]["teardown"]
-        s = slide()
-        text(s, 2, 1.2, 18, 0.8, "DEEP DIVE", 11, True, ACCENT)
-        text(s, 2, 2.0, 18, 2.2, f"{r['brand']}: {r['title']}", 24, True)
-        text(s, 2, 4.0, 18, 0.8, meta_line(r), 12, False, MUTED)
-        rows = [f"Insight: {td['insight']}", f"Idea: {td['idea']}", f"Execution: {td['execution']}",
-                "Borrow: " + "; ".join(td["transferable"]), f"Saudi fit {td['cultural_fit']['score']}/5: {td['cultural_fit']['notes']}"]
-        text(s, 2, 5.2, 17.5, 13, rows, 13)
-        picture(s, r, 20.5, 2.0, 11.5, 8.5)
-        link(s, 20.5, 10.8, r)
-    # reference grid (6 per slide)
-    ordered = [r for k in RING_ORDER for r in refs if r["ring"] == k]
-    for i in range(0, len(ordered), 6):
-        s = slide()
-        text(s, 2, 1.0, 28, 1.2, "All references" + (f" ({i // 6 + 1})" if len(ordered) > 6 else ""), 22, True)
-        for j, r in enumerate(ordered[i:i + 6]):
-            x, y = 2 + (j % 3) * 10.2, 3.0 + (j // 3) * 7.6
-            picture(s, r, x, y, 9.4, 4.2)
-            text(s, x, y + 4.3, 9.4, 2.4, [f"{r['brand']}: {r['title']}", f"{r['ring']} · {meta_line(r)}"], 10)
-            link(s, x, y + 6.5, r)
-    if run.get("open_questions"):
-        s = slide()
-        text(s, 2, 1.4, 28, 1.2, "Open questions", 26, True)
-        text(s, 2, 3.4, 28, 12, [f"• {q}" for q in run["open_questions"]], 16)
-    prs.save(path)
-    return path
+def build_deck(run, brief, client_name, thumbs_dir, path, kit=None):
+    import types
+    import render_deck
+    kit = kit or load_kit("zamakan")
+    h = types.SimpleNamespace(display_title=display_title, meta_line=meta_line, primary_url=primary_url, link_label=link_label,
+                              region_of=region_of, REGION_NAME=REGION_NAME, lead_order=lead_order)
+    return render_deck.build(run, brief, client_name, kit, lambda r: thumb_bytes(r, thumbs_dir), ref_codes(run), h, path,
+                             Path(thumbs_dir) / "brand")
 
 
-def to_pdf(pptx_path):
+def to_pdf(pptx_path, kit=None):
+    if kit:
+        import render_deck
+        render_deck.install_fonts(kit)
     exe = shutil.which("soffice") or shutil.which("libreoffice")
     if not exe:
         return None
@@ -462,26 +281,32 @@ def main():
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     thumbs = out / "thumbs"
-    th = choose_theme(a.design, out)
+    kit = load_kit(a.design, out)
+    th = kit["theme"]
+    client_name = a.client_name or kit.get("client_name")
     made = []
-    (out / "territories.md").write_text(build_territories(run, brief, a.client_name), encoding="utf-8")
+    (out / "territories.md").write_text(build_territories(run, brief, client_name), encoding="utf-8")
     made.append("territories.md")
     fmts = {f.strip() for f in a.formats.split(",") if f.strip()}
     if "report" in fmts:
-        (out / "report.md").write_text(build_report(run, brief, a.client_name), encoding="utf-8")
+        (out / "report.md").write_text(build_report(run, brief, client_name), encoding="utf-8")
         made.append("report.md")
     if "board" in fmts:
-        (out / "board.html").write_text(build_board(run, brief, a.client_name, thumbs, th), encoding="utf-8")
+        (out / "board.html").write_text(build_board(run, brief, client_name, thumbs, kit), encoding="utf-8")
         made.append("board.html")
     if "deck" in fmts:
-        build_deck(run, brief, a.client_name, thumbs, out / "deck.pptx", th)
+        build_deck(run, brief, client_name, thumbs, out / "deck.pptx", kit)
         made.append("deck.pptx")
         if not a.no_pdf:
-            pdf = to_pdf(out / "deck.pptx")
+            pdf = to_pdf(out / "deck.pptx", kit)
             made.append("deck.pdf" if pdf else "(deck.pdf skipped: LibreOffice not available)")
     print(f"built in {out}: {', '.join(made)} · look: {th['name']} ({th['origin']})")
     for w in warnings:
         print("  warn", w)
+    for m in kit["missing_assets"]:
+        print(f"  note: the design system lists '{m}' as missing; it was not invented (ask the client for it)")
+    for n in kit["proposed_notes"]:
+        print("  note:", n)
 
 
 if __name__ == "__main__":

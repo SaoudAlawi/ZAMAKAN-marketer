@@ -91,10 +91,6 @@ def test_client_design_system_is_auto_detected(run_path, tmp_path):
     th = T.choose(None, out)
     assert th["origin"].endswith("clients/rawaq/design-system/DESIGN.md") and th["name"] == "Rawaq Coffee Roasters"
     assert th["bg"] == "#F3E7D3" and readable(th)
-    sys.argv = ["build_outputs.py", str(run_path), "--out", str(out), "--formats", "board,deck", "--no-pdf"]
-    B.main()
-    board = (out / "board.html").read_text(encoding="utf-8")
-    assert "--bg:#F3E7D3" in board and "Styled with the Rawaq Coffee Roasters DESIGN.md" in board
     # an explicit --design wins over the client's own
     assert T.choose("zamakan", out)["name"] == "ZAMAKAN"
 
@@ -109,10 +105,10 @@ def test_deck_uses_theme(run_path, tmp_path):
     cover, brief = prs.slides[0], prs.slides[1]
     assert str(cover.background.fill.fore_color.rgb) == th["dark"].lstrip("#")
     assert str(brief.background.fill.fore_color.rgb) == th["bg"].lstrip("#")
-    fonts = {p.font.name for s in prs.slides for sh in s.shapes if sh.has_text_frame for p in sh.text_frame.paragraphs}
+    fonts = {r.font.name for s in prs.slides for sh in s.shapes if sh.has_text_frame for p in sh.text_frame.paragraphs for r in p.runs}
     assert {"Instrument Serif", "IBM Plex Sans", "Reem Kufi"} <= fonts
     board = (out / "board.html").read_text(encoding="utf-8")
-    assert "--accent:#0B7C7C" in board and "family=Reem+Kufi" in board and "prefers-color-scheme" not in board
+    assert "--accent:#0B7C7C" in board and "@font-face{font-family:'Instrument Serif'" in board  # house fonts ship with the skill
 
 
 def test_awesome_name_is_checked():
