@@ -109,3 +109,70 @@ def test_evidence_badges():
     r["urls"].append({"verified": True, "evidence": "content"})
     assert "page read" in B.evidence_badge(r)
     assert "unverified" in B.evidence_badge({"status": "unverified", "urls": []})
+
+
+# ---------------------------------------------------------------- 3d competitor watch
+def test_youtube_channel_uploads_parse_with_dates():
+    import datetime as dt
+    import sources as S
+    html = (REPO / "tests/fixtures/scout/pages/youtube-channel-halfmillion.html").read_text(encoding="utf-8")
+    vids = S.parse_youtube_channel(html)
+    assert len(vids) == 3 and all(v["channel"] == "Half Million" and v["url"].startswith("https://www.youtube.com/watch?v=") for v in vids)
+    assert all(v.get("published") and v.get("thumbnail") for v in vids)
+    assert S.ago_to_date("5 days ago", dt.date(2026, 10, 13)) == "2026-10-08"
+    assert S.ago_to_date("2 months ago", dt.date(2026, 10, 13)) == "2026-08-14"
+    assert S.ago_to_date("no date") is None
+
+
+def test_competitor_plan_and_click_list(tmp_path):
+    import subprocess
+    brief = {"schema_version": "1.0", "mode": "competitor-watch", "client": "rawaq", "question": "What are they doing?",
+             "market": "Riyadh, Saudi Arabia", "competitors": ["Barn's", "Half Million"], "window_months": 6}
+    (tmp_path / "brief.json").write_text(json.dumps(brief))
+    subprocess.run([sys.executable, SCRIPTS / "competitors.py", tmp_path / "brief.json", "--out", tmp_path], check=True, capture_output=True)
+    plan = (tmp_path / "competitor-plan.md").read_text()
+    assert "## Barn's" in plan and "last 6 months" in plan and "Can't be read from here" in plan
+    checks = json.loads((tmp_path / "manual-checks.json").read_text())
+    assert any("facebook.com/ads/library" in m["url"] and "country=SA" in m["url"] for m in checks["Half Million"])
+
+
+def test_competitor_watch_validation():
+    from validate_run import validate
+    run = _sample()
+    run["run"]["mode"] = "competitor-watch"
+    _, warns = validate(run, brief={"window_months": 12})
+    assert any("no 'owns'" in w for w in warns) and any("manual_checks" in w for w in warns)
+    assert any("older than the 12-month window" in w for w in warns)  # e.g. Nespresso 2019
+    for c in run["competitor_summary"]:
+        c.update(owns="x", last_seen="2026-10", manual_checks=[{"what": "Instagram", "url": "https://instagram.com/x"}])
+    for r in run["references"]:
+        r["tags"] = r.get("tags", []) + ["context"]
+    _, warns = validate(run, brief={"window_months": 12})
+    assert not any("competitor_summary/" in w or "window" in w for w in warns)
+
+
+# ---------------------------------------------------------------- 3f ranking
+def _score(c, **brief_over):
+    import score as SC
+    b = {**json.loads((FIX / "rawaq-ramadan-brief.json").read_text(encoding="utf-8")), **brief_over}
+    return SC.score(c, b, SC.brief_terms(b), 2026)
+
+
+def test_place_names_dont_count_as_relevance():
+    import score as SC
+    terms = SC.brief_terms(json.loads((FIX / "rawaq-ramadan-brief.json").read_text(encoding="utf-8")))
+    assert "riyadh" not in terms and "saudi" not in terms and "ramadan" in terms
+    generic = _score({"title": "Riyadh Season as never seen before", "brand": "Riyadh Season", "country": "SA", "year": 2025})
+    onbrief = _score({"title": "Ramadan suhoor coffee", "brand": "Costa", "country": "EG", "year": 2024})
+    assert onbrief[0] > generic[0] and any("off-topic" in f for f in generic[2])
+
+
+def test_alcohol_flag_for_gulf_clients():
+    s = _score({"title": "Good things come to those who wait", "brand": "Guinness", "country": "GB", "year": 1999})
+    assert any(f.startswith("alcohol") for f in s[2])
+    assert not any(f.startswith("alcohol") for f in _score({"title": "Ginger tea", "brand": "Lipton"})[2])
+
+
+def test_award_signal_counts_more_in_pitch_mode():
+    c = {"title": "Coffee night QR code", "description": "Cannes Lions Grand Prix 2022", "country": "US", "year": 2022}
+    assert _score(c, mode="pitch")[0] > _score(c)[0] > _score({**c, "description": ""})[0]

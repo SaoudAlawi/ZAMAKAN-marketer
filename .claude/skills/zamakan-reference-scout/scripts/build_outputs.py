@@ -257,10 +257,18 @@ def build_report(run, brief, client_name):
         L += [f"- **{r['spark']}** ({codes[r['id']]}: {r['brand']}, *{r['title']}*, {country_name(r.get('country'))} {r.get('year', '')}, "
               f"[{link_label(r)}]({primary_url(r)})). {r['card']['idea']}" for r in sparks] + [""]
     if run.get("competitor_summary"):
-        L += ["## Competitors", "", "| Competitor | Campaign found | What they own | References | Checked |", "|---|---|---|---|---|"]
-        L += [f"| {c['advertiser']} | {'Yes' if c.get('found_campaign') else 'None found'} | {c.get('notes', '')} | "
+        L += ["## Competitors", "", "| Competitor | Campaign found | What they own | Last seen | References | Checked |", "|---|---|---|---|---|---|"]
+        L += [f"| {c['advertiser']}{' (benchmark)' if c.get('benchmark') else ''} | {'Yes' if c.get('found_campaign') else 'None found'} | "
+              f"{c.get('owns') or ', '.join(c.get('messaging_pillars', [])) or c.get('notes', '')} | {c.get('last_seen', '–')} | "
               f"{', '.join(codes[i] for i in c.get('reference_ids', []) if i in codes) or '–'} | {c.get('checked', '')} |"
               for c in run["competitor_summary"]] + [""]
+        notes = [c for c in run["competitor_summary"] if c.get("owns") and c.get("notes")]
+        if notes:
+            L += [f"- **{c['advertiser']}:** {c['notes']}" for c in notes] + [""]
+        checks = [(c["advertiser"], m) for c in run["competitor_summary"] for m in c.get("manual_checks", [])]
+        if checks:
+            L += ["### Check by hand", "", "These can't be read from here (login walls); a person should look, about 5 minutes per brand:", ""]
+            L += [f"- [ ] {a}: [{m['what']}]({m['url']})" for a, m in checks] + [""]
     if run.get("patterns"):
         L += ["## Patterns", ""] + [f"- {p['pattern']} ({', '.join(codes[i] + ' ' + byid[i]['brand'] for i in p['reference_ids'] if i in byid)})"
                                     for p in run["patterns"]] + [""]

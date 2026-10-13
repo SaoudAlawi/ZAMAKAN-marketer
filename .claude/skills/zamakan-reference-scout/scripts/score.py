@@ -47,7 +47,8 @@ def brief_terms(b):
         if key in moment or any(s in moment for s in syn):
             terms |= set(syn)
     terms |= {c.lower() for c in b.get("competitors", [])}
-    return terms
+    # places are scored by `region`; counting them here too made anything Saudi look relevant
+    return {w for w in terms if not re.fullmatch(GCC_WORDS + r"|arabia|middle|east|gulf|ksa|city|cities|professionals?|aged?|people", w)}
 
 
 def text_of(c):
@@ -56,6 +57,8 @@ def text_of(c):
 
 
 AWARD_RX = r"grand prix|cannes|lions|d&ad|pencil|one show|effie|clio|titanium|dubai lynx|best of show"
+ALCOHOL_RX = (r"\b(beer|lager|ale|wine|vodka|whisk(e)?y|gin|rum|tequila|champagne|cognac|liqueur|heineken|guinness|budweiser|"
+              r"stella artois|carlsberg|absolut|smirnoff|jack daniel|johnnie walker|bacardi|j[aä]germeister|corona extra|kyr[oö])\b")
 
 
 def spark_score(c, b, this_year):
@@ -125,13 +128,25 @@ def score(c, b, terms, this_year, sparks=False):
             flags.append("channel may not be the brand: check it is an official upload")
     if untitled:
         flags.append("no title yet: run fetch_meta.py on it first")
+    elif not hits:
+        flags.append("no brief words matched: probably off-topic")
+    gulf = re.search(r"saudi|ksa|riyadh|jeddah|gcc|gulf|uae|dubai|qatar|kuwait|bahrain|oman", " ".join(str(b.get(k) or "") for k in ("market", "client", "category")), re.I) \
+        or b.get("scope", "gcc") in ("gcc", "mena")
+    if gulf and re.search(ALCOHOL_RX, t):
+        flags.append("alcohol brand: not for a Saudi/Gulf client")
+    award = bool(re.search(AWARD_RX, t))
+    if award:
+        flags.append("award signal")
     parts = {"relevance": round(rel, 1), "region": region, "freshness": round(fresh, 1)}
     if reach is not None:
         parts["reach"] = round(reach, 1)
     award_boost = 0.3 if b.get("scope") == "global" else 0.0
     prior = award_boost * (c.get("source") in ("lovethework", "dubailynx", "dandad", "oneclub")) + {"adsoftheworld": 0.4, "lovethework": 0.4, "dubailynx": 0.4, "dandad": 0.4, "oneclub": 0.4, "campaignme": 0.3,
              "lbbonline": 0.3, "adforum": 0.3, "campaignlive": 0.2, "vimeo": 0.1}.get(c.get("source"), 0.0)
-    total = 0.45 * rel + 0.25 * region + 0.2 * fresh + 0.1 * (reach if reach is not None else 2.5) + prior
+    # relevance leads; region helps but can't carry an off-topic result ("anything Saudi" was outranking the brief)
+    total = 0.5 * rel + 0.18 * region + 0.2 * fresh + 0.1 * (reach if reach is not None else 2.5) + prior
+    total += (0.8 if b.get("mode") == "pitch" else 0.4) * award
+    total -= 0.8 * ("no brief words matched: probably off-topic" in flags) + 2.0 * any(f.startswith("alcohol") for f in flags)
     total -= 0.8 * ("student work" in flags) + 1.5 * any(f.startswith(("AI demo", "probably not")) for f in flags)
     total -= 0.7 * any(f.startswith("channel may not") for f in flags)
     return round(total, 2), parts, flags, hits

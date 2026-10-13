@@ -112,6 +112,8 @@ section{padding-block:clamp(40px,6vw,72px)} section+section{border-top:1px solid
 .t .pics a{position:relative;display:block;background:var(--chip);overflow:hidden} .t .pics a:first-child{grid-column:1/-1}
 .t .pics img{width:100%;height:100%;object-fit:cover} .code{position:absolute;inset-inline-start:8px;top:8px;font:600 12px/1 var(--body);background:var(--dark);color:var(--on-dark);padding:5px 7px;border-radius:3px}
 .tag{display:inline-block;font:600 11px/1 var(--body);letter-spacing:.08em;text-transform:uppercase;padding:6px 9px;border-radius:999px;background:var(--accent);color:var(--on-accent);margin-inline-start:8px;vertical-align:middle}
+.ph{display:grid;place-content:center;gap:4px;width:100%;height:100%;min-height:120px;padding:12px;text-align:center;background:var(--chip);color:var(--muted)}
+.ph b{color:var(--ink);font-size:15px} .ph small{font-size:12px}
 /* sparks */
 .sparks{background:var(--dark);color:var(--on-dark)} section.sparks+section{border-top:0} .sparks h2{color:var(--on-dark)}
 .sparks .eyebrow,.sparks .sec-head p{color:var(--on-dark-muted)}
@@ -125,6 +127,8 @@ section{padding-block:clamp(40px,6vw,72px)} section+section{border-top:1px solid
 .tbl td{padding:14px 16px;border-bottom:1px solid var(--line);vertical-align:top} .tbl tr:last-child td{border-bottom:0}
 .yes{color:var(--accent-text);font-weight:600} .no{color:var(--muted)}
 .scroll{overflow-x:auto}
+.manual{margin-top:14px;background:var(--panel);border-radius:var(--r);padding:14px 18px} .manual summary{cursor:pointer;font-weight:600}
+.manual ul{margin:10px 0 0;padding-inline-start:18px;display:grid;gap:6px;font-size:14px}
 /* patterns */
 .two{display:grid;grid-template-columns:1fr 1fr;gap:18px} .box{background:var(--panel);border-radius:var(--r);padding:24px;box-shadow:var(--shadow)}
 .box ol,.box ul{margin:10px 0 0;padding-inline-start:20px;display:grid;gap:10px}
@@ -174,7 +178,9 @@ def build(run, brief, client_name, kit, img, codes, h):
     who = (client_name or kit.get("client_name") or "this client").split()[0]
 
     def pic(r, alt=True):
-        return f'<img src="{img[r["id"]]}" alt="{E(r["brand"]) + ": " + E(r["title"]) if alt else ""}">' if img.get(r["id"]) else ""
+        if img.get(r["id"]):
+            return f'<img src="{img[r["id"]]}" alt="{E(r["brand"]) + ": " + E(r["title"]) if alt else ""}">'
+        return f'<span class="ph"><b>{E(r["brand"])}</b><small>no preview image · open the link</small></span>'  # never an empty tile
 
     def ref_link(rid):
         r = byid.get(rid)
@@ -188,7 +194,8 @@ def build(run, brief, client_name, kit, img, codes, h):
     hero_ref = h.cover_ref(run, lambda r: bool(img.get(r["id"])), h.competitor_names(run, brief))
     hero = (f'<figure class="hero{" arch" if kit["arch"] else ""}" style="margin:0">{pic(hero_ref)}'
             f'<figcaption>{codes[hero_ref["id"]]} · {E(hero_ref["brand"])}: {E(hero_ref["title"])}</figcaption></figure>') if hero_ref else "<div></div>"
-    lede = " · ".join(E(brief[k]) for k in ("moment", "objective", "audience") if brief and brief.get(k)) or E(run["run"].get("question", ""))
+    lede = " · ".join(E(brief[k]) for k in ("moment", "objective", "audience") if brief and brief.get(k) and brief[k] != "other") \
+        or E(run["run"].get("question", ""))
     n_ver = sum(r["status"] == "verified" for r in refs)
     scope = run["run"].get("scope", "gcc")
     local = sum(h.region_of(r) == "gcc" for r in refs)
@@ -249,15 +256,24 @@ def build(run, brief, client_name, kit, img, codes, h):
                  f'to start a different conversation in the room.</p></div></div><div class="sgrid">{cards_s}</div></div></section>')
     # competitors
     if run.get("competitor_summary"):
-        rows = "".join(f'<tr><td><b>{E(c["advertiser"])}</b></td><td class="{"yes" if c.get("found_campaign") else "no"}">'
-                       f'{"Yes" if c.get("found_campaign") else "None found"}</td><td>{E(c.get("notes", ""))}'
-                       + (f'<br><small class="muted">{E(", ".join(c["messaging_pillars"]))}</small>' if c.get("messaging_pillars") else "")
-                       + f'</td><td>{", ".join(ref_link(r) for r in c.get("reference_ids", []) if r in byid) or "–"}</td>'
+        def owns(c):
+            return c.get("owns") or ", ".join(c.get("messaging_pillars", [])) or (c.get("notes") or "")[:140]
+        rows = "".join(f'<tr><td><b>{E(c["advertiser"])}</b>{"<br><small class=muted>benchmark</small>" if c.get("benchmark") else ""}</td>'
+                       f'<td class="{"yes" if c.get("found_campaign") else "no"}">{"Yes" if c.get("found_campaign") else "None found"}</td>'
+                       f'<td>{E(owns(c))}'
+                       + (f'<br><small class="muted">{E(c["notes"])}</small>' if c.get("owns") and c.get("notes") else "")
+                       + f'</td><td>{E(c.get("last_seen", "–"))}</td><td>{", ".join(ref_link(r) for r in c.get("reference_ids", []) if r in byid) or "–"}</td>'
                        f'<td><small class="muted">{E(c.get("checked", ""))}</small></td></tr>' for c in run["competitor_summary"])
+        checks = [(c["advertiser"], m) for c in run["competitor_summary"] for m in c.get("manual_checks", [])]
+        manual = ""
+        if checks:
+            manual = ('<details class="manual"><summary>Check by hand: what can\'t be seen from here (social, ad libraries)</summary><ul>'
+                      + "".join(f'<li><b>{E(a)}</b>: <a href="{E(m["url"])}" target="_blank" rel="noopener">{E(m["what"])} ↗</a></li>' for a, m in checks)
+                      + "</ul></details>")
         S.append(f'<section id="competitors"><div class="wrap"><div class="sec-head"><div><div class="eyebrow">The competition</div><h2>What competitors run</h2>'
                  f'<p>Every named competitor was checked; "none found" means searched, not ignored.</p></div></div><div class="scroll"><table class="tbl">'
-                 f'<thead><tr><th>Competitor</th><th>Campaign found</th><th>What they own</th><th>Refs</th><th>Checked</th></tr></thead>'
-                 f'<tbody>{rows}</tbody></table></div></div></section>')
+                 f'<thead><tr><th>Competitor</th><th>Campaign found</th><th>What they own</th><th>Last seen</th><th>Refs</th><th>Checked</th></tr></thead>'
+                 f'<tbody>{rows}</tbody></table></div>{manual}</div></section>')
     # patterns & white space
     if run.get("patterns") or run.get("white_space"):
         pats = "".join(f'<li>{E(p["pattern"])} <small class="muted">{", ".join(ref_link(r) for r in p["reference_ids"] if r in byid)}</small></li>'

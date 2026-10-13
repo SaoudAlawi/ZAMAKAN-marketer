@@ -226,6 +226,8 @@ def parse_youtube_search(html):
                     "url": f"https://www.youtube.com/watch?v={v['videoId']}", "source": "youtube",
                     "title": _clean("".join(r["text"] for r in v.get("title", {}).get("runs", []))),
                     "channel": (v.get("ownerText", {}).get("runs") or [{}])[0].get("text"),
+                    "channel_url": "https://www.youtube.com" + ((v.get("ownerText", {}).get("runs") or [{}])[0].get("navigationEndpoint", {})
+                                                                .get("browseEndpoint", {}).get("canonicalBaseUrl") or "") if v.get("ownerText") else None,
                     "published": v.get("publishedTimeText", {}).get("simpleText"),
                     "views": int(views) if views else None,
                     "duration": v.get("lengthText", {}).get("simpleText"),
@@ -237,6 +239,58 @@ def parse_youtube_search(html):
             for x in n:
                 walk(x)
     walk(json.loads(m.group(1)))
+    return out
+
+
+AGO = {"s": 0, "second": 0, "m": 0, "minute": 0, "h": 0, "hour": 0, "d": 1, "day": 1, "w": 7, "week": 7, "mo": 30, "month": 30,
+       "y": 365, "year": 365}
+
+
+def ago_to_date(text, today=None):
+    """'5 days ago' / '5d ago' / '2 months ago' / 'Streamed 1 year ago' -> approximate ISO date (None if unknown)."""
+    import datetime as _dt
+    m = re.search(r"(\d+)\s*(mo|month|y|year|w|week|d|day|h|hour|m|minute|s|second)s?\b", text or "")
+    if not m:
+        return None
+    today = today or _dt.date.today()
+    return (today - _dt.timedelta(days=int(m.group(1)) * AGO[m.group(2)])).isoformat()
+
+
+def parse_youtube_channel(html, url=""):
+    """Recent uploads on a channel's Videos tab (YouTube's 2025+ 'lockup' layout and the older videoRenderer one)."""
+    m = re.search(r"var ytInitialData = (\{.*?\});</script>", html, re.S)
+    if not m:
+        return []
+    data = json.loads(m.group(1))
+    ch = re.search(r'"channelMetadataRenderer":\{"title":"([^"]+)"', html)
+    channel = ch.group(1) if ch else None
+    out = []
+
+    def walk(n):
+        if isinstance(n, dict):
+            lv = n.get("lockupViewModel")
+            if lv and lv.get("contentType") == "LOCKUP_CONTENT_TYPE_VIDEO" and lv.get("contentId"):
+                md = (lv.get("metadata") or {}).get("lockupMetadataViewModel", {})
+                parts = [p.get("accessibilityLabel") or (p.get("text") or {}).get("content", "")
+                         for row in md.get("metadata", {}).get("contentMetadataViewModel", {}).get("metadataRows", [])
+                         for p in row.get("metadataParts", [])]
+                views = next((re.sub(r"[^\d]", "", p) for p in parts if "view" in p), "")
+                when = next((p for p in parts if "ago" in p), None)
+                out.append({k: x for k, x in {
+                    "url": f"https://www.youtube.com/watch?v={lv['contentId']}", "source": "youtube", "channel": channel,
+                    "title": _clean((md.get("title") or {}).get("content")), "published": when, "published_date": ago_to_date(when),
+                    "views": int(views) if views else None,
+                    "thumbnail": f"https://i.ytimg.com/vi/{lv['contentId']}/hqdefault.jpg"}.items() if x not in (None, "")})
+                return
+            for x in n.values():
+                walk(x)
+        elif isinstance(n, list):
+            for x in n:
+                walk(x)
+    walk(data)
+    if not out:  # older layout
+        out = [{**v, "channel": v.get("channel") or channel, "published_date": ago_to_date(v.get("published"))}
+               for v in parse_youtube_search(html)]
     return out
 
 

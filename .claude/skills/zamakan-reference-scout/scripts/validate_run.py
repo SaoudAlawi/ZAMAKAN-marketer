@@ -135,6 +135,18 @@ def semantic(run, target=None, brief=None):
         n = sum(1 for r in live if r.get("country") in pool)
         if n < 3:
             W.append(f"coverage: only {n} {scope.upper()} references")
+    if run["run"]["mode"] == "competitor-watch":
+        import datetime as _dt
+        months = (brief or {}).get("window_months", 12)
+        oldest = _dt.date.today().year - max(1, -(-months // 12))
+        for c in run.get("competitor_summary", []):
+            for k, why in (("owns", "one line on what they own"), ("last_seen", "date of their latest activity seen"),
+                           ("manual_checks", "the click-list of social/ad-library checks a person must do")):
+                if not c.get(k):
+                    W.append(f"competitor_summary/{c['advertiser']}: no '{k}' ({why})")
+        stale = [r["id"] for r in live if r.get("year") and r["year"] < oldest and "context" not in r.get("tags", [])]
+        if stale:
+            W.append(f"older than the {months}-month window (tag 'context' if kept on purpose): {stale}")
     named = [c.lower() for c in (brief or {}).get("competitors", [])]
     checked = " ".join(c["advertiser"].lower() for c in run.get("competitor_summary", []))
     missing = [c for c in named if c.split()[0] not in checked]

@@ -221,6 +221,40 @@
           "found_campaign": {
             "type": "boolean",
             "description": "false = no relevant campaign found (a finding in itself)"
+          },
+          "owns": {
+            "type": "string",
+            "maxLength": 140,
+            "description": "One line: the message, moment or territory this competitor owns."
+          },
+          "last_seen": {
+            "type": "string",
+            "description": "Date (YYYY-MM or YYYY-MM-DD) of the most recent activity seen."
+          },
+          "benchmark": {
+            "type": "boolean",
+            "description": "Not a named competitor: the nearest benchmark, used when the brief names none."
+          },
+          "manual_checks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "what",
+                "url"
+              ],
+              "properties": {
+                "what": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string",
+                  "pattern": "^https?://"
+                }
+              },
+              "additionalProperties": false
+            },
+            "description": "What a person must check by hand (social, ad libraries), with links."
           }
         }
       }

@@ -123,6 +123,19 @@
         "pattern": "^[A-Z]{2}$"
       },
       "description": "Client's markets (ISO-2), used for cultural fit; default ['SA']"
+    },
+    "window_months": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 60,
+      "description": "competitor-watch: how far back counts as 'now' (default 12)."
+    },
+    "competitor_handles": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Competitor name -> YouTube @handle or channel URL (confirmed official), for discover.py youtube-channel."
     }
   }
 }

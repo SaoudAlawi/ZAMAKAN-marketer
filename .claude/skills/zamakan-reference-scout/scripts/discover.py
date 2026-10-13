@@ -6,6 +6,7 @@ Usage:
   python discover.py aotw-list <countries|industries|brands|agencies|medium_types|regions> <slug> [--pages 2]
   python discover.py aotw-related <campaign-url> [<campaign-url> ...]   # related campaigns of known references
   python discover.py youtube <query words...> [--limit 15]
+  python discover.py youtube-channel <@handle | channel URL> [--since-months 12]   # a brand's recent uploads, newest first
 Options: --out file.jsonl (append), --min-views N (youtube)
 
 Each output line is a card {url, source, title, brand?, agency?, thumbnail?, views?, channel?, found_by}.
@@ -14,6 +15,7 @@ site (Vimeo, award shows, Campaign ME, brand pages) and add those URLs to fetch_
 """
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 from urllib.parse import quote_plus
@@ -41,11 +43,12 @@ def aotw_pages(first_url, pages):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=["aotw-search", "aotw-list", "aotw-related", "youtube"])
+    ap.add_argument("cmd", choices=["aotw-search", "aotw-list", "aotw-related", "youtube", "youtube-channel"])
     ap.add_argument("args", nargs="+")
     ap.add_argument("--pages", type=int, default=1)
     ap.add_argument("--limit", type=int, default=20)
     ap.add_argument("--min-views", type=int, default=0)
+    ap.add_argument("--since-months", type=int, default=0, help="youtube-channel: only uploads from the last N months")
     ap.add_argument("--out")
     a = ap.parse_args()
     if a.cmd == "aotw-search":
@@ -65,6 +68,21 @@ def main():
             rec = S.parse_aotw_campaign(page["text"], u) if page["status"] == 200 else {}
             cards += [{"url": r, "source": "adsoftheworld", "related_to": u,
                        "title_from_url": r.rsplit("/", 1)[-1].replace("-", " ")[:80]} for r in rec.get("related", [])]
+    elif a.cmd == "youtube-channel":
+        cards = []
+        for h in a.args:
+            base = h if h.startswith("http") else f"https://www.youtube.com/{h if h.startswith('@') else '@' + h}"
+            base = re.sub(r"/(videos|featured|shorts|streams)/?$", "", base.rstrip("/"))
+            page = _web.get(base + "/videos", browser="never")
+            got = S.parse_youtube_channel(page["text"], base) if page["status"] == 200 else []
+            if not got:
+                print(f"note: no uploads read from {base} (status {page['status']}); check the handle", file=sys.stderr)
+            if a.since_months:
+                import datetime as dt
+                cutoff = (dt.date.today() - dt.timedelta(days=30 * a.since_months)).isoformat()
+                got = [c for c in got if (c.get("published_date") or "9999") >= cutoff]
+            cards += [{**c, "channel_url": base} for c in got[:a.limit]]
+        by = "youtube-channel:" + ",".join(a.args)
     else:
         q = " ".join(a.args)
         page = _web.get(f"https://www.youtube.com/results?search_query={quote_plus(q)}", browser="never")
@@ -81,7 +99,7 @@ def main():
             f.write("\n".join(lines) + ("\n" if lines else ""))
         print(f"{len(out)} cards ({by}) → {a.out}")
     for c in out[:40]:
-        extra = f"{c.get('views', ''):>10}" if c.get("views") else ""
+        extra = (f"{c.get('views', ''):>10}" if c.get("views") else "") + (f"  {c['published_date']}" if c.get("published_date") else "")
         print(f"  {(c.get('brand') or c.get('channel') or '')[:20]:<20} {(c.get('title') or c.get('title_from_url') or c['url'])[:64]:<64} {extra}")
 
 

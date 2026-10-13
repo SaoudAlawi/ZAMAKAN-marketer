@@ -222,7 +222,7 @@ def build(run, brief, client_name, kit, thumb, codes, h, path, cache):
         text(s, M, 1.4, 14, 1, (client_name or th["name"]).upper(), 14, True, C["on_dark"], DISP)
     text(s, M, 6.4, 18.5, 1, f"REFERENCE SCOUT · {run['run']['mode'].upper()} · {run['run'].get('scope', 'gcc').upper()} SCOPE", 11, True, C["on_dark_muted"])
     text(s, M, 7.4, 18.5, 5.4, h.display_title(run, brief, client_name), 44, False, C["on_dark"], DISP, min_size=28)
-    lede = " · ".join(brief[k] for k in ("moment", "objective") if brief and brief.get(k)) or run["run"].get("question", "")
+    lede = " · ".join(brief[k] for k in ("moment", "objective") if brief and brief.get(k) and brief[k] != "other") or run["run"].get("question", "")
     text(s, M, 13.2, 18, 2.4, lede, 15, False, C["on_dark_muted"])
     text(s, M, SLIDE_H - 1.6, 18, 0.6, run["run"].get("created", ""), 11, False, C["on_dark_muted"])
     hero = h.cover_ref(run, lambda r: bool(thumb(r)), h.competitor_names(run, brief))
@@ -249,16 +249,23 @@ def build(run, brief, client_name, kit, thumb, codes, h, path, cache):
     # 3 insights
     if run.get("insights"):
         s = slide("What we learned", "Insights")
-        ins = run["insights"][:3]
-        cw = (SLIDE_W - 2 * M - 2 * 0.8) / len(ins)
+        ins = run["insights"][:6]
+        cols = min(3, len(ins))
+        rows = -(-len(ins) // cols)
+        cw = (SLIDE_W - 2 * M - (cols - 1) * 0.8) / cols
+        ch = 9.2 if rows == 1 else 5.6
         for i, x in enumerate(ins):
-            cx = M + i * (cw + 0.8)
-            rect(s, cx, 5.0, cw, 9.2, C["panel"], True)
-            rect(s, cx, 5.0, cw, 0.12, C["accent"])
-            text(s, cx + 0.7, 5.7, cw - 1.4, 1.6, f"{i + 1:02d}", 30, False, C["accent_text"], DISP)
-            text(s, cx + 0.7, 7.6, cw - 1.4, 4.9, x["text"], 18, False, C["ink"], min_size=11)
+            cx, cy = M + (i % cols) * (cw + 0.8), 5.0 + (i // cols) * (ch + 0.6)
+            rect(s, cx, cy, cw, ch, C["panel"], True)
+            rect(s, cx, cy, cw, 0.12, C["accent"])
+            if rows == 1:
+                text(s, cx + 0.7, cy + 0.7, cw - 1.4, 1.6, f"{i + 1:02d}", 30, False, C["accent_text"], DISP)
+                text(s, cx + 0.7, cy + 2.6, cw - 1.4, 4.9, x["text"], 18, False, C["ink"], min_size=11)
+            else:
+                text(s, cx + 0.6, cy + 0.5, 2, 1.0, f"{i + 1:02d}", 20, False, C["accent_text"], DISP)
+                text(s, cx + 0.6, cy + 1.5, cw - 1.2, 3.0, x["text"], 13, False, C["ink"], min_size=9)
             src = " · ".join(v for v in (x.get("source_name"), x.get("date")) if v)
-            tb = text(s, cx + 0.7, 12.9, cw - 1.4, 1.0, src + " ↗", 10, True, C["accent_text"])
+            tb = text(s, cx + 0.7, cy + ch - 1.1, cw - 1.4, 0.8, src + " ↗", 10 if rows == 1 else 9, True, C["accent_text"])
             tb.text_frame.paragraphs[0].runs[0].hyperlink.address = x["source_url"]
             tb.text_frame.paragraphs[0].runs[0].font.color.rgb = C["accent_text"]
 
@@ -347,7 +354,7 @@ def build(run, brief, client_name, kit, thumb, codes, h, path, cache):
                 else:
                     cc = comp[r_i - 1]
                     val = [cc["advertiser"], "Yes" if cc.get("found_campaign") else "None found",
-                           cc.get("notes", "") + (f" ({', '.join(cc['messaging_pillars'])})" if cc.get("messaging_pillars") else ""),
+                           cc.get("owns") or ", ".join(cc.get("messaging_pillars", [])) or (cc.get("notes") or "")[:160],
                            ", ".join(codes[x] for x in cc.get("reference_ids", []) if x in codes) or "–"][c_i]
                 tf = cell.text_frame
                 tf.text = ""

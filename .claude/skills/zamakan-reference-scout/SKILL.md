@@ -2,7 +2,7 @@
 name: zamakan-reference-scout
 description: "Find real campaign references and creative inspiration, then turn them into strategy: a verified reference set (Ads of the World, YouTube, Vimeo, award shows, trade press, competitor ads), quick cards and deep teardowns, patterns, white space and 3-5 creative territories, delivered as a visual board, client deck and/or report plus files other agents can use. Use this whenever someone asks for references, inspiration, a mood board of campaigns, a swipe file, 'what have others done for Ramadan / National Day / a launch', 'show me the best ads about X', competitor ads or what competitors are running, references for a pitch or a creative kickoff, or creative territories grounded in real work. Saudi/GCC-aware, searches in English and Arabic, and never invents campaigns: every reference is checked against its live page."
 metadata:
-  version: 0.3.0
+  version: 0.4.0
 ---
 
 # ZAMAKAN Reference Scout
@@ -93,8 +93,8 @@ python3 $SCOUT/scripts/discover.py youtube <query words> --min-views 20000 --out
 ```
 Use your **web search tool** for everything else (Vimeo, award shows, Campaign Middle East, LBB, Arabad, brand
 newsrooms, ad libraries). Fetch those hand-picked URLs right away so they have titles before scoring
-(untitled links can't be judged): `fetch_meta.py <url> ... --out $JOB/web.jsonl` (add `--text` for articles), then
-`cat $JOB/web.jsonl >> $JOB/candidates.jsonl`.
+(untitled links can't be judged): `fetch_meta.py <url> ... --out $JOB/candidates.jsonl` (add `--text` for articles).
+`--out` adds to the file (a URL fetched again replaces its old line), like `discover.py`.
 
 Then rank, read only the best, and rank again with full details:
 ```bash
@@ -195,12 +195,45 @@ internal presentation only; never send a client a deck dressed in another compan
 
 ## Competitor-watch mode
 
-There is no paid ad-library tool here, so be explicit about coverage:
-- **Meta Ad Library**: web-search `"<brand>" site:facebook.com/ads/library` or ask the user for the exact
-  Ad Library URL; try `fetch_meta.py` on it (it may need a browser session; if it fails, say so).
-- **TikTok Creative Center** (top ads by country/industry) and brands' own Instagram/TikTok/Snapchat pages:
-  find them via web search; record what the pages show.
-- Trade press (Campaign ME, Arabad, LBB) for recent launches.
-Record ads with `live_ad` (platform, advertiser, first/last seen, format, copy) and summarise per competitor
-in `competitor_summary`: active ads, formats, messaging pillars, longest-running (the proven winner).
-Never estimate spend or reach that you didn't see.
+The question is "what are they doing **now**". Set `window_months` in brief.json (default 12) and work newest-first.
+
+```bash
+python3 $SCOUT/scripts/competitors.py $JOB/brief.json --out $JOB --youtube     # plan, click-list, recent YouTube uploads
+python3 $SCOUT/scripts/discover.py youtube-channel @BrandHandle --since-months 12 --out $JOB/candidates.jsonl
+```
+- **What can be read from here:** trade press (Campaign ME, Arab News, Arabad, LBB), brand websites and newsrooms, YouTube
+  channels (uploads with dates: often the freshest ads), award archives. **What can't:** Instagram, TikTok, Snapchat, X
+  and the Meta Ad Library (login walls, 403s). Don't spend searches or fetches on them.
+- `competitors.py` suggests YouTube channels when you don't know the handle; **confirm a channel is the brand's own**
+  (name, logo, upload history) before using it, then put it in `brief.competitor_handles`.
+- Per competitor in `competitor_summary`: `owns` (one line: their message, moment or territory), `last_seen` (date of
+  their latest activity you saw), `found_campaign`, `checked` (what you looked at, with the date), `reference_ids`,
+  `messaging_pillars`, and `manual_checks`: copy the click-list from `manual-checks.json`. The report and board show it as
+  "Check by hand", so a person can cover social and paid ads in a few minutes in a logged-in browser.
+- Older work only as context: tag it `context` and say so. The validator warns on anything older than the window.
+- Territories are optional here: end with **gaps** the client could take (as `white_space`) and, if useful, 2–3
+  territories. Sparks are not needed in this mode.
+- Record ads you actually saw with `live_ad` (platform, advertiser, first/last seen, format, copy). Never estimate spend,
+  reach or "most active" from what you couldn't see; "none found" means searched, not silent.
+
+## Rules that apply in every mode
+
+- **Search budget.** Web searches are shared and limited (a few hundred per session, shared with other agents). Plan
+  about 20–30 for a whole run and spend them on what only search can find (trade press, award winners, case pages).
+  Ads of the World, YouTube search and channels, related campaigns and page fetches go through the scripts and cost
+  none. If search runs out, carry on with the scripts and say what you couldn't search.
+- **Pass URLs to scripts in a file** (`--from list.jsonl`) when there are many or they contain `()&?`, to avoid shell quoting.
+- **No competitors named?** In `brief`/`pitch` mode put the 2–3 nearest benchmarks in `competitor_summary` with
+  `benchmark: true`, and add an open question asking who the client sees as rivals.
+- **`country`** is where the campaign ran (Starbucks in Milan is IT), not where the brand comes from; put the brand's
+  home in `tags` if it matters (`saudi-brand-abroad`).
+- **Alcohol brands** (beer, wine, spirits) don't go in work for a Saudi or Gulf client, even as craft references;
+  `score.py` flags them. Mention a famous one out loud if it truly matters, but don't put it on the board.
+- **Videos you haven't watched**: `verify.py` marks them `evidence: video`. Describe only what the page or trade press
+  says, list them in `before_kickoff` to be watched, and never quote dialogue or scenes you didn't see.
+- **Award level**: an award page that needs a login proves the entry exists, not the level (`evidence: title`). Confirm
+  the level from a winners list or trade press before saying "Grand Prix".
+- **Cover image**: set `run.cover` to the reference with the cleanest picture (no burned-in subtitles, not a
+  competitor's own ad). Look at `check/board-desktop.png` to judge.
+- **Library without a client** (a general creative question): run `library.py add` without `--client`; only the shared
+  pages are updated.
