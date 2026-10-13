@@ -29,7 +29,7 @@ Status legend: ⬜ not started · 🟨 in progress · ✅ done & tested
 .claude/skills/
 ├── zamakan-core/                 # shared conventions: client folders, contracts, quality bar
 ├── zamakan-design-system/        # FEATURE 1: brand files → design system
-└── zamakan-<next>/               # FEATURE 2: to be defined
+└── zamakan-reference-scout/      # FEATURE 2: campaign references + analysis
 
 samples/rawaq/input/              # fixed sample client package (committed)
 evals/fixtures/rawaq/             # hidden answer key for grading
@@ -65,13 +65,42 @@ assets/           # normalised logos, fonts
 preview.html/png  # visual style tile for human sign-off
 ```
 
-## 4. Build steps & test gates
+## 3b. Feature 2: Campaign Reference Scout (after Feature 1)
+
+**Goal:** bring the best campaign references, both from similar clients and from anywhere
+(so creativity isn't limited), and turn them into analysis that both people and agents can use.
+
+**Input:** a client's design system + brief (category, market, objective, audience), or an open creative question.
+
+**Search rings:** ① direct, meaning the same category in KSA/GCC, including competitors · ② the same category worldwide ·
+③ adjacent categories that share the insight · ④ wildcard award-level work from any category.
+
+**Sources:** Ads of the World, Vimeo, YouTube, Dubai Lynx, MENA Effies, Cannes Lions/Love the Work,
+D&AD, One Show, Campaign Middle East, Behance, Pinterest, plus **live competitor activity**
+(Meta Ad Library, TikTok Creative Center, Google Ads Transparency).
+
+**Depth (tiered):** a quick card for each of the ~20–30 references, and a deep teardown for the top 5: insight, idea,
+execution, channels, tone, visual devices, results, what is transferable to this client, and Saudi cultural fit.
+
+**Synthesis:** patterns, white space, and 3–5 creative territories.
+
+**Outputs:** `references.json` (fixed schema, for agents) · `territories.md` · a visual HTML board
+with thumbnails/filters/links + a strategic summary (for people).
+
+**Shared agency library:** every search adds to one reference library that all clients share
+(`library/references.jsonl`), so later searches reuse earlier work.
+
+**Network note:** web search works everywhere. Fetching full pages (adsoftheworld.com, vimeo.com…)
+needs those domains allowed in the environment's network settings; the skill falls back to a
+search-only mode when it cannot fetch pages.
+
+## 4. Build steps & test gates (Feature 1)
 
 | # | Step | Test gate | Status |
 |---|------|-----------|--------|
 | 0 | Plan + requirements | You approve | ✅ |
 | 1 | Sample client package (Rawaq) + answer key | PDF renders correctly; known traps verified | ✅ |
-| 2 | Output contract: schemas for tokens/manifest + brand.md template | Schemas validate a hand-made example | ⬜ |
+| 2 | Output contract: spec.json schema + validator, gold Rawaq spec, consumer contract, brand.md template | 17 pytest pass; every deliberate mistake caught | ✅ |
 | 3 | Scripts: inventory, pdf digest, colours, fonts, logos | pytest on Rawaq sample, compared with answer key | ⬜ |
 | 4 | Scripts: build tokens/CSS, contrast check, preview render | pytest; preview PNG reviewed by you | ⬜ |
 | 5 | SKILL.md for zamakan-design-system + zamakan-core | First end-to-end run on Rawaq | ⬜ |
@@ -87,9 +116,12 @@ preview.html/png  # visual style tile for human sign-off
 - Typical input = a full guideline PDF. Missing values → **skill proposes**, marked as proposed.
 - Arabic register will be asked per client (relevant for later copy skills).
 - Client data lives in git-ignored `clients/`; only the fictional sample is committed.
-- Feature 2: to be defined by you.
+- Feature 2 = campaign reference scout: tiered depth, award work + live competitor ads,
+  shared agency library. Build after Feature 1 is finished and tested.
 
 ## 6. Progress log
 
 - 2026-10-13: Requirements captured; plan drafted.
 - 2026-10-13: Re-scoped to the sub-skill architecture; built the Rawaq sample package and answer key.
+- 2026-10-13: Feature 2 (reference scout) defined; network limits of the cloud environment noted.
+- 2026-10-13: Step 2 done. Design: the agent writes only spec.json + brand.md; scripts generate the rest.
