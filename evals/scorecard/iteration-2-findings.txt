@@ -1,0 +1,8 @@
+The skill passed every check in all 5 scenarios (62 of 62). Without it, agents passed 58 of 62: fewer links than asked, hard-to-read text colours on two boards, a London deck that scrolls sideways on a phone, and no sourced insights in the London brief.
+The gap is smaller than it first looked. The first grading said 8 of 17 for the Ramadan baseline; an audit found grader bugs (territories saved as data files, images broken by the copy, links cut by line breaks, stylesheet imports, blocked domains) and fixed them before scoring.
+Real links: no run invented a link. Every link that could be checked opened, with the skill and without it.
+Cost and speed: the skill used about 14% more tokens per run (202k against 177k) and finished about 10% faster (10.5 against 11.7 minutes).
+The checks are close to their ceiling: both sides pass most of them. Next round needs harder checks or a blind side-by-side judgement of quality (insight depth, originality, usefulness to a creative team).
+The competitor watch without the skill found more recent activity (Half Million's October 2026 ads, Barn's new specialty sub-brand). The skill's competitor-watch mode needs work: social feeds and ad libraries can't be read from here, and the skill should plan around that.
+All 10 agents hit a shared limit of 200 web searches, which thinned the later runs on both sides. Future runs should be staggered or given a search plan.
+The skill's agents reported 40+ concrete problems with scripts and instructions; two were fixed immediately (a client name leaking into the shared library through a file path, and YouTube channel pages being marked dead).

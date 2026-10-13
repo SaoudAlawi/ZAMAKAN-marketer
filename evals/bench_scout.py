@@ -160,7 +160,8 @@ def scorecard(a):
     rows, by = aggregate(a.root, a.iteration)
     hist = json.loads(HIST.read_text(encoding="utf-8")) if HIST.exists() else []
     hist = [h for h in hist if h["iteration"] != a.iteration]
-    hist.append({"iteration": a.iteration, "date": dt.date.today().isoformat(), "note": a.note or "", "skill_version": skill_version(),
+    findings = [l.strip("-• ").strip() for l in Path(a.findings).read_text(encoding="utf-8").splitlines() if l.strip()] if a.findings else []
+    hist.append({"iteration": a.iteration, "date": dt.date.today().isoformat(), "note": a.note or "", "skill_version": skill_version(), "findings": findings,
                  "scenarios": {s: load(s)["title"] for s in sorted({r["scenario"] for r in rows})}, "summary": by, "runs": rows})
     hist.sort(key=lambda h: h["iteration"])
     HIST.parent.mkdir(parents=True, exist_ok=True)
@@ -228,33 +229,49 @@ def render(hist):
                     f'<td>{fmt(h["summary"].get("with_skill", {}).get("real_links"), "pct")}</td>'
                     f'<td>{fmt(h["summary"].get("with_skill", {}).get("minutes"), "min")}</td>'
                     f'<td>{fmt(h["summary"].get("with_skill", {}).get("tokens_k"), "tok")}</td><td>{E(h.get("note", ""))}</td></tr>' for h in hist)
-    return f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Reference Scout Scorecard</title><style>
-:root{{--bg:#F6F6F2;--panel:#fff;--ink:#14213D;--muted:#5C6575;--line:#DADDE3;--acc:#0B7C7C;--good:#1E7B4F;--bad:#B0412E;color-scheme:light}}
-@media (prefers-color-scheme:dark){{:root:not([data-theme="light"]){{--bg:#11151F;--panel:#1A2030;--ink:#E8EAF0;--muted:#A3ABBA;--line:#2C3446;--acc:#4FC7C2;--good:#5FCB92;--bad:#F08A72;color-scheme:dark}}}}
-:root[data-theme="dark"]{{--bg:#11151F;--panel:#1A2030;--ink:#E8EAF0;--muted:#A3ABBA;--line:#2C3446;--acc:#4FC7C2;--good:#5FCB92;--bad:#F08A72;color-scheme:dark}}
-*{{box-sizing:border-box}}body{{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}}
-.wrap{{max-width:1100px;margin:0 auto;padding:32px 16px 64px;display:grid;gap:28px}}h1{{font-size:clamp(24px,4vw,34px);margin:0}}h2{{font-size:19px;margin:0 0 12px}}
-.lede{{color:var(--muted);margin:6px 0 0;max-width:70ch}}.tiles{{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}}
-.tile{{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px}}.tile .k{{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}}
-.tile .v{{font-size:30px;font-weight:650;font-variant-numeric:tabular-nums;margin:4px 0}}.tile .s{{font-size:13px;color:var(--muted)}}.tile .h{{font-size:12px;color:var(--muted);margin-top:6px}}
+    findings = "".join(f"<li>{E(f)}</li>" for f in cur.get("findings", []))
+    return f"""<title>Reference Scout Scorecard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* layout: one reading column, headline tiles, then per-scenario table, findings, history. ZAMAKAN house style. */
+:root{{--bg:#F6F6F2;--panel:#FFFFFF;--ink:#14213D;--muted:#5C6575;--line:#DADDE3;--acc:#0B7C7C;--good:#1E7B4F;--bad:#A8402C;
+--disp:"Instrument Serif",Georgia,serif;--body:"IBM Plex Sans",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace}}
+@media (prefers-color-scheme:dark){{:root:not([data-theme="light"]){{--bg:#10141D;--panel:#181E2B;--ink:#E7EAF1;--muted:#A2AABA;--line:#2B3345;--acc:#4CC3BD;--good:#62C995;--bad:#EE8B74;color-scheme:dark}}}}
+:root[data-theme="dark"]{{--bg:#10141D;--panel:#181E2B;--ink:#E7EAF1;--muted:#A2AABA;--line:#2B3345;--acc:#4CC3BD;--good:#62C995;--bad:#EE8B74;color-scheme:dark}}
+*{{box-sizing:border-box}}body{{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 var(--body)}}
+.wrap{{max-width:1080px;margin:0 auto;padding-inline:16px;padding-block:36px 64px;display:grid;gap:36px}}.wrap>*{{min-width:0}}
+h1{{font:400 clamp(32px,5vw,46px)/1.05 var(--disp);margin:0;text-wrap:balance}}h2{{font:400 26px/1.2 var(--disp);margin:0 0 14px;text-wrap:balance}}
+.eyebrow{{font:600 11px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--acc);margin-bottom:12px}}
+.lede{{color:var(--muted);margin:12px 0 0;max-width:68ch}}
+.tiles{{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}}
+.tile{{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:16px;min-width:0}}
+.tile .k{{font:600 11px/1 var(--body);text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}}
+.tile .v{{font:500 30px/1.1 var(--mono);font-variant-numeric:tabular-nums;margin:10px 0 6px}}.tile .s{{font-size:13px;color:var(--muted)}}.tile .h{{font-size:12px;color:var(--muted);margin-top:8px}}
 .d{{font-weight:600;margin-left:4px}}.d.good{{color:var(--good)}}.d.bad{{color:var(--bad)}}
-.tbl{{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden}}
-.tbl th,.tbl td{{text-align:left;vertical-align:top;padding:12px;border-bottom:1px solid var(--line)}}.tbl thead th{{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}}
-.bar{{height:6px;background:var(--line);border-radius:3px;margin:6px 0;max-width:220px}}.bar i{{display:block;height:100%;background:var(--acc);border-radius:3px}}
-small{{color:var(--muted)}}small.m{{display:block;margin-top:4px}}.ok{{color:var(--good)}}details summary{{cursor:pointer;color:var(--bad);font-size:13px}}details ul{{margin:6px 0 0;padding-left:18px;font-size:13px}}
-.scroll{{overflow-x:auto}}footer{{color:var(--muted);font-size:13px}}
-</style></head><body><div class="wrap">
-<header><h1>Reference scout scorecard</h1><p class="lede">Iteration {cur["iteration"]} · skill v{E(cur.get("skill_version", "?"))} · {E(cur["date"])} ·
-{len(cur["scenarios"])} scenarios × {max((v.get("runs", 0) for v in by.values()), default=0) // max(1, len(cur["scenarios"]))} run(s), each done by an agent <b>with</b> the skill and one <b>without</b> it.
+.scroll{{overflow-x:auto}}.tbl{{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:6px;font-variant-numeric:tabular-nums}}
+.tbl th,.tbl td{{text-align:left;vertical-align:top;padding:12px 14px;border-bottom:1px solid var(--line)}}.tbl tr:last-child>*{{border-bottom:0}}
+.tbl thead th{{font:600 11px/1.2 var(--body);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}}.tbl tbody th{{font-weight:600;min-width:180px}}
+.bar{{height:6px;background:var(--line);border-radius:3px;margin:6px 0;max-width:200px}}.bar i{{display:block;height:100%;background:var(--acc);border-radius:3px}}
+small{{color:var(--muted)}}small.m{{display:block;margin-top:4px;font-family:var(--mono);font-size:12px}}.ok{{color:var(--good)}}
+details summary{{cursor:pointer;color:var(--bad);font-size:13px}}details summary:focus-visible{{outline:2px solid var(--acc);outline-offset:2px}}details ul{{margin:6px 0 0;padding-left:18px;font-size:13px}}
+.findings{{margin:0;padding-left:20px;display:grid;gap:10px;max-width:72ch}}
+footer{{color:var(--muted);font-size:13px;max-width:72ch}}
+</style>
+<div class="wrap">
+<header><div class="eyebrow">ZAMAKAN · reference scout · benchmark</div><h1>Reference scout scorecard</h1>
+<p class="lede">Iteration {cur["iteration"]} · skill v{E(cur.get("skill_version", "?"))} · {E(cur["date"])} ·
+{len(cur["scenarios"])} scenarios, each done once by an agent <b>with</b> the skill and once <b>without</b> it, then graded by the same checks.
 {E(cur.get("note", ""))}</p></header>
-<section><h2>Headline (with the skill)</h2><div class="tiles">{tiles}</div></section>
+<section><h2>With the skill, compared with without</h2><div class="tiles">{tiles}</div></section>
 <section><h2>Per scenario</h2><div class="scroll"><table class="tbl"><thead><tr><th>Scenario</th><th>With skill</th><th>Without skill</th></tr></thead><tbody>{scen_rows}</tbody></table></div></section>
+{f'<section><h2>What this round taught us</h2><ul class="findings">{findings}</ul></section>' if findings else ''}
 <section><h2>Across iterations</h2><div class="scroll"><table class="tbl"><thead><tr><th>Iteration</th><th>Date</th><th>Skill</th><th>Scenarios</th><th>Quality (with)</th>
 <th>Quality (without)</th><th>Real links</th><th>Time</th><th>Tokens</th><th>Note</th></tr></thead><tbody>{trend}</tbody></table></div></section>
-<footer>Graded by evals/grade_scout.py: property checks per scenario (evals/fixtures/scout/scenarios), every link re-opened live by the grader, the same
-beauty check for both sides. Consistency needs repeat runs. Generated by evals/bench_scout.py.</footer>
-</div></body></html>"""
+<footer>Graded by evals/grade_scout.py: property checks per scenario (evals/fixtures/scout/scenarios), every link re-opened live by the grader,
+the same beauty check for both sides. Links behind a bot wall or on hosts this machine can't reach are not counted either way.
+Consistency needs repeat runs. Generated by evals/bench_scout.py.</footer>
+</div>"""
 
 
 def main():
@@ -269,6 +286,7 @@ def main():
             p.add_argument("--scenarios")
         if name == "scorecard":
             p.add_argument("--note")
+            p.add_argument("--findings", help="text file, one finding per line, shown on the scorecard")
     p = sub.add_parser("timing")
     p.add_argument("run_dir")
     p.add_argument("--tokens", type=int, required=True)

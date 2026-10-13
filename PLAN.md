@@ -180,7 +180,7 @@ Harder eval checks: insights with sources, competitor coverage, recommendation p
 | 2d | **Awesome-style library**: one `REFERENCE.md` analysis per campaign + a browsable `library/README.md` index by category, market and moment | export tests | ✅ |
 | 2e | **Outputs v2**: insights first, competitor table, recommendation, before-kickoff list; board + deck by default for kickoffs; deck redesign | build tests + visual review | ✅ |
 | 2g | **Sparks from elsewhere** (user, during 2d): 3–5 references from outside the client's region *and* category in every brief/pitch/creative question, each with a "What if <client>…?" provocation; `score.py --sparks`; own section in board, deck, report | validator + scorer + output tests | ✅ |
-| 2f | **Benchmark suite + scorecard**: 5 scenarios (GCC brief, global creative question, competitor watch, pitch, global-scope brief), with vs without skill, repeated runs; quality, real-link rate, consistency, time, tokens; scorecard page tracked across iterations | grader tests; then the benchmark run | ⬜ |
+| 2f | **Benchmark suite + scorecard**: 5 scenarios (GCC brief, global creative question, competitor watch, pitch, global-scope brief), with vs without skill, repeated runs; quality, real-link rate, consistency, time, tokens; scorecard page tracked across iterations | grader tests; then the benchmark run | ✅ (first pass) |
 
 ## 4. Build steps & test gates (Feature 1)
 
@@ -232,6 +232,18 @@ The no-skill baseline did several generic things worth building into the skill:
 - 2026-10-13: Re-scoped to the sub-skill architecture; built the Rawaq sample package and answer key.
 - 2026-10-13: Feature 2 (reference scout) defined; network limits of the cloud environment noted.
 - 2026-10-13: Step 2 done. Design: the agent writes only spec.json + brand.md; scripts generate the rest.
+- 2026-10-13: Scout 2f first pass done (user chose 1 run per scenario, ~2M tokens). 5 scenarios (GCC brief, global creative
+  question, competitor watch, pitch, global brief) × with/without skill; `evals/bench_scout.py` + scenario-driven
+  `grade_scout.py`; scorecard https://claude.ai/artifact/Gmjx7ao4bA2inZKD9CKsDT (history in `evals/scorecard/`).
+  Result: with skill 62/62 checks, without 58/62; no invented links on either side; skill ~14% more tokens (202k vs
+  177k), ~10% faster (10.5 vs 11.7 min). First grading was unfair to the baseline (8/17 on s1): fixed the grader
+  (JSON territories/insights/countries, numbered headings, beauty check with base href, href/PDF link extraction,
+  stylesheet @import, bot walls and unresolvable hosts not counted) and regraded. Honest read: property checks are near
+  their ceiling; next round needs a blind side-by-side quality judgement and repeat runs for consistency. Competitor
+  watch without the skill found more recent activity: that mode needs work. All agents shared a 200-search limit.
+  Fixed during the run: client name leaking into the shared library via thumbnail.local; YouTube channel pages marked
+  dead (fetch_meta used oEmbed for them); Arabic inline-span false positive in check_outputs. 40+ agent-reported issues
+  logged in `evals/scorecard/iteration-2-agent-feedback.md` for iteration 3.
 - 2026-10-13: Scout 2d done + sparks (2g). Library is now two layers: SHARED and client-neutral (`library/README.md`
   index by moment/category/market, one `campaigns/<name>/REFERENCE.md` per campaign with front matter, like
   awesome-design-md; usage counted via anonymous run fingerprints) and PRIVATE per client (`clients/<slug>/library/`,

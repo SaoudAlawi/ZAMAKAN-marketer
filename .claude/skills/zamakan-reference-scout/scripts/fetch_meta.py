@@ -12,6 +12,7 @@ Each record carries fetch evidence (http_status, via, fetched_at) used later by 
 --text adds the readable article/case text (≤4000 chars), e.g. to write a teardown from Campaign ME or LBB.
 """
 import argparse
+import re
 import datetime as dt
 import hashlib
 import io
@@ -29,7 +30,8 @@ import sources as S  # noqa: E402
 def fetch_one(url, with_text=False):
     src = S.site_of(url)
     now = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    if src in ("youtube", "vimeo"):
+    video = re.search(r"youtube\.com/(watch|shorts/|embed/)|youtu\.be/|vimeo\.com/\d", url)
+    if src in ("youtube", "vimeo") and video:  # oEmbed only knows videos; channel and playlist pages are fetched as pages
         api = ("https://www.youtube.com/oembed?format=json&url=" if src == "youtube"
                else "https://vimeo.com/api/oembed.json?url=") + quote(url, safe="")
         data, status = _web.get_json(api)

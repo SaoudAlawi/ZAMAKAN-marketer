@@ -1,0 +1,195 @@
+[
+ {
+  "iteration": 2,
+  "date": "2026-10-13",
+  "note": "First pass: 1 run per scenario. Grader audited for fairness before scoring.",
+  "skill_version": "0.3.0",
+  "findings": [
+   "The skill passed every check in all 5 scenarios (62 of 62). Without it, agents passed 58 of 62: fewer links than asked, hard-to-read text colours on two boards, a London deck that scrolls sideways on a phone, and no sourced insights in the London brief.",
+   "The gap is smaller than it first looked. The first grading said 8 of 17 for the Ramadan baseline; an audit found grader bugs (territories saved as data files, images broken by the copy, links cut by line breaks, stylesheet imports, blocked domains) and fixed them before scoring.",
+   "Real links: no run invented a link. Every link that could be checked opened, with the skill and without it.",
+   "Cost and speed: the skill used about 14% more tokens per run (202k against 177k) and finished about 10% faster (10.5 against 11.7 minutes).",
+   "The checks are close to their ceiling: both sides pass most of them. Next round needs harder checks or a blind side-by-side judgement of quality (insight depth, originality, usefulness to a creative team).",
+   "The competitor watch without the skill found more recent activity (Half Million's October 2026 ads, Barn's new specialty sub-brand). The skill's competitor-watch mode needs work: social feeds and ad libraries can't be read from here, and the skill should plan around that.",
+   "All 10 agents hit a shared limit of 200 web searches, which thinned the later runs on both sides. Future runs should be staggered or given a search plan.",
+   "The skill's agents reported 40+ concrete problems with scripts and instructions; two were fixed immediately (a client name leaking into the shared library through a file path, and YouTube channel pages being marked dead)."
+  ],
+  "scenarios": {
+   "s1-gcc-brief": "GCC brief: Rawaq Ramadan 2027",
+   "s2-global-question": "Global creative question: making waiting enjoyable",
+   "s3-competitor-watch": "Competitor watch: Saudi coffee chains",
+   "s4-pitch": "Pitch: Sahm Pay, Saudi National Day 2027",
+   "s5-global-brief": "Global brief: Rawaq opens in London"
+  },
+  "summary": {
+   "with_skill": {
+    "runs": 5,
+    "quality": 1.0,
+    "real_links": 1.0,
+    "consistency": null,
+    "minutes": 10.5,
+    "tokens_k": 202,
+    "per_scenario": {
+     "s1-gcc-brief": 1.0,
+     "s2-global-question": 1.0,
+     "s3-competitor-watch": 1.0,
+     "s4-pitch": 1.0,
+     "s5-global-brief": 1.0
+    }
+   },
+   "without_skill": {
+    "runs": 5,
+    "quality": 0.946,
+    "real_links": 1.0,
+    "consistency": null,
+    "minutes": 11.7,
+    "tokens_k": 177,
+    "per_scenario": {
+     "s1-gcc-brief": 0.88,
+     "s2-global-question": 1.0,
+     "s3-competitor-watch": 1.0,
+     "s4-pitch": 1.0,
+     "s5-global-brief": 0.85
+    }
+   }
+  },
+  "runs": [
+   {
+    "scenario": "s1-gcc-brief",
+    "config": "with_skill",
+    "run": "run-1",
+    "pass_rate": 1.0,
+    "passed": 17,
+    "total": 17,
+    "alive_rate": 1.0,
+    "links": 31,
+    "tokens": 223345,
+    "seconds": 633.7,
+    "failed": []
+   },
+   {
+    "scenario": "s1-gcc-brief",
+    "config": "without_skill",
+    "run": "run-1",
+    "pass_rate": 0.88,
+    "passed": 15,
+    "total": 17,
+    "alive_rate": 1.0,
+    "links": 17,
+    "tokens": 193416,
+    "seconds": 623.0,
+    "failed": [
+     "Delivers ≥20 distinct reference links",
+     "Passes the beauty check (layout, contrast, images, fonts, Arabic)"
+    ]
+   },
+   {
+    "scenario": "s2-global-question",
+    "config": "with_skill",
+    "run": "run-1",
+    "pass_rate": 1.0,
+    "passed": 8,
+    "total": 8,
+    "alive_rate": 1.0,
+    "links": 26,
+    "tokens": 203441,
+    "seconds": 580.4,
+    "failed": []
+   },
+   {
+    "scenario": "s2-global-question",
+    "config": "without_skill",
+    "run": "run-1",
+    "pass_rate": 1.0,
+    "passed": 8,
+    "total": 8,
+    "alive_rate": 1.0,
+    "links": 35,
+    "tokens": 142758,
+    "seconds": 626.8,
+    "failed": []
+   },
+   {
+    "scenario": "s3-competitor-watch",
+    "config": "with_skill",
+    "run": "run-1",
+    "pass_rate": 1.0,
+    "passed": 8,
+    "total": 8,
+    "alive_rate": 1.0,
+    "links": 16,
+    "tokens": 184337,
+    "seconds": 502.7,
+    "failed": []
+   },
+   {
+    "scenario": "s3-competitor-watch",
+    "config": "without_skill",
+    "run": "run-1",
+    "pass_rate": 1.0,
+    "passed": 8,
+    "total": 8,
+    "alive_rate": 1.0,
+    "links": 40,
+    "tokens": 164989,
+    "seconds": 676.0,
+    "failed": []
+   },
+   {
+    "scenario": "s4-pitch",
+    "config": "with_skill",
+    "run": "run-1",
+    "pass_rate": 1.0,
+    "passed": 11,
+    "total": 11,
+    "alive_rate": 1.0,
+    "links": 24,
+    "tokens": 205212,
+    "seconds": 721.0,
+    "failed": []
+   },
+   {
+    "scenario": "s4-pitch",
+    "config": "without_skill",
+    "run": "run-1",
+    "pass_rate": 1.0,
+    "passed": 11,
+    "total": 11,
+    "alive_rate": 1.0,
+    "links": 24,
+    "tokens": 214975,
+    "seconds": 807.0,
+    "failed": []
+   },
+   {
+    "scenario": "s5-global-brief",
+    "config": "with_skill",
+    "run": "run-1",
+    "pass_rate": 1.0,
+    "passed": 13,
+    "total": 13,
+    "alive_rate": 1.0,
+    "links": 33,
+    "tokens": 191754,
+    "seconds": 703.9,
+    "failed": []
+   },
+   {
+    "scenario": "s5-global-brief",
+    "config": "without_skill",
+    "run": "run-1",
+    "pass_rate": 0.85,
+    "passed": 11,
+    "total": 13,
+    "alive_rate": 1.0,
+    "links": 24,
+    "tokens": 169040,
+    "seconds": 770.2,
+    "failed": [
+     "Passes the beauty check (layout, contrast, images, fonts, Arabic)",
+     "≥3 sourced insights"
+    ]
+   }
+  ]
+ }
+]

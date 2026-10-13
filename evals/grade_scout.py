@@ -15,6 +15,7 @@ import json
 import os
 import re
 import shutil
+import subprocess
 import sys
 import tempfile
 import zipfile
@@ -30,7 +31,10 @@ from validate_run import GCC, MENA, REGION  # noqa: E402
 TEXT_EXT = {".md", ".html", ".htm", ".json", ".txt", ".csv"}
 NOT_REFS = re.compile(r"fonts\.(googleapis|gstatic)|cdnjs|jsdelivr|unpkg|image\.adsoftheworld|video\.adsoftheworld|i\.ytimg|img\.youtube|"
                       r"/rails/active_storage|vimeocdn|\.(png|jpe?g|webp|gif|svg|css|js|mp4)(\?|$)|schemas?\.|w3\.org|example\.(org|com)|"
-                      r"designtokens|json-schema|claude\.ai|anthropic|wikipedia\.org|schema\.org|openxmlformats|purl\.org|microsoft\.com/office", re.I)
+                      r"designtokens|json-schema|claude\.ai|anthropic|wikipedia\.org|schema\.org|openxmlformats|purl\.org|microsoft\.com/office|"
+                      r"localhost|127\.0\.0\.1|swiftpic|cdn\.builder\.io|squarespace\.com/static|[?&]format=\d|/wp-content/uploads/|cloudinary|imgix|"
+                      r"googleusercontent|fbcdn|cdninstagram|ytimg|twimg|/thumbnail", re.I)
+IMG_KEYS = re.compile(r"thumb|image|img|logo|photo|picture|poster|cover|icon|src|local|asset|still|preview", re.I)
 URL_RX = re.compile(r"https?://[^\s\"'<>)\]|`,]+")  # commas end a URL (CSV cells)
 GCC_RX = re.compile(r"saudi|ksa|riyadh|jeddah|dammam|khobar|uae|emirates|dubai|abu dhabi|qatar|doha|kuwait|bahrain|oman|muscat|السعودية|الرياض", re.I)
 AR_RX = re.compile(r"[؀-ۿ]{2,}")
@@ -93,16 +97,90 @@ def items(section):
     return [l for l in section.splitlines()[1:] if re.match(r"\s*([-*•]|\d+[.)])\s+\S", l)]
 
 
-def ref_urls(texts):
-    urls = set()
+def json_walk(o, key=""):
+    """(key, value) for every string in a JSON document."""
+    if isinstance(o, dict):
+        for k, v in o.items():
+            yield from json_walk(v, k)
+    elif isinstance(o, list):
+        for v in o:
+            yield from json_walk(v, key)
+    elif isinstance(o, str):
+        yield key, o
+
+
+def json_docs(texts):
     for name, t in texts.items():
-        if name.endswith(("detail.jsonl", "top.jsonl", "brief.json")):
+        if name.endswith(".json") and not name.endswith("brief.json"):
+            try:
+                yield name, json.loads(t)
+            except json.JSONDecodeError:
+                continue
+
+
+def candidate_urls(name, t):
+    if name.endswith(".json"):
+        try:
+            return [v for k, v in json_walk(json.loads(t)) if not IMG_KEYS.search(k) for v in URL_RX.findall(v)]
+        except json.JSONDecodeError:
+            return URL_RX.findall(t)
+    if name.endswith((".html", ".htm")):
+        hrefs = re.findall(r'href="(https?://[^"]+)"', t)
+        body = re.sub(r"(?is)<(script|style)[^>]*>.*?</\1>|<img[^>]*>", " ", t)
+        body = re.sub(r"<wbr\s*/?>|&shy;|\u00ad", "", body)
+        return hrefs + URL_RX.findall(htmllib.unescape(re.sub(r"<[^>]+>", " ", body)))
+    return URL_RX.findall(t)
+
+
+def ref_urls(texts):
+    """Reference links in the deliverables. PDF text wraps long URLs across lines, so PDFs only count when nothing else has links."""
+    urls = set()
+    names = [n for n in texts if not n.endswith(".pdf")] or list(texts)
+    for name in names:
+        t = texts[name]
+        if name.endswith(("detail.jsonl", "top.jsonl", "brief.json", "link_check.json", "link_check.csv")):
             continue
-        for u in URL_RX.findall(t):
+        for u in candidate_urls(name, t):
             u = u.rstrip(".,;:'\"").replace("&amp;", "&")
             if not NOT_REFS.search(u):
                 urls.add(u)
     return sorted(urls)
+
+
+def deliverable_refs(texts, refs_json):
+    """Reference records a run wrote itself, in any JSON shape: url -> {brand, title, country}."""
+    out = {}
+    for _, d in json_docs(texts):
+        stack = [d]
+        while stack:
+            o = stack.pop()
+            if isinstance(o, dict):
+                links = [v for k, v in json_walk(o) if not IMG_KEYS.search(k) for v in URL_RX.findall(v)]
+                if links and any(k in o for k in ("brand", "title", "name", "campaign", "advertiser")):
+                    cc = o.get("country") or o.get("market") or o.get("markets") or o.get("country_name")
+                    rec = {"brand": o.get("brand") or o.get("advertiser"), "title": o.get("title") or o.get("campaign") or o.get("name"),
+                           "country": to_cc(cc)}
+                    for u in links:
+                        out.setdefault(u.rstrip("/"), rec)
+                stack.extend(v for v in o.values() if isinstance(v, (dict, list)))
+            elif isinstance(o, list):
+                stack.extend(x for x in o if isinstance(x, (dict, list)))
+    return out
+
+
+def to_cc(v):
+    if not v:
+        return None
+    if isinstance(v, list):
+        v = v[0] if v else None
+    v = str(v).split(",")[0].split("(")[0].strip()
+    if re.fullmatch(r"[A-Z]{2}", v):
+        return v
+    try:
+        from sources import country_code
+        return country_code(v)
+    except Exception:  # noqa: BLE001
+        return None
 
 
 def contexts(texts, url, width=450):
@@ -141,6 +219,17 @@ def territory_blocks(texts, refs_json, brands=()):
         byid = {r["id"]: r for r in refs_json["references"]}
         return [{"name": t["name"], "name_ar": t.get("name_ar", ""), "text": json.dumps(t, ensure_ascii=False),
                  "n_refs": sum(1 for i in t["reference_ids"] if i in byid)} for t in refs_json["territories"]]
+    for _, d in json_docs(texts):  # a run's own data file, any shape: {"territories": [{...}]}
+        ts = next((v for k, v in (d.items() if isinstance(d, dict) else []) if re.search(r"territor", k, re.I) and isinstance(v, list)), None)
+        if ts and all(isinstance(x, dict) for x in ts):
+            out = []
+            for x in ts:
+                name = next((str(x[k]) for k in ("name", "en", "title", "name_en") if x.get(k)), "")
+                ar = next((str(x[k]) for k in ("name_ar", "ar", "arabic", "title_ar") if x.get(k)), " ".join(AR_RX.findall(name)))
+                refs = next((x[k] for k in ("reference_ids", "refs", "references", "grounded_in", "based_on") if x.get(k)), [])
+                out.append({"name": name, "name_ar": ar, "text": json.dumps(x, ensure_ascii=False),
+                            "n_refs": len(refs) if isinstance(refs, list) else len(re.split(r"[,;]", str(refs)))})
+            return out
     for name, t in texts.items():
         if not name.endswith(".md"):
             continue
@@ -152,6 +241,9 @@ def territory_blocks(texts, refs_json, brands=()):
             if re.search(r"territor|^#{2,4}\s*(\d+[.)]|T\d)", head, re.I) and not re.search(r"^#{2,4}\s*(creative )?territories\s*$", head, re.I):
                 cites = set(URL_RX.findall(p)) | set(re.findall(r"\bR\d{1,2}\b", p)) | {b for b in brands if b and b.lower() in p.lower()}
                 blocks.append({"name": head.lstrip("# ").strip(), "name_ar": " ".join(AR_RX.findall(head)), "text": p, "n_refs": len(cites)})
+        numbered = [b for b in blocks if re.match(r"(\d+[.)]|T\d|territory \d)", b["name"], re.I)]
+        if numbered:  # "## Creative territories" containers around "### 1. …" blocks are not territories
+            blocks = numbered
         if blocks:
             return blocks
     return []
@@ -160,6 +252,46 @@ def territory_blocks(texts, refs_json, brands=()):
 def largest(job, exts):
     fs = [f for f in Path(job).rglob("*") if f.suffix.lower() in exts and "/check/" not in str(f)]
     return max(fs, key=lambda f: f.stat().st_size) if fs else None
+
+
+def unresolvable(url):
+    import socket
+    from urllib.parse import urlparse
+    try:
+        socket.getaddrinfo(urlparse(url).hostname, 443)
+        return False
+    except OSError:
+        r = subprocess.run(["curl", "-sS", "-m", "15", "-o", "/dev/null", url], capture_output=True, text=True)
+        return "resolve host" in r.stderr  # the proxy refuses names outside the environment's allowlist
+
+
+def recheck_in_browser(fetched):
+    """Links that failed a plain fetch get one more try in Chromium (some sites only serve browsers)."""
+    failed = [r for r in fetched if r.get("error") or not (200 <= (r.get("http_status") or 0) < 400)]
+    if not failed:
+        return fetched
+    try:
+        from playwright.sync_api import sync_playwright
+        sys.path.insert(0, str(REPO / ".claude/skills/zamakan-design-system/scripts"))
+        from _common import launch_chromium
+        with sync_playwright() as p:
+            b = launch_chromium(p)
+            pg = b.new_page(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36")
+            for r in failed:
+                try:
+                    resp = pg.goto(r["url"], timeout=25000, wait_until="domcontentloaded")
+                    st = resp.status if resp else 0
+                except Exception:  # noqa: BLE001
+                    st = 0
+                if 200 <= st < 400:
+                    r.pop("error", None)
+                    r["http_status"], r["via"] = st, "browser-recheck"
+                elif st in (401, 403, 429):
+                    r["http_status"] = st
+            b.close()
+    except Exception:  # noqa: BLE001 - no browser: keep the plain results
+        pass
+    return fetched
 
 
 # ------------------------------------------------------------------ grading
@@ -186,26 +318,38 @@ def grade(run_dir, scenario_id):
     from fetch_meta import fetch_one
     with ThreadPoolExecutor(max_workers=8) as ex:
         fetched = list(ex.map(fetch_one, urls))
+    fetched = recheck_in_browser(fetched)
+    # bot walls (401/403/429) and hosts this machine's network can't resolve: neither alive nor proven dead
+    blocked = [r for r in fetched if r.get("http_status") in (401, 403, 429) or (not r.get("http_status") and unresolvable(r["url"]))]
     alive = [r for r in fetched if not r.get("error") and 200 <= (r.get("http_status") or 0) < 400]
-    dead = [r for r in fetched if r not in alive]
+    dead = [r for r in fetched if r not in alive and r not in blocked]
+    own = deliverable_refs(texts, refs_json)
     for r in alive:
+        mine = own.get(r["url"].rstrip("/"), {})
+        for k in ("brand", "title"):
+            r.setdefault(k, mine.get(k))
+            if not r.get(k):
+                r[k] = mine.get(k)
         r["_ctx"] = contexts(texts, r["url"])
-        r["_cc"] = country_of(r)
+        r["_cc"] = r.get("country") or mine.get("country") or country_of(r)
     all_text = "\n".join(texts.values())
     E = []
 
     def add(text, passed, evidence):
         E.append({"text": text, "passed": bool(passed), "evidence": str(evidence)[:300]})
 
-    brands = {b for b in ({r.get("brand") or r.get("channel") for r in alive} - {None, ""}) if len(b) >= 4}
+    brands = {b for b in ({r.get("brand") or r.get("channel") for r in alive} | {v.get("brand") for v in own.values()}) - {None, ""}
+              if len(str(b)) >= 4}
+    brands |= {str(b).split(":")[0].split("(")[0].strip() for b in list(brands)}
     for c in sc["checks"]:
         k = c["type"]
         if k == "min_links":
             add(f"Delivers ≥{c['n']} distinct reference links", len(urls) >= c["n"], f"{len(urls)} reference URLs")
         elif k == "alive_rate":
-            rate = len(alive) / len(urls) if urls else 0
+            checkable = len(alive) + len(dead)
+            rate = len(alive) / checkable if checkable else 0
             add(c.get("label", f"≥{c['min']:.0%} of reference links are real and open (no invented/dead links)"), rate >= c["min"],
-                f"{len(alive)}/{len(urls)} alive; dead: {[(r['url'], r.get('http_status')) for r in dead][:6]}")
+                f"{len(alive)}/{checkable} alive ({len(blocked)} behind a bot wall, not counted); dead: {[(r['url'], r.get('http_status')) for r in dead][:6]}")
         elif k == "home_refs":
             n = sum(1 for r in alive if r["_cc"] in GCC)
             add(c["label"], n >= c["n"], f"{n} GCC")
@@ -264,15 +408,17 @@ def grade(run_dir, scenario_id):
             add("Every named competitor is covered" + (" with a working link" if c.get("links_each") else ""), not missing and not unlinked,
                 f"missing {missing}, no link {unlinked}")
         elif k == "insights":
-            if refs_json and refs_json.get("insights"):
-                n = sum(1 for x in refs_json["insights"] if x.get("source_url"))
+            js = [v for _, d in json_docs(texts) if isinstance(d, dict) for k, v in d.items() if re.search(r"insight", k, re.I) and isinstance(v, list)]
+            if js:
+                n = max(sum(1 for x in v if isinstance(x, dict) and any(URL_RX.search(str(y)) for y in x.values())) for v in js)
             else:
                 n = max((sum(1 for l in items(s) if URL_RX.search(l) or re.search(r"\(.*20\d\d.*\)|source", l, re.I))
                          for s in sections(texts, r"insight|what we (learned|know)|audience truth")), default=0)
             add(f"≥{c['n']} sourced insights", n >= c["n"], f"{n}")
         elif k == "patterns":
-            if refs_json and refs_json.get("patterns"):
-                n = len(refs_json["patterns"])
+            js = [v for _, d in json_docs(texts) if isinstance(d, dict) for k, v in d.items() if re.search(r"pattern|lesson", k, re.I) and isinstance(v, list)]
+            if js:
+                n = max(len(v) for v in js)
             else:
                 n = max((len(items(s)) for s in sections(texts, r"pattern|lesson|learn|takeaway|principle|what .* (share|have in common)")), default=0)
             add(f"≥{c['n']} patterns / lessons drawn across references", n >= c["n"], f"{n}")
@@ -292,7 +438,13 @@ def grade(run_dir, scenario_id):
             if not ds or not board:
                 add("Visual deliverable uses the client's design system", False, "no design system or no board")
             else:
-                h = board.read_text(encoding="utf-8", errors="replace").upper()
+                h = board.read_text(encoding="utf-8", errors="replace")
+                for href in re.findall(r'<link[^>]+href="([^"]+\.css)"|@import\s+url\([\'"]?([^\'")]+\.css)', h):  # linked or imported
+                    href = next(x for x in (href if isinstance(href, tuple) else (href,)) if x)
+                    css = (board.parent / href).resolve()
+                    if css.exists():
+                        h += css.read_text(encoding="utf-8", errors="replace")
+                h = h.upper()
                 spec = json.loads((ds / "spec.json").read_text(encoding="utf-8"))
                 hexes = [x["hex"].upper() for x in spec["colors"]]
                 fams = [f["family"].upper() for f in spec["fonts"]]
@@ -304,7 +456,8 @@ def grade(run_dir, scenario_id):
     result = {"scenario": scenario_id, "expectations": E,
               "summary": {"passed": passed, "failed": len(E) - passed, "total": len(E), "pass_rate": round(passed / len(E), 2)},
               "stats": {"job": str(job.relative_to(outputs)) if job != outputs else ".", "files": sorted(texts)[:40], "ref_urls": len(urls),
-                        "alive": len(alive), "dead": len(dead), "alive_rate": round(len(alive) / len(urls), 3) if urls else 0}}
+                        "alive": len(alive), "dead": len(dead), "blocked": len(blocked),
+                        "alive_rate": round(len(alive) / (len(alive) + len(dead)), 3) if alive or dead else 0}}
     if refs_json:
         from validate_run import validate
         errs, warns = validate(refs_json)
@@ -325,8 +478,11 @@ def add_beauty(job, add):
     if not board and not deck:
         return
     tmp = Path(tempfile.mkdtemp(prefix="beauty-"))
-    if board:
-        shutil.copy(board, tmp / "board.html")
+    if board:  # a <base> keeps the board's own relative images and stylesheets working from the copy
+        h = board.read_text(encoding="utf-8", errors="replace")
+        base = f'<base href="{board.parent.resolve().as_uri()}/">'
+        h = re.sub(r"(?i)<head[^>]*>", lambda m: m.group(0) + base, h, count=1) if re.search(r"(?i)<head", h) else base + h
+        (tmp / "board.html").write_text(h, encoding="utf-8")
     if deck:
         shutil.copy(deck, tmp / "deck.pptx")
     from check_outputs import run_checks

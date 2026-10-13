@@ -31,9 +31,11 @@ Rendering uses Playwright with the preinstalled Chromium (`/opt/pw-browsers/chro
 - Explain in plain language; the user is an agency person, not necessarily a developer.
 
 ## Next step
-Feature 2 (reference scout) iteration 2: 2a–2e and 2g (sparks) are done (PLAN §3d). Next: 2f (benchmark suite +
-scorecard; tell the user the token cost before launching agent runs). Shared library = client-neutral; client notes
-stay in git-ignored `clients/<slug>/library/`. Outputs are built by `build_outputs.py` (brand kit from the client's
-design system) and must pass `check_outputs.py`. The test brief is `evals/fixtures/scout/rawaq-ramadan-brief.{md,json}`;
-grader `evals/grade_scout.py`. Run test agents with ZAMAKAN_LIBRARY and ZAMAKAN_SCOUT_CACHE pointing into their sandbox
-(the committed library holds the sample run).
+Feature 2 (reference scout) iteration 2 is done, including the 2f benchmark first pass (scorecard:
+https://claude.ai/artifact/Gmjx7ao4bA2inZKD9CKsDT; `evals/scorecard/`). Next, agree with the user on iteration 3: fix the
+issues in `evals/scorecard/iteration-2-agent-feedback.md` (competitor-watch mode, verification strength, thumbnails,
+search budget, missing brand.md), add a blind quality judgement and repeat runs, then re-benchmark with
+`evals/bench_scout.py` (tell the user the token cost first). Move `.claude/skills/zamakan-reference-scout/evals/` out of
+the skill folder so test agents can't see it. Shared library = client-neutral; client notes stay in git-ignored
+`clients/<slug>/library/`. Outputs are built by `build_outputs.py` and must pass `check_outputs.py`. Run test agents
+with ZAMAKAN_LIBRARY, ZAMAKAN_SCOUT_CACHE and ZAMAKAN_CLIENTS pointing into their sandbox.

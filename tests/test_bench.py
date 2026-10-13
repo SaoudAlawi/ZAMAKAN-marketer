@@ -47,7 +47,7 @@ def test_scorecard_renders_from_gradings(tmp_path, monkeypatch):
                                                       "stats": {"alive_rate": 1.0, "ref_urls": 20},
                                                       "expectations": [{"text": "x", "passed": False}]}))
         (run / "timing.json").write_text(json.dumps({"total_tokens": 200000, "duration_seconds": secs}))
-    BS.scorecard(type("A", (), {"root": tmp_path, "iteration": 2, "note": "test"})())
+    BS.scorecard(type("A", (), {"root": tmp_path, "iteration": 2, "note": "test", "findings": None})())
     h = json.loads((tmp_path / "history.json").read_text())
     assert h[-1]["summary"]["with_skill"]["quality"] == 0.9 and h[-1]["summary"]["without_skill"]["minutes"] == 15.0
     page = (tmp_path / "scorecard.html").read_text()

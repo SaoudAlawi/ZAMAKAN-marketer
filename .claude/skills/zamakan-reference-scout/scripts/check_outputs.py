@@ -65,7 +65,8 @@ JS_AUDIT = r"""
   if (!document.querySelector('.cover .topbar img')) out.warnings.push('no logo on the cover (expected for the house style or a borrowed look; a client board should have one: check design-system/manifest.json)');
   for (const el of document.querySelectorAll('[lang=ar],.ar,.ar-d')) {
     const cs = getComputedStyle(el);
-    if (cs.direction !== 'rtl') out.errors.push(`Arabic not right-to-left: ${el.textContent.trim().slice(0,30)}`);
+    const block = !cs.display.startsWith('inline');  // an Arabic phrase inline in an English line is laid out by the bidi algorithm
+    if (block && cs.direction !== 'rtl') out.errors.push(`Arabic block not right-to-left: ${el.textContent.trim().slice(0,30)}`);
     if (cs.letterSpacing !== 'normal' && parseFloat(cs.letterSpacing) !== 0) out.errors.push(`Arabic letter-spaced (breaks joins): ${el.textContent.trim().slice(0,30)}`);
   }
   return out;
