@@ -75,7 +75,8 @@ def test_blind_judge_packet_record_and_scorecard(tmp_path, monkeypatch):
                                                       "stats": {"alive_rate": 1.0, "ref_urls": 12}, "expectations": []}))
     JS.packets(type("A", (), {"iteration": 3, "root": tmp_path})())
     d = tmp_path / "iteration-3/judge/s2-global-question-run-1"
-    packet, key = (d / "packet.md").read_text(), json.loads((d / "key.json").read_text())
+    packet, key = (d / "packet.md").read_text(), json.loads((tmp_path / "iteration-3/judge-keys/s2-global-question-run-1.json").read_text())
+    assert not (d / "key.json").exists()
     assert "Liseberg" in packet and "Kit Kat" in packet and "making waiting enjoyable" in packet.lower()
     assert not __import__("re").search(r"zamakan|skill|R01", packet.split("## Deliverable A")[1], __import__("re").I)
     assert sorted(key.values()) == ["with_skill", "without_skill"]

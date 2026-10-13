@@ -5,7 +5,7 @@ Usage:
   python evals/judge_scout.py packets --iteration 3 --root <workspace>
       for every scenario and run number with both configs graded: writes judge/<scenario>-run-K/packet.md (the brief, the
       rubric and the two deliverables as "A" and "B" in a random order, with tell-tale markers removed) and key.json (which
-      is which; never given to the judge), plus a screenshot of each board/deck first screen as A.png / B.png
+      is which; kept in judge-keys/, never given to the judge), plus a screenshot of each board/deck first screen as A.png / B.png
   python evals/judge_scout.py record <judge_dir> <answer.json>
       checks the judge's JSON answer against the rubric and stores it, mapped back to with/without, as judgement.json
 
@@ -104,7 +104,9 @@ def packets(a):
                 shot = screenshot(job, out / f"{label}.png")
                 body.append(f"## Deliverable {label}\n\n" + ("(screenshot: " + label + ".png)\n\n" if shot else "(no visual deliverable)\n\n")
                             + readable(job))
-            (out / "key.json").write_text(json.dumps(key) + "\n", encoding="utf-8")
+            keys = base / "judge-keys"  # outside the judge's folder: the judge never sees which side is which
+            keys.mkdir(exist_ok=True)
+            (keys / f"{out.name}.json").write_text(json.dumps(key) + "\n", encoding="utf-8")
             rubric = "\n".join(f"- **{k}** (1–5): {v}" for k, v in RUBRIC.items())
             (out / "packet.md").write_text(f"""# Blind judgement: {sc['title']}
 
@@ -137,7 +139,7 @@ Reply with JSON only, in exactly this shape:
 
 def record(a):
     d = Path(a.judge_dir)
-    key = json.loads((d / "key.json").read_text(encoding="utf-8"))
+    key = json.loads((d.parent.parent / "judge-keys" / f"{d.name}.json").read_text(encoding="utf-8"))
     raw = Path(a.answer).read_text(encoding="utf-8")
     ans = json.loads(raw[raw.index("{"):raw.rindex("}") + 1])
     for side in "AB":
