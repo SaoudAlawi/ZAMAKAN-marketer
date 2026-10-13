@@ -48,7 +48,7 @@ Rules for this run:
 - Use absolute paths. Write everything under $W.
 - Do NOT read anything in {repo}/ outside the two skill folders named above (never open evals/, library/, samples/, tests/, tools/: they contain grading material).
 - Work autonomously; nobody can answer questions. Where you would ask, use the skill's defaults and record open questions.
-- You have web search and the skill's scripts; internet access works.
+- You have web search and the skill's scripts; internet access works. Web searches are limited and shared with other work: plan for about 25.
 - When done, reply with: your final message to the user, then a short candid list of problems you hit with the skill's instructions or scripts.
 """
 
@@ -63,7 +63,7 @@ User request:
 
 Rules for this run:
 - Use absolute paths. Do NOT read anything in {repo}/ (it contains grading material for this test). Do not use any skills.
-- You have web search, a web-fetch tool, curl and Python (urllib, BeautifulSoup, Playwright with Chromium at /opt/pw-browsers/chromium, python-pptx, PyMuPDF). Internet access works; some sites block plain requests.
+- You have web search, a web-fetch tool, curl and Python (urllib, BeautifulSoup, Playwright with Chromium at /opt/pw-browsers/chromium, python-pptx, PyMuPDF). Internet access works; some sites block plain requests. Web searches are limited and shared with other work: plan for about 25.
 - Work autonomously; nobody can answer questions. Choose sensible deliverable formats yourself.
 - When done, reply with your final message to the user.
 """
@@ -153,6 +153,25 @@ def aggregate(root, it):
                    "minutes": round(st.mean(num("seconds")) / 60, 1) if num("seconds") else None,
                    "tokens_k": round(st.mean(num("tokens")) / 1000) if num("tokens") else None,
                    "per_scenario": {s: round(st.mean(v), 3) for s, v in per_sc.items()}}
+    judged = []
+    for j in sorted((Path(root) / f"iteration-{it}" / "judge").glob("*/judgement.json")):
+        d = json.loads(j.read_text(encoding="utf-8"))
+        judged.append({"pair": j.parent.name, **d})
+    if judged:
+        for cfg in CONFIGS:
+            if cfg in by:
+                other = [c for c in CONFIGS if c != cfg][0]
+                by[cfg]["judge_wins"] = sum(d["winner"] == cfg for d in judged)
+                by[cfg]["judge_losses"] = sum(d["winner"] == other for d in judged)
+                by[cfg]["judge_ties"] = sum(d["winner"] == "tie" for d in judged)
+                by[cfg]["judge_score"] = round(st.mean(sum(d["scores"][cfg].values()) for d in judged) / 25, 3)
+                by[cfg]["judge_criteria"] = {k: round(st.mean(d["scores"][cfg][k] for d in judged), 2) for k in judged[0]["scores"][cfg]}
+        for r in rows:
+            d = next((d for d in judged if d["pair"] == f"{r['scenario']}-{r['run']}"), None)
+            if d:
+                r["judge_score"] = round(sum(d["scores"][r["config"]].values()) / 25, 3)
+                r["judge_won"] = d["winner"] == r["config"]
+                r["judge_reason"] = d.get("reason", "")
     return rows, by
 
 
@@ -200,6 +219,8 @@ def render(hist):
     metrics = [("Quality", "quality", "pct", "up", "share of checks passed, averaged over scenarios"),
                ("Real links", "real_links", "pct", "up", "share of delivered links that open (re-checked by the grader)"),
                ("Consistency", "consistency", "pct", "up", "1 − spread of quality between repeat runs (needs ≥2 runs)"),
+               ("Blind judge", "judge_score", "pct", "up", "a creative director's rubric score (insight, references, ideas, usefulness, presentation), "
+                "judged side by side without knowing which is which"),
                ("Time", "minutes", "min", "down", "average minutes per run"),
                ("Cost", "tokens_k", "tok", "down", "average tokens per run")]
     tiles = "".join(f'<div class="tile"><div class="k">{E(n)}</div><div class="v">{fmt(w.get(k), kind)}</div>'
@@ -221,11 +242,22 @@ def render(hist):
         meta = [r for r in rs if r["config"] == "with_skill"]
         meta_wo = [r for r in rs if r["config"] == "without_skill"]
         tm = lambda x: f'{st.mean(r["seconds"] for r in x) / 60:.0f} min · {st.mean(r["tokens"] for r in x) / 1000:.0f}k' if x and all(r.get("seconds") and r.get("tokens") for r in x) else ""  # noqa: E731
+        jw = [r for r in meta if r.get("judge_score") is not None]
+        jo = [r for r in meta_wo if r.get("judge_score") is not None]
+        verdict = ""
+        if jw and jo:
+            wins = sum(r["judge_won"] for r in jw)
+            losses = sum(r["judge_won"] for r in jo)
+            verdict = (f'<td><b>{"With skill" if wins > losses else "Without skill" if losses > wins else "Tie"}</b>'
+                       f' <small>({wins}–{losses}{", " + str(len(jw) - wins - losses) + " tie" if len(jw) - wins - losses else ""})</small>'
+                       f'<br><small>{st.mean(r["judge_score"] for r in jw):.0%} vs {st.mean(r["judge_score"] for r in jo):.0%}</small>'
+                       f'<details><summary>why</summary><p style="margin:6px 0 0;font-size:13px">{E(jw[0].get("judge_reason", ""))}</p></details></td>')
         scen_rows += (f'<tr><th>{E(title)}<br><small>{E(sid)}</small></th><td>{cell["with_skill"]}<small class="m">{tm(meta)}</small></td>'
-                      f'<td>{cell["without_skill"]}<small class="m">{tm(meta_wo)}</small></td></tr>')
+                      f'<td>{cell["without_skill"]}<small class="m">{tm(meta_wo)}</small></td>{verdict or "<td><small>not judged</small></td>"}</tr>')
     trend = "".join(f'<tr><td>Iteration {h["iteration"]}</td><td>{E(h["date"])}</td><td>v{E(h.get("skill_version", "?"))}</td>'
                     f'<td>{len(h["scenarios"])}</td><td>{fmt(h["summary"].get("with_skill", {}).get("quality"), "pct")}</td>'
                     f'<td>{fmt(h["summary"].get("without_skill", {}).get("quality"), "pct")}</td>'
+                    f'<td>{fmt(h["summary"].get("with_skill", {}).get("judge_score"), "pct")} / {fmt(h["summary"].get("without_skill", {}).get("judge_score"), "pct")}</td>'
                     f'<td>{fmt(h["summary"].get("with_skill", {}).get("real_links"), "pct")}</td>'
                     f'<td>{fmt(h["summary"].get("with_skill", {}).get("minutes"), "min")}</td>'
                     f'<td>{fmt(h["summary"].get("with_skill", {}).get("tokens_k"), "tok")}</td><td>{E(h.get("note", ""))}</td></tr>' for h in hist)
@@ -264,10 +296,10 @@ footer{{color:var(--muted);font-size:13px;max-width:72ch}}
 {len(cur["scenarios"])} scenarios, each done once by an agent <b>with</b> the skill and once <b>without</b> it, then graded by the same checks.
 {E(cur.get("note", ""))}</p></header>
 <section><h2>With the skill, compared with without</h2><div class="tiles">{tiles}</div></section>
-<section><h2>Per scenario</h2><div class="scroll"><table class="tbl"><thead><tr><th>Scenario</th><th>With skill</th><th>Without skill</th></tr></thead><tbody>{scen_rows}</tbody></table></div></section>
+<section><h2>Per scenario</h2><div class="scroll"><table class="tbl"><thead><tr><th>Scenario</th><th>Checks: with skill</th><th>Checks: without skill</th><th>Blind judge</th></tr></thead><tbody>{scen_rows}</tbody></table></div></section>
 {f'<section><h2>What this round taught us</h2><ul class="findings">{findings}</ul></section>' if findings else ''}
 <section><h2>Across iterations</h2><div class="scroll"><table class="tbl"><thead><tr><th>Iteration</th><th>Date</th><th>Skill</th><th>Scenarios</th><th>Quality (with)</th>
-<th>Quality (without)</th><th>Real links</th><th>Time</th><th>Tokens</th><th>Note</th></tr></thead><tbody>{trend}</tbody></table></div></section>
+<th>Quality (without)</th><th>Judge (with / without)</th><th>Real links</th><th>Time</th><th>Tokens</th><th>Note</th></tr></thead><tbody>{trend}</tbody></table></div></section>
 <footer>Graded by evals/grade_scout.py: property checks per scenario (evals/fixtures/scout/scenarios), every link re-opened live by the grader,
 the same beauty check for both sides. Links behind a bot wall or on hosts this machine can't reach are not counted either way.
 Consistency needs repeat runs. Generated by evals/bench_scout.py.</footer>
