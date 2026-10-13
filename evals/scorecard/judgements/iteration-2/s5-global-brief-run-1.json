@@ -1,0 +1,24 @@
+{
+ "scores": {
+  "with_skill": {
+   "insight": 4,
+   "references": 4,
+   "ideas": 4,
+   "usefulness": 5,
+   "presentation": 4
+  },
+  "without_skill": {
+   "insight": 5,
+   "references": 5,
+   "ideas": 5,
+   "usefulness": 4,
+   "presentation": 4
+  }
+ },
+ "winner": "without_skill",
+ "reason": "B's references are closer to the real London picture (Qima, % Arabica, Dishoom, Heytea, the luxe Saudi cafés) and it finds a fresh insight in the Jazan/Khawlani coffee origin; its four territories are distinct and grow from the brand name and Saudi coffee rituals. A is solid and slightly better to act on (sourced insights, wildcards, check-first list) but misses Qima and its territories overlap more.",
+ "key": {
+  "A": "with_skill",
+  "B": "without_skill"
+ }
+}

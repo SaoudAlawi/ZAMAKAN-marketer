@@ -3,7 +3,7 @@
   "iteration": 2,
   "date": "2026-10-13",
   "note": "First pass: 1 run per scenario. Grader audited for fairness before scoring.",
-  "skill_version": "0.3.0",
+  "skill_version": "0.4.0",
   "findings": [
    "The skill passed every check in all 5 scenarios (62 of 62). Without it, agents passed 58 of 62: fewer links than asked, hard-to-read text colours on two boards, a London deck that scrolls sideways on a phone, and no sourced insights in the London brief.",
    "The gap is smaller than it first looked. The first grading said 8 of 17 for the Ramadan baseline; an audit found grader bugs (territories saved as data files, images broken by the copy, links cut by line breaks, stylesheet imports, blocked domains) and fixed them before scoring.",
@@ -12,7 +12,8 @@
    "The checks are close to their ceiling: both sides pass most of them. Next round needs harder checks or a blind side-by-side judgement of quality (insight depth, originality, usefulness to a creative team).",
    "The competitor watch without the skill found more recent activity (Half Million's October 2026 ads, Barn's new specialty sub-brand). The skill's competitor-watch mode needs work: social feeds and ad libraries can't be read from here, and the skill should plan around that.",
    "All 10 agents hit a shared limit of 200 web searches, which thinned the later runs on both sides. Future runs should be staggered or given a search plan.",
-   "The skill's agents reported 40+ concrete problems with scripts and instructions; two were fixed immediately (a client name leaking into the shared library through a file path, and YouTube channel pages being marked dead)."
+   "The skill's agents reported 40+ concrete problems with scripts and instructions; two were fixed immediately (a client name leaking into the shared library through a file path, and YouTube channel pages being marked dead).",
+   "Blind judgement (added later, with fixed packets): the skill won 2 of 5 (Ramadan brief 23 vs 22, waiting question 22 vs 21) and lost 3 (competitor watch 17 vs 23, pitch 21 vs 21 on the judge's call, London 21 vs 23). Average 83% against 88%. Judges found the skill's work more actionable (recommendation, risks, checklists) and the no-skill work sometimes closer to the real market (recent competitor activity, nearer category examples). A first judging pass was discarded: its packets cut each side at 14,000 characters and used the skill's short summary file instead of its board."
   ],
   "scenarios": {
    "s1-gcc-brief": "GCC brief: Rawaq Ramadan 2027",
@@ -35,6 +36,17 @@
      "s3-competitor-watch": 1.0,
      "s4-pitch": 1.0,
      "s5-global-brief": 1.0
+    },
+    "judge_wins": 2,
+    "judge_losses": 3,
+    "judge_ties": 0,
+    "judge_score": 0.832,
+    "judge_criteria": {
+     "insight": 4,
+     "references": 3.8,
+     "ideas": 4.4,
+     "usefulness": 4.8,
+     "presentation": 3.8
     }
    },
    "without_skill": {
@@ -50,6 +62,17 @@
      "s3-competitor-watch": 1.0,
      "s4-pitch": 1.0,
      "s5-global-brief": 0.85
+    },
+    "judge_wins": 3,
+    "judge_losses": 2,
+    "judge_ties": 0,
+    "judge_score": 0.88,
+    "judge_criteria": {
+     "insight": 4.4,
+     "references": 4.8,
+     "ideas": 4.4,
+     "usefulness": 4.2,
+     "presentation": 4.2
     }
    }
   },
@@ -65,7 +88,10 @@
     "links": 31,
     "tokens": 223345,
     "seconds": 633.7,
-    "failed": []
+    "failed": [],
+    "judge_score": 0.92,
+    "judge_won": true,
+    "judge_reason": "A wins narrowly on substance: dated, quantified Saudi insights (Visa night-spend shift, YouGov, SFDA), every competitor checked in a transparent table, 25 wide-ranging references honest about what was not seen. B has the sharper lead idea ('The Second Pour') with kickoff-ready Arabic lines and a more polished bilingual layout, but fewer references and a thinner competitor check."
    },
    {
     "scenario": "s1-gcc-brief",
@@ -81,7 +107,10 @@
     "failed": [
      "Delivers ≥20 distinct reference links",
      "Passes the beauty check (layout, contrast, images, fonts, Arabic)"
-    ]
+    ],
+    "judge_score": 0.88,
+    "judge_won": false,
+    "judge_reason": "A wins narrowly on substance: dated, quantified Saudi insights (Visa night-spend shift, YouGov, SFDA), every competitor checked in a transparent table, 25 wide-ranging references honest about what was not seen. B has the sharper lead idea ('The Second Pour') with kickoff-ready Arabic lines and a more polished bilingual layout, but fewer references and a thinner competitor check."
    },
    {
     "scenario": "s2-global-question",
@@ -94,7 +123,10 @@
     "links": 26,
     "tokens": 203441,
     "seconds": 580.4,
-    "failed": []
+    "failed": [],
+    "judge_score": 0.88,
+    "judge_won": true,
+    "judge_reason": "A is the stronger reference board (wider proven work, sharp lessons, honest verification). B wins narrowly because it is easier to act on: bank-specific analogues (ING Direct, Fifth Third, Interbank), a clear recommendation across three territories with executions, watch-outs and Saudi fit scores, plus a check-first list."
    },
    {
     "scenario": "s2-global-question",
@@ -107,7 +139,10 @@
     "links": 35,
     "tokens": 142758,
     "seconds": 626.8,
-    "failed": []
+    "failed": [],
+    "judge_score": 0.84,
+    "judge_won": false,
+    "judge_reason": "A is the stronger reference board (wider proven work, sharp lessons, honest verification). B wins narrowly because it is easier to act on: bank-specific analogues (ING Direct, Fifth Third, Interbank), a clear recommendation across three territories with executions, watch-outs and Saudi fit scores, plus a check-first list."
    },
    {
     "scenario": "s3-competitor-watch",
@@ -120,7 +155,10 @@
     "links": 16,
     "tokens": 184337,
     "seconds": 502.7,
-    "failed": []
+    "failed": [],
+    "judge_score": 0.68,
+    "judge_won": false,
+    "judge_reason": "B found what Half Million and Barn's run now (National Day 96 work, Half Million's sonic identity and sword film, the live 'specialty at an unchanged price' push mocking coffee snobs). A said 'none found' for Half Million and nothing for Barn's National Day, missing the core of the brief, and repeats sections. B's ownership map, 'where not to fight' list and confidence levels are far more useful for a quarterly review."
    },
    {
     "scenario": "s3-competitor-watch",
@@ -133,7 +171,10 @@
     "links": 40,
     "tokens": 164989,
     "seconds": 676.0,
-    "failed": []
+    "failed": [],
+    "judge_score": 0.92,
+    "judge_won": true,
+    "judge_reason": "B found what Half Million and Barn's run now (National Day 96 work, Half Million's sonic identity and sword film, the live 'specialty at an unchanged price' push mocking coffee snobs). A said 'none found' for Half Million and nothing for Barn's National Day, missing the core of the brief, and repeats sections. B's ownership map, 'where not to fight' list and confidence levels are far more useful for a quarterly review."
    },
    {
     "scenario": "s4-pitch",
@@ -146,7 +187,10 @@
     "links": 24,
     "tokens": 205212,
     "seconds": 721.0,
-    "failed": []
+    "failed": [],
+    "judge_score": 0.84,
+    "judge_won": false,
+    "judge_reason": "The brief asked for proven or award-level references; A delivers Cannes and Lynx winners plus results-backed National Day work with proof levels stated. B pads its set (stc giveaway, Mrsool and Maestro view counts, Tawuniya greeting), though it says so. B's territories, watch-outs (SAMA, PDPL) and checklist are more developed, but A's references are stronger and its name-led idea is just as ownable."
    },
    {
     "scenario": "s4-pitch",
@@ -159,7 +203,10 @@
     "links": 24,
     "tokens": 214975,
     "seconds": 807.0,
-    "failed": []
+    "failed": [],
+    "judge_score": 0.84,
+    "judge_won": true,
+    "judge_reason": "The brief asked for proven or award-level references; A delivers Cannes and Lynx winners plus results-backed National Day work with proof levels stated. B pads its set (stc giveaway, Mrsool and Maestro view counts, Tawuniya greeting), though it says so. B's territories, watch-outs (SAMA, PDPL) and checklist are more developed, but A's references are stronger and its name-led idea is just as ownable."
    },
    {
     "scenario": "s5-global-brief",
@@ -172,7 +219,10 @@
     "links": 33,
     "tokens": 191754,
     "seconds": 703.9,
-    "failed": []
+    "failed": [],
+    "judge_score": 0.84,
+    "judge_won": false,
+    "judge_reason": "B's references are closer to the real London picture (Qima, % Arabica, Dishoom, Heytea, the luxe Saudi cafés) and it finds a fresh insight in the Jazan/Khawlani coffee origin; its four territories are distinct and grow from the brand name and Saudi coffee rituals. A is solid and slightly better to act on (sourced insights, wildcards, check-first list) but misses Qima and its territories overlap more."
    },
    {
     "scenario": "s5-global-brief",
@@ -188,7 +238,10 @@
     "failed": [
      "Passes the beauty check (layout, contrast, images, fonts, Arabic)",
      "≥3 sourced insights"
-    ]
+    ],
+    "judge_score": 0.92,
+    "judge_won": true,
+    "judge_reason": "B's references are closer to the real London picture (Qima, % Arabica, Dishoom, Heytea, the luxe Saudi cafés) and it finds a fresh insight in the Jazan/Khawlani coffee origin; its four territories are distinct and grow from the brand name and Saudi coffee rituals. A is solid and slightly better to act on (sourced insights, wildcards, check-first list) but misses Qima and its territories overlap more."
    }
   ]
  }

@@ -1,0 +1,24 @@
+{
+ "scores": {
+  "without_skill": {
+   "insight": 4,
+   "references": 5,
+   "ideas": 4,
+   "usefulness": 4,
+   "presentation": 4
+  },
+  "with_skill": {
+   "insight": 4,
+   "references": 3,
+   "ideas": 5,
+   "usefulness": 5,
+   "presentation": 4
+  }
+ },
+ "winner": "without_skill",
+ "reason": "The brief asked for proven or award-level references; A delivers Cannes and Lynx winners plus results-backed National Day work with proof levels stated. B pads its set (stc giveaway, Mrsool and Maestro view counts, Tawuniya greeting), though it says so. B's territories, watch-outs (SAMA, PDPL) and checklist are more developed, but A's references are stronger and its name-led idea is just as ownable.",
+ "key": {
+  "A": "without_skill",
+  "B": "with_skill"
+ }
+}

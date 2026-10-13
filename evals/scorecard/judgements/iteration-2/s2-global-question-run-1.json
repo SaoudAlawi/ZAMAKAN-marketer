@@ -1,0 +1,24 @@
+{
+ "scores": {
+  "without_skill": {
+   "insight": 4,
+   "references": 5,
+   "ideas": 4,
+   "usefulness": 4,
+   "presentation": 4
+  },
+  "with_skill": {
+   "insight": 4,
+   "references": 4,
+   "ideas": 5,
+   "usefulness": 5,
+   "presentation": 4
+  }
+ },
+ "winner": "with_skill",
+ "reason": "A is the stronger reference board (wider proven work, sharp lessons, honest verification). B wins narrowly because it is easier to act on: bank-specific analogues (ING Direct, Fifth Third, Interbank), a clear recommendation across three territories with executions, watch-outs and Saudi fit scores, plus a check-first list.",
+ "key": {
+  "A": "without_skill",
+  "B": "with_skill"
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "scores": {
+  "with_skill": {
+   "insight": 3,
+   "references": 3,
+   "ideas": 4,
+   "usefulness": 4,
+   "presentation": 3
+  },
+  "without_skill": {
+   "insight": 5,
+   "references": 5,
+   "ideas": 4,
+   "usefulness": 5,
+   "presentation": 4
+  }
+ },
+ "winner": "without_skill",
+ "reason": "B found what Half Million and Barn's run now (National Day 96 work, Half Million's sonic identity and sword film, the live 'specialty at an unchanged price' push mocking coffee snobs). A said 'none found' for Half Million and nothing for Barn's National Day, missing the core of the brief, and repeats sections. B's ownership map, 'where not to fight' list and confidence levels are far more useful for a quarterly review.",
+ "key": {
+  "A": "with_skill",
+  "B": "without_skill"
+ }
+}
