@@ -121,3 +121,11 @@ def test_one_sided_type_level_warns(gold):
     gold["type_scale"] = [t for t in gold["type_scale"] if not (t["level"] == "h3" and t["script"] == "arabic")]
     _, warnings = validate(gold, ROOT)
     assert any("'h3' defined for only one script" in w for w in warnings)
+
+
+def test_spec_guide_example_is_valid():
+    """The worked example in references/spec-guide.md must itself pass the schema + semantic checks."""
+    guide = (REPO / ".claude/skills/zamakan-design-system/references/spec-guide.md").read_text(encoding="utf-8")
+    block = guide.split("```json", 1)[1].split("```", 1)[0]
+    errors, _ = validate(json.loads(block))  # no --root: example files don't exist on disk
+    assert errors == []
