@@ -71,7 +71,7 @@ def m_bad_ring(r):
     (m_verified_in_search_only, "search-only"),
     (m_verified_without_checked_url, "no URL has verified=true"),
     (m_duplicate_id, "duplicate reference id"),
-    (m_same_url_two_refs, "same URL"),
+    (m_same_url_two_refs, "same main URL"),
     (m_top_without_teardown, "has no teardown"),
     (m_territory_unknown_ref, "unknown reference id 'made-up-campaign'"),
     (m_bad_country, "schema"),

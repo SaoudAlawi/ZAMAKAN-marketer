@@ -63,7 +63,9 @@ def thumb_bytes(ref, cache_dir):
     """JPEG bytes (max 640px) for a reference thumbnail, cached in <out>/thumbs/."""
     url = (ref.get("thumbnail") or {}).get("url")
     local = (ref.get("thumbnail") or {}).get("local")
-    dst = Path(cache_dir) / f"{ref['id']}.jpg"
+    import hashlib
+    key = hashlib.sha1(f"{url}|{local}".encode()).hexdigest()[:8]  # a changed thumbnail never shows the old cached image
+    dst = Path(cache_dir) / f"{ref['id']}-{key}.jpg"
     if dst.exists():
         return dst.read_bytes()
     src = None
@@ -83,6 +85,7 @@ def thumb_bytes(ref, cache_dir):
         im = Image.open(io.BytesIO(src)).convert("RGB")
     except Exception:  # noqa: BLE001
         return None
+    im = trim_bars(im)
     im.thumbnail((640, 640))
     buf = io.BytesIO()
     im.save(buf, "JPEG", quality=78, optimize=True)
@@ -105,14 +108,15 @@ def ref_codes(run):
     return {r["id"]: f"R{i:02d}" for i, r in enumerate(order, 1)}
 
 
-def lead_order(run, has_img):
+def lead_order(run, has_img, avoid=()):
     """Up to 3 references per territory, ordered so each territory opens on a different picture where possible
-    (images first, then references not yet used as another territory's lead)."""
+    (images first, then not a competitor's own ad, then references not yet used as another territory's lead)."""
     byid = {r["id"]: r for r in run["references"]}
+    rival = lambda r: any(a and a.split()[0].lower() in (r.get("brand") or "").lower() for a in avoid)  # noqa: E731
     used, out = set(), {}
     for t in run.get("territories", []):
         rs = [byid[i] for i in t["reference_ids"] if i in byid]
-        rs.sort(key=lambda r: (not has_img.get(r["id"]), r["id"] in used))
+        rs.sort(key=lambda r: (not has_img.get(r["id"]), rival(r), r["id"] in used))
         if rs:
             used.add(rs[0]["id"])
         out[t["id"]] = rs[:3]
@@ -126,6 +130,55 @@ def country_name(cc):
         return (getattr(c, "common_name", None) or c.name) if c else (cc or "")
     except Exception:  # noqa: BLE001
         return cc or ""
+
+
+def trim_bars(im):
+    """Cut black (letterbox/pillarbox) bars off video stills, so frames and arches show the picture, not the bars."""
+    from PIL import ImageOps
+    g = ImageOps.grayscale(im)
+    w, h = g.size
+    px = g.load()
+
+    def dark_row(y):
+        return sum(px[x, y] for x in range(0, w, max(1, w // 40))) / len(range(0, w, max(1, w // 40))) < 18
+
+    def dark_col(x):
+        return sum(px[x, y] for y in range(0, h, max(1, h // 40))) / len(range(0, h, max(1, h // 40))) < 18
+    top = next((y for y in range(h // 3) if not dark_row(y)), 0)
+    bottom = next((y for y in range(h - 1, h - h // 3, -1) if not dark_row(y)), h - 1)
+    left = next((x for x in range(w // 3) if not dark_col(x)), 0)
+    right = next((x for x in range(w - 1, w - w // 3, -1) if not dark_col(x)), w - 1)
+    if (bottom - top) < h * 0.4 or (right - left) < w * 0.4:  # a mostly dark image is a dark image, not bars
+        return im
+    return im.crop((left, top, right + 1, bottom + 1))
+
+
+def cover_ref(run, has_img, avoid=()):
+    """The cover image: run.cover if set; else a deep dive with an image that isn't a competitor's own ad."""
+    byid = {r["id"]: r for r in run["references"]}
+    if run["run"].get("cover") in byid and has_img(byid[run["run"]["cover"]]):
+        return byid[run["run"]["cover"]]
+    rival = lambda r: any(a and a.split()[0].lower() in (r.get("brand") or "").lower() for a in avoid)  # noqa: E731
+    pool = [byid[i] for i in run.get("top", []) if i in byid] + run["references"]
+    return next((r for r in pool if has_img(r) and not rival(r)), next((r for r in pool if has_img(r)), None))
+
+
+def competitor_names(run, brief):
+    return [c for c in (brief or {}).get("competitors", [])] + [c["advertiser"] for c in run.get("competitor_summary", [])]
+
+
+def evidence_of(r):
+    """The strongest evidence verify.py recorded for a reference: content, title, video, or None."""
+    ev = [u.get("evidence") for u in r["urls"] if u.get("verified")]
+    return next((e for e in ("content", "title", "video") if e in ev), "content" if r["status"] == "verified" and not any(ev) else None)
+
+
+def evidence_badge(r):
+    if r["status"] != "verified":
+        return '<span class="badge warn">unverified</span>'
+    return {"content": '<span class="badge">✓ page read</span>',
+            "title": '<span class="badge warn">page exists · details unconfirmed</span>',
+            "video": '<span class="badge warn">▶ video, not watched</span>'}.get(evidence_of(r), '<span class="badge">✓ link checked</span>')
 
 
 def meta_line(r):
@@ -254,7 +307,8 @@ def build_board(run, brief, client_name, thumbs_dir, kit=None):
         b = thumb_bytes(r, thumbs_dir)
         img[r["id"]] = "data:image/jpeg;base64," + base64.b64encode(b).decode() if b else ""
     h = types.SimpleNamespace(display_title=display_title, meta_line=meta_line, primary_url=primary_url, link_label=link_label,
-                              region_of=region_of, REGION_NAME=REGION_NAME, lead_order=lead_order,
+                              region_of=region_of, REGION_NAME=REGION_NAME, lead_order=lead_order, cover_ref=cover_ref, evidence_badge=evidence_badge,
+                              competitor_names=competitor_names,
                               country_name=country_name)
     return render_board.build(run, brief, client_name, kit, img, ref_codes(run), h)
 
@@ -265,7 +319,8 @@ def build_deck(run, brief, client_name, thumbs_dir, path, kit=None):
     import render_deck
     kit = kit or load_kit("zamakan")
     h = types.SimpleNamespace(display_title=display_title, meta_line=meta_line, primary_url=primary_url, link_label=link_label,
-                              region_of=region_of, REGION_NAME=REGION_NAME, lead_order=lead_order,
+                              region_of=region_of, REGION_NAME=REGION_NAME, lead_order=lead_order, cover_ref=cover_ref, evidence_badge=evidence_badge,
+                              competitor_names=competitor_names,
                               country_name=country_name)
     return render_deck.build(run, brief, client_name, kit, lambda r: thumb_bytes(r, thumbs_dir), ref_codes(run), h, path,
                              Path(thumbs_dir) / "brand")

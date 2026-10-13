@@ -225,7 +225,7 @@ def build(run, brief, client_name, kit, thumb, codes, h, path, cache):
     lede = " · ".join(brief[k] for k in ("moment", "objective") if brief and brief.get(k)) or run["run"].get("question", "")
     text(s, M, 13.2, 18, 2.4, lede, 15, False, C["on_dark_muted"])
     text(s, M, SLIDE_H - 1.6, 18, 0.6, run["run"].get("created", ""), 11, False, C["on_dark_muted"])
-    hero = next((byid[i] for i in run.get("top", []) if thumb(byid[i])), next((r for r in refs if thumb(r)), None))
+    hero = h.cover_ref(run, lambda r: bool(thumb(r)), h.competitor_names(run, brief))
     if hero:
         picture(s, hero, 22.2, 2.2, 9.9, SLIDE_H - 2.2, arch=kit["arch"], code=False)
 
@@ -286,7 +286,7 @@ def build(run, brief, client_name, kit, thumb, codes, h, path, cache):
 
     # territories
     recd = set((rec or {}).get("territory_ids", []))
-    leads = h.lead_order(run, {r["id"]: thumb(r) for r in refs})
+    leads = h.lead_order(run, {r["id"]: thumb(r) for r in refs}, h.competitor_names(run, brief))
     for i, t in enumerate(run.get("territories", []), 1):
         s = slide(f"Territory {i:02d}" + ("  ·  recommended" if t["id"] in recd else ""))
         text(s, M, 2.25, 15.4, 1.8, t["name"], 32, False, C["heading"], DISP, min_size=22)

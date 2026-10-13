@@ -22,7 +22,8 @@ summaries. Use them instead of reading raw web pages, which costs far more token
 
 - Client work follows `zamakan-core`: `python3 $CORE/scripts/client.py job <slug> scout-<topic>` creates the
   job folder (`clients/<slug>/jobs/<date>-scout-<topic>/`). Everything for this run goes there (`$JOB`).
-- If the client has a design system, skim the Quick reference of `clients/<slug>/design-system/brand.md`:
+- If the client has a design system, skim the Quick reference of `clients/<slug>/design-system/brand.md` (if it
+  hasn't been written yet, read the Overview of `DESIGN.md` and `client` in `spec.json` instead):
   personality and visual world help you judge fit. If it doesn't exist, judge fit from the brief's brand
   description, carry on, and add an open question (don't block the research on it). No client (a general creative
   question)? Use `$JOB = jobs/<date>-scout-<topic>/` at the repo root.

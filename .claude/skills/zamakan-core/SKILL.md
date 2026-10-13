@@ -37,7 +37,8 @@ python3 $CORE/scripts/client.py job <slug> <job-name>       # create jobs/<date>
 1. Run `client.py status <slug>`.
 2. **If there is no design system,** run the `zamakan-design-system` skill first. Making visuals without one
    means guessing colours and logo rules, which is the most common way agency work gets rejected.
-3. **If there is one,** read `design-system/brand.md` (the Quick reference is usually enough). Then use
+3. **If there is one,** read `design-system/brand.md` (the Quick reference is usually enough; if `brand.md` is missing,
+   read `DESIGN.md` and `spec.json`, and say so in your delivery notes). Then use
    `tokens.css` / `tokens.json` for exact values and `manifest.json` to pick logo files. The full
    consumer rules are in `references/design-system-contract.md`.
 4. Mention any open conflicts from `sources.md` that affect your deliverable.

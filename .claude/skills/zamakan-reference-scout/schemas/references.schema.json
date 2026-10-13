@@ -71,6 +71,10 @@
             "global"
           ],
           "description": "gcc = favour Saudi/GCC work (default); mena = Arab world; global = no regional preference (fit is still judged for the client's market)"
+        },
+        "cover": {
+          "type": "string",
+          "description": "Reference id to use as the cover image of the board and deck (pick one with a clean picture: no burned-in subtitles, not a competitor's ad)."
         }
       }
     },
@@ -428,6 +432,14 @@
               },
               "title_match": {
                 "type": "boolean"
+              },
+              "evidence": {
+                "enum": [
+                  "content",
+                  "title",
+                  "video"
+                ],
+                "description": "Set by verify.py: content = page read and matches; title = page exists but has almost no readable text (login wall); video = video exists, not watched."
               }
             }
           }

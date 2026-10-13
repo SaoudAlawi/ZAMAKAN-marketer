@@ -144,7 +144,7 @@ section{padding-block:clamp(40px,6vw,72px)} section+section{border-top:1px solid
 .badges{display:flex;gap:6px;flex-wrap:wrap} .badge{font:600 11px/1 var(--body);padding:5px 8px;border-radius:999px;background:var(--chip);color:var(--ink)}
 .ring-direct{background:var(--direct);color:var(--on-direct)}.ring-category{background:var(--category);color:var(--on-category)}
 .ring-adjacent{background:var(--adjacent);color:var(--on-adjacent)}.ring-wildcard{background:var(--wildcard);color:var(--on-wildcard)}
-.card[hidden]{display:none!important}
+.card[hidden]{display:none!important} .badge.warn{background:transparent;border:1px dashed var(--muted);color:var(--muted)}
 /* kickoff */
 .check{list-style:none;padding:0;margin:0;display:grid;gap:12px} .check li{display:flex;gap:12px;align-items:flex-start;background:var(--panel);padding:16px 18px;border-radius:var(--r)}
 .check li:before{content:"";flex:none;width:18px;height:18px;border:2px solid var(--accent);border-radius:3px;margin-top:3px}
@@ -185,14 +185,14 @@ def build(run, brief, client_name, kit, img, codes, h):
     logo = kit["logos"].get("on_dark")
     brand_html = (f'<img src="{data_uri(logo["svg"] or logo["png"])}" alt="{E(kit["client_name"] or "")}">' if logo
                   else f'<span class="wordmark">{E(client_name or th["name"])}</span>')
-    hero_ref = next((byid[i] for i in run.get("top", []) if img.get(i)), next((r for r in refs if img.get(r["id"])), None))
+    hero_ref = h.cover_ref(run, lambda r: bool(img.get(r["id"])), h.competitor_names(run, brief))
     hero = (f'<figure class="hero{" arch" if kit["arch"] else ""}" style="margin:0">{pic(hero_ref)}'
             f'<figcaption>{codes[hero_ref["id"]]} · {E(hero_ref["brand"])}: {E(hero_ref["title"])}</figcaption></figure>') if hero_ref else "<div></div>"
     lede = " · ".join(E(brief[k]) for k in ("moment", "objective", "audience") if brief and brief.get(k)) or E(run["run"].get("question", ""))
     n_ver = sum(r["status"] == "verified" for r in refs)
     scope = run["run"].get("scope", "gcc")
     local = sum(h.region_of(r) == "gcc" for r in refs)
-    stats = [(len(refs), "references"), (n_ver, "checked live"), (local, "from the GCC") if scope != "global" else
+    stats = [(len(refs), "references"), (n_ver, "links checked"), (local, "from the GCC") if scope != "global" else
              (len({h.region_of(r) for r in refs}), "regions"), (len(run.get("territories", [])), "territories")]
     cover = (f'<header class="cover"><div class="wrap"><div class="topbar">{brand_html}<div class="eyebrow">Reference scout · '
              f'{E(run["run"]["mode"])}<br>{E(run["run"].get("created", ""))}</div></div>'
@@ -221,7 +221,7 @@ def build(run, brief, client_name, kit, img, codes, h):
     if run.get("territories"):
         recd = set((rec or {}).get("territory_ids", []))
         T = []
-        leads = h.lead_order(run, img)
+        leads = h.lead_order(run, img, h.competitor_names(run, brief))
         for i, t in enumerate(run["territories"], 1):
             rs = leads[t["id"]]
             pics = "".join(f'<a href="#ref-{r["id"]}" title="{E(r["brand"])}: {E(r["title"])}">{pic(r)}<span class="code">{codes[r["id"]]}</span></a>' for r in rs)
@@ -286,7 +286,7 @@ def build(run, brief, client_name, kit, img, codes, h):
     for r in sorted(refs, key=lambda r: codes[r["id"]]):
         cards += (f'<article class="card" id="ref-{r["id"]}" data-ring="{r["ring"]}" data-region="{h.region_of(r)}"><div class="img">{pic(r)}'
                   f'<span class="code">{codes[r["id"]]}</span></div><div class="body"><div class="badges"><span class="badge ring-{r["ring"]}">{RING_NAME[r["ring"]]}</span>'
-                  + ('<span class="badge">✓ checked live</span>' if r["status"] == "verified" else '<span class="badge">unverified</span>')
+                  + h.evidence_badge(r)
                   + ('<span class="badge">deep dive</span>' if r["id"] in run.get("top", []) else "")
                   + f'</div><div class="brand">{E(r["brand"])}</div><h4>{E(r["title"])}</h4><div class="meta">{E(h.meta_line(r))}</div>'
                   f'<p>{E(r["card"]["idea"])}</p><p class="why">{E(r["card"]["why_relevant"])}</p>'
@@ -313,7 +313,9 @@ def build(run, brief, client_name, kit, img, codes, h):
             f'Styled with the {E(th["name"])} DESIGN.md.')
     mark_img = f'<img src="{data_uri(mark["svg"] or mark["png"])}" alt="">' if mark else ""
     footer = (f'<footer><div class="wrap">{mark_img}<div>'
-              f'<p>Every reference links to its original page and was checked live on {E(run["run"].get("created", ""))}. Thumbnails © their owners, internal reference use only.</p>'
+              f'<p>Every reference links to its original page, checked on {E(run["run"].get("created", ""))}. "Page read" means its content was read and matches; '
+              f'"page exists" means a login wall or empty page (details unconfirmed); "video, not watched" means the video exists but nobody has watched it yet. '
+              f'Thumbnails © their owners, internal reference use only.</p>'
               f'<p>{look} Generated by zamakan-reference-scout.</p></div></div></footer>')
     head = (f'<meta charset="utf-8"><title>{E(h.display_title(run, brief, client_name))}</title><meta name="viewport" content="width=device-width,initial-scale=1">'
             + ("" if kit["font_files"] else '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' + font_links(th)))

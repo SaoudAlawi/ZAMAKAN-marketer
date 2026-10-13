@@ -49,12 +49,19 @@ def semantic(run, target=None, brief=None):
     for i in {i for i in ids if ids.count(i) > 1}:
         E.append(f"duplicate reference id: {i}")
     seen = {}
+    for r in refs:  # each reference's own (first) link must be unique; a shared source (an award round-up) may repeat
+        key = r["urls"][0]["url"].rstrip("/").split("#")[0].lower()
+        if key in seen and seen[key] != r["id"]:
+            E.append(f"same main URL on '{seen[key]}' and '{r['id']}': {r['urls'][0]['url']}")
+        seen[key] = r["id"]
+    thumbs = {}
     for r in refs:
-        for u in r["urls"]:
-            key = u["url"].rstrip("/").split("#")[0].lower()
-            if key in seen and seen[key] != r["id"]:
-                E.append(f"same URL on '{seen[key]}' and '{r['id']}': {u['url']}")
-            seen[key] = r["id"]
+        tu = (r.get("thumbnail") or {}).get("url")
+        if tu:
+            thumbs.setdefault(tu, []).append(r["id"])
+    for tu, ids in thumbs.items():
+        if len(ids) > 1:
+            W.append(f"same thumbnail on {ids}: probably a site logo or slate, not the campaign image")
     byid = {r["id"]: r for r in refs}
     search_only = run["run"].get("web_access") == "search-only"
     for r in refs:
@@ -73,6 +80,13 @@ def semantic(run, target=None, brief=None):
             E.append(f"top: '{t}' is rejected")
         elif byid[t]["status"] == "unverified":
             W.append(f"top: '{t}' is unverified; prefer verified work for deep teardowns")
+        else:
+            ev = {u.get("evidence") for u in byid[t]["urls"]}
+            if ev and "content" not in ev and ev != {None}:
+                W.append(f"top: '{t}' rests only on {'an unwatched video' if 'video' in ev and 'title' not in ev else 'a page with no readable text'}"
+                         "; read a case page or article (fetch_meta --text) before writing its teardown, or say what is unconfirmed")
+    if run["run"].get("cover") and run["run"]["cover"] not in byid:
+        E.append(f"run.cover: unknown reference id '{run['run']['cover']}'")
     tids = {t["id"] for t in run.get("territories", [])}
     for tid in (run.get("recommendation") or {}).get("territory_ids", []):
         if tid not in tids:

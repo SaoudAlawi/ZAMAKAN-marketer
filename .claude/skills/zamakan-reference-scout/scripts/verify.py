@@ -4,11 +4,17 @@
 Usage: python verify.py <references.json> [--write] [--workers 6]
 
 For each reference URL: fetch it (YouTube/Vimeo via oEmbed), record http_status and checked_at,
-and compare the page's title/brand with the reference's title/brand (title_match).
+and compare the page with the reference's title/brand: the page title first, then (for articles whose headline doesn't
+name the campaign) the page's readable text. Each URL gets an `evidence` level:
+  content  - the page was read and it matches (title, or campaign + brand in the body text)
+  title    - the title matches but there is almost no readable text (login wall, award entry, empty shell):
+             the page exists; details such as award level are NOT confirmed by it
+  video    - a YouTube/Vimeo video exists with this title; nobody has watched it
 Then per reference:
-  verified    - at least one URL is reachable AND its page matches the claimed title/brand
+  verified    - at least one URL is reachable AND matches (see `evidence` for how strongly)
   unverified  - reachable but no match (check by hand, fix the title, or drop it)
   rejected    - every URL is gone (404/410) or unreachable: never show it as a reference
+Run it again after every edit of references.json (rebuilding the file resets statuses).
 --write updates the file in place (and sets run.web_access = "full"); otherwise it only reports.
 """
 import argparse
@@ -47,6 +53,16 @@ def matches(ref, page):
     return overlap >= 0.6 or (overlap >= 0.3 and brand_ok)
 
 
+def text_match(ref, text):
+    """For articles whose headline doesn't name the campaign: the campaign words and the brand appear in the body."""
+    body = tokens(text)
+    claimed, brand = tokens(ref.get("title")), tokens(ref.get("brand"))
+    return bool(claimed) and len(claimed & body) / len(claimed) >= 0.6 and bool(brand & body)
+
+
+EVIDENCE_RANK = {"content": 3, "title": 2, "video": 1}
+
+
 def check(ref):
     now = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     any_ok, any_alive = False, False
@@ -55,12 +71,25 @@ def check(ref):
         status = page.get("http_status") or 0
         alive = 200 <= status < 400 and not page.get("error")
         m = alive and matches(ref, page)
+        evidence = None
+        if alive and page.get("source") in ("youtube", "vimeo"):
+            evidence = "video" if m else None
+        elif alive:
+            full = fetch_one(u["url"], with_text=True) if not m or page.get("text_chars") is None else page
+            if not m and text_match(ref, full.get("text", "")):
+                m = True
+            if m:
+                evidence = "content" if (full.get("text_chars") or page.get("text_chars") or 0) >= 400 else "title"
         u.update(http_status=status, checked_at=now, verified=bool(m), title_match=bool(m))
+        if evidence:
+            u["evidence"] = evidence
+        else:
+            u.pop("evidence", None)
         any_alive |= alive
         any_ok |= m
     before = ref["status"]
     ref["status"] = "verified" if any_ok else ("unverified" if any_alive else "rejected")
-    return ref["id"], before, ref["status"], [(u["url"], u["http_status"], u["title_match"]) for u in ref["urls"]]
+    return ref["id"], before, ref["status"], [(u["url"], u["http_status"], u["title_match"], u.get("evidence")) for u in ref["urls"]]
 
 
 def main():
@@ -78,10 +107,16 @@ def main():
     for rid, before, after, urls in results:
         counts[after] = counts.get(after, 0) + 1
         if after != "verified":
-            detail = "; ".join(f"{s} {'match' if m else 'no-match'} {u}" for u, s, m in urls)
+            detail = "; ".join(f"{s} {'match' if m else 'no-match'} {u}" for u, s, m, _ in urls)
             print(f"  {after:<10} {rid}: {detail}")
-        elif any(not m for _, _, m in urls):
-            extra = "; ".join(f"{s} {u}" for u, s, m in urls if not m)
+            continue
+        best = max((EVIDENCE_RANK.get(e, 0) for *_, e in urls), default=0)
+        if best == 2:
+            print(f"  thin       {rid}: page exists but has almost no readable text (login wall?): details not confirmed by it")
+        elif best == 1:
+            print(f"  video      {rid}: the video exists; nobody has watched it: say so before quoting what happens in it")
+        if any(not m for _, _, m, _ in urls):
+            extra = "; ".join(f"{s} {u}" for u, s, m, _ in urls if not m)
             print(f"  note       {rid}: verified, but extra link(s) don't match the title (fine for press coverage; check): {extra}")
     print(f"verified {counts.get('verified', 0)} · unverified {counts.get('unverified', 0)} · rejected {counts.get('rejected', 0)}"
           f" of {len(refs)}")
