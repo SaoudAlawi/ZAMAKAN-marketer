@@ -102,7 +102,7 @@ search-only mode when it cannot fetch pages.
 | 1 | Sample client package (Rawaq) + answer key | PDF renders correctly; known traps verified | ✅ |
 | 2 | Output contract: spec.json schema + validator, gold Rawaq spec, consumer contract, brand.md template | 17 pytest pass; every deliberate mistake caught | ✅ |
 | 3 | Scripts: inventory, pdf digest (colours/swatches/conflicts/flags/renders), fonts, logos, extract_all → digest.md | 59 pytest pass; every answer-key trap detected | ✅ |
-| 4 | Scripts: build tokens.json/CSS, manifest, sources.md, **DESIGN.md export**, contrast check, preview render | pytest; preview PNG reviewed by you | ⬜ |
+| 4 | build_design_system.py: tokens.json (DTCG 2025.10), tokens.css, manifest, sources.md (+contrast), **DESIGN.md** (passes Google's linter: 0 errors), preview style tile | 73 pytest pass; deterministic; preview awaiting your review | ✅ |
 | 5 | SKILL.md for zamakan-design-system + zamakan-core | First end-to-end run on Rawaq | ⬜ |
 | 6 | Evals: with-skill vs without-skill, graded against answer key | Clear win over baseline; your review in eval viewer | ⬜ |
 | 7 | Iterate until the answer-key score and your review are both satisfied | — | ⬜ |
@@ -135,4 +135,5 @@ reference scout, bilingual Arabic/Gulf craft, and agency-scale multi-client stru
 - 2026-10-13: Re-scoped to the sub-skill architecture; built the Rawaq sample package and answer key.
 - 2026-10-13: Feature 2 (reference scout) defined; network limits of the cloud environment noted.
 - 2026-10-13: Step 2 done. Design: the agent writes only spec.json + brand.md; scripts generate the rest.
+- 2026-10-13: Step 4 done. One build command generates all contract files from spec.json; DESIGN.md validated with @google/design.md 0.4.0.
 - 2026-10-13: Step 3 done. One command (`extract_all.py`, about 5 s) turns the brand folder into a 6 KB digest + 10 KB page text + 2 contact sheets. Reviewed marketingskills + DESIGN.md (see 4b).
