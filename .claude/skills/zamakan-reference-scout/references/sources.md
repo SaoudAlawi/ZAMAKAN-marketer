@@ -1,0 +1,80 @@
+# Sources: where to look and how
+
+Tested live from this environment (October 2026). Each source is listed with what it gives, how to query it, and its quirks.
+
+## Contents
+1. Ads of the World (primary archive)
+2. YouTube
+3. Vimeo
+4. Award shows
+5. Trade press and newsrooms (MENA first)
+6. Live competitor activity
+7. Query patterns per ring (English + Arabic)
+
+---
+
+## 1. Ads of the World (adsoftheworld.com): the richest source
+Each campaign page gives country, month/year, brand(s), agency, medium, industry, number of assets,
+full credits, the video file and **related campaigns**. `fetch_meta.py` parses all of it.
+
+- **Search:** `discover.py aotw-search <keyword>` accepts **one keyword only**; multi-word searches return nothing.
+  Run several single-word searches (`ramadan`, `iftar`, `suhoor`, `coffee`, `heritage`) and let `score.py` combine them.
+- **Lists:** `discover.py aotw-list <kind> <slug> --pages N` (60 cards per page).
+  - `countries`: `saudi-arabia`, `united-arab-emirates`, `qatar`, `kuwait`, `bahrain`, `oman`, `egypt`,
+    `jordan`, `lebanon` … (slugs are full names; `uae` does not exist)
+  - `industries`: `agency-self-promo alcoholic-drinks automotive beauty cannabis confectionery-snacks delivery-services
+    education electronic-devices electronics-technology fashion finance fitness food gambling gaming health
+    hospitality-tourism house-garden household-products industrial-agriculture insurance jewelry lottery media
+    military movies music non-alcoholic-drinks office-equipment other personal-accessories pets pharmaceutical
+    professional-services public-interest-ngo public-utility real-estate recreation-leisure religion retail-services
+    sports sportswear tobacco toys transport travel tv-promos`
+  - `medium_types`: `360 ambient audio content design digital direct experiential film integrated outdoor print`
+  - `regions`: `africa asia central-america europe far-east latin-america middle-east north-america oceania`
+- **Related:** `discover.py aotw-related <url> ...` expands from your best finds, which is often the fastest way to more relevant work.
+- **Student work** is common (pages say "student campaign" or "by ad school"). `score.py` flags it.
+- Plain `curl` gets 403; the scripts send browser headers and fall back to Chromium automatically.
+
+## 2. YouTube
+- `discover.py youtube <words> --min-views 20000` returns title, channel, upload age, views and duration.
+  Use `--min-views` to cut noise; official brand channels are the best signal.
+- `fetch_meta.py` uses YouTube's oEmbed (title, channel, thumbnail). Watch pages are bot-blocked from cloud
+  servers, so the upload date and views come from the search card only.
+- Noise to skip: news agencies, fan re-uploads, "AI ad I made" demos, compilations (`score.py` flags most of them).
+
+## 3. Vimeo
+- Agency and director reels, often the original high-quality upload of a commercial.
+- vimeo.com search is bot-blocked, so find Vimeo links with web search (`site:vimeo.com <brand> <campaign>`,
+  `<director> <brand> vimeo`). `fetch_meta.py` reads them through Vimeo's oEmbed (title, author, thumbnail, date).
+
+## 4. Award shows (proven creative quality)
+Use web search for winners and shortlists, then link the case page (often on Ads of the World or the agency site):
+- **Dubai Lynx** (MENA's festival): `"Dubai Lynx" <year> Grand Prix <category>`, `dubailynx.com`
+- **MENA Effie Awards** (effectiveness, so results are published): `"MENA Effie" <year> gold <category>`
+- **Cannes Lions** (lovethework.com; most case pages need login, so use press coverage), **D&AD**, **One Show**, **Clio**, **Epica**, **LIA**
+- Results claims are only usable when a source states them. Put the source URL in `results[].source_url`.
+
+## 5. Trade press and newsrooms (MENA first)
+Read via Open Graph (`fetch_meta.py`); discover via web search:
+- **Campaign Middle East** (campaignme.com): `site:campaignme.com <brand OR moment> campaign`
+- **Arabad** (arabadonline.com), **Communicate**, **LBB Online** (lbbonline.com, "Middle East" tag), **AdForum**
+- Brand and agency newsrooms or case pages: good for credits and stated results.
+
+## 6. Live competitor activity (competitor-watch mode)
+- **Meta Ad Library**: web search `"<brand>" site:facebook.com/ads/library`, or ask for the exact URL. The page is
+  script-heavy; if `fetch_meta.py` can't read it, record what web search shows and say coverage was limited.
+- **TikTok Creative Center**: top ads by country (Saudi Arabia) and industry; find through web search.
+- **Brands' own channels**: Instagram, TikTok, Snapchat and X profiles found through search. Note the dates of recent posts.
+- Record only what you saw: `live_ad.first_seen/last_seen/format/copy`. Never estimate spend or reach.
+
+## 7. Query patterns per ring
+Write 8–15 queries before collecting, and mix languages.
+
+| Ring | English | Arabic |
+|---|---|---|
+| direct | `<category> <moment> Saudi campaign`, `<competitor> campaign <year>` | «حملة <الفئة> رمضان», «إعلان <المنافس>» |
+| category | `<category> <moment> ad`, `best <category> commercials <year>` | «إعلان <الفئة>» |
+| adjacent | `<moment> campaign <insight word>` (e.g. *togetherness, hospitality, generosity*) | «حملة رمضانية كرم», «إعلان ضيافة» |
+| wildcard | `Grand Prix <year> <medium>`, `Dubai Lynx Grand Prix <year>` | n/a |
+
+Seasonal moments to search: Ramadan, Eid al-Fitr, Eid al-Adha, Saudi Founding Day (22 Feb), Saudi National Day (23 Sep),
+Riyadh Season, back to school, White Friday. Check the dates in `gulf-culture.md`.

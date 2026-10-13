@@ -6,7 +6,7 @@ Usage:
   python library.py search [words...] [--country SA] [--media film] [--since 2022] [--moment ramadan]
                           [--status verified] [--limit 30] [--json]
   python library.py stats
-Options: --library <path> (default: <repo>/library/references.jsonl)
+Options: --library <path> (default: $ZAMAKAN_LIBRARY, else <repo>/library/references.jsonl)
 
 Search first, before searching the web: past runs may already hold good, verified references.
 Merging keeps the richest version of each field, unions tags/moments, and records every run
@@ -15,6 +15,7 @@ that used the reference in `seen_in` (run id, client, date, ring).
 import argparse
 import datetime as dt
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -32,7 +33,9 @@ def repo_root():
 
 
 def default_library():
-    return repo_root() / "library" / "references.jsonl"
+    """$ZAMAKAN_LIBRARY overrides (isolated test runs, other teams); else <repo>/library/references.jsonl."""
+    env = os.environ.get("ZAMAKAN_LIBRARY")
+    return Path(env) if env else repo_root() / "library" / "references.jsonl"
 
 
 def canon(url):

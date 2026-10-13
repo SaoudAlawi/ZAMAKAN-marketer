@@ -97,3 +97,17 @@ def test_top_with_teardown_ok_but_unverified_warns(run):
 def test_target_count_warning(run):
     _, warnings = validate(run, target=25)
     assert any("3 references, target 25" in w for w in warnings)
+
+
+def test_skill_run_example_is_valid_and_not_the_test_brief():
+    ex = json.loads((SKILL / "references/run-example.json").read_text(encoding="utf-8"))
+    errors, _ = validate(ex)
+    assert errors == []
+    assert all(r["status"] == "verified" for r in ex["references"])
+    assert "ramadan" not in json.dumps(ex).lower()  # must not leak the Rawaq Ramadan eval answers
+
+
+def test_library_path_env_override(tmp_path, monkeypatch):
+    import library
+    monkeypatch.setenv("ZAMAKAN_LIBRARY", str(tmp_path / "lib.jsonl"))
+    assert library.default_library() == tmp_path / "lib.jsonl"

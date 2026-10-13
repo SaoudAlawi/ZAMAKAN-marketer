@@ -55,7 +55,7 @@ python3 $CORE/scripts/client.py job <slug> <job-name>       # create jobs/<date>
 | Skill | Does |
 |---|---|
 | `zamakan-design-system` | Brand files → verified design system (this contract) |
-| `zamakan-reference-scout` | *(planned)* Campaign references from Ads of the World, Vimeo, award shows and live competitor ads → analysis + creative territories |
+| `zamakan-reference-scout` | Verified campaign references (Ads of the World, YouTube, Vimeo, award shows, trade press, competitor ads) → analysis, white space, creative territories; board / deck / report |
 
 General marketing skills (copywriting, ad creative, social, A/B tests…) from
 [marketingskills](https://github.com/coreyhaines31/marketingskills) work well alongside these. When one
