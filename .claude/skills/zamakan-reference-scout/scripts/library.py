@@ -86,6 +86,10 @@ def neutral(rec):
             out.pop("teardown", None)
     if rec.get("provenance"):
         out["provenance"] = {k: v for k, v in rec["provenance"].items() if k in ("found_via", "confidence")}
+    if isinstance(out.get("thumbnail"), dict):  # a local path would name the client's job folder: keep the web address only
+        out["thumbnail"] = {"url": out["thumbnail"]["url"]} if out["thumbnail"].get("url") else None
+        if not out["thumbnail"]:
+            out.pop("thumbnail")
     if "seen_in" in rec and "used" not in out:
         dates = sorted(s.get("date") for s in rec["seen_in"] if s.get("date"))
         ids = sorted({run_hash(s["run"]) for s in rec["seen_in"] if s.get("run")})

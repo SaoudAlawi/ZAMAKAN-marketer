@@ -95,3 +95,11 @@ def test_same_run_twice_counts_once(tmp_path, monkeypatch):
     L.merge(lib, run, "rawaq")
     assert {r["used"]["runs"] for r in lib.values()} == {1}
     assert "rawaq" not in json.dumps(lib).lower()
+
+
+def test_local_paths_never_reach_the_shared_library():
+    """Found by a benchmark agent: thumbnail.local held /…/clients/<client>/jobs/… in the shared library."""
+    rec = {"key": "x.com/a", "id": "a", "title": "T", "urls": [{"url": "https://x.com/a"}], "status": "verified",
+           "thumbnail": {"url": "https://img.x.com/a.jpg", "local": "/w/clients/acme/jobs/2026-scout/thumbs/a.jpg"}}
+    assert L.neutral(rec)["thumbnail"] == {"url": "https://img.x.com/a.jpg"}
+    assert "thumbnail" not in L.neutral({**rec, "thumbnail": {"local": "/w/clients/acme/x.jpg"}})
