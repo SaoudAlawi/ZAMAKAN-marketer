@@ -1,0 +1,134 @@
+{
+  "schema_version": "1.0",
+  "run": {
+    "id": "rawaq-ramadan-2027-test",
+    "mode": "brief",
+    "client": "rawaq",
+    "created": "2026-10-13",
+    "brief_file": "brief.json",
+    "question": "References and territories for Rawaq's Ramadan 2027 campaign",
+    "web_access": "search-only",
+    "queries": [
+      "adsoftheworld coffee campaign Saudi Arabia"
+    ]
+  },
+  "references": [
+    {
+      "id": "half-million-your-2nd-half",
+      "title": "Your 2nd Half",
+      "brand": "Half Million Coffee",
+      "agency": "TTP",
+      "country": "SA",
+      "year": 2023,
+      "category": "Coffee",
+      "media": [
+        "film"
+      ],
+      "ring": "direct",
+      "status": "unverified",
+      "urls": [
+        {
+          "url": "https://www.adsoftheworld.com/campaigns/your-2nd-half",
+          "kind": "case",
+          "source": "adsoftheworld"
+        }
+      ],
+      "card": {
+        "idea": "POV film that makes the Half Million cup the viewer's constant companion.",
+        "why_relevant": "Direct Saudi coffee competitor; shows how the category talks about attachment to the cup."
+      },
+      "provenance": {
+        "found_via": "web-search",
+        "queries": [
+          "adsoftheworld coffee campaign Saudi Arabia"
+        ],
+        "confidence": "medium"
+      }
+    },
+    {
+      "id": "space-cup-cafe-social-posters",
+      "title": "Cafe Social Media Posters",
+      "brand": "Space Cup",
+      "agency": "Stride Media Group",
+      "country": "SA",
+      "year": 2024,
+      "category": "Coffee",
+      "media": [
+        "social"
+      ],
+      "ring": "direct",
+      "status": "unverified",
+      "urls": [
+        {
+          "url": "https://www.adsoftheworld.com/campaigns/cafe-social-media-posters",
+          "kind": "case",
+          "source": "adsoftheworld"
+        }
+      ],
+      "card": {
+        "idea": "A 17-piece social poster system for a Jeddah specialty takeaway café.",
+        "why_relevant": "Benchmark for the social craft level of Saudi specialty cafés."
+      },
+      "provenance": {
+        "found_via": "web-search",
+        "confidence": "medium"
+      }
+    },
+    {
+      "id": "jazean-coffee-story-of-the-earth",
+      "title": "Story of the Earth",
+      "brand": "Jazean Coffee",
+      "country": "SA",
+      "year": 2026,
+      "category": "Coffee",
+      "media": [
+        "print"
+      ],
+      "ring": "direct",
+      "status": "unverified",
+      "tags": [
+        "heritage",
+        "process"
+      ],
+      "urls": [
+        {
+          "url": "https://www.adsoftheworld.com/campaigns/jazean-coffee-story-of-the-earth-heritage-campaign-cadd-dau-university",
+          "kind": "case",
+          "source": "adsoftheworld"
+        }
+      ],
+      "card": {
+        "idea": "Poster series tracing Saudi coffee from hand-picking to the final pour.",
+        "why_relevant": "Heritage told through process rather than clichés, close to Rawaq's 'rooted' value."
+      },
+      "provenance": {
+        "found_via": "web-search",
+        "confidence": "medium",
+        "notes": "Student project (Dar Al-Uloom University)"
+      }
+    }
+  ],
+  "patterns": [
+    {
+      "pattern": "Saudi coffee brands lean on craft and heritage rather than moments.",
+      "reference_ids": [
+        "jazean-coffee-story-of-the-earth",
+        "space-cup-cafe-social-posters"
+      ]
+    }
+  ],
+  "territories": [
+    {
+      "id": "after-taraweeh-ritual",
+      "name": "The after-taraweeh ritual",
+      "name_ar": "قهوة ما بعد التراويح",
+      "thesis": "Own the late-night coffee run as Ramadan's modern majlis.",
+      "reference_ids": [
+        "half-million-your-2nd-half"
+      ]
+    }
+  ],
+  "open_questions": [
+    "Web pages could not be fetched in this run; verify all references before sharing."
+  ]
+}

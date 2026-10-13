@@ -1,0 +1,604 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zamakan.agency/schemas/scout-run/1.0",
+  "title": "ZAMAKAN reference-scout run (references.json)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run",
+    "references"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "run": {
+      "type": "object",
+      "required": [
+        "id",
+        "mode",
+        "created"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "mode": {
+          "enum": [
+            "brief",
+            "creative-question",
+            "competitor-watch",
+            "pitch"
+          ]
+        },
+        "client": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "created": {
+          "type": "string"
+        },
+        "brief_file": {
+          "type": "string"
+        },
+        "question": {
+          "type": "string"
+        },
+        "web_access": {
+          "enum": [
+            "full",
+            "search-only"
+          ],
+          "description": "search-only = pages could not be fetched; nothing can be 'verified'"
+        },
+        "queries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "references": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/reference"
+      }
+    },
+    "top": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+      },
+      "maxItems": 10,
+      "description": "ids of the deep-teardown references, best first"
+    },
+    "patterns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "pattern",
+          "reference_ids"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "pattern": {
+            "type": "string"
+          },
+          "reference_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+            },
+            "minItems": 1
+          }
+        }
+      }
+    },
+    "white_space": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "What no one in the category is doing"
+    },
+    "territories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "thesis",
+          "reference_ids"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+          },
+          "name": {
+            "type": "string"
+          },
+          "name_ar": {
+            "type": "string"
+          },
+          "thesis": {
+            "type": "string",
+            "description": "The creative idea space in 1-2 sentences"
+          },
+          "why_this_client": {
+            "type": "string"
+          },
+          "reference_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+            },
+            "minItems": 1
+          },
+          "example_executions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "risks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "competitor_summary": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "advertiser"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "advertiser": {
+            "type": "string"
+          },
+          "active_ads": {
+            "type": "integer"
+          },
+          "formats": {
+            "type": "string"
+          },
+          "messaging_pillars": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "longest_running": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "$defs": {
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "brand",
+        "ring",
+        "urls",
+        "status",
+        "card",
+        "provenance"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "title": {
+          "type": "string"
+        },
+        "brand": {
+          "type": "string"
+        },
+        "brand_ar": {
+          "type": "string"
+        },
+        "agency": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$",
+          "description": "ISO 3166-1 alpha-2"
+        },
+        "year": {
+          "type": "integer",
+          "minimum": 1950,
+          "maximum": 2100
+        },
+        "category": {
+          "type": "string"
+        },
+        "media": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "film",
+              "print",
+              "ooh",
+              "social",
+              "digital",
+              "experiential",
+              "activation",
+              "radio",
+              "packaging",
+              "influencer",
+              "product",
+              "pr",
+              "retail",
+              "game",
+              "music",
+              "other"
+            ]
+          }
+        },
+        "channels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "language": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "urls": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "url",
+              "kind"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "url": {
+                "type": "string",
+                "pattern": "^https?://"
+              },
+              "kind": {
+                "enum": [
+                  "case",
+                  "video",
+                  "image",
+                  "article",
+                  "ad-library",
+                  "social-post",
+                  "award-entry",
+                  "brand-site"
+                ]
+              },
+              "source": {
+                "type": "string",
+                "description": "site key, e.g. adsoftheworld, vimeo, youtube, lovethework"
+              },
+              "verified": {
+                "type": "boolean"
+              },
+              "checked_at": {
+                "type": "string"
+              },
+              "http_status": {
+                "type": "integer"
+              },
+              "title_match": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "thumbnail": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "url": {
+              "type": "string",
+              "pattern": "^https?://"
+            },
+            "local": {
+              "type": "string"
+            }
+          }
+        },
+        "awards": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "show"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "show": {
+                "type": "string"
+              },
+              "year": {
+                "type": "integer"
+              },
+              "level": {
+                "type": "string"
+              },
+              "category": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "claim"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "claim": {
+                "type": "string"
+              },
+              "source_url": {
+                "type": "string",
+                "pattern": "^https?://"
+              }
+            }
+          }
+        },
+        "ring": {
+          "enum": [
+            "direct",
+            "category",
+            "adjacent",
+            "wildcard"
+          ]
+        },
+        "moments": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scores": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "relevance": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 5
+            },
+            "craft": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 5
+            },
+            "transferability": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 5
+            },
+            "cultural_fit": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 5
+            },
+            "freshness": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 5
+            }
+          }
+        },
+        "card": {
+          "type": "object",
+          "required": [
+            "idea",
+            "why_relevant"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "idea": {
+              "type": "string",
+              "minLength": 10
+            },
+            "why_relevant": {
+              "type": "string",
+              "minLength": 10
+            }
+          }
+        },
+        "teardown": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "insight",
+            "idea",
+            "execution",
+            "transferable",
+            "cultural_fit"
+          ],
+          "properties": {
+            "insight": {
+              "type": "string"
+            },
+            "idea": {
+              "type": "string"
+            },
+            "execution": {
+              "type": "string"
+            },
+            "channels": {
+              "type": "string"
+            },
+            "tone": {
+              "type": "string"
+            },
+            "visual_devices": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "results": {
+              "type": "string"
+            },
+            "transferable": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string"
+              },
+              "description": "What this client could borrow (principles, not copies)"
+            },
+            "cultural_fit": {
+              "type": "object",
+              "required": [
+                "score",
+                "notes"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "score": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 5
+                },
+                "notes": {
+                  "type": "string"
+                }
+              }
+            },
+            "risks": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "live_ad": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "platform": {
+              "enum": [
+                "meta",
+                "tiktok",
+                "google",
+                "snapchat",
+                "linkedin",
+                "x",
+                "youtube",
+                "other"
+              ]
+            },
+            "advertiser": {
+              "type": "string"
+            },
+            "first_seen": {
+              "type": "string"
+            },
+            "last_seen": {
+              "type": "string"
+            },
+            "active": {
+              "type": "boolean"
+            },
+            "format": {
+              "type": "string"
+            },
+            "copy": {
+              "type": "string"
+            }
+          }
+        },
+        "provenance": {
+          "type": "object",
+          "required": [
+            "found_via"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "found_via": {
+              "enum": [
+                "web-search",
+                "page-fetch",
+                "library",
+                "ad-library",
+                "user"
+              ]
+            },
+            "queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "confidence": {
+              "enum": [
+                "high",
+                "medium",
+                "low"
+              ]
+            },
+            "notes": {
+              "type": "string"
+            }
+          }
+        },
+        "status": {
+          "enum": [
+            "verified",
+            "unverified",
+            "rejected"
+          ],
+          "description": "verified = a page was fetched and matches; unverified = only seen in search results (keep out of the top 5); rejected = kept for the library's memory, not shown"
+        }
+      }
+    }
+  }
+}

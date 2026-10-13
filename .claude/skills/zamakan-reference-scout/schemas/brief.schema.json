@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zamakan.agency/schemas/scout-brief/1.0",
+  "title": "ZAMAKAN reference-scout brief",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "mode",
+    "question"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "mode": {
+      "enum": [
+        "brief",
+        "creative-question",
+        "competitor-watch",
+        "pitch"
+      ]
+    },
+    "client": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "question": {
+      "type": "string",
+      "description": "The ask in one or two sentences, in the user's words"
+    },
+    "category": {
+      "type": "string"
+    },
+    "market": {
+      "type": "string"
+    },
+    "objective": {
+      "enum": [
+        "awareness",
+        "consideration",
+        "conversion",
+        "loyalty",
+        "launch",
+        "reputation",
+        "other"
+      ]
+    },
+    "audience": {
+      "type": "string"
+    },
+    "moment": {
+      "type": "string",
+      "description": "Seasonal/cultural moment, e.g. Ramadan, Eid al-Fitr, Saudi National Day"
+    },
+    "channels": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "competitors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "avoid": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Clich\u00e9s, competitors' territories, sensitivities"
+    },
+    "rings": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "direct",
+          "category",
+          "adjacent",
+          "wildcard"
+        ]
+      }
+    },
+    "target_count": {
+      "type": "integer",
+      "minimum": 5,
+      "maximum": 60
+    },
+    "outputs": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "board",
+          "deck",
+          "report"
+        ]
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

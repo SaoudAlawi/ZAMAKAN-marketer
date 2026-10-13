@@ -147,7 +147,7 @@ It runs with and without the skill, 3 runs each, plus your review.
 ### Build steps
 | # | Step | Test gate | Status |
 |---|---|---|---|
-| 1 | Contract: `reference.schema.json`, `brief.json`, library format; Rawaq Ramadan test brief; saved sample pages for offline tests | schema tests | ⬜ |
+| 1 | Contract: `brief.schema.json`, `references.schema.json` (one file the agent writes; outputs are generated), `validate_run.py` (honesty + coverage rules); Rawaq Ramadan test brief (md + json); example run from 3 real search results | 14 tests pass | ✅ |
 | 2 | Scripts: `fetch_meta.py` (site parsers + OG fallback), `verify.py`, `library.py`, `score.py` | pytest on saved pages + live smoke test | ⬜ |
 | 3 | Output builders: board (HTML), deck, report | pytest + your visual review | ⬜ |
 | 4 | SKILL.md (4 modes) + references (sources guide, analysis framework, Gulf calendar & cultural-fit guide) | first end-to-end run | ⬜ |
