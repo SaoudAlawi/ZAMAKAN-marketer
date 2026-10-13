@@ -1,0 +1,13 @@
+{
+  "skill_name": "zamakan-reference-scout",
+  "evals": [
+    {
+      "id": 1,
+      "name": "rawaq-ramadan",
+      "prompt": "The Rawaq Ramadan brief is in brief.md (in the working directory). Find us references for the creative kickoff next week and give us creative territories.",
+      "expected_output": "20-30 real, live references across direct/category/adjacent/wildcard rings (≥5 GCC, Ramadan-relevant, coffee and beyond), top teardowns, patterns and white space, 3-5 territories with Arabic names grounded in ≥2 references each and respecting the avoid-list, a visual board/deck with images.",
+      "files": ["evals/fixtures/scout/rawaq-ramadan-brief.md"],
+      "grader": "evals/grade_scout.py (property-based; re-opens every link)"
+    }
+  ]
+}
