@@ -256,6 +256,8 @@ def main_text(html, limit=4000):
         node = max(divs, key=lambda d: sum(len(p.get_text()) for p in d.find_all("p", recursive=False)), default=s.body)
     paras = [_clean(p.get_text(" ")) for p in (node or s).find_all(["p", "h2", "h3", "li"])]
     text = "\n".join(p for p in paras if len(p) > 30)
+    if len(text) < 300:  # pages that don't use <p>: fall back to all visible text
+        text = _clean((node or s).get_text(" "))
     return text[:limit] + ("…" if len(text) > limit else "")
 
 

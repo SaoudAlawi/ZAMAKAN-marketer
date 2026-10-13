@@ -111,3 +111,49 @@ def test_library_path_env_override(tmp_path, monkeypatch):
     import library
     monkeypatch.setenv("ZAMAKAN_LIBRARY", str(tmp_path / "lib.jsonl"))
     assert library.default_library() == tmp_path / "lib.jsonl"
+
+
+@pytest.fixture
+def sample():
+    return json.loads((FIX / "rawaq-ramadan-sample-run.json").read_text(encoding="utf-8"))
+
+
+def test_sample_run_has_strategy_layer_and_passes_with_brief(sample):
+    brief = json.loads((FIX / "rawaq-ramadan-brief.json").read_text(encoding="utf-8"))
+    errors, warnings = validate(sample, brief=brief)
+    assert errors == [] and warnings == []
+    assert len(sample["insights"]) >= 3 and sample["recommendation"]["territory_ids"]
+
+
+def test_recommendation_must_point_at_real_territories(sample):
+    sample["recommendation"]["territory_ids"].append("made-up-territory")
+    errors, _ = validate(sample)
+    assert any("unknown territory id 'made-up-territory'" in e for e in errors)
+
+
+def test_insight_needs_source(sample):
+    del sample["insights"][0]["source_url"]
+    errors, _ = validate(sample)
+    assert any("schema" in e and "insights/0" in e for e in errors)
+
+
+def test_unchecked_competitor_warns(sample):
+    brief = {"competitors": ["Barn's", "Tim Hortons"]}
+    _, warnings = validate(sample, brief=brief)
+    assert any("tim hortons" in w for w in warnings)
+
+
+def test_missing_strategy_layer_warns(sample):
+    for k in ("insights", "recommendation", "before_kickoff"):
+        sample.pop(k)
+    _, warnings = validate(sample)
+    assert sum(w.startswith("strategy:") for w in warnings) == 3
+
+
+def test_global_scope_needs_several_regions(sample):
+    sample["run"]["scope"] = "global"
+    _, warnings = validate(sample)
+    assert any("global scope but only 2 region" in w for w in warnings)
+    sample["run"]["scope"] = "gcc"
+    _, warnings = validate(sample)
+    assert not any("region" in w for w in warnings)

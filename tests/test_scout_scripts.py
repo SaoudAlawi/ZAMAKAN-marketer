@@ -188,3 +188,11 @@ def test_score_demotes_vlogs_and_offbrand_channels_keeps_untitled():
 def test_main_text_extracts_article_body():
     t = S.main_text(page("campaignme-article.html"))
     assert "Toni Ibrahim" in t and len(t) > 200 and "<" not in t
+
+
+@pytest.mark.parametrize("scope,expect", [("gcc", (5.0, 3.5, 2.0)), ("mena", (5.0, 5.0, 2.0)), ("global", (3.5, 3.5, 3.5))])
+def test_score_scope_switch(scope, expect):
+    brief = {**json.loads((FIX / "rawaq-ramadan-brief.json").read_text(encoding="utf-8")), "scope": scope}
+    terms = SC.brief_terms(brief)
+    regions = tuple(SC.score({"title": "x", "country": cc}, brief, terms, 2026)[1]["region"] for cc in ("SA", "EG", "GB"))
+    assert regions == expect

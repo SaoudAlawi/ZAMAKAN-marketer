@@ -23,7 +23,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from fetch_meta import fetch_one  # noqa: E402
 
-STOP = {"the", "a", "an", "of", "and", "for", "to", "in", "on", "by", "with", "campaign", "ad", "ads", "film",
+STOP = {"the", "a", "an", "of", "and", "for", "to", "in", "on", "by", "with", "at", "from", "is", "as", "our", "your", "its", "campaign", "ad", "ads", "film",
         "official", "video", "case", "study", "tvc", "commercial", "ramadan", "kareem", "mubarak", "ads", "world"}
 
 

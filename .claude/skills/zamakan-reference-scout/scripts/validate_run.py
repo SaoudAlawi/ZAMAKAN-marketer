@@ -20,6 +20,12 @@ from pathlib import Path
 
 SKILL = Path(__file__).resolve().parent.parent
 GCC = {"SA", "AE", "KW", "QA", "BH", "OM"}
+MENA = GCC | {"EG", "JO", "LB", "MA", "TN", "DZ", "IQ", "PS", "SY", "LY", "YE", "SD"}
+REGION = {**{c: "gcc" for c in GCC}, **{c: "mena" for c in MENA - GCC},
+          **{c: "europe" for c in "GB FR DE IT ES NL SE NO DK FI BE CH AT IE PT PL CZ GR".split()},
+          **{c: "americas" for c in "US CA MX BR AR CL CO PE".split()},
+          **{c: "asia-pacific" for c in "JP KR CN IN SG TH ID MY PH VN AU NZ HK TW PK BD".split()},
+          **{c: "africa" for c in "ZA NG KE GH ET TZ UG CI SN".split()}}
 
 
 def load(p):
@@ -36,7 +42,7 @@ def schema_errors(run):
             for e in sorted(v.iter_errors(run), key=lambda e: list(e.absolute_path))]
 
 
-def semantic(run, target=None, gcc_client=True):
+def semantic(run, target=None, brief=None):
     E, W = [], []
     refs = run["references"]
     ids = [r["id"] for r in refs]
@@ -67,6 +73,14 @@ def semantic(run, target=None, gcc_client=True):
             E.append(f"top: '{t}' is rejected")
         elif byid[t]["status"] == "unverified":
             W.append(f"top: '{t}' is unverified; prefer verified work for deep teardowns")
+    tids = {t["id"] for t in run.get("territories", [])}
+    for tid in (run.get("recommendation") or {}).get("territory_ids", []):
+        if tid not in tids:
+            E.append(f"recommendation: unknown territory id '{tid}'")
+    for c in run.get("competitor_summary", []):
+        for rid in c.get("reference_ids", []):
+            if rid not in byid:
+                E.append(f"competitor_summary/{c['advertiser']}: unknown reference id '{rid}'")
     for group in ("territories", "patterns"):
         for item in run.get(group, []):
             for rid in item["reference_ids"]:
@@ -80,27 +94,46 @@ def semantic(run, target=None, gcc_client=True):
                 W.append(f"coverage: no '{ring}' references")
         if not run.get("territories"):
             W.append("no territories: brief/pitch runs should end with 3-5 creative territories")
+        if len(run.get("insights", [])) < 3:
+            W.append("strategy: fewer than 3 sourced insights; the board and deck open with them")
+        if not run.get("recommendation"):
+            W.append("strategy: no recommendation (which territories to brief, and how they combine)")
+        if not run.get("before_kickoff"):
+            W.append("strategy: no before_kickoff list (what to watch/confirm before presenting)")
     if target and len(live) < target:
         W.append(f"coverage: {len(live)} references, target {target}")
-    if gcc_client:
-        n = sum(1 for r in live if r.get("country") in GCC)
+    scope = run["run"].get("scope", "gcc")
+    if scope == "global":
+        regions = {REGION.get(r.get("country")) for r in live} - {None}
+        if len(regions) < 3:
+            W.append(f"coverage: global scope but only {len(regions)} region(s) {sorted(regions)}")
+    else:
+        pool = GCC if scope == "gcc" else MENA
+        n = sum(1 for r in live if r.get("country") in pool)
         if n < 3:
-            W.append(f"coverage: only {n} GCC references")
+            W.append(f"coverage: only {n} {scope.upper()} references")
+    named = [c.lower() for c in (brief or {}).get("competitors", [])]
+    checked = " ".join(c["advertiser"].lower() for c in run.get("competitor_summary", []))
+    missing = [c for c in named if c.split()[0] not in checked]
+    if missing and run["run"]["mode"] in ("brief", "pitch", "competitor-watch"):
+        W.append(f"competitors not checked in competitor_summary: {missing}")
     return E, W
 
 
-def validate(run, target=None):
+def validate(run, target=None, brief=None):
     errs = schema_errors(run)
     if errs:
         return errs, []
-    return semantic(run, target)
+    return semantic(run, target, brief)
 
 
 def summary(run):
     refs = [r for r in run["references"] if r["status"] != "rejected"]
     count = lambda key: {k: sum(1 for r in refs if r.get(key) == k) for k in sorted({r.get(key) for r in refs} - {None})}  # noqa: E731
     return {"references": len(refs), "status": count("status"), "ring": count("ring"),
-            "gcc": sum(1 for r in refs if r.get("country") in GCC), "top": len(run.get("top", [])),
+            "gcc": sum(1 for r in refs if r.get("country") in GCC), "scope": run["run"].get("scope", "gcc"),
+            "regions": sorted({REGION.get(r.get("country")) for r in refs} - {None}), "top": len(run.get("top", [])),
+            "insights": len(run.get("insights", [])),
             "territories": len(run.get("territories", []))}
 
 
@@ -108,10 +141,12 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("references")
     ap.add_argument("--target", type=int)
+    ap.add_argument("--brief", help="brief.json: checks every named competitor appears in competitor_summary")
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args()
     run = load(a.references)
-    E, W = validate(run, a.target)
+    brief = load(a.brief) if a.brief else None
+    E, W = validate(run, a.target, brief)
     out = {"ok": not E, "errors": E, "warnings": W, "summary": summary(run) if not any(e.startswith("schema") for e in E) else None}
     if a.json:
         print(json.dumps(out, ensure_ascii=False, indent=1))

@@ -70,7 +70,7 @@
       "items": {
         "type": "string"
       },
-      "description": "Clich\u00e9s, competitors' territories, sensitivities"
+      "description": "Clichés, competitors' territories, sensitivities"
     },
     "rings": {
       "type": "array",
@@ -107,6 +107,22 @@
     "outputs_defaulted": {
       "type": "boolean",
       "description": "true when nobody could be asked and the skill's default outputs were used"
+    },
+    "scope": {
+      "enum": [
+        "gcc",
+        "mena",
+        "global"
+      ],
+      "description": "gcc = favour Saudi/GCC work (default); mena = Arab world; global = no regional preference (fit is still judged for the client's market)"
+    },
+    "markets": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z]{2}$"
+      },
+      "description": "Client's markets (ISO-2), used for cultural fit; default ['SA']"
     }
   }
 }

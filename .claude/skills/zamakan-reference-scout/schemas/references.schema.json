@@ -62,7 +62,15 @@
         },
         "title": {
           "type": "string",
-          "description": "Short display title for boards/decks, e.g. 'Rawaq \u00b7 Ramadan 2027 references'"
+          "description": "Short display title for boards/decks, e.g. 'Rawaq · Ramadan 2027 references'"
+        },
+        "scope": {
+          "enum": [
+            "gcc",
+            "mena",
+            "global"
+          ],
+          "description": "gcc = favour Saudi/GCC work (default); mena = Arab world; global = no regional preference (fit is still judged for the client's market)"
         }
       }
     },
@@ -194,6 +202,21 @@
           },
           "notes": {
             "type": "string"
+          },
+          "checked": {
+            "type": "string",
+            "description": "what was checked and when, e.g. 'Ads of the World, Campaign ME, Instagram 2026-10-13'"
+          },
+          "reference_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+            }
+          },
+          "found_campaign": {
+            "type": "boolean",
+            "description": "false = no relevant campaign found (a finding in itself)"
           }
         }
       }
@@ -203,6 +226,84 @@
       "items": {
         "type": "string"
       }
+    },
+    "insights": {
+      "type": "array",
+      "description": "Dated, sourced facts about the audience, moment or category: the 'what we know' that grounds the territories. Shown first in every output.",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "text",
+          "source_url"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 20
+          },
+          "source_url": {
+            "type": "string",
+            "pattern": "^https?://"
+          },
+          "source_name": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "description": "publication date as stated, e.g. 2026-03-14"
+          },
+          "kind": {
+            "enum": [
+              "audience",
+              "moment",
+              "category",
+              "competitor",
+              "data",
+              "culture"
+            ]
+          }
+        }
+      }
+    },
+    "recommendation": {
+      "type": "object",
+      "required": [
+        "summary",
+        "territory_ids"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "summary": {
+          "type": "string",
+          "minLength": 20,
+          "description": "Which territories to brief and how they combine, in 1-3 sentences"
+        },
+        "territory_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+          },
+          "minItems": 1,
+          "description": "in order of priority"
+        },
+        "rationale": {
+          "type": "string"
+        }
+      }
+    },
+    "before_kickoff": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "What to watch, check or confirm before the work is presented (limits of this research)"
     }
   },
   "$defs": {

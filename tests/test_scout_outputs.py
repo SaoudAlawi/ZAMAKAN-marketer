@@ -48,14 +48,15 @@ def test_report_sections_and_no_rejected(run_path, tmp_path):
     for h in ("## Summary", "## Patterns", "## White space", "## Creative territories", "## Deep dives", "## All references"):
         assert h in r
     assert "SAIB" not in r
-    assert "15 references (15 verified" in r
+    n = sum(x["status"] != "rejected" for x in run["references"])
+    assert f"{n} references ({n} verified" in r
 
 
 def test_board_cards_filters_and_rtl(run_path, tmp_path):
     out, run = build(run_path, tmp_path)
     h = (out / "board.html").read_text(encoding="utf-8")
     shown = [x for x in run["references"] if x["status"] != "rejected"]
-    assert h.count('class="card"') == len(shown) == 15
+    assert h.count('class="card"') == len(shown) == len(run["references"]) - 1
     assert "ramadan-amp-eid-greeting-2024-saib-bank" not in h
     for ring in ("direct", "category", "adjacent", "wildcard"):
         assert f'data-ring="{ring}"' in h and f'data-v="{ring}"' in h

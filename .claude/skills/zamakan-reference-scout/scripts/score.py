@@ -5,7 +5,8 @@ Usage: python score.py <candidates.jsonl> --brief brief.json [--top 40] [--out r
 
 Scores (0-5, transparent heuristics; the agent's judgement comes after):
   relevance  - brief terms (category, moment, question, channels, competitors) found in the candidate
-  region     - GCC 5 · wider MENA 3.5 · elsewhere 2 · unknown 2.5 (country, or Arabic/GCC words)
+  region     - depends on brief.scope: gcc (default) GCC 5 · MENA 3.5 · elsewhere 2 · unknown 2.5;
+               mena: Arab world 5 · elsewhere 2; global: 3.5 for all (award sources +0.3)
   freshness  - by year: this year/last 5 … older drops; unknown 2.5
   reach      - YouTube views on a log scale (if known)
 Penalties: student work, the brief's `avoid` terms (flagged, not dropped), near-duplicate titles.
@@ -60,7 +61,13 @@ def score(c, b, terms, this_year):
     if untitled:  # a hand-picked web-search URL not fetched yet: don't bury it, fetch it
         rel = 2.5
     country = c.get("country")
-    if country in GCC or (not country and re.search(GCC_WORDS, t)):
+    is_gcc = country in GCC or (not country and bool(re.search(GCC_WORDS, t)))
+    scope = b.get("scope", "gcc")
+    if scope == "global":  # no regional preference: judge the work, not where it ran
+        region = 3.5
+    elif scope == "mena":
+        region = 5.0 if (is_gcc or country in MENA) else (2.5 if not country else 2.0)
+    elif is_gcc:
         region = 5.0
     elif country in MENA:
         region = 3.5
@@ -93,7 +100,8 @@ def score(c, b, terms, this_year):
     parts = {"relevance": round(rel, 1), "region": region, "freshness": round(fresh, 1)}
     if reach is not None:
         parts["reach"] = round(reach, 1)
-    prior = {"adsoftheworld": 0.4, "lovethework": 0.4, "dubailynx": 0.4, "dandad": 0.4, "oneclub": 0.4, "campaignme": 0.3,
+    award_boost = 0.3 if b.get("scope") == "global" else 0.0
+    prior = award_boost * (c.get("source") in ("lovethework", "dubailynx", "dandad", "oneclub")) + {"adsoftheworld": 0.4, "lovethework": 0.4, "dubailynx": 0.4, "dandad": 0.4, "oneclub": 0.4, "campaignme": 0.3,
              "lbbonline": 0.3, "adforum": 0.3, "campaignlive": 0.2, "vimeo": 0.1}.get(c.get("source"), 0.0)
     total = 0.45 * rel + 0.25 * region + 0.2 * fresh + 0.1 * (reach if reach is not None else 2.5) + prior
     total -= 0.8 * ("student work" in flags) + 1.5 * any(f.startswith(("AI demo", "probably not")) for f in flags)

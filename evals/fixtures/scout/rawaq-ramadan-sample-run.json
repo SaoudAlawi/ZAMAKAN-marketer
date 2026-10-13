@@ -17,7 +17,9 @@
       "youtube:ramadan coffee commercial",
       "youtube:saudi ramadan ad 2025",
       "web-search:vimeo Ramadan commercial Saudi"
-    ]
+    ],
+    "title": "Rawaq · Ramadan 2027 references",
+    "scope": "gcc"
   },
   "references": [
     {
@@ -32,7 +34,7 @@
           "kind": "case",
           "source": "adsoftheworld",
           "http_status": 200,
-          "checked_at": "2026-10-13T11:35:11Z",
+          "checked_at": "2026-10-13T12:21:46Z",
           "verified": true,
           "title_match": true
         }
@@ -106,7 +108,7 @@
           "kind": "case",
           "source": "adsoftheworld",
           "http_status": 200,
-          "checked_at": "2026-10-13T11:35:11Z",
+          "checked_at": "2026-10-13T12:21:46Z",
           "verified": true,
           "title_match": true
         }
@@ -154,7 +156,7 @@
           "kind": "case",
           "source": "adsoftheworld",
           "http_status": 200,
-          "checked_at": "2026-10-13T11:35:11Z",
+          "checked_at": "2026-10-13T12:21:46Z",
           "verified": true,
           "title_match": true
         }
@@ -206,7 +208,7 @@
           "kind": "case",
           "source": "adsoftheworld",
           "http_status": 200,
-          "checked_at": "2026-10-13T11:35:11Z",
+          "checked_at": "2026-10-13T12:21:46Z",
           "verified": true,
           "title_match": true
         }
@@ -257,7 +259,7 @@
           "kind": "case",
           "source": "adsoftheworld",
           "http_status": 200,
-          "checked_at": "2026-10-13T11:35:11Z",
+          "checked_at": "2026-10-13T12:21:46Z",
           "verified": true,
           "title_match": true
         }
@@ -307,7 +309,7 @@
           "kind": "video",
           "source": "youtube",
           "http_status": 200,
-          "checked_at": "2026-10-13T11:35:11Z",
+          "checked_at": "2026-10-13T12:21:46Z",
           "verified": true,
           "title_match": true
         }
@@ -353,7 +355,7 @@
           "kind": "video",
           "source": "youtube",
           "http_status": 200,
-          "checked_at": "2026-10-13T11:35:11Z",
+          "checked_at": "2026-10-13T12:21:46Z",
           "verified": true,
           "title_match": true
         }
@@ -398,7 +400,7 @@
           "kind": "video",
           "source": "youtube",
           "http_status": 200,
-          "checked_at": "2026-10-13T11:35:11Z",
+          "checked_at": "2026-10-13T12:21:46Z",
           "verified": true,
           "title_match": true
         }
@@ -443,7 +445,7 @@
           "kind": "case",
           "source": "adsoftheworld",
           "http_status": 200,
-          "checked_at": "2026-10-13T11:35:11Z",
+          "checked_at": "2026-10-13T12:21:46Z",
           "verified": true,
           "title_match": true
         }
@@ -517,7 +519,7 @@
           "kind": "case",
           "source": "adsoftheworld",
           "http_status": 200,
-          "checked_at": "2026-10-13T11:35:12Z",
+          "checked_at": "2026-10-13T12:21:47Z",
           "verified": true,
           "title_match": true
         }
@@ -590,7 +592,7 @@
           "kind": "case",
           "source": "adsoftheworld",
           "http_status": 200,
-          "checked_at": "2026-10-13T11:35:12Z",
+          "checked_at": "2026-10-13T12:21:47Z",
           "verified": true,
           "title_match": true
         }
@@ -662,7 +664,7 @@
           "kind": "case",
           "source": "adsoftheworld",
           "http_status": 200,
-          "checked_at": "2026-10-13T11:35:12Z",
+          "checked_at": "2026-10-13T12:21:47Z",
           "verified": true,
           "title_match": true
         }
@@ -713,7 +715,7 @@
           "kind": "case",
           "source": "adsoftheworld",
           "http_status": 200,
-          "checked_at": "2026-10-13T11:35:12Z",
+          "checked_at": "2026-10-13T12:21:47Z",
           "verified": true,
           "title_match": true
         }
@@ -764,7 +766,7 @@
           "kind": "case",
           "source": "adsoftheworld",
           "http_status": 200,
-          "checked_at": "2026-10-13T11:35:12Z",
+          "checked_at": "2026-10-13T12:21:47Z",
           "verified": true,
           "title_match": true
         }
@@ -814,7 +816,7 @@
           "kind": "case",
           "source": "adsoftheworld",
           "http_status": 200,
-          "checked_at": "2026-10-13T11:35:12Z",
+          "checked_at": "2026-10-13T12:21:47Z",
           "verified": true,
           "title_match": true
         }
@@ -864,7 +866,7 @@
           "kind": "video",
           "source": "youtube",
           "http_status": 200,
-          "checked_at": "2026-10-13T11:35:13Z",
+          "checked_at": "2026-10-13T12:21:48Z",
           "verified": true,
           "title_match": true
         }
@@ -895,6 +897,103 @@
       ],
       "thumbnail": {
         "url": "https://i.ytimg.com/vi/mCsXITDz6nA/hqdefault.jpg"
+      }
+    },
+    {
+      "id": "starbucks-keep-the-gathering-flowing",
+      "title": "Keep the Gathering Flowing",
+      "brand": "Starbucks",
+      "agency": "Impact BBDO",
+      "year": 2025,
+      "country": "SA",
+      "ring": "direct",
+      "status": "verified",
+      "media": [
+        "film",
+        "social"
+      ],
+      "moments": [
+        "ramadan"
+      ],
+      "tags": [
+        "competitor",
+        "majlis",
+        "late-night"
+      ],
+      "urls": [
+        {
+          "url": "https://campaignme.com/starbucks-keeps-the-gathering-flowing-in-community-first-ramadan-campaign/",
+          "kind": "article",
+          "source": "campaignme",
+          "http_status": 200,
+          "checked_at": "2026-10-13T12:21:48Z",
+          "verified": true,
+          "title_match": true
+        }
+      ],
+      "card": {
+        "idea": "Starbucks frames its Gulf coffeehouses as community hubs for modern Ramadan nights.",
+        "why_relevant": "The biggest competitor already claims 'the café as the Ramadan gathering place'; Rawaq must be more specific."
+      },
+      "scores": {
+        "relevance": 5,
+        "craft": 3.5,
+        "transferability": 2,
+        "cultural_fit": 4,
+        "freshness": 4
+      },
+      "provenance": {
+        "found_via": "page-fetch",
+        "confidence": "high",
+        "notes": "Campaign Middle East, 27 Mar 2025"
+      }
+    },
+    {
+      "id": "barns-iftar-meals-roads",
+      "title": "1 million iftar meals at traffic signals",
+      "brand": "Barn's",
+      "year": 2024,
+      "country": "SA",
+      "ring": "direct",
+      "status": "verified",
+      "media": [
+        "activation",
+        "pr"
+      ],
+      "moments": [
+        "ramadan"
+      ],
+      "tags": [
+        "competitor",
+        "csr",
+        "pre-iftar"
+      ],
+      "urls": [
+        {
+          "url": "https://gulfnews.com/world/gulf/saudi/saudi-arabia-distributes-1-million-iftar-meals-in-riyadh-jeddah-and-dammam-to-curb-road-crashes-1.101742312",
+          "kind": "article",
+          "source": "gulfnews.com",
+          "http_status": 200,
+          "checked_at": "2026-10-13T12:21:48Z",
+          "verified": true,
+          "title_match": true
+        }
+      ],
+      "card": {
+        "idea": "Barn's and a national centre hand out 1 million iftar meals at traffic signals in Riyadh, Jeddah and Dammam to cut pre-iftar crashes.",
+        "why_relevant": "A Saudi coffee competitor owns the road moment before iftar; Rawaq's 'run' should live after taraweeh instead."
+      },
+      "scores": {
+        "relevance": 5,
+        "craft": 3,
+        "transferability": 3,
+        "cultural_fit": 5,
+        "freshness": 3
+      },
+      "provenance": {
+        "found_via": "page-fetch",
+        "confidence": "high",
+        "notes": "Gulf News, 20 Mar 2024"
       }
     }
   ],
@@ -1006,5 +1105,89 @@
   "open_questions": [
     "Confirm daytime opening policy during Ramadan before using 'Everyone at the table'.",
     "Budget split between Snapchat and TikTok?"
+  ],
+  "insights": [
+    {
+      "id": "after-taraweeh-coffee",
+      "text": "Going for coffee together after Taraweeh is an intimate invitation between friends; coffee shops are 'alive in the evening' in Ramadan.",
+      "source_url": "https://arab.news/nk2vw",
+      "source_name": "Arab News",
+      "date": "2025-03-23",
+      "kind": "culture"
+    },
+    {
+      "id": "peak-9-11pm",
+      "text": "Saudi Ramadan engagement peaks at night: CST points to 9:00–11:00pm as peak usage hours.",
+      "source_url": "https://campaignme.com/ramadan-2026-what-brands-must-rethink-about-engagement-timing-and-trust/",
+      "source_name": "Campaign Middle East",
+      "date": "2026-02-05",
+      "kind": "data"
+    },
+    {
+      "id": "short-coffee-window",
+      "text": "Coffee consumption drops in Ramadan because the window between breaking the fast and sleeping is only 4–5 hours (Nescafé's stated problem).",
+      "source_url": "https://www.adsoftheworld.com/campaigns/unattainable-cup-of-coffee",
+      "source_name": "Ads of the World",
+      "kind": "category"
+    }
+  ],
+  "competitor_summary": [
+    {
+      "advertiser": "Starbucks KSA",
+      "found_campaign": true,
+      "reference_ids": [
+        "starbucks-keep-the-gathering-flowing"
+      ],
+      "messaging_pillars": [
+        "community hub",
+        "modern Ramadan nights"
+      ],
+      "checked": "Campaign ME, Ads of the World, web search 2026-10-13",
+      "notes": "Owns 'the gathering' generically."
+    },
+    {
+      "advertiser": "Barn's",
+      "found_campaign": true,
+      "reference_ids": [
+        "barns-iftar-meals-roads"
+      ],
+      "checked": "Gulf News, web search 2026-10-13",
+      "notes": "Owns the pre-iftar road moment (CSR)."
+    },
+    {
+      "advertiser": "Half Million",
+      "found_campaign": false,
+      "reference_ids": [
+        "half-million-your-2nd-half"
+      ],
+      "checked": "Ads of the World, web search 2026-10-13",
+      "notes": "Product-hero work, no Ramadan campaign found."
+    },
+    {
+      "advertiser": "Dose Café",
+      "found_campaign": false,
+      "checked": "web search 2026-10-13",
+      "notes": "No Ramadan campaign found; check own social."
+    },
+    {
+      "advertiser": "Overdose",
+      "found_campaign": false,
+      "checked": "web search 2026-10-13",
+      "notes": "No Ramadan campaign found; check own social."
+    }
+  ],
+  "recommendation": {
+    "summary": "Brief 'The after-taraweeh run' as the campaign idea, with 'Who hosts tonight?' as its social engine and 'The sound of the riwaq' as the in-café and sonic layer.",
+    "territory_ids": [
+      "after-taraweeh-run",
+      "who-hosts-tonight",
+      "sound-of-the-riwaq"
+    ],
+    "rationale": "It owns a moment no competitor holds (Starbucks owns the gathering, Barn's the pre-iftar road) and fits the 9–11pm peak."
+  },
+  "before_kickoff": [
+    "Scroll Half Million, Dose and Overdose Ramadan 2026 posts on Instagram, TikTok and Snapchat (web search doesn't index them).",
+    "Watch the YouTube references before quoting execution details.",
+    "Confirm Rawaq's daytime opening policy during Ramadan before using 'Everyone at the table'."
   ]
 }
