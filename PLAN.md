@@ -1,97 +1,95 @@
-# ZAMAKAN Marketer — Build Plan
+# ZAMAKAN Marketer: Build Plan
 
-A state-of-the-art marketing & creative skill for Claude Code, built for an
-**agency serving many clients**, **bilingual Arabic + English with a Gulf/Saudi focus**,
-covering **strategy, copy, visual creative, and performance**.
+A family of **sub-skills that work together** for Claude Code. It is built for an **agency
+serving many clients**, works in **Arabic + English with a Gulf/Saudi focus**, and uses **custom
+scripts to keep token use low**. Scripts do the mechanical work; the agent spends its tokens on judgement.
 
 Status legend: ⬜ not started · 🟨 in progress · ✅ done & tested
 
 ---
 
-## 1. Design principles
+## 1. Principles
 
-1. **Think like a senior agency team, not a copy generator.** Every job flows
-   brief → insight → strategy → idea → execution → critique. Output that skips the
-   insight is rejected by the skill's own quality gate.
-2. **Client memory lives in files.** Each client gets a persistent Brand Book
-   (`clients/<slug>/brand.md`) that the skill creates once and reuses on every job.
-   No re-explaining the brand each session.
-3. **Arabic is transcreated, never translated.** Arabic copy is written natively
-   (Saudi white dialect or MSA by context), with its own hooks, wordplay and rhythm.
-4. **Deterministic where possible.** Character limits, platform specs, A/B sample sizes,
-   cultural dates, and RTL rendering are handled by tested scripts, not guesswork.
-5. **Show, don't describe.** Visual concepts are rendered as real PNG mockups
-   (HTML/CSS → Chromium), in both RTL Arabic and English.
-6. **Lean core, deep references.** `SKILL.md` is a router (<500 lines); expertise lives
-   in reference files loaded only when the task needs them.
+1. **A shared contract between sub-skills.** Each sub-skill writes files that the next one reads.
+   The first contract is the client **design system**: every later sub-skill (social posts,
+   ads, decks…) reads it, so its output is on-brand without anyone re-explaining the brand.
+2. **Scripts first, model second.** Anything deterministic (parsing PDFs, measuring colours,
+   reading fonts, contrast maths, rendering) is a tested script whose *compact* output the
+   agent reads. The agent never reads a raw 80-page PDF when a 2 KB digest will do.
+3. **Evidence over guesswork.** Every extracted value records where it came from (file + page)
+   and a confidence. Conflicts are surfaced, not silently resolved.
+4. **When information is missing, the skill proposes a value.** Proposals are clearly marked
+   `proposed` (vs `extracted`), so a human can tell them apart at a glance.
+5. **Test everything on one fixed sample.** All development runs against the fictional client
+   **Rawaq** (`samples/rawaq/`), graded against a hidden answer key.
 
-## 2. Architecture
+## 2. Repository layout
 
 ```
-.claude/skills/zamakan-marketer/
-├── SKILL.md                      # router: intake → pick workflow → quality gate
-├── references/
-│   ├── intake/                   # brief interview, brand-book builder
-│   ├── strategy/                 # positioning, insight mining, personas, funnel, big idea
-│   ├── copy/                     # frameworks, hooks, headlines, CTAs, Arabic craft
-│   ├── channels/                 # Snapchat, TikTok, Instagram, X, YouTube, LinkedIn,
-│   │                             # Meta/Google/Snap/TikTok ads, email, SMS/WhatsApp, SEO
-│   ├── visual/                   # art direction, image-gen prompting, storyboards, layouts
-│   ├── performance/              # testing, KPIs, benchmarks, budget allocation, reporting
-│   ├── gulf-market/              # Saudi/GCC consumer, dialects, cultural calendar,
-│   │                             # sensitivities, regulatory notes (verify-before-use)
-│   └── quality/                  # scoring rubric, red-flag checklist
-├── workflows/                    # step-by-step playbooks (campaign, launch, calendar, ad set…)
-├── templates/                    # brief, brand book, campaign plan, calendar, report
-├── assets/mockups/               # HTML/CSS ad & post templates (RTL + LTR, per format)
-└── scripts/
-    ├── validate_copy.py          # per-platform length/format checks (Arabic-aware)
-    ├── render_mockup.py          # HTML → PNG via Playwright/Chromium
-    ├── ab_test.py                # sample size, significance, MDE
-    ├── gulf_calendar.py          # campaign moments for a date range (Ramadan, Eids, …)
-    └── brief_check.py            # brief completeness score + missing questions
+.claude/skills/
+├── zamakan-core/                 # shared conventions: client folders, contracts, quality bar
+├── zamakan-design-system/        # FEATURE 1: brand files → design system
+└── zamakan-<next>/               # FEATURE 2: to be defined
 
-clients/<slug>/                   # created by the skill per client
-├── brand.md                      # Brand Book: voice, audience, offers, do/don't, examples
-└── jobs/<date>-<job>/            # every deliverable, versioned
+samples/rawaq/input/              # fixed sample client package (committed)
+evals/fixtures/rawaq/             # hidden answer key for grading
+tools/sample-builders/            # scripts that generate sample inputs
+clients/<slug>/                   # real client work (git-ignored)
 ```
 
-## 3. Core workflow (what SKILL.md enforces)
+## 3. Feature 1: Design System Creator (visual only)
 
-1. **Identify client** → load `clients/<slug>/brand.md`, or run Brand Book intake.
-2. **Check brief** → `brief_check.py`; ask only the missing high-impact questions.
-3. **Route** to workflow: campaign · launch · content calendar · ad set · copy pack ·
-   visual concepts · performance analysis · strategy doc.
-4. **Strategy pass** → audience truth, insight, single-minded proposition.
-5. **Ideas** → 3 distinct creative routes (safe / bold / unexpected), each with a reason to exist.
-6. **Execution** → bilingual assets per channel, validated by scripts.
-7. **Quality gate** → score against rubric; revise anything below threshold.
-8. **Deliver** → files in `clients/<slug>/jobs/…` + a concise summary.
+**Input:** a client folder containing a full guideline PDF, plus any logos, fonts and images.
 
-## 4. Build phases & test gates
+**Pipeline**
+1. `inventory`: list and classify every file (guideline, logo, font, image…).
+2. `pdf digest`: per-page text, detected colour values, fonts, images, plus page thumbnails, so
+   the agent can check visually where text extraction fails (flattened pages, garbled Arabic).
+3. `colours`: parse HEX/RGB/CMYK/Pantone, sample swatches from pages, measure logo colours,
+   cross-check for conflicts.
+4. `fonts`: read family, weights, scripts covered (Arabic/Latin) and variable axes from font files.
+5. `logos`: catalogue the variants (colourway, orientation, background), normalise them, and render
+   light/dark previews.
+6. **Agent synthesis**: reason over the digests, resolve conflicts, infer rules, propose gaps.
+7. `build`: write tokens (JSON + CSS), validate them (schema, WCAG contrast), and render a preview.
+8. **Self-check**: the agent compares the preview against the guideline pages and fixes mismatches.
 
-Each phase ends with a **test gate**: unit tests for scripts (pytest) + eval prompts run
-with and without the skill, graded with assertions, plus your review in the eval viewer.
-We do not move on until the gate passes.
+**Output (the contract):** `clients/<slug>/design-system/`
+```
+brand.md          # agent-facing visual guide: logo rules, colour usage, type, imagery, layout, do/don't
+tokens.json       # W3C design-tokens format: colour, typography, spacing, radii…
+tokens.css        # same values as CSS custom properties (for HTML/PNG rendering)
+manifest.json     # every asset: path, type, variant, colourway, allowed backgrounds, min size
+sources.md        # provenance for every value: file + page, extracted|proposed, conflicts
+assets/           # normalised logos, fonts
+preview.html/png  # visual style tile for human sign-off
+```
 
-| # | Phase | Deliverables | Test gate |
-|---|-------|-------------|-----------|
-| 0 | Plan | This document | You approve it ✅ when signed off |
-| 1 | Foundation | SKILL.md router, brand-book intake, brief_check.py, quality rubric, eval harness | pytest green; evals: new-client intake, vague brief handling |
-| 2 | Strategy | strategy refs, personas, insight mining, campaign architecture, gulf_calendar.py | evals: campaign strategy for 2 different clients beat baseline |
-| 3 | Copy | frameworks, hooks library, Arabic craft guide, channel specs, validate_copy.py | evals: bilingual ad set passes all length checks; native-quality Arabic (your review) |
-| 4 | Visual | art direction, image-prompt guide, storyboards, mockup templates, render_mockup.py | rendered RTL + LTR PNGs look right; evals: visual concept pack |
-| 5 | Performance | testing/KPI/budget refs, ab_test.py, results-analysis workflow | pytest for stats; eval: analyse a sample campaign CSV |
-| 6 | Integration | end-to-end campaign workflow, cross-phase polish | full eval suite, blind A/B vs baseline |
-| 7 | Triggering | description optimisation (20 trigger/no-trigger queries) | trigger accuracy on held-out set |
+## 4. Build steps & test gates
 
-## 5. Open decisions (to settle together)
+| # | Step | Test gate | Status |
+|---|------|-----------|--------|
+| 0 | Plan + requirements | You approve | ✅ |
+| 1 | Sample client package (Rawaq) + answer key | PDF renders correctly; known traps verified | ✅ |
+| 2 | Output contract: schemas for tokens/manifest + brand.md template | Schemas validate a hand-made example | ⬜ |
+| 3 | Scripts: inventory, pdf digest, colours, fonts, logos | pytest on Rawaq sample, compared with answer key | ⬜ |
+| 4 | Scripts: build tokens/CSS, contrast check, preview render | pytest; preview PNG reviewed by you | ⬜ |
+| 5 | SKILL.md for zamakan-design-system + zamakan-core | First end-to-end run on Rawaq | ⬜ |
+| 6 | Evals: with-skill vs without-skill, graded against answer key | Clear win over baseline; your review in eval viewer | ⬜ |
+| 7 | Iterate until the answer-key score and your review are both satisfied | — | ⬜ |
+| 8 | Trigger tuning (description optimisation) | Trigger accuracy on held-out queries | ⬜ |
 
-- Default Arabic register: Saudi white dialect vs MSA vs ask per client
-- Image-generation tools the team uses (Midjourney, GPT-Image, Firefly, Imagen…) → prompt formats
-- Whether client Brand Books are committed to this repo or kept in a git-ignored folder
-- A real (or realistic) client brief to use as our main eval case
+## 5. Decisions log
+
+- Agency with many clients; Arabic + English (Gulf); used in Claude Code.
+- Architecture: many sub-skills sharing contracts, with scripts to save tokens.
+- Feature 1 = design-system creator, **visual identity only** (verbal identity later).
+- Typical input = a full guideline PDF. Missing values → **skill proposes**, marked as proposed.
+- Arabic register will be asked per client (relevant for later copy skills).
+- Client data lives in git-ignored `clients/`; only the fictional sample is committed.
+- Feature 2: to be defined by you.
 
 ## 6. Progress log
 
-- 2026-10-13 — Repo empty; requirements captured; plan drafted (Phase 0).
+- 2026-10-13: Requirements captured; plan drafted.
+- 2026-10-13: Re-scoped to the sub-skill architecture; built the Rawaq sample package and answer key.
