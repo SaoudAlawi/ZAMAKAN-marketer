@@ -124,6 +124,16 @@ settings (title-bar environment menu → Edit → Network access). Either pick a
 `behance.net`, `adforum.com`, `lbbonline.com`, `campaignlive.co.uk`, `adage.com`, `adweek.com`,
 `facebook.com` (Ad Library), `ads.tiktok.com` (Creative Center), `adstransparency.google.com`, `pinterest.com`.
 
+### Prior art & reuse (researched 2026-10-13)
+| Existing work | Covers | Decision |
+|---|---|---|
+| [apify/awesome-skills → apify-ads-intelligence](https://github.com/apify/awesome-skills) (Apache-2.0) | Live ads from Meta, Google Transparency, TikTok Library + Creative Center, LinkedIn, X via Apify scrapers; intent routing, cost limits | **Reuse for Competitor-watch mode** (use the skill or its actor routing). Needs an Apify account (pay per result) |
+| marketingskills `ads/references/creative-research-automation.md` (MIT) | Ad Library teardown fields (format split, partnership %, longest-running = proven winner), organic teardown, persona gap | **Adopt its teardown fields** in our competitor analysis |
+| marketingskills `competitor-profiling` (MIT) | Full competitor dossiers from URLs | Hand off to it when a deep dossier is asked |
+| Meta's official Ads MCP (mcp.facebook.com/ads) | Managing *your own* ad accounts | Not for research; ignore |
+| Foreplay API, AdForum Creative Library, Cannes Lions "The Work" | Commercial ad/award archives | Optional paid connectors later |
+| Award/showcase research (Ads of the World, Vimeo, Love the Work, Dubai Lynx…) + Arabic/GCC lens + territories + shared library | **Nothing found** | **Build: this is ZAMAKAN's core** |
+
 ### Testing
 There is no fixed answer key (the web changes), so the grader checks **properties**:
 - every URL resolves and matches its title, so nothing is hallucinated;
