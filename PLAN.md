@@ -37,7 +37,11 @@ tools/sample-builders/            # scripts that generate sample inputs
 clients/<slug>/                   # real client work (git-ignored)
 ```
 
-## 3. Feature 1: Design System Creator (visual only)
+## 3. Feature 1: Design System Creator (visual only), ⏸ PAUSED after iteration 1
+
+> **Resume here:** iteration 2 = adopt the 4 baseline ideas (section 5b), write harder assertions
+> (format consistency, rule-vs-mock-up contradictions), and run 3 times per configuration. Results of iteration 1:
+> https://claude.ai/artifact/MTc8Fcf1zEhJq5dTGuq5ti
 
 **Input:** a client folder containing a full guideline PDF, plus any logos, fonts and images.
 
@@ -65,7 +69,7 @@ assets/           # normalised logos, fonts
 preview.html/png  # visual style tile for human sign-off
 ```
 
-## 3b. Feature 2: Campaign Reference Scout (after Feature 1)
+## 3b. Feature 2: Campaign Reference Scout, 🟨 ACTIVE
 
 **Goal:** bring the best campaign references, both from similar clients and from anywhere
 (so creativity isn't limited), and turn them into analysis that both people and agents can use.
@@ -144,6 +148,7 @@ The no-skill baseline did several generic things worth building into the skill:
 - 2026-10-13: Re-scoped to the sub-skill architecture; built the Rawaq sample package and answer key.
 - 2026-10-13: Feature 2 (reference scout) defined; network limits of the cloud environment noted.
 - 2026-10-13: Step 2 done. Design: the agent writes only spec.json + brand.md; scripts generate the rest.
+- 2026-10-13: Feature 1 paused by the user; switching to Feature 2 (reference scout).
 - 2026-10-13: Step 5 done + iteration-1 eval (see 5b). Fixed: canonical roles, components, missing_assets, contrast pairing, docs.
 - 2026-10-13: Step 4 done. One build command generates all contract files from spec.json; DESIGN.md validated with @google/design.md 0.4.0.
 - 2026-10-13: Step 3 done. One command (`extract_all.py`, about 5 s) turns the brand folder into a 6 KB digest + 10 KB page text + 2 contact sheets. Reviewed marketingskills + DESIGN.md (see 4b).
