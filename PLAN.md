@@ -134,6 +134,14 @@ settings (title-bar environment menu → Edit → Network access). Either pick a
 | Foreplay API, AdForum Creative Library, Cannes Lions "The Work" | Commercial ad/award archives | Optional paid connectors later |
 | Award/showcase research (Ads of the World, Vimeo, Love the Work, Dubai Lynx…) + Arabic/GCC lens + territories + shared library | **Nothing found** | **Build: this is ZAMAKAN's core** |
 
+### Source notes (tested live 2026-10-13)
+- **Ads of the World**: works with browser headers. Each campaign page has a standard sentence (country, month/year, brand,
+  agency, medium, industry), credits and related campaigns. Search = `/campaigns?search=<ONE keyword>` (multi-word returns
+  nothing); lists by `/countries|industries|brands|agencies|medium_types|regions/<slug>`; 60 cards per page.
+- **YouTube**: search page and oEmbed work; watch pages are bot-blocked from cloud IPs, so date/views come from search.
+- **Vimeo**: oEmbed works; vimeo.com search is bot-blocked, so find Vimeo links via web search.
+- **Campaign ME, LBB, Arabad, AdForum…**: read via Open Graph; discovered via web search.
+
 ### Testing
 There is no fixed answer key (the web changes), so the grader checks **properties**:
 - every URL resolves and matches its title, so nothing is hallucinated;
@@ -148,7 +156,7 @@ It runs with and without the skill, 3 runs each, plus your review.
 | # | Step | Test gate | Status |
 |---|---|---|---|
 | 1 | Contract: `brief.schema.json`, `references.schema.json` (one file the agent writes; outputs are generated), `validate_run.py` (honesty + coverage rules); Rawaq Ramadan test brief (md + json); example run from 3 real search results | 14 tests pass | ✅ |
-| 2 | Scripts: `fetch_meta.py` (site parsers + OG fallback), `verify.py`, `library.py`, `score.py` | pytest on saved pages + live smoke test | ⬜ |
+| 2 | Scripts: `discover.py` (Ads of the World search/lists/related, YouTube search), `fetch_meta.py` (site parsers + oEmbed + Open Graph fallback, thumbnails), `verify.py` (live check, rejects invented/broken), `library.py`, `score.py`; `_web.py` (cache + Chromium fallback) | 14 tests on saved real pages + live; 197 candidates found in seconds | ✅ |
 | 3 | Output builders: board (HTML), deck, report | pytest + your visual review | ⬜ |
 | 4 | SKILL.md (4 modes) + references (sources guide, analysis framework, Gulf calendar & cultural-fit guide) | first end-to-end run | ⬜ |
 | 5 | Evals: with vs without skill, property-based grader, 3 runs each | clear win + your review | ⬜ |
@@ -203,6 +211,7 @@ The no-skill baseline did several generic things worth building into the skill:
 - 2026-10-13: Re-scoped to the sub-skill architecture; built the Rawaq sample package and answer key.
 - 2026-10-13: Feature 2 (reference scout) defined; network limits of the cloud environment noted.
 - 2026-10-13: Step 2 done. Design: the agent writes only spec.json + brand.md; scripts generate the rest.
+- 2026-10-13: Scout step 2 done: web access confirmed after restart; all sources tested live.
 - 2026-10-13: Scout step 1 done. Network allowed by user but not applied to the running session; restarting the session. Apify skipped.
 - 2026-10-13: Feature 1 paused by the user; switching to Feature 2 (reference scout).
 - 2026-10-13: Step 5 done + iteration-1 eval (see 5b). Fixed: canonical roles, components, missing_assets, contrast pairing, docs.

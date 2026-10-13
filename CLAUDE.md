@@ -17,8 +17,9 @@ They are built as **sub-skills that share file contracts**, with scripts doing t
 ## Setup & checks
 ```bash
 pip install -r requirements.txt uharfbuzz   # uharfbuzz only for tools/sample-builders
-python3 -m pytest -q tests                  # 92 pass, 1 skipped (DESIGN.md linter; set ZAMAKAN_DESIGNMD to enable)
-curl -sS -o /dev/null -w '%{http_code}\n' https://www.adsoftheworld.com/   # 200 = web access works
+python3 -m pytest -q tests                  # all pass; DESIGN.md linter test skips unless ZAMAKAN_DESIGNMD is set,
+                                            # live scout tests skip when offline
+curl -sS -o /dev/null -w '%{http_code}\n' https://www.example.org/   # 200 = web access works (Ads of the World itself 403s plain curl; the scripts handle it)
 ```
 Rendering uses Playwright with the preinstalled Chromium (`/opt/pw-browsers/chromium`). The scripts find it automatically.
 
@@ -29,7 +30,7 @@ Rendering uses Playwright with the preinstalled Chromium (`/opt/pw-browsers/chro
 - Explain in plain language; the user is an agency person, not necessarily a developer.
 
 ## Next step
-Feature 2, step 2 (needs web access): `fetch_meta.py` (site parsers for Ads of the World, Vimeo/YouTube oEmbed,
-award sites, with an Open Graph fallback), `verify.py`, `library.py`, `score.py`. Test on saved pages and live.
+Feature 2, step 3: output builders (board HTML, deck, report, territories.md) from references.json.
+Step 2 scripts are done (see PLAN §3b "Source notes" for how each site behaves).
 The test brief is `evals/fixtures/scout/rawaq-ramadan-brief.{md,json}`. Apify was skipped by the user, so
 competitor watch uses web search plus the ad-library pages that can be opened.
