@@ -203,6 +203,7 @@ The no-skill baseline did several generic things worth building into the skill:
 - 2026-10-13: Re-scoped to the sub-skill architecture; built the Rawaq sample package and answer key.
 - 2026-10-13: Feature 2 (reference scout) defined; network limits of the cloud environment noted.
 - 2026-10-13: Step 2 done. Design: the agent writes only spec.json + brand.md; scripts generate the rest.
+- 2026-10-13: Scout step 1 done. Network allowed by user but not applied to the running session; restarting the session. Apify skipped.
 - 2026-10-13: Feature 1 paused by the user; switching to Feature 2 (reference scout).
 - 2026-10-13: Step 5 done + iteration-1 eval (see 5b). Fixed: canonical roles, components, missing_assets, contrast pairing, docs.
 - 2026-10-13: Step 4 done. One build command generates all contract files from spec.json; DESIGN.md validated with @google/design.md 0.4.0.
