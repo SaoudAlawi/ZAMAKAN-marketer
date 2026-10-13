@@ -33,6 +33,17 @@ E = html.escape
 
 
 # ------------------------------------------------------------------ shared
+def display_title(run, brief, client_name):
+    """run.title, else '<Client> · <moment> references', else the question."""
+    if run["run"].get("title"):
+        return run["run"]["title"]
+    who = client_name or (run["run"].get("client") or "").replace("-", " ").title()
+    moment = (brief or {}).get("moment", "").split("(")[0].strip()
+    if who and moment:
+        return f"{who} · {moment} references"
+    return run["run"].get("question") or run["run"]["id"]
+
+
 def load_run(path):
     run = json.loads(Path(path).read_text(encoding="utf-8"))
     errors, warnings = validate(run)
@@ -88,9 +99,9 @@ def link_label(r):
 
 
 # ------------------------------------------------------------------ territories.md
-def build_territories(run):
+def build_territories(run, brief=None, client_name=None):
     byid = {r["id"]: r for r in run["references"]}
-    L = [f"# Creative territories: {run['run'].get('question', run['run']['id'])}", "",
+    L = [f"# Creative territories: {display_title(run, brief, client_name)}", "",
          f"Run `{run['run']['id']}` · mode {run['run']['mode']} · {len(run['references'])} references "
          f"({sum(r['status'] == 'verified' for r in run['references'])} verified). Generated from references.json.", ""]
     for i, t in enumerate(run.get("territories", []), 1):
@@ -115,7 +126,7 @@ def build_territories(run):
 def build_report(run, brief, client_name):
     refs = run["references"]
     byid = {r["id"]: r for r in refs}
-    L = [f"# Reference scout report: {client_name or run['run'].get('client', '')}", "",
+    L = [f"# Reference scout report: {display_title(run, brief, client_name)}", "",
          f"**Question:** {run['run'].get('question', '')}", ""]
     if brief:
         L += ["| Brief | |", "|---|---|"] + [f"| {k.title()} | {brief[k] if isinstance(brief[k], str) else ', '.join(brief[k])} |"
@@ -130,7 +141,7 @@ def build_report(run, brief, client_name):
                                     for p in run["patterns"]] + [""]
     if run.get("white_space"):
         L += ["## White space", ""] + [f"- {w}" for w in run["white_space"]] + [""]
-    L += ["## Creative territories", "", build_territories(run).split("\n", 4)[-1].replace("\n## ", "\n### "), ""]
+    L += ["## Creative territories", "", build_territories(run, brief, client_name).split("\n", 4)[-1].replace("\n## ", "\n### "), ""]
     if run.get("top"):
         L += ["## Deep dives", ""]
         for rid in run["top"]:
@@ -262,14 +273,14 @@ def build_board(run, brief, client_name, thumbs_dir):
     white = "".join(f"<li>{E(w)}</li>" for w in run.get("white_space", []))
     brief_bits = " · ".join(E(brief[k]) for k in ("moment", "objective", "audience") if brief and brief.get(k))
     n_ver = sum(r["status"] == "verified" for r in refs)
-    title = f"{client_name or run['run'].get('client', '').title()} References"
+    title = display_title(run, brief, client_name)
     return f"""<title>{E(title)}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap">
 <style>{BOARD_CSS}</style>
 <div class="wrap">
 <header><div class="eyebrow">Reference scout · {E(run['run']['mode'])} · {E(run['run'].get('created', ''))}</div>
-<h1>{E(run['run'].get('question', ''))}</h1><p class="lede">{brief_bits}</p>
+<h1>{E(display_title(run, brief, client_name))}</h1><p class="lede">{brief_bits}</p>
 <div class="stats"><div class="stat"><b>{len(refs)}</b><span>references</span></div><div class="stat"><b>{n_ver}</b><span>verified live</span></div>
 <div class="stat"><b>{sum(r.get('country') in GCC for r in refs)}</b><span>from the GCC</span></div><div class="stat"><b>{len(run.get('territories', []))}</b><span>territories</span></div></div></header>
 <section><h2>Creative territories</h2><div class="terr">{terr}</div></section>
@@ -340,7 +351,7 @@ def build_deck(run, brief, client_name, thumbs_dir, path):
     # 1 title
     s = slide(INK)
     text(s, 2, 1.6, 26, 1, "REFERENCE SCOUT", 12, True, RGBColor(0xC9, 0xBF, 0xB2))
-    text(s, 2, 2.6, 28, 6, run["run"].get("question", ""), 34, True, PAPER)
+    text(s, 2, 2.6, 28, 6, display_title(run, brief, client_name), 34, True, PAPER)
     text(s, 2, 15.5, 28, 1.5, f"{client_name or ''} · {run['run'].get('created', '')}", 14, False, RGBColor(0xC9, 0xBF, 0xB2))
     # 2 brief + method
     s = slide()
@@ -436,7 +447,7 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     thumbs = out / "thumbs"
     made = []
-    (out / "territories.md").write_text(build_territories(run), encoding="utf-8")
+    (out / "territories.md").write_text(build_territories(run, brief, a.client_name), encoding="utf-8")
     made.append("territories.md")
     fmts = {f.strip() for f in a.formats.split(",") if f.strip()}
     if "report" in fmts:

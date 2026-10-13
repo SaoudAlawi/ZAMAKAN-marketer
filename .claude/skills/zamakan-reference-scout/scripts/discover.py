@@ -52,6 +52,8 @@ def main():
         kw = a.args[0]
         if len(a.args) > 1:
             print("note: Ads of the World matches one keyword; using only", repr(kw), file=sys.stderr)
+        if len(kw) < 5:
+            print(f"note: short keyword {kw!r} also matches inside other words (e.g. 'eid' in 'Leidos'); expect noise", file=sys.stderr)
         cards, by = aotw_pages(f"{AOTW}/campaigns?search={quote_plus(kw)}", a.pages), f"aotw-search:{kw}"
     elif a.cmd == "aotw-list":
         kind, slug = a.args[0], a.args[1]
@@ -61,7 +63,8 @@ def main():
         for u in a.args:
             page = _web.get(u)
             rec = S.parse_aotw_campaign(page["text"], u) if page["status"] == 200 else {}
-            cards += [{"url": r, "source": "adsoftheworld", "related_to": u} for r in rec.get("related", [])]
+            cards += [{"url": r, "source": "adsoftheworld", "related_to": u,
+                       "title_from_url": r.rsplit("/", 1)[-1].replace("-", " ")[:80]} for r in rec.get("related", [])]
     else:
         q = " ".join(a.args)
         page = _web.get(f"https://www.youtube.com/results?search_query={quote_plus(q)}", browser="never")
@@ -79,7 +82,7 @@ def main():
         print(f"{len(out)} cards ({by}) → {a.out}")
     for c in out[:40]:
         extra = f"{c.get('views', ''):>10}" if c.get("views") else ""
-        print(f"  {(c.get('brand') or c.get('channel') or '')[:20]:<20} {(c.get('title') or c['url'])[:64]:<64} {extra}")
+        print(f"  {(c.get('brand') or c.get('channel') or '')[:20]:<20} {(c.get('title') or c.get('title_from_url') or c['url'])[:64]:<64} {extra}")
 
 
 if __name__ == "__main__":

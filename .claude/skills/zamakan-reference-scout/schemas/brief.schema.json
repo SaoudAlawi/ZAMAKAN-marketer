@@ -103,6 +103,10 @@
       "items": {
         "type": "string"
       }
+    },
+    "outputs_defaulted": {
+      "type": "boolean",
+      "description": "true when nobody could be asked and the skill's default outputs were used"
     }
   }
 }

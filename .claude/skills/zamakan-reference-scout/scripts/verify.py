@@ -80,6 +80,9 @@ def main():
         if after != "verified":
             detail = "; ".join(f"{s} {'match' if m else 'no-match'} {u}" for u, s, m in urls)
             print(f"  {after:<10} {rid}: {detail}")
+        elif any(not m for _, _, m in urls):
+            extra = "; ".join(f"{s} {u}" for u, s, m in urls if not m)
+            print(f"  note       {rid}: verified, but extra link(s) don't match the title (fine for press coverage; check): {extra}")
     print(f"verified {counts.get('verified', 0)} · unverified {counts.get('unverified', 0)} · rejected {counts.get('rejected', 0)}"
           f" of {len(refs)}")
     if a.write:

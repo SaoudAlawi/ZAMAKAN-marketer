@@ -18,7 +18,10 @@ Each campaign page gives country, month/year, brand(s), agency, medium, industry
 full credits, the video file and **related campaigns**. `fetch_meta.py` parses all of it.
 
 - **Search:** `discover.py aotw-search <keyword>` accepts **one keyword only**; multi-word searches return nothing.
-  Run several single-word searches (`ramadan`, `iftar`, `suhoor`, `coffee`, `heritage`) and let `score.py` combine them.
+  Run several single-word searches (`ramadan`, `iftar`, `suhoor`, `heritage`) and let `score.py` combine them.
+  The search matches inside words and descriptions, so short or common words are noisy (`eid` hits "Leidos",
+  `coffee` and `hospitality` return mostly unrelated work). Prefer distinctive words, and use **lists**
+  (`countries/saudi-arabia`, `industries/non-alcoholic-drinks`) plus **related** for precision.
 - **Lists:** `discover.py aotw-list <kind> <slug> --pages N` (60 cards per page).
   - `countries`: `saudi-arabia`, `united-arab-emirates`, `qatar`, `kuwait`, `bahrain`, `oman`, `egypt`,
     `jordan`, `lebanon` … (slugs are full names; `uae` does not exist)
@@ -54,7 +57,8 @@ Use web search for winners and shortlists, then link the case page (often on Ads
 - Results claims are only usable when a source states them. Put the source URL in `results[].source_url`.
 
 ## 5. Trade press and newsrooms (MENA first)
-Read via Open Graph (`fetch_meta.py`); discover via web search:
+Read via `fetch_meta.py` (add `--text` for the article body; the web-fetch tool may fail on some of these hosts);
+discover via web search:
 - **Campaign Middle East** (campaignme.com): `site:campaignme.com <brand OR moment> campaign`
 - **Arabad** (arabadonline.com), **Communicate**, **LBB Online** (lbbonline.com, "Middle East" tag), **AdForum**
 - Brand and agency newsrooms or case pages: good for credits and stated results.

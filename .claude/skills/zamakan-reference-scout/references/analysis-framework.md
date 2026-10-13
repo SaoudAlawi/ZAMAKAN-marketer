@@ -11,6 +11,11 @@ Write plainly and specifically, and never claim more than the source says.
   - Good: "Saudi hospitality rivalry played as comedy: the Najdi generosity Rawaq stands for."
   - Weak: "Relevant Ramadan campaign."
 
+## Evidence you haven't seen
+Videos you couldn't watch and pages you only know by title can still be listed, but say so:
+`provenance.confidence: "medium"` plus a note ("known from title/channel only; watch before the client deck").
+Don't write a teardown from a title, and don't put such a reference in `top`.
+
 ## Scores (0–5, one decimal allowed)
 | Score | 5 means | 1 means |
 |---|---|---|

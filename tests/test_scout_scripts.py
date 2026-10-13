@@ -166,3 +166,25 @@ def test_live_verify_cli(tmp_path):
     out = {r["id"]: r["status"] for r in json.loads(p.read_text())["references"]}
     assert out["invented"] == "rejected"
     assert out["half-million-your-2nd-half"] == "verified"
+
+
+def test_score_demotes_vlogs_and_offbrand_channels_keeps_untitled():
+    brief = json.loads((FIX / "rawaq-ramadan-brief.json").read_text(encoding="utf-8"))
+    terms = SC.brief_terms(brief)
+    vlog = {"source": "youtube", "title": "Are we CONVERTING to ISLAM? RAMADAN (Jeddah, Saudi Arabia)", "channel": "Living the Jo Life"}
+    snl = {"source": "youtube", "title": "Ozempic for Ramadan - SNL", "channel": "Saturday Night Live"}
+    offbrand = {"source": "youtube", "title": "من السحور الى الافطار", "channel": "Kalleh Iraq"}
+    brand = {"source": "youtube", "title": "IKEA Ramadan Togetherness Assembled", "channel": "IKEA UAE"}
+    aotw = {"source": "adsoftheworld", "title": "Ramadan 2026 – At the Heart of Every Moment", "brand": "Baladna", "country": "QA", "year": 2026}
+    untitled = {"source": "campaignme", "url": "https://campaignme.com/x/"}
+    s = {k: SC.score(c, brief, terms, 2026) for k, c in dict(vlog=vlog, snl=snl, offbrand=offbrand, brand=brand,
+                                                               aotw=aotw, untitled=untitled).items()}
+    assert any(f.startswith("probably not") for f in s["vlog"][2]) and any(f.startswith("probably not") for f in s["snl"][2])
+    assert any(f.startswith("channel may not") for f in s["offbrand"][2]) and not s["brand"][2]
+    assert s["aotw"][0] > s["brand"][0] > s["vlog"][0]
+    assert any("run fetch_meta" in f for f in s["untitled"][2]) and s["untitled"][1]["relevance"] == 2.5
+
+
+def test_main_text_extracts_article_body():
+    t = S.main_text(page("campaignme-article.html"))
+    assert "Toni Ibrahim" in t and len(t) > 200 and "<" not in t

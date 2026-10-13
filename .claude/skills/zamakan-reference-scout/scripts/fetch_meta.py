@@ -9,6 +9,7 @@ Ads of the World pages give brand, agency, country, year, medium, industry, cred
 related campaigns. YouTube/Vimeo use their public oEmbed API. Other sites: Open Graph / JSON-LD.
 Each record carries fetch evidence (http_status, via, fetched_at) used later by verify.py.
 --thumbs downloads a 480px JPEG thumbnail per record for boards and decks.
+--text adds the readable article/case text (≤4000 chars), e.g. to write a teardown from Campaign ME or LBB.
 """
 import argparse
 import datetime as dt
@@ -25,7 +26,7 @@ import _web  # noqa: E402
 import sources as S  # noqa: E402
 
 
-def fetch_one(url):
+def fetch_one(url, with_text=False):
     src = S.site_of(url)
     now = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     if src in ("youtube", "vimeo"):
@@ -40,6 +41,8 @@ def fetch_one(url):
         return {"url": url, "source": src, "http_status": page["status"], "via": page.get("via"),
                 "fetched_at": now, "error": page.get("error") or f"HTTP {page['status']}"}
     rec = S.parse(page["final_url"] or url, page["text"])
+    if with_text:
+        rec["text"] = S.main_text(page["text"])
     rec.update(http_status=page["status"], via=page["via"] + (" (cache)" if page.get("cached") else ""), fetched_at=now)
     if page.get("final_url") and page["final_url"].rstrip("/") != url.rstrip("/"):
         rec["final_url"] = page["final_url"]
@@ -76,13 +79,14 @@ def main():
     ap.add_argument("--out")
     ap.add_argument("--thumbs")
     ap.add_argument("--workers", type=int, default=6)
+    ap.add_argument("--text", action="store_true", help="add the page's readable body text (≤4000 chars): trade-press articles, case pages")
     a = ap.parse_args()
     urls = list(a.urls)
     if a.src:
         urls += [json.loads(line)["url"] for line in Path(a.src).read_text(encoding="utf-8").splitlines() if line.strip()]
     urls = list(dict.fromkeys(urls))
     with ThreadPoolExecutor(max_workers=a.workers) as ex:
-        recs = list(ex.map(fetch_one, urls))
+        recs = list(ex.map(lambda u: fetch_one(u, a.text), urls))
     if a.thumbs:
         with ThreadPoolExecutor(max_workers=a.workers) as ex:
             recs = list(ex.map(lambda r: save_thumb(r, a.thumbs), recs))

@@ -85,3 +85,11 @@ def test_refuses_invalid_run(tmp_path):
     p.write_text(json.dumps(run))
     with pytest.raises(SystemExit, match="unknown reference id 'invented-campaign'"):
         build(p, tmp_path)
+
+
+def test_display_title_fallbacks():
+    run = {"run": {"id": "x", "question": "The brief is in brief.md. Find us references…", "client": "rawaq"}}
+    assert B.display_title(run, {"moment": "Ramadan 1448 (≈8 Feb–9 Mar 2027)"}, "Rawaq Coffee Roasters") == \
+        "Rawaq Coffee Roasters · Ramadan 1448 references"
+    run["run"]["title"] = "Rawaq · Ramadan 2027 references"
+    assert B.display_title(run, None, None) == "Rawaq · Ramadan 2027 references"

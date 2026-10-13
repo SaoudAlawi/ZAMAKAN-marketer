@@ -2,7 +2,7 @@
 name: zamakan-reference-scout
 description: "Find real campaign references and creative inspiration, then turn them into strategy: a verified reference set (Ads of the World, YouTube, Vimeo, award shows, trade press, competitor ads), quick cards and deep teardowns, patterns, white space and 3-5 creative territories, delivered as a visual board, client deck and/or report plus files other agents can use. Use this whenever someone asks for references, inspiration, a mood board of campaigns, a swipe file, 'what have others done for Ramadan / National Day / a launch', 'show me the best ads about X', competitor ads or what competitors are running, references for a pitch or a creative kickoff, or creative territories grounded in real work. Saudi/GCC-aware, searches in English and Arabic, and never invents campaigns: every reference is checked against its live page."
 metadata:
-  version: 0.1.0
+  version: 0.2.0
 ---
 
 # ZAMAKAN Reference Scout
@@ -23,8 +23,9 @@ summaries. Use them instead of reading raw web pages, which costs far more token
 - Client work follows `zamakan-core`: `python3 $CORE/scripts/client.py job <slug> scout-<topic>` creates the
   job folder (`clients/<slug>/jobs/<date>-scout-<topic>/`). Everything for this run goes there (`$JOB`).
 - If the client has a design system, skim the Quick reference of `clients/<slug>/design-system/brand.md`:
-  personality and visual world help you judge fit. No client (a general creative question)? Use
-  `$JOB = jobs/<date>-scout-<topic>/` at the repo root.
+  personality and visual world help you judge fit. If it doesn't exist, judge fit from the brief's brand
+  description, carry on, and add an open question (don't block the research on it). No client (a general creative
+  question)? Use `$JOB = jobs/<date>-scout-<topic>/` at the repo root.
 - Check web access once: `curl -sS -o /dev/null -w '%{http_code}' https://www.example.org/`. If it isn't 200, you
   can only search, not open pages. Set `run.web_access: "search-only"`, mark everything `unverified`, and
   tell the user plainly that nothing could be verified.
@@ -44,7 +45,7 @@ Write `$JOB/brief.json` (schema: `schemas/brief.schema.json`), using the user's 
 **Ask the user once, up front:** anything missing that changes the search (market, moment, competitors,
 what to avoid) and **which outputs they want: board, deck, report** (any combination). If you
 can't ask (autonomous run), use these defaults: `brief`/`creative-question` → board, `pitch` → deck + board,
-`competitor-watch` → report. Mention the default in your final message.
+`competitor-watch` → report. Set `outputs_defaulted: true` in brief.json and mention it in your final message.
 
 ## 2. Check the agency library first
 
@@ -76,7 +77,9 @@ python3 $SCOUT/scripts/discover.py aotw-related <campaign-url> ... --out $JOB/ca
 python3 $SCOUT/scripts/discover.py youtube <query words> --min-views 20000 --out $JOB/candidates.jsonl
 ```
 Use your **web search tool** for everything else (Vimeo, award shows, Campaign Middle East, LBB, Arabad, brand
-newsrooms, ad libraries) and append the promising URLs as `{"url": ...}` lines to `candidates.jsonl`.
+newsrooms, ad libraries). Fetch those hand-picked URLs right away so they have titles before scoring
+(untitled links can't be judged): `fetch_meta.py <url> ... --out $JOB/web.jsonl` (add `--text` for articles), then
+`cat $JOB/web.jsonl >> $JOB/candidates.jsonl`.
 
 Then rank, read only the best, and rank again with full details:
 ```bash
@@ -84,9 +87,13 @@ python3 $SCOUT/scripts/score.py $JOB/candidates.jsonl --brief $JOB/brief.json --
 python3 $SCOUT/scripts/fetch_meta.py --from $JOB/top.jsonl --out $JOB/detail.jsonl --thumbs $JOB/thumbs
 python3 $SCOUT/scripts/score.py $JOB/detail.jsonl --brief $JOB/brief.json --top 45
 ```
+Read the top of the list critically. If it is noisy (YouTube vlogs, unrelated keyword matches), build your
+shortlist by hand from `candidates.jsonl` and fetch that instead; the scripts serve your judgement.
 `score.py` is a transparent first pass, not the decision. Its flags matter: *student work*, *touches avoid-list*,
 *AI demo*, *probably not a campaign*. Read `detail.jsonl` lines for the candidates you're considering
-(descriptions, credits, related links), not the raw pages.
+(descriptions, credits, related links), not the raw pages. For a deep teardown that rests on trade press or a case
+page, use `fetch_meta.py <url> --text` (readable body text, ≤4000 chars). It works where the web-fetch tool can't
+reach a site.
 
 ## 5. Select
 
@@ -116,13 +123,15 @@ awards, KPIs, directors or dates; `fetch_meta` gives you what the page states.
 ## 8. Write, verify, validate
 
 Write `$JOB/references.json` (schema: `schemas/references.schema.json`; a complete real example is in
-`references/run-example.json`). Then:
+`references/run-example.json`). Give the run a short display `run.title` (e.g. "Rawaq · Ramadan 2027 references");
+boards and decks use it as their heading. Then:
 ```bash
 python3 $SCOUT/scripts/verify.py $JOB/references.json --write      # opens every link; rejects dead or invented ones
 python3 $SCOUT/scripts/validate_run.py $JOB/references.json --target <n>
 ```
 Read the verify report. `rejected` → drop it or find the real URL. `unverified` → fix the title/brand to
-match the page, or drop it. Fix every validation error and judge the warnings.
+match the page, or drop it. A `note` about an extra link (e.g. a press article with its own headline) is fine
+as long as the primary link matches. Fix every validation error and judge the warnings.
 
 ## 9. Deliver
 

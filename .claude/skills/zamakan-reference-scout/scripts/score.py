@@ -48,14 +48,17 @@ def brief_terms(b):
 
 
 def text_of(c):
-    return " ".join(str(c.get(k) or "") for k in ("title", "brand", "agency", "category", "description", "channel",
-                                                    "country_name", "medium_label")).lower()
+    return " ".join(str(c.get(k) or "") for k in ("title", "title_from_url", "brand", "agency", "category", "description",
+                                                    "channel", "country_name", "medium_label")).lower()
 
 
 def score(c, b, terms, this_year):
     t = text_of(c)
     hits = sorted({w for w in terms if w in t})
     rel = min(5.0, 1.0 + 1.2 * len(hits))
+    untitled = not c.get("title") and not c.get("title_from_url")
+    if untitled:  # a hand-picked web-search URL not fetched yet: don't bury it, fetch it
+        rel = 2.5
     country = c.get("country")
     if country in GCC or (not country and re.search(GCC_WORDS, t)):
         region = 5.0
@@ -76,14 +79,25 @@ def score(c, b, terms, this_year):
     if re.search(r"\bai (ad|commercial|generated)|i created an ai", t):
         flags.append("AI demo / not a real campaign?")
     elif c.get("source") == "youtube" and re.search(
-            r"\bnews\b|news agency|updates? tv|\bvlog|reaction|review|tutorial|how to|compilation|fan ?made|\bshorts?\b",
+            r"\bnews\b|news agency|updates? tv|\bvlog|reaction|review|tutorial|how to|compilation|fan ?made|\bshorts?\b|"
+            r"converting|waking up|routine|explain|prayer time|right time|day in (my|the) life|travel|prank|sketch|\bsnl\b|"
+            r"saturday night live|challenge|recipe|goes to|يوميات|الحياة في",
             (c.get("title", "") + " " + c.get("channel", "")).lower()):
-        flags.append("probably not a campaign (news/vlog/compilation)")
+        flags.append("probably not a campaign (news/vlog/sketch/explainer)")
+    if c.get("source") == "youtube" and not any(f.startswith("probably not") for f in flags):
+        chan = {w for w in words(c.get("channel")) if len(w) >= 3} - {"official", "channel", "tv", "media"}
+        if chan and not chan & words(c.get("title")):
+            flags.append("channel may not be the brand: check it is an official upload")
+    if untitled:
+        flags.append("no title yet: run fetch_meta.py on it first")
     parts = {"relevance": round(rel, 1), "region": region, "freshness": round(fresh, 1)}
     if reach is not None:
         parts["reach"] = round(reach, 1)
-    total = 0.45 * rel + 0.25 * region + 0.2 * fresh + 0.1 * (reach if reach is not None else 2.5)
+    prior = {"adsoftheworld": 0.4, "lovethework": 0.4, "dubailynx": 0.4, "dandad": 0.4, "oneclub": 0.4, "campaignme": 0.3,
+             "lbbonline": 0.3, "adforum": 0.3, "campaignlive": 0.2, "vimeo": 0.1}.get(c.get("source"), 0.0)
+    total = 0.45 * rel + 0.25 * region + 0.2 * fresh + 0.1 * (reach if reach is not None else 2.5) + prior
     total -= 0.8 * ("student work" in flags) + 1.5 * any(f.startswith(("AI demo", "probably not")) for f in flags)
+    total -= 0.7 * any(f.startswith("channel may not") for f in flags)
     return round(total, 2), parts, flags, hits
 
 

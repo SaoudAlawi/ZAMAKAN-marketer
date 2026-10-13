@@ -245,6 +245,20 @@ def parse_oembed(data, url):
     return {k: v for k, v in rec.items() if v not in (None, "", [])}
 
 
+def main_text(html, limit=4000):
+    """Readable body text of an article/case page (for deep teardowns from trade press)."""
+    s = BeautifulSoup(html, "lxml")
+    for tag in s(["script", "style", "noscript", "svg", "nav", "header", "footer", "aside", "form", "iframe"]):
+        tag.decompose()
+    node = s.find("article") or s.find("main")
+    if not node:
+        divs = s.find_all("div")
+        node = max(divs, key=lambda d: sum(len(p.get_text()) for p in d.find_all("p", recursive=False)), default=s.body)
+    paras = [_clean(p.get_text(" ")) for p in (node or s).find_all(["p", "h2", "h3", "li"])]
+    text = "\n".join(p for p in paras if len(p) > 30)
+    return text[:limit] + ("…" if len(text) > limit else "")
+
+
 def parse(url, html):
     """Dispatch on URL for HTML pages."""
     src = site_of(url)

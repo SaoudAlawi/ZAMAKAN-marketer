@@ -59,6 +59,10 @@
           "items": {
             "type": "string"
           }
+        },
+        "title": {
+          "type": "string",
+          "description": "Short display title for boards/decks, e.g. 'Rawaq \u00b7 Ramadan 2027 references'"
         }
       }
     },
