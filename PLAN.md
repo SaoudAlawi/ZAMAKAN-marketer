@@ -180,7 +180,7 @@ Harder eval checks: insights with sources, competitor coverage, recommendation p
 | 2d | **Awesome-style library**: one `REFERENCE.md` analysis per campaign + a browsable `library/README.md` index by category, market and moment | export tests | ✅ |
 | 2e | **Outputs v2**: insights first, competitor table, recommendation, before-kickoff list; board + deck by default for kickoffs; deck redesign | build tests + visual review | ✅ |
 | 2g | **Sparks from elsewhere** (user, during 2d): 3–5 references from outside the client's region *and* category in every brief/pitch/creative question, each with a "What if <client>…?" provocation; `score.py --sparks`; own section in board, deck, report | validator + scorer + output tests | ✅ |
-| 3 | **Iteration 3** (from 40+ benchmark-agent reports): 3a housekeeping, 3b fetching/thumbnails, 3c honest verification evidence, 3d competitor-watch rebuilt, 3e output fixes, 3f ranking, 3g blind judge + repeat runs | 175 tests; then re-benchmark | ✅ built, ⬜ benchmark |
+| 3 | **Iteration 3** (from 40+ benchmark-agent reports): 3a housekeeping, 3b fetching/thumbnails, 3c honest verification evidence, 3d competitor-watch rebuilt, 3e output fixes, 3f ranking, 3g blind judge + repeat runs | 171 tests; then re-benchmark | ✅ built, ⬜ benchmark |
 | 2f | **Benchmark suite + scorecard**: 5 scenarios (GCC brief, global creative question, competitor watch, pitch, global-scope brief), with vs without skill, repeated runs; quality, real-link rate, consistency, time, tokens; scorecard page tracked across iterations | grader tests; then the benchmark run | ✅ (first pass) |
 
 ## 4. Build steps & test gates (Feature 1)
@@ -244,7 +244,7 @@ The no-skill baseline did several generic things worth building into the skill:
   with rules for search budget, missing competitors, country, alcohol, unwatched videos, award level, cover. 3e deck
   shows up to 6 insights; placeholders instead of empty tiles. 3f ranking: place names no longer count as relevance,
   off-topic pushed down, award signals, alcohol flag. 3g `evals/judge_scout.py`: blind A/B judgement on a creative
-  director's rubric, scorecard shows it; prompts give both sides the same search-budget note. 175 tests pass.
+  director's rubric, scorecard shows it; prompts give both sides the same search-budget note. 171 tests pass.
 - 2026-10-13: Scout 2f first pass done (user chose 1 run per scenario, ~2M tokens). 5 scenarios (GCC brief, global creative
   question, competitor watch, pitch, global brief) × with/without skill; `evals/bench_scout.py` + scenario-driven
   `grade_scout.py`; scorecard https://claude.ai/artifact/Gmjx7ao4bA2inZKD9CKsDT (history in `evals/scorecard/`).
