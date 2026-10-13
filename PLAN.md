@@ -101,12 +101,22 @@ search-only mode when it cannot fetch pages.
 | 0 | Plan + requirements | You approve | ✅ |
 | 1 | Sample client package (Rawaq) + answer key | PDF renders correctly; known traps verified | ✅ |
 | 2 | Output contract: spec.json schema + validator, gold Rawaq spec, consumer contract, brand.md template | 17 pytest pass; every deliberate mistake caught | ✅ |
-| 3 | Scripts: inventory, pdf digest, colours, fonts, logos | pytest on Rawaq sample, compared with answer key | ⬜ |
-| 4 | Scripts: build tokens/CSS, contrast check, preview render | pytest; preview PNG reviewed by you | ⬜ |
+| 3 | Scripts: inventory, pdf digest (colours/swatches/conflicts/flags/renders), fonts, logos, extract_all → digest.md | 59 pytest pass; every answer-key trap detected | ✅ |
+| 4 | Scripts: build tokens.json/CSS, manifest, sources.md, **DESIGN.md export**, contrast check, preview render | pytest; preview PNG reviewed by you | ⬜ |
 | 5 | SKILL.md for zamakan-design-system + zamakan-core | First end-to-end run on Rawaq | ⬜ |
 | 6 | Evals: with-skill vs without-skill, graded against answer key | Clear win over baseline; your review in eval viewer | ⬜ |
 | 7 | Iterate until the answer-key score and your review are both satisfied | — | ⬜ |
 | 8 | Trigger tuning (description optimisation) | Trigger accuracy on held-out queries | ⬜ |
+
+## 4b. Prior art & reuse ("don't reinvent the wheel")
+
+| Source | What we take | What we don't |
+|---|---|---|
+| [coreyhaines31/marketingskills](https://github.com/coreyhaines31/marketingskills) (MIT, 50 skills) | Architecture confirmation (shared context file read by every skill = our contract); Agent Skills spec conventions (name = dir, description ≤1024 chars, SKILL.md <500 lines, `metadata.version`); `evals/evals.json` per skill; plugin packaging. Generic skills (copywriting, ad-creative, social, ab-testing, competitor-profiling…) can be **used alongside** ZAMAKAN instead of rebuilt | Its single per-project context file (we need many clients); no Arabic/Gulf layer; no design-system extraction; no campaign-reference research |
+| [google-labs-code/design.md](https://github.com/google-labs-code/design.md) (Apache-2.0, alpha) | Emerging standard for describing a design system to AI agents → we **export a DESIGN.md** from spec.json for interoperability (Stitch, coding agents) | Not our source of truth: UI-only, no logos/photography/Arabic typography rules |
+
+ZAMAKAN focuses on what nobody else covers: brand files → verified design system, the campaign
+reference scout, bilingual Arabic/Gulf craft, and agency-scale multi-client structure.
 
 ## 5. Decisions log
 
@@ -125,3 +135,4 @@ search-only mode when it cannot fetch pages.
 - 2026-10-13: Re-scoped to the sub-skill architecture; built the Rawaq sample package and answer key.
 - 2026-10-13: Feature 2 (reference scout) defined; network limits of the cloud environment noted.
 - 2026-10-13: Step 2 done. Design: the agent writes only spec.json + brand.md; scripts generate the rest.
+- 2026-10-13: Step 3 done. One command (`extract_all.py`, about 5 s) turns the brand folder into a 6 KB digest + 10 KB page text + 2 contact sheets. Reviewed marketingskills + DESIGN.md (see 4b).
