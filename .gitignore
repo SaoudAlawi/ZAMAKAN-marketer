@@ -222,3 +222,4 @@ __marimo__/
 # ZAMAKAN: real client brand files & deliverables stay local
 clients/
 *-workspace/
+review-iteration-*.html

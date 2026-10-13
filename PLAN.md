@@ -103,8 +103,8 @@ search-only mode when it cannot fetch pages.
 | 2 | Output contract: spec.json schema + validator, gold Rawaq spec, consumer contract, brand.md template | 17 pytest pass; every deliberate mistake caught | ✅ |
 | 3 | Scripts: inventory, pdf digest (colours/swatches/conflicts/flags/renders), fonts, logos, extract_all → digest.md | 59 pytest pass; every answer-key trap detected | ✅ |
 | 4 | build_design_system.py: tokens.json (DTCG 2025.10), tokens.css, manifest, sources.md (+contrast), **DESIGN.md** (passes Google's linter: 0 errors), preview style tile | 73 pytest pass; deterministic; preview awaiting your review | ✅ |
-| 5 | SKILL.md for zamakan-design-system + zamakan-core | First end-to-end run on Rawaq | ⬜ |
-| 6 | Evals: with-skill vs without-skill, graded against answer key | Clear win over baseline; your review in eval viewer | ⬜ |
+| 5 | SKILL.md for zamakan-design-system + zamakan-core (+ client.py, spec guide, grader) | First end-to-end run on Rawaq: 16/16, spec matches gold; 6 skill issues fixed | ✅ |
+| 6 | Evals: with-skill vs without-skill, graded against answer key | Iteration 1: both 16/16 (assertions too easy); skill 3.4× faster, 37% fewer tokens, fixed contract. Iteration 2: harder assertions, 3 runs each | 🟨 |
 | 7 | Iterate until the answer-key score and your review are both satisfied | — | ⬜ |
 | 8 | Trigger tuning (description optimisation) | Trigger accuracy on held-out queries | ⬜ |
 
@@ -129,11 +129,21 @@ reference scout, bilingual Arabic/Gulf craft, and agency-scale multi-client stru
 - Feature 2 = campaign reference scout: tiered depth, award work + live competitor ads,
   shared agency library. Build after Feature 1 is finished and tested.
 
+## 5b. Iteration-1 learnings (adopt from the baseline)
+
+The no-skill baseline did several generic things worth building into the skill:
+1. Extract icons / vector graphics from the PDF as SVG assets (script).
+2. Generate clear-space-padded logo files (script, from the clear-space rule).
+3. Render graphic elements, pattern and icons on the preview style tile.
+4. Audit application/mock-up pages against the rules and flag contradictions.
+5. Sample on-brand renders → belongs to a future *social post designer* sub-skill.
+
 ## 6. Progress log
 
 - 2026-10-13: Requirements captured; plan drafted.
 - 2026-10-13: Re-scoped to the sub-skill architecture; built the Rawaq sample package and answer key.
 - 2026-10-13: Feature 2 (reference scout) defined; network limits of the cloud environment noted.
 - 2026-10-13: Step 2 done. Design: the agent writes only spec.json + brand.md; scripts generate the rest.
+- 2026-10-13: Step 5 done + iteration-1 eval (see 5b). Fixed: canonical roles, components, missing_assets, contrast pairing, docs.
 - 2026-10-13: Step 4 done. One build command generates all contract files from spec.json; DESIGN.md validated with @google/design.md 0.4.0.
 - 2026-10-13: Step 3 done. One command (`extract_all.py`, about 5 s) turns the brand folder into a 6 KB digest + 10 KB page text + 2 contact sheets. Reviewed marketingskills + DESIGN.md (see 4b).

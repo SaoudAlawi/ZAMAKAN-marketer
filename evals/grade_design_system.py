@@ -115,9 +115,7 @@ def grade(run_dir, client="rawaq"):
     if spec_path.exists():
         result["spec_accuracy"] = spec_accuracy(spec_path, client)
     write = Path(run_dir) / "grading.json"
-    timing = Path(run_dir) / "timing.json"
-    if timing.exists():
-        result["timing"] = json.loads(timing.read_text())
+    # timing stays in timing.json: skill-creator's aggregator reads tokens from there
     write.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return result
 
