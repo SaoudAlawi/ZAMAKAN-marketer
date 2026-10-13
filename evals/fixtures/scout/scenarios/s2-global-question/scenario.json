@@ -1,0 +1,45 @@
+{
+ "title": "Global creative question: making waiting enjoyable",
+ "mode": "creative-question",
+ "client": null,
+ "design_system": false,
+ "request": "Our question is in brief.md (in the working directory). Find us the references and tell us what we can learn.",
+ "job": "jobs/2026-10-13-scout-waiting",
+ "checks": [
+  {
+   "type": "min_links",
+   "n": 12
+  },
+  {
+   "type": "alive_rate",
+   "min": 0.95
+  },
+  {
+   "type": "region_count",
+   "n": 3,
+   "label": "Global: references from ≥3 regions"
+  },
+  {
+   "type": "topic_ratio",
+   "rx": "wait|queue|line\\b|hold|delay|loading|late|airport|traffic|انتظار|طابور",
+   "min": 0.6,
+   "context": true,
+   "label": "On the question: ≥60% of references are about waiting"
+  },
+  {
+   "type": "mentions",
+   "rx": "bank|banking|بنك",
+   "n": 3,
+   "label": "Translated for the Saudi bank (≥3 mentions)"
+  },
+  {
+   "type": "patterns",
+   "n": 3
+  },
+  {
+   "type": "visual",
+   "min_images": 8
+  }
+ ],
+ "id": "s2-global-question"
+}

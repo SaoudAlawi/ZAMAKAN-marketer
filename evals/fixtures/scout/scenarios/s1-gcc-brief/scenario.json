@@ -1,0 +1,82 @@
+{
+ "title": "GCC brief: Rawaq Ramadan 2027",
+ "mode": "brief",
+ "client": "rawaq",
+ "design_system": true,
+ "request": "The Rawaq Ramadan brief is in brief.md (in the working directory). Find us references for the creative kickoff next week and give us creative territories.",
+ "job": "clients/rawaq/jobs/2026-10-13-scout-ramadan",
+ "checks": [
+  {
+   "type": "min_links",
+   "n": 20
+  },
+  {
+   "type": "alive_rate",
+   "min": 0.95
+  },
+  {
+   "type": "home_refs",
+   "n": 5,
+   "label": "≥5 references from the GCC"
+  },
+  {
+   "type": "mix",
+   "rx": "coffee|caf[eé]|espresso|nespresso|nescaf|costa|starbucks|barn|dose|half million|tea\\b|lipton|قهوة",
+   "n_in": 3,
+   "n_out": 5,
+   "label": "Range: ≥3 coffee/tea AND ≥5 from other categories"
+  },
+  {
+   "type": "topic_ratio",
+   "rx": "ramadan|ramadhan|iftar|suhoor|sohour|taraweeh|eid|رمضان|سحور|افطار|إفطار|عيد",
+   "min": 0.4,
+   "label": "Ramadan relevance: ≥40% of live references"
+  },
+  {
+   "type": "territories",
+   "min": 3,
+   "max": 5
+  },
+  {
+   "type": "avoid",
+   "rx": "lantern|crescent|camel|فانوس|هلال|جمل"
+  },
+  {
+   "type": "visual",
+   "min_images": 10
+  },
+  {
+   "type": "mentions",
+   "rx": "cultural|sensitiv|risk|watch-out|watch out",
+   "n": 5,
+   "label": "Cultural fit / risks addressed (≥5 mentions)"
+  },
+  {
+   "type": "competitors",
+   "names": [
+    "Barn's",
+    "Dose",
+    "Half Million",
+    "Overdose",
+    "Starbucks"
+   ]
+  },
+  {
+   "type": "insights",
+   "n": 3
+  },
+  {
+   "type": "recommendation"
+  },
+  {
+   "type": "global_refs",
+   "n": 3,
+   "label": "≥3 references from outside the Middle East (sparks)"
+  },
+  {
+   "type": "on_brand",
+   "client": "rawaq"
+  }
+ ],
+ "id": "s1-gcc-brief"
+}
