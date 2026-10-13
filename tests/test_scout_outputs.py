@@ -61,7 +61,7 @@ def test_board_cards_filters_and_rtl(run_path, tmp_path):
     for ring in ("direct", "category", "adjacent", "wildcard"):
         assert f'data-ring="{ring}"' in h and f'data-v="{ring}"' in h
     assert 'class="ar"' in h and "مين يعزم الليلة؟" in h
-    assert h.startswith("<title>") and "prefers-color-scheme:dark" in h
+    assert h.startswith("<title>") and "--bg:#F6F6F2" in h  # house DESIGN.md theme by default
     assert h.count('target="_blank" rel="noopener"') >= len(shown)
 
 

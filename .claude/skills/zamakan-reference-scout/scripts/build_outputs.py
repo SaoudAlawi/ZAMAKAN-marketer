@@ -3,12 +3,15 @@
 
 Usage:
   python build_outputs.py <references.json> --out <job_dir> [--formats board,deck,report] [--brief brief.json]
-                          [--client-name "Rawaq Coffee Roasters"] [--no-pdf]
+                          [--client-name "Rawaq Coffee Roasters"] [--design zamakan|awesome:<name>|<DESIGN.md>] [--no-pdf]
 
 Always writes territories.md (for agents). Formats (ask the user which they want):
   board   board.html: self-contained visual board (thumbnails embedded, filters by ring/region/media)
   deck    deck.pptx (editable, 16:9) + deck.pdf when LibreOffice is available
   report  report.md: written analysis (patterns, white space, territories, teardowns, all references)
+Look (board and deck) comes from a DESIGN.md: --design if given, else the client's design-system/DESIGN.md found
+above --out (clients/<slug>/...), else the ZAMAKAN house style. awesome:<name> uses a brand from
+github.com/VoltAgent/awesome-design-md (e.g. awesome:nike); see theme.py.
 Refuses to build if validate_run.py reports errors. Rejected references are never shown.
 """
 import argparse
@@ -24,6 +27,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _web  # noqa: E402
+from theme import choose as choose_theme, font_links, load as load_theme, lum, mix, stack  # noqa: E402
 from validate_run import GCC, validate  # noqa: E402
 
 RING_LABEL = {"direct": "Direct · same category, GCC", "category": "Category · worldwide",
@@ -172,23 +176,16 @@ def build_report(run, brief, client_name):
 
 # ------------------------------------------------------------------ board.html
 BOARD_CSS = """
-:root{--bg:#F6F4EF;--panel:#FFFFFF;--ink:#1E1C19;--muted:#6E675E;--line:#E4DED3;--accent:#9B4F1E;--chip:#EFEAE1;
---direct:#9B4F1E;--category:#2F6F62;--adjacent:#5B4B8A;--wildcard:#A3762A;--ok:#2F7D4F;
---disp:'Fraunces',Georgia,serif;--body:'IBM Plex Sans','IBM Plex Sans Arabic',system-ui,sans-serif;--ar:'IBM Plex Sans Arabic','IBM Plex Sans',sans-serif}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#161513;--panel:#201E1B;--ink:#EDE8E0;--muted:#A79F94;--line:#36322C;--accent:#E0965F;--chip:#2A2724;
---direct:#E0965F;--category:#79C2AF;--adjacent:#ABA0DD;--wildcard:#E2B663;--ok:#6CC08E;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#161513;--panel:#201E1B;--ink:#EDE8E0;--muted:#A79F94;--line:#36322C;--accent:#E0965F;--chip:#2A2724;
---direct:#E0965F;--category:#79C2AF;--adjacent:#ABA0DD;--wildcard:#E2B663;--ok:#6CC08E;color-scheme:dark}
 *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 var(--body)}
 .wrap{max-width:1240px;margin:0 auto;padding-inline:20px;padding-block:36px 64px;display:grid;gap:44px}
-h1{font:600 clamp(26px,3.6vw,38px)/1.15 var(--disp);margin:0;text-wrap:balance} h2{font:600 22px/1.25 var(--disp);margin:0 0 14px}
+h1{font:var(--disp-w) clamp(26px,3.6vw,38px)/1.15 var(--disp);margin:0;text-wrap:balance} h2{font:var(--disp-w) 22px/1.25 var(--disp);margin:0 0 14px}
 .eyebrow{font:600 11px/1 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
 .lede{color:var(--muted);max-width:75ch;margin:8px 0 0} .ar{font-family:var(--ar);direction:rtl}
 .stats{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px} .stat{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:10px 14px}
 .stat b{font-size:20px;font-variant-numeric:tabular-nums;display:block}.stat span{color:var(--muted);font-size:12px}
 .terr{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
 .tcard{background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:6px;padding:18px;display:grid;gap:10px;align-content:start}
-.tcard h3{margin:0;font:600 19px/1.25 var(--disp)} .tcard .ar{color:var(--muted);font-size:15px}
+.tcard h3{margin:0;font:var(--disp-w) 19px/1.25 var(--disp)} .tcard .ar{color:var(--muted);font:600 16px/1.5 var(--ar-disp)}
 .tcard p{margin:0} .tcard small{color:var(--muted)} .strip{display:flex;gap:6px;flex-wrap:wrap}
 .strip a{display:block;width:72px;aspect-ratio:4/3;border-radius:3px;overflow:hidden;background:var(--chip)} .strip img{width:100%;height:100%;object-fit:cover}
 ul.tight{margin:0;padding-left:18px;display:grid;gap:4px;font-size:14px}
@@ -203,13 +200,25 @@ ul.tight{margin:0;padding-left:18px;display:grid;gap:4px;font-size:14px}
 .card .img{aspect-ratio:16/10;background:var(--chip)} .card .img img{width:100%;height:100%;object-fit:cover;display:block}
 .card .body{padding:12px 14px 14px;display:grid;gap:6px;flex:1;align-content:start} .card h4{margin:0;font-size:15px;line-height:1.3}
 .card .brand{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)} .card .meta{font-size:12px;color:var(--muted)}
-.card p{margin:0;font-size:14px} .card .why{color:var(--muted);font-size:13px} .card a.go{font-size:13px;font-weight:600;color:var(--accent);text-decoration:none;margin-top:4px}
+.card p{margin:0;font-size:14px} .card .why{color:var(--muted);font-size:13px} .card a.go{font-size:13px;font-weight:600;color:var(--accent-text);text-decoration:none;margin-top:4px}
 .badges{display:flex;gap:6px;flex-wrap:wrap} .badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;background:var(--chip);color:var(--ink)}
-.badge.ring{color:#fff} .ring-direct{background:var(--direct)}.ring-category{background:var(--category)}.ring-adjacent{background:var(--adjacent)}.ring-wildcard{background:var(--wildcard)}
+.ring-direct{background:var(--direct);color:var(--on-direct)}.ring-category{background:var(--category);color:var(--on-category)}
+.ring-adjacent{background:var(--adjacent);color:var(--on-adjacent)}.ring-wildcard{background:var(--wildcard);color:var(--on-wildcard)}
 .badge.ok{color:var(--ok)} .card[hidden]{display:none!important}
 footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:16px}
 @media (max-width:760px){.dive{grid-template-columns:1fr}.two{grid-template-columns:1fr}.dive dl{grid-template-columns:1fr}}
 """
+
+def board_root(th):
+    """CSS custom properties from a DESIGN.md theme (see theme.py). One look, as the design system defines it."""
+    v = {"bg": th["bg"], "panel": th["panel"], "ink": th["ink"], "muted": th["muted"], "line": th["line"], "accent": th["accent"],
+         "accent-text": th["accent_text"], "chip": th["chip"], "ok": th["accent_text"],
+         **th["ring"], **{f"on-{k}": c for k, c in th["ring_on"].items()},
+         "disp": stack(th["display_font"], th["ar_display_font"]), "body": stack(th["body_font"], th["ar_body_font"]),
+         "ar": stack(th["ar_body_font"], th["body_font"]), "ar-disp": stack(th["ar_display_font"], th["ar_body_font"]), "disp-w": th["display_weight"]}
+    scheme = "dark" if lum(th["bg"]) < 0.2 else "light"
+    return ":root{" + ";".join(f"--{k}:{c}" for k, c in v.items()) + f";color-scheme:{scheme}}}"
+
 
 BOARD_JS = """
 const state={ring:'all',region:'all'};
@@ -223,7 +232,8 @@ apply();
 """
 
 
-def build_board(run, brief, client_name, thumbs_dir):
+def build_board(run, brief, client_name, thumbs_dir, th=None):
+    th = th or load_theme("zamakan")
     refs = run["references"]
     byid = {r["id"]: r for r in refs}
     img = {}
@@ -276,8 +286,8 @@ def build_board(run, brief, client_name, thumbs_dir):
     title = display_title(run, brief, client_name)
     return f"""<title>{E(title)}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap">
-<style>{BOARD_CSS}</style>
+{font_links(th)}
+<style>{board_root(th)}{BOARD_CSS}</style>
 <div class="wrap">
 <header><div class="eyebrow">Reference scout · {E(run['run']['mode'])} · {E(run['run'].get('created', ''))}</div>
 <h1>{E(display_title(run, brief, client_name))}</h1><p class="lede">{brief_bits}</p>
@@ -291,18 +301,22 @@ def build_board(run, brief, client_name, thumbs_dir):
 <span style="width:12px"></span><button data-k="region" data-v="all" aria-pressed="true">All regions</button><button data-k="region" data-v="gcc" aria-pressed="false">GCC</button><button data-k="region" data-v="other" aria-pressed="false">Rest of world</button></div>
 <div class="grid">{cards}</div></section>
 <footer>{''.join(f'<p>Open question: {E(q)}</p>' for q in run.get('open_questions', []))}
-<p>Every reference links to its original page and was checked live. Thumbnails © their owners, internal reference use only. Generated by zamakan-reference-scout.</p></footer>
+<p>Every reference links to its original page and was checked live. Thumbnails © their owners, internal reference use only. Generated by zamakan-reference-scout.</p>
+<p>Styled with the {E(th["name"])} DESIGN.md{' from VoltAgent/awesome-design-md (MIT); brand look used for internal presentation only' if 'awesome-design-md' in th['origin'] else ''}.</p></footer>
 </div><script>{BOARD_JS}</script>"""
 
 
 # ------------------------------------------------------------------ deck.pptx
-def build_deck(run, brief, client_name, thumbs_dir, path):
+def build_deck(run, brief, client_name, thumbs_dir, path, th=None):
     from pptx import Presentation
     from pptx.dml.color import RGBColor
     from pptx.enum.text import PP_ALIGN
     from pptx.util import Emu, Pt
-    INK, MUTED, ACCENT, BG, PAPER = RGBColor(0x1E, 0x1C, 0x19), RGBColor(0x6E, 0x67, 0x5E), RGBColor(0x9B, 0x4F, 0x1E), \
-        RGBColor(0xF6, 0xF4, 0xEF), RGBColor(0xFF, 0xFF, 0xFF)
+    th = th or load_theme("zamakan")
+    rgb = lambda h: RGBColor.from_string(h.lstrip("#").upper())  # noqa: E731
+    INK, MUTED, ACCENT, BG, DARK, ON_DARK, CHIP = (rgb(th[k]) for k in ("ink", "muted", "accent_text", "bg", "dark", "on_dark", "chip"))
+    ON_DARK_MUTED = rgb(mix(th["on_dark"], th["dark"], 0.35))
+    DISP, BODY, AR = th["display_font"], th["body_font"], th["ar_display_font"]
     prs = Presentation()
     prs.slide_width, prs.slide_height = Emu(12192000), Emu(6858000)
     W, H = prs.slide_width, prs.slide_height
@@ -317,7 +331,8 @@ def build_deck(run, brief, client_name, thumbs_dir, path):
         s.background.fill.fore_color.rgb = bg
         return s
 
-    def text(s, x, y, w, h, t, size=16, bold=False, color=INK, align=None, rtl=False, font="Arial"):
+    def text(s, x, y, w, h, t, size=16, bold=False, color=INK, align=None, rtl=False, font=None):
+        font = font or (AR if rtl else DISP if size >= 22 else BODY)
         tb = s.shapes.add_textbox(cm(x), cm(y), cm(w), cm(h))
         tf = tb.text_frame
         tf.word_wrap = True
@@ -335,7 +350,7 @@ def build_deck(run, brief, client_name, thumbs_dir, path):
         if not b:
             box = s.shapes.add_shape(1, cm(x), cm(y), cm(w), cm(h))
             box.fill.solid()
-            box.fill.fore_color.rgb = RGBColor(0xEF, 0xEA, 0xE1)
+            box.fill.fore_color.rgb = CHIP
             box.line.fill.background()
             return
         from PIL import Image
@@ -349,10 +364,10 @@ def build_deck(run, brief, client_name, thumbs_dir, path):
         tb.text_frame.paragraphs[0].runs[0].hyperlink.address = primary_url(r)
 
     # 1 title
-    s = slide(INK)
-    text(s, 2, 1.6, 26, 1, "REFERENCE SCOUT", 12, True, RGBColor(0xC9, 0xBF, 0xB2))
-    text(s, 2, 2.6, 28, 6, display_title(run, brief, client_name), 34, True, PAPER)
-    text(s, 2, 15.5, 28, 1.5, f"{client_name or ''} · {run['run'].get('created', '')}", 14, False, RGBColor(0xC9, 0xBF, 0xB2))
+    s = slide(DARK)
+    text(s, 2, 1.6, 26, 1, "REFERENCE SCOUT", 12, True, ON_DARK_MUTED)
+    text(s, 2, 2.6, 28, 6, display_title(run, brief, client_name), 34, True, ON_DARK, font=DISP)
+    text(s, 2, 15.5, 28, 1.5, f"{client_name or ''} · {run['run'].get('created', '')}", 14, False, ON_DARK_MUTED)
     # 2 brief + method
     s = slide()
     text(s, 2, 1.4, 28, 1.2, "The brief", 28, True)
@@ -439,6 +454,7 @@ def main():
     ap.add_argument("--formats", default="board")
     ap.add_argument("--brief")
     ap.add_argument("--client-name")
+    ap.add_argument("--design", help="zamakan | awesome:<name> | path to a DESIGN.md (default: client's, else zamakan)")
     ap.add_argument("--no-pdf", action="store_true")
     a = ap.parse_args()
     run, warnings = load_run(a.references)
@@ -446,6 +462,7 @@ def main():
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     thumbs = out / "thumbs"
+    th = choose_theme(a.design, out)
     made = []
     (out / "territories.md").write_text(build_territories(run, brief, a.client_name), encoding="utf-8")
     made.append("territories.md")
@@ -454,15 +471,15 @@ def main():
         (out / "report.md").write_text(build_report(run, brief, a.client_name), encoding="utf-8")
         made.append("report.md")
     if "board" in fmts:
-        (out / "board.html").write_text(build_board(run, brief, a.client_name, thumbs), encoding="utf-8")
+        (out / "board.html").write_text(build_board(run, brief, a.client_name, thumbs, th), encoding="utf-8")
         made.append("board.html")
     if "deck" in fmts:
-        build_deck(run, brief, a.client_name, thumbs, out / "deck.pptx")
+        build_deck(run, brief, a.client_name, thumbs, out / "deck.pptx", th)
         made.append("deck.pptx")
         if not a.no_pdf:
             pdf = to_pdf(out / "deck.pptx")
             made.append("deck.pdf" if pdf else "(deck.pdf skipped: LibreOffice not available)")
-    print(f"built in {out}: {', '.join(made)}")
+    print(f"built in {out}: {', '.join(made)} · look: {th['name']} ({th['origin']})")
     for w in warnings:
         print("  warn", w)
 

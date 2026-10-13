@@ -174,9 +174,9 @@ Harder eval checks: insights with sources, competitor coverage, recommendation p
 ### 3d. Scout iteration 2: plan (agreed 2026-10-13)
 | # | Step | Test gate | Status |
 |---|---|---|---|
-| 2a | **Strategy layer** in the contract: `insights` (dated, sourced), `recommendation`, `before_kickoff`, competitor check per named competitor, reference codes (R01…); validator rules | schema + validator tests | ⬜ |
-| 2b | **Scope switch** `gcc` / `mena` / `global` in brief and run: scoring weights, search plan (global award shows, more languages), cultural fit still judged for the client's market | scorer + validator tests | ⬜ |
-| 2c | **DESIGN.md theming** for board and deck: ZAMAKAN house DESIGN.md (default), the client's own `design-system/DESIGN.md` when it exists, or any of the 84 in [awesome-design-md](https://github.com/voltagent/awesome-design-md) (MIT) by name | renders in 3 themes; house file passes Google's linter | ⬜ |
+| 2a | **Strategy layer** in the contract: `insights` (dated, sourced), `recommendation`, `before_kickoff`, competitor check per named competitor, reference codes (R01…); validator rules | schema + validator tests | ✅ |
+| 2b | **Scope switch** `gcc` / `mena` / `global` in brief and run: scoring weights, search plan (global award shows, more languages), cultural fit still judged for the client's market | scorer + validator tests | ✅ |
+| 2c | **DESIGN.md theming** for board and deck: ZAMAKAN house DESIGN.md (default), the client's own `design-system/DESIGN.md` when it exists, or any of the 84 in [awesome-design-md](https://github.com/voltagent/awesome-design-md) (MIT) by name | renders in 3 themes; house file passes Google's linter | ✅ |
 | 2d | **Awesome-style library**: one `REFERENCE.md` analysis per campaign + a browsable `library/README.md` index by category, market and moment | export tests | ⬜ |
 | 2e | **Outputs v2**: insights first, competitor table, recommendation, before-kickoff list; board + deck by default for kickoffs; deck redesign | build tests + visual review | ⬜ |
 | 2f | **Benchmark suite + scorecard**: 5 scenarios (GCC brief, global creative question, competitor watch, pitch, global-scope brief), with vs without skill, repeated runs; quality, real-link rate, consistency, time, tokens; scorecard page tracked across iterations | grader tests; then the benchmark run | ⬜ |
@@ -231,6 +231,15 @@ The no-skill baseline did several generic things worth building into the skill:
 - 2026-10-13: Re-scoped to the sub-skill architecture; built the Rawaq sample package and answer key.
 - 2026-10-13: Feature 2 (reference scout) defined; network limits of the cloud environment noted.
 - 2026-10-13: Step 2 done. Design: the agent writes only spec.json + brand.md; scripts generate the rest.
+- 2026-10-13: Scout 2c done: boards and decks take their look from a DESIGN.md (`theme.py`, `build_outputs.py --design`).
+  Order: `--design` > the client's own `design-system/DESIGN.md` (found automatically) > ZAMAKAN house style
+  (`assets/zamakan.DESIGN.md`, 0 errors / 0 warnings in Google's linter). `awesome:<name>` pulls any of the 84
+  awesome-design-md brands (MIT, credited in the footer). All 84 load with readable text (WCAG AA enforced; brand
+  colour kept for fills, nudged only for link text); prose-only files and one with broken YAML handled. Checked
+  visually in 4 looks (house, Rawaq, Nike, Al Jazeera). Weak spots: brand fonts that are proprietary fall back to
+  system fonts; the deck layout itself is unchanged until 2e. 137 tests pass.
+- 2026-10-13: Scout 2a+2b done: strategy layer (insights, recommendation, before-kickoff, competitor check) and scope
+  switch gcc/mena/global in contract, scorer and validator.
 - 2026-10-13: User added to iteration 2: global scope switch, DESIGN.md theming + awesome-style library (both), full benchmark + scorecard.
 - 2026-10-13: Scout step 4 done + iteration-1 eval: both 11/11, no invented links; skill faster, baseline better packaged (3c).
 - 2026-10-13: Scout step 3 done: outputs built from a real 16-reference Ramadan run; library committed (user decision).

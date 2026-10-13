@@ -140,6 +140,11 @@ python3 $SCOUT/scripts/build_outputs.py $JOB/references.json --out $JOB --format
         --brief $JOB/brief.json --client-name "<Client name>"
 python3 $SCOUT/scripts/library.py add $JOB/references.json --client <slug>
 ```
+The board and deck take their look from a DESIGN.md: the client's own `design-system/DESIGN.md` if it exists,
+else the ZAMAKAN house style. If the user asks for another look, add `--design awesome:<brand>` (any folder name in
+github.com/VoltAgent/awesome-design-md, e.g. `awesome:nike`) or `--design <path/to/DESIGN.md>`. A brand look is for
+internal presentation only; never send a client a deck dressed in another company's identity.
+
 `territories.md` is always written for other agents. Then reply briefly:
 - 1–2 lines on what you found (counts, rings, verified);
 - the territories, one line each;
