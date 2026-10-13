@@ -23,7 +23,7 @@ TEXT_EXT = {".md", ".html", ".htm", ".json", ".txt", ".csv"}
 NOT_REFS = re.compile(r"fonts\.(googleapis|gstatic)|cdnjs|jsdelivr|unpkg|image\.adsoftheworld|video\.adsoftheworld|i\.ytimg|"
                       r"/rails/active_storage|vimeocdn|\.(png|jpe?g|webp|gif|svg|css|js|mp4)(\?|$)|schemas?\.|w3\.org|example\.(org|com)|"
                       r"designtokens|json-schema|claude\.ai|anthropic|wikipedia\.org", re.I)
-URL_RX = re.compile(r"https?://[^\s\"'<>)\]|`]+")
+URL_RX = re.compile(r"https?://[^\s\"'<>)\]|`,]+")  # commas end a URL (CSV cells)
 GCC_RX = re.compile(r"saudi|ksa|riyadh|jeddah|dammam|khobar|uae|emirates|dubai|abu dhabi|qatar|doha|kuwait|bahrain|oman|muscat|السعودية|الرياض", re.I)
 RAMADAN_RX = re.compile(r"ramadan|ramadhan|iftar|suhoor|sohour|taraweeh|eid|رمضان|سحور|افطار|إفطار|عيد", re.I)
 COFFEE_RX = re.compile(r"coffee|caf[eé]|espresso|nespresso|nescaf|costa|starbucks|barn|dose|half million|tea\b|lipton|قهوة", re.I)
@@ -60,7 +60,7 @@ def ref_urls(texts):
     return sorted(urls)
 
 
-def territory_blocks(texts, refs_json):
+def territory_blocks(texts, refs_json, brands=()):
     if refs_json and refs_json.get("territories"):
         byid = {r["id"]: r for r in refs_json["references"]}
         return [{"name": t["name"], "name_ar": t.get("name_ar", ""), "text": json.dumps(t, ensure_ascii=False),
@@ -69,12 +69,16 @@ def territory_blocks(texts, refs_json):
     for name, t in texts.items():
         if not name.endswith(".md"):
             continue
-        parts = re.split(r"\n(?=#{2,4} )", t)
+        parts = re.split(r"\n(?=#{2,4} )", "\n" + t)
         for p in parts:
-            head = p.split("\n", 1)[0]
+            head = p.strip().split("\n", 1)[0]
+            if not re.match(r"#{2,4} ", head):  # skip the document title (H1) and preamble
+                continue
             if re.search(r"territor|^#{2,4}\s*(\d+[.)]|T\d)", head, re.I) and not re.search(r"^#{2,4}\s*(creative )?territories\s*$", head, re.I):
+                # a reference can be cited by link, by code (R08) or by brand name
+                cites = set(URL_RX.findall(p)) | set(re.findall(r"\bR\d{1,2}\b", p)) | {b for b in brands if b and b.lower() in p.lower()}
                 blocks.append({"name": head.lstrip("# ").strip(), "name_ar": " ".join(AR_RX.findall(head)), "text": p,
-                               "n_refs": len(set(URL_RX.findall(p)))})
+                               "n_refs": len(cites)})
         if blocks:
             break
     return blocks
@@ -90,7 +94,9 @@ def grade(run_dir, job_rel):
     for name, t in texts.items():
         if name.endswith("references.json"):
             try:
-                refs_json = json.loads(t)
+                d = json.loads(t)
+                if isinstance(d, dict) and d.get("schema_version") and isinstance(d.get("references"), list):
+                    refs_json = d  # our contract; other formats are graded on their deliverables only
             except json.JSONDecodeError:
                 pass
     urls = ref_urls(texts)
@@ -120,7 +126,9 @@ def grade(run_dir, job_rel):
     ram = [r for r in alive if RAMADAN_RX.search(rec_text(r))]
     add("Ramadan relevance: ≥40% of live references are Ramadan/Eid work", alive and len(ram) / len(alive) >= 0.4,
         f"{len(ram)}/{len(alive)}")
-    terr = territory_blocks(texts, refs_json)
+    brands = {r.get("brand") or r.get("channel") for r in alive} - {None, ""}
+    brands = {b for b in brands if len(b) >= 4}
+    terr = territory_blocks(texts, refs_json, brands)
     add("3–5 creative territories", 3 <= len(terr) <= 5, f"{len(terr)}: {[t['name'][:40] for t in terr]}")
     add("Every territory has an Arabic name", terr and all(AR_RX.search(t["name_ar"] or t["name"]) for t in terr),
         [t["name_ar"] for t in terr])
