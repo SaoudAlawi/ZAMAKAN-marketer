@@ -71,32 +71,77 @@ preview.html/png  # visual style tile for human sign-off
 
 ## 3b. Feature 2: Campaign Reference Scout, 🟨 ACTIVE
 
-**Goal:** bring the best campaign references, both from similar clients and from anywhere
-(so creativity isn't limited), and turn them into analysis that both people and agents can use.
+**Goal:** bring the best campaign references, both from similar clients and from anywhere (so creativity
+isn't limited), and turn them into analysis that people and other agents can both use.
 
-**Input:** a client's design system + brief (category, market, objective, audience), or an open creative question.
+### Modes (the skill detects which one, or asks)
+| Mode | Example | Emphasis |
+|---|---|---|
+| **Brief** | "Rawaq Ramadan campaign, awareness, young Riyadh professionals" | All 4 rings → territories for the creative team |
+| **Creative question** | "Best coffee ads that use heritage without clichés" | Wide search on one idea; fewer rings |
+| **Competitor watch** | "What are Riyadh coffee brands running right now?" | Live ads (Meta Ad Library, TikTok Creative Center, Google Ads Transparency) + recent posts |
+| **Pitch prep** | "References section for our pitch to X" | Fewer, stronger, award-level work; presentation-ready |
 
-**Search rings:** ① direct, meaning the same category in KSA/GCC, including competitors · ② the same category worldwide ·
-③ adjacent categories that share the insight · ④ wildcard award-level work from any category.
+### Pipeline
+1. **Frame**: read the brief + the client's design system/brand.md (via zamakan-core); fill a short
+   `brief.json` (category, market, objective, audience, channels, moment e.g. Ramadan); ask only what's missing.
+2. **Check the library first**: `library.py search` returns references the agency already analysed.
+3. **Search plan**: queries per ring × source × language (English **and Arabic** queries).
+   Rings: ① direct (same category, KSA/GCC, incl. competitors) ② category worldwide
+   ③ adjacent categories that share the insight ④ wildcard award-level work.
+4. **Collect**: web search → candidate URLs → `fetch_meta.py` pulls a compact record per URL
+   (title, brand, agency, country, year, media, credits, thumbnail, video link) using site parsers
+   (Ads of the World, Vimeo/YouTube oEmbed, award sites) with an Open Graph fallback.
+5. **Verify**: **no invented campaigns.** Every reference must resolve to a real page whose title
+   matches (`verify.py`); unverifiable items are dropped or marked `unverified`.
+6. **Score & select**: relevance, ring balance, recency, region, awards/results → shortlist of 20–30 + top 5.
+7. **Analyse (tiered)**: quick card for each; deep teardown for the top 5 (insight, idea, execution,
+   channels, tone, visual devices, published results, **what's transferable to this client**,
+   **Saudi/Gulf cultural fit**, risks).
+8. **Synthesise**: patterns, white space (what nobody in the category does), 3–5 **creative territories**,
+   each tied to the references that support it.
+9. **Deliver**: the skill **asks which output(s)**: visual **board** (HTML: thumbnails, filters, cards),
+   **deck** (client-ready slides), **report** (written analysis). Agents always get `references.json` + `territories.md`.
+10. **Save to the shared library**: dedupe and merge into `library/references.jsonl`.
 
-**Sources:** Ads of the World, Vimeo, YouTube, Dubai Lynx, MENA Effies, Cannes Lions/Love the Work,
-D&AD, One Show, Campaign Middle East, Behance, Pinterest, plus **live competitor activity**
-(Meta Ad Library, TikTok Creative Center, Google Ads Transparency).
+### Contract (what other agents read)
+```
+clients/<slug>/jobs/<date>-scout-<topic>/
+├── brief.json            # framed brief
+├── references.json       # every reference: metadata, ring, scores, card, teardown, provenance
+├── territories.md        # 3–5 creative territories + supporting references
+├── board.html | deck | report.md   # human outputs, as chosen
+└── thumbs/               # thumbnails (internal reference use only)
+library/references.jsonl  # agency-wide, deduplicated, grows every run
+```
 
-**Depth (tiered):** a quick card for each of the ~20–30 references, and a deep teardown for the top 5: insight, idea,
-execution, channels, tone, visual devices, results, what is transferable to this client, and Saudi cultural fit.
+### Web access
+Searching works everywhere. **Reading pages** needs the sites allowed in this environment's network
+settings (title-bar environment menu → Edit → Network access). Either pick a broader access level, which suits
+"references from anywhere", or add these domains under *Allowed domains*:
+`adsoftheworld.com`, `vimeo.com`, `player.vimeo.com`, `i.vimeocdn.com`, `youtube.com`, `www.youtube.com`,
+`i.ytimg.com`, `lovethework.com`, `dandad.org`, `oneclub.org`, `dubailynx.com`, `campaignme.com`,
+`behance.net`, `adforum.com`, `lbbonline.com`, `campaignlive.co.uk`, `adage.com`, `adweek.com`,
+`facebook.com` (Ad Library), `ads.tiktok.com` (Creative Center), `adstransparency.google.com`, `pinterest.com`.
 
-**Synthesis:** patterns, white space, and 3–5 creative territories.
+### Testing
+There is no fixed answer key (the web changes), so the grader checks **properties**:
+- every URL resolves and matches its title, so nothing is hallucinated;
+- the rings are covered and enough GCC references are included;
+- the top-5 teardowns are complete;
+- each territory is linked to its references;
+- Ramadan relevance;
+- the schema is valid and the board renders.
+It runs with and without the skill, 3 runs each, plus your review.
 
-**Outputs:** `references.json` (fixed schema, for agents) · `territories.md` · a visual HTML board
-with thumbnails/filters/links + a strategic summary (for people).
-
-**Shared agency library:** every search adds to one reference library that all clients share
-(`library/references.jsonl`), so later searches reuse earlier work.
-
-**Network note:** web search works everywhere. Fetching full pages (adsoftheworld.com, vimeo.com…)
-needs those domains allowed in the environment's network settings; the skill falls back to a
-search-only mode when it cannot fetch pages.
+### Build steps
+| # | Step | Test gate | Status |
+|---|---|---|---|
+| 1 | Contract: `reference.schema.json`, `brief.json`, library format; Rawaq Ramadan test brief; saved sample pages for offline tests | schema tests | ⬜ |
+| 2 | Scripts: `fetch_meta.py` (site parsers + OG fallback), `verify.py`, `library.py`, `score.py` | pytest on saved pages + live smoke test | ⬜ |
+| 3 | Output builders: board (HTML), deck, report | pytest + your visual review | ⬜ |
+| 4 | SKILL.md (4 modes) + references (sources guide, analysis framework, Gulf calendar & cultural-fit guide) | first end-to-end run | ⬜ |
+| 5 | Evals: with vs without skill, property-based grader, 3 runs each | clear win + your review | ⬜ |
 
 ## 4. Build steps & test gates (Feature 1)
 
