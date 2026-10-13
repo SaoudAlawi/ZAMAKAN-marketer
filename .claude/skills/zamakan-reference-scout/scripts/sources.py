@@ -119,7 +119,14 @@ def parse_aotw_campaign(html, url):
     s = BeautifulSoup(html, "lxml")
     vid = next((d for d in _ld(s) if isinstance(d, dict) and d.get("@type") == "VideoObject"), None)
     if vid and isinstance(vid.get("thumbnailUrl"), str):
-        rec["thumbnail"] = vid["thumbnailUrl"]  # stable CDN link (og:image is a long redirect URL)
+        vt, og = vid["thumbnailUrl"], rec.get("thumbnail")
+        if "adsoftheworld" in vt or not og:
+            rec["thumbnail"] = vt  # stable CDN link (og:image is a long redirect URL)
+            alts = [og] if og else []
+        else:  # an embedded YouTube/Vimeo thumbnail dies with the video; the page's own share image doesn't
+            alts = [vt]
+        if alts:
+            rec["thumbnail_alts"] = alts
     for t in s(["script", "style", "noscript", "svg"]):
         t.decompose()
     text = s.get_text(" | ", strip=True)

@@ -66,7 +66,7 @@ def test_board_cards_filters_and_rtl(run_path, tmp_path):
     assert h.startswith('<meta charset="utf-8">') and "--bg:#F6F6F2" in h  # house style when the client has no design system
     assert h.count('target="_blank" rel="noopener"') >= len(shown)
     # strategy layer, in kickoff order
-    order = [h.index(f'id="{s}"') for s in ("insights", "recommendation", "territories", "competitors", "patterns", "references", "kickoff")]
+    order = [h.index(f'id="{s}"') for s in ("insights", "recommendation", "territories", "sparks", "competitors", "patterns", "references", "kickoff")]
     assert order == sorted(order)
     for x in run["insights"]:
         assert html.escape(x["source_url"]) in h
@@ -83,14 +83,14 @@ def test_deck_structure_and_links(run_path, tmp_path):
     prs = Presentation(out / "deck.pptx")
     n_refs = sum(r["status"] != "rejected" for r in run["references"])
     # cover, at a glance, insights, recommendation, territories, competitors, patterns, deep dives, refs (8/slide), kickoff, close
-    expected = 8 + len(run["territories"]) + len(run["top"]) + math.ceil(n_refs / 8)
+    expected = 8 + len(run["territories"]) + len(run["top"]) + math.ceil(n_refs / 8) + any(r.get("spark") for r in run["references"])
     assert len(prs.slides) == expected
     links = [r.hyperlink.address for s in prs.slides for sh in s.shapes if sh.has_text_frame
              for p in sh.text_frame.paragraphs for r in p.runs if r.hyperlink.address]
     assert len(links) >= n_refs
     text = " ".join(sh.text_frame.text for s in prs.slides for sh in s.shapes if sh.has_text_frame)
     assert "Who hosts tonight?" in text and "SAIB" not in text
-    assert "Insights" in text and "What competitors run" in text and "Before kickoff" in text and "R01" in text
+    assert "SPARKS FROM ELSEWHERE" in text and "Insights" in text and "What competitors run" in text and "Before kickoff" in text and "R01" in text
 
 
 def test_refuses_invalid_run(tmp_path):

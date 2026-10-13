@@ -177,8 +177,9 @@ Harder eval checks: insights with sources, competitor coverage, recommendation p
 | 2a | **Strategy layer** in the contract: `insights` (dated, sourced), `recommendation`, `before_kickoff`, competitor check per named competitor, reference codes (R01…); validator rules | schema + validator tests | ✅ |
 | 2b | **Scope switch** `gcc` / `mena` / `global` in brief and run: scoring weights, search plan (global award shows, more languages), cultural fit still judged for the client's market | scorer + validator tests | ✅ |
 | 2c | **DESIGN.md theming** for board and deck: ZAMAKAN house DESIGN.md (default), the client's own `design-system/DESIGN.md` when it exists, or any of the 84 in [awesome-design-md](https://github.com/voltagent/awesome-design-md) (MIT) by name | renders in 3 themes; house file passes Google's linter | ✅ |
-| 2d | **Awesome-style library**: one `REFERENCE.md` analysis per campaign + a browsable `library/README.md` index by category, market and moment | export tests | ⬜ |
+| 2d | **Awesome-style library**: one `REFERENCE.md` analysis per campaign + a browsable `library/README.md` index by category, market and moment | export tests | ✅ |
 | 2e | **Outputs v2**: insights first, competitor table, recommendation, before-kickoff list; board + deck by default for kickoffs; deck redesign | build tests + visual review | ✅ |
+| 2g | **Sparks from elsewhere** (user, during 2d): 3–5 references from outside the client's region *and* category in every brief/pitch/creative question, each with a "What if <client>…?" provocation; `score.py --sparks`; own section in board, deck, report | validator + scorer + output tests | ✅ |
 | 2f | **Benchmark suite + scorecard**: 5 scenarios (GCC brief, global creative question, competitor watch, pitch, global-scope brief), with vs without skill, repeated runs; quality, real-link rate, consistency, time, tokens; scorecard page tracked across iterations | grader tests; then the benchmark run | ⬜ |
 
 ## 4. Build steps & test gates (Feature 1)
@@ -231,6 +232,15 @@ The no-skill baseline did several generic things worth building into the skill:
 - 2026-10-13: Re-scoped to the sub-skill architecture; built the Rawaq sample package and answer key.
 - 2026-10-13: Feature 2 (reference scout) defined; network limits of the cloud environment noted.
 - 2026-10-13: Step 2 done. Design: the agent writes only spec.json + brand.md; scripts generate the rest.
+- 2026-10-13: Scout 2d done + sparks (2g). Library is now two layers: SHARED and client-neutral (`library/README.md`
+  index by moment/category/market, one `campaigns/<name>/REFERENCE.md` per campaign with front matter, like
+  awesome-design-md; usage counted via anonymous run fingerprints) and PRIVATE per client (`clients/<slug>/library/`,
+  git-ignored: why it mattered, ring, scores, borrow, fit, territories). Any shared text naming the client is moved to
+  the private notes and reported (tested with a planted leak). User asked for global inspiration whatever the scope:
+  "Sparks from elsewhere" (3–5 far-away references, each with a provocation), `score.py --sparks`, validator warning,
+  dark section in board + slide in deck. Sample run gained 3 real, verified sparks (Burger King Whopper Detour US,
+  Heinz Draw Ketchup CA, McDonald's Raise Your Arches UK). Fixed: AotW parser preferred a dead YouTube thumbnail over the
+  page's own image (and "first image on page" proved unsafe: it was a related campaign). 149 tests pass.
 - 2026-10-13: Scout 2e done (user moved it before 2d): outputs wear the client's brand and are checked for beauty.
   `brandkit.py` reads the whole feature-1 design system: logo variant approved for each background (manifest), the
   client's own font files (subset + embedded in the board, installed for the deck PDF), colours by role, panel radius,

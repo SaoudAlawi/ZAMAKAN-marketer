@@ -119,6 +119,15 @@ def lead_order(run, has_img):
     return out
 
 
+def country_name(cc):
+    try:
+        import pycountry
+        c = pycountry.countries.get(alpha_2=cc or "")
+        return (getattr(c, "common_name", None) or c.name) if c else (cc or "")
+    except Exception:  # noqa: BLE001
+        return cc or ""
+
+
 def meta_line(r):
     bits = [r.get("agency"), r.get("country"), str(r.get("year") or "")]
     return " · ".join(b for b in bits if b)
@@ -154,6 +163,10 @@ def build_territories(run, brief=None, client_name=None):
         L.append("")
     if run.get("white_space"):
         L += ["## White space", ""] + [f"- {w}" for w in run["white_space"]] + [""]
+    sparks = [r for r in run["references"] if r.get("spark")]
+    if sparks:
+        L += ["## Sparks from elsewhere", ""] + [f"- {codes[r['id']]} **{r['spark']}** (from {r['brand']}: *{r['title']}*, "
+                                                 f"{r.get('country', '')} {r.get('year', '')}; {primary_url(r)})" for r in sparks] + [""]
     rec = run.get("recommendation")
     if rec:
         names = {t["id"]: t["name"] for t in run.get("territories", [])}
@@ -185,6 +198,11 @@ def build_report(run, brief, client_name):
         names = {t["id"]: t["name"] for t in run.get("territories", [])}
         L += ["## Recommendation", "", f"**{rec['summary']}**", "",
               "Territories: " + ", ".join(names.get(i, i) for i in rec.get("territory_ids", [])), "", f"Why: {rec.get('rationale', '')}", ""]
+    sparks = [r for r in refs if r.get("spark")]
+    if sparks:
+        L += ["## Sparks from elsewhere", "", "Work from far outside the category and region: provocations, not references to copy.", ""]
+        L += [f"- **{r['spark']}** ({codes[r['id']]}: {r['brand']}, *{r['title']}*, {country_name(r.get('country'))} {r.get('year', '')}, "
+              f"[{link_label(r)}]({primary_url(r)})). {r['card']['idea']}" for r in sparks] + [""]
     if run.get("competitor_summary"):
         L += ["## Competitors", "", "| Competitor | Campaign found | What they own | References | Checked |", "|---|---|---|---|---|"]
         L += [f"| {c['advertiser']} | {'Yes' if c.get('found_campaign') else 'None found'} | {c.get('notes', '')} | "
@@ -236,7 +254,8 @@ def build_board(run, brief, client_name, thumbs_dir, kit=None):
         b = thumb_bytes(r, thumbs_dir)
         img[r["id"]] = "data:image/jpeg;base64," + base64.b64encode(b).decode() if b else ""
     h = types.SimpleNamespace(display_title=display_title, meta_line=meta_line, primary_url=primary_url, link_label=link_label,
-                              region_of=region_of, REGION_NAME=REGION_NAME, lead_order=lead_order)
+                              region_of=region_of, REGION_NAME=REGION_NAME, lead_order=lead_order,
+                              country_name=country_name)
     return render_board.build(run, brief, client_name, kit, img, ref_codes(run), h)
 
 
@@ -246,7 +265,8 @@ def build_deck(run, brief, client_name, thumbs_dir, path, kit=None):
     import render_deck
     kit = kit or load_kit("zamakan")
     h = types.SimpleNamespace(display_title=display_title, meta_line=meta_line, primary_url=primary_url, link_label=link_label,
-                              region_of=region_of, REGION_NAME=REGION_NAME, lead_order=lead_order)
+                              region_of=region_of, REGION_NAME=REGION_NAME, lead_order=lead_order,
+                              country_name=country_name)
     return render_deck.build(run, brief, client_name, kit, lambda r: thumb_bytes(r, thumbs_dir), ref_codes(run), h, path,
                              Path(thumbs_dir) / "brand")
 

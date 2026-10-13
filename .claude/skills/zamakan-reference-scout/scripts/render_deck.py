@@ -166,11 +166,12 @@ def build(run, brief, client_name, kit, thumb, codes, h, path, cache):
             ph = rect(s, x, y, w, hgt, C["chip"], True)
             tf = ph.text_frame
             tf.vertical_anchor = MSO_ANCHOR.MIDDLE
-            p = tf.paragraphs[0]
-            p.alignment = PP_ALIGN.CENTER
-            rr = p.add_run()
-            rr.text = f"{r['brand']}\nno preview image · open the link"
-            rr.font.size, rr.font.name, rr.font.color.rgb = Pt(9 if w < 10 else 12), BODY, C["muted"]
+            for k, line in enumerate((r["brand"], "no preview image · open the link")):
+                p = tf.paragraphs[0] if k == 0 else tf.add_paragraph()
+                p.alignment = PP_ALIGN.CENTER
+                rr = p.add_run()
+                rr.text = line
+                rr.font.size, rr.font.bold, rr.font.name, rr.font.color.rgb = Pt(9 if w < 10 else 12), k == 0, BODY, C["muted"]
         else:
             s.shapes.add_picture(io.BytesIO(shaped(b, w, hgt, arch, radius_frac)), cm(x), cm(y), cm(w), cm(hgt))
         if code:
@@ -204,9 +205,9 @@ def build(run, brief, client_name, kit, thumb, codes, h, path, cache):
         if title:
             text(s, M, 2.25, SLIDE_W - 2 * M - 4, 2.2, title, 30, False, C["heading"], DISP, min_size=20)
         # footer: page number, client, brand mark bottom-right
-        text(s, M, SLIDE_H - 1.2, 12, 0.5, f"{page[0]:02d}   {client_name or ''}", 9, False, C["muted"])
-        mark = logos.get("mark_light")
-        if mark and bg is None:
+        text(s, M, SLIDE_H - 1.2, 12, 0.5, f"{page[0]:02d}   {client_name or ''}", 9, False, C["on_dark_muted"] if bg else C["muted"])
+        mark = logos.get("mark_light") if bg is None else logos.get("mark_dark")
+        if mark:
             s.shapes.add_picture(str(mark), cm(SLIDE_W - M - 0.9), cm(SLIDE_H - 1.55), height=cm(0.95))
         return s
 
@@ -310,6 +311,22 @@ def build(run, brief, client_name, kit, thumb, codes, h, path, cache):
         cap = "   ".join(f"{codes[r['id']]} {r['brand']}" for r in rs)
         text(s, X, Y + 14.2, W, 1.6, cap, 9, False, C["muted"])
 
+    # sparks from elsewhere
+    sparks = [r for r in refs if r.get("spark")][:4]
+    if sparks:
+        s = slide(bg=C["dark"])
+        text(s, M, 1.2, 20, 0.6, "SPARKS FROM ELSEWHERE", 10, True, C["on_dark_muted"])
+        text(s, M, 2.0, 26, 1.6, f"What if {who}…", 30, False, C["on_dark"], DISP)
+        text(s, M + 14, 2.55, SLIDE_W - 2 * M - 14, 1.2, "Work from far outside the category and the region: provocations, not references to copy.",
+             11, False, C["on_dark_muted"], align=PP_ALIGN.RIGHT)
+        n = len(sparks)
+        cw = (SLIDE_W - 2 * M - (n - 1) * 0.8) / n
+        for j, r in enumerate(sparks):
+            x = M + j * (cw + 0.8)
+            picture(s, r, x, 4.4, cw, cw * 0.58)
+            y = 4.4 + cw * 0.58 + 0.5
+            text(s, x, y, cw, 4.0, r["spark"], 16 if n < 4 else 14, False, C["on_dark"], DISP, min_size=10)
+            text(s, x, y + 4.2, cw, 1.4, f"From {r['brand']}: {r['title']} · {r.get('country', '')} {r.get('year', '')}", 9, False, C["on_dark_muted"], min_size=8)
     # competitors
     comp = run.get("competitor_summary") or []
     if comp:

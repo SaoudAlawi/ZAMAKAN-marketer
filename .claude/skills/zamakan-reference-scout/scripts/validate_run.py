@@ -100,6 +100,15 @@ def semantic(run, target=None, brief=None):
             W.append("strategy: no recommendation (which territories to brief, and how they combine)")
         if not run.get("before_kickoff"):
             W.append("strategy: no before_kickoff list (what to watch/confirm before presenting)")
+    if run["run"]["mode"] in ("brief", "pitch", "creative-question"):
+        home = MENA if run["run"].get("scope") == "mena" else GCC
+        sparks = [r for r in live if r.get("spark")]
+        if len(sparks) < 3:
+            W.append(f"sparks: {len(sparks)} 'spark' references; add 3-5 from outside the region and category, each with a "
+                     "provocation for this client (creativity often comes from somewhere unexpected)")
+        local = [r["id"] for r in sparks if r.get("country") in home]
+        if local:
+            W.append(f"sparks should come from outside the client's region: {local}")
     if target and len(live) < target:
         W.append(f"coverage: {len(live)} references, target {target}")
     scope = run["run"].get("scope", "gcc")
@@ -133,7 +142,7 @@ def summary(run):
     return {"references": len(refs), "status": count("status"), "ring": count("ring"),
             "gcc": sum(1 for r in refs if r.get("country") in GCC), "scope": run["run"].get("scope", "gcc"),
             "regions": sorted({REGION.get(r.get("country")) for r in refs} - {None}), "top": len(run.get("top", [])),
-            "insights": len(run.get("insights", [])),
+            "insights": len(run.get("insights", [])), "sparks": sum(1 for r in refs if r.get("spark")),
             "territories": len(run.get("territories", []))}
 
 

@@ -90,17 +90,18 @@ def test_title_matching():
                    {"title": "Your 2nd Half", "brand": "Half Million Coffee"})
 
 
-def test_library_merge_dedupes_and_tracks_runs(tmp_path):
+def test_library_merge_dedupes_and_counts_runs(tmp_path):
     run = json.loads((FIX / "example-run.json").read_text(encoding="utf-8"))
     lib = {}
-    assert L.merge(lib, run, "rawaq") == (3, 0)
+    assert L.merge(lib, run, "rawaq")[:2] == (3, 0)
     run["run"]["id"] = "second-run"
+    run["run"]["created"] = "2027-01-05"
     run["references"][0]["urls"][0]["url"] += "/"           # same page, trailing slash
     run["references"][0]["tags"] = ["pov"]
-    assert L.merge(lib, run, "other-client") == (0, 3)
+    assert L.merge(lib, run, "other-client")[:2] == (0, 3)
     rec = lib[L.canon("https://www.adsoftheworld.com/campaigns/your-2nd-half")]
-    assert {s["run"] for s in rec["seen_in"]} == {"rawaq-ramadan-2027-test", "second-run"}
-    assert rec["tags"] == ["pov"] and "card" not in rec
+    assert rec["used"]["runs"] == 2 and rec["used"]["last"] == "2027-01-05"
+    assert "pov" in rec["tags"] and "card" not in rec and "seen_in" not in rec and rec["summary"]
     p = tmp_path / "lib.jsonl"
     L.save(lib, p)
     assert len(L.load(p)) == 3
@@ -111,7 +112,7 @@ def test_library_skips_rejected():
     run = json.loads((FIX / "example-run.json").read_text(encoding="utf-8"))
     run["references"][1]["status"] = "rejected"
     lib = {}
-    assert L.merge(lib, run) == (2, 0)
+    assert L.merge(lib, run)[:2] == (2, 0)
 
 
 def test_canon_youtube_variants():
@@ -196,3 +197,21 @@ def test_score_scope_switch(scope, expect):
     terms = SC.brief_terms(brief)
     regions = tuple(SC.score({"title": "x", "country": cc}, brief, terms, 2026)[1]["region"] for cc in ("SA", "EG", "GB"))
     assert regions == expect
+
+
+def test_aotw_prefers_own_image_over_dead_youtube_thumb():
+    """An embedded YouTube thumbnail dies with the video (Whopper Detour's did); the page's own share image is kept first."""
+    r = S.parse_aotw_campaign(page("aotw-campaign-whopper-detour.html"), "https://www.adsoftheworld.com/campaigns/the-whopper-detour")
+    assert r["brand"] == "Burger King" and r["country"] == "US"
+    assert "adsoftheworld.com/rails/active_storage" in r["thumbnail"] and r["thumbnail_alts"] == ["https://img.youtube.com/vi/D6uuEQmn5vQ/0.jpg"]
+
+
+def test_spark_mode_favours_far_award_work():
+    brief = json.loads((FIX / "rawaq-ramadan-brief.json").read_text(encoding="utf-8"))
+    terms = SC.brief_terms(brief)
+    far = {"source": "adsoftheworld", "kind": "professional", "title": "The Whopper Detour", "brand": "Burger King",
+           "country": "US", "year": 2018, "description": "Cannes Lions Titanium Grand Prix"}
+    home = {"source": "adsoftheworld", "kind": "professional", "title": "Ramadan coffee nights", "brand": "Barn's", "country": "SA", "year": 2026}
+    assert SC.score(home, brief, terms, 2026)[0] > SC.score(far, brief, terms, 2026)[0]          # normal mode: close to the brief
+    s_far, s_home = SC.score(far, brief, terms, 2026, sparks=True), SC.score(home, brief, terms, 2026, sparks=True)
+    assert s_far[0] > s_home[0] and "home region: not a spark" in s_home[2]                     # spark mode: far + crafted

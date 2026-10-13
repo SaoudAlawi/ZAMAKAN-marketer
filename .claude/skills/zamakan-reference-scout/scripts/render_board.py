@@ -112,6 +112,13 @@ section{padding-block:clamp(40px,6vw,72px)} section+section{border-top:1px solid
 .t .pics a{position:relative;display:block;background:var(--chip);overflow:hidden} .t .pics a:first-child{grid-column:1/-1}
 .t .pics img{width:100%;height:100%;object-fit:cover} .code{position:absolute;inset-inline-start:8px;top:8px;font:600 12px/1 var(--body);background:var(--dark);color:var(--on-dark);padding:5px 7px;border-radius:3px}
 .tag{display:inline-block;font:600 11px/1 var(--body);letter-spacing:.08em;text-transform:uppercase;padding:6px 9px;border-radius:999px;background:var(--accent);color:var(--on-accent);margin-inline-start:8px;vertical-align:middle}
+/* sparks */
+.sparks{background:var(--dark);color:var(--on-dark)} section.sparks+section{border-top:0} .sparks h2{color:var(--on-dark)}
+.sparks .eyebrow,.sparks .sec-head p{color:var(--on-dark-muted)}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px}
+.spark{display:grid;gap:12px;align-content:start} .spark .img{position:relative;display:block;aspect-ratio:16/10;background:var(--on-dark-muted);overflow:hidden;border-radius:var(--r)}
+.spark .img img{width:100%;height:100%;object-fit:cover} .spark .q{font:var(--disp-w) 22px/1.3 var(--disp);margin:0;color:var(--on-dark)}
+.spark .from,.spark .what{margin:0;font-size:14px;color:var(--on-dark-muted)} .spark .from b{color:var(--on-dark)} .spark a.go{color:var(--on-dark);font-weight:600;font-size:14px}
 /* tables */
 .tbl{width:100%;border-collapse:collapse;background:var(--panel);border-radius:var(--r);overflow:hidden;font-size:15px;box-shadow:var(--shadow)}
 .tbl th{font:600 12px/1.2 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:start;padding:14px 16px;border-bottom:1px solid var(--line)}
@@ -230,6 +237,16 @@ def build(run, brief, client_name, kit, img, codes, h):
                      + f'<div class="cols">{lists}</div><small class="muted">Built on {built}</small></div><div class="pics">{pics}</div></article>')
         S.append(f'<section id="territories"><div class="wrap">{divider}<div class="sec-head"><div><div class="eyebrow">Where we could go</div>'
                  f'<h2>Creative territories</h2></div></div><div class="terr">{"".join(T)}</div></div></section>')
+    # sparks from elsewhere: far-away work, each with a provocation for this client
+    sparks = [r for r in refs if r.get("spark")]
+    if sparks:
+        cards_s = "".join(f'<article class="spark"><a class="img" href="#ref-{r["id"]}">{pic(r)}<span class="code">{codes[r["id"]]}</span></a>'
+                          f'<p class="q">{E(r["spark"])}</p><p class="from">From <b>{E(r["brand"])}</b>: {E(r["title"])} · '
+                          f'{E(h.country_name(r.get("country")))} {E(str(r.get("year") or ""))}</p><p class="what">{E(r["card"]["idea"])}</p>'
+                          f'<a class="go" href="{E(h.primary_url(r))}" target="_blank" rel="noopener">{h.link_label(r)} ↗</a></article>' for r in sparks)
+        S.append(f'<section id="sparks" class="sparks"><div class="wrap"><div class="sec-head"><div><div class="eyebrow">Sparks from elsewhere</div>'
+                 f'<h2>What if {E(who)}…</h2><p>Work from far outside the category and the region. Not references to copy: provocations '
+                 f'to start a different conversation in the room.</p></div></div><div class="sgrid">{cards_s}</div></div></section>')
     # competitors
     if run.get("competitor_summary"):
         rows = "".join(f'<tr><td><b>{E(c["advertiser"])}</b></td><td class="{"yes" if c.get("found_campaign") else "no"}">'

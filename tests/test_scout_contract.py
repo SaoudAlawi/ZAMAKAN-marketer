@@ -153,7 +153,13 @@ def test_missing_strategy_layer_warns(sample):
 def test_global_scope_needs_several_regions(sample):
     sample["run"]["scope"] = "global"
     _, warnings = validate(sample)
+    assert not any("global scope but only" in w for w in warnings)  # the sparks bring Americas + Europe
+    gone = {r["id"] for r in sample["references"] if r.get("spark")}
+    sample["references"] = [r for r in sample["references"] if r["id"] not in gone]
+    for t in sample["territories"] + sample["patterns"]:
+        t["reference_ids"] = [i for i in t["reference_ids"] if i not in gone]
+    _, warnings = validate(sample)
     assert any("global scope but only 2 region" in w for w in warnings)
     sample["run"]["scope"] = "gcc"
     _, warnings = validate(sample)
-    assert not any("region" in w for w in warnings)
+    assert not any(w.startswith("coverage") and "region" in w for w in warnings)

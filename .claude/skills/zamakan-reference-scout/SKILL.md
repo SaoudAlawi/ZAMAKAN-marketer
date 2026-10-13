@@ -51,9 +51,12 @@ Set `outputs_defaulted: true` in brief.json and mention it in your final message
 ## 2. Check the agency library first
 
 ```bash
-python3 $SCOUT/scripts/library.py search <2-4 keywords> [--country SA] [--moment ramadan] [--since 2022]
+python3 $SCOUT/scripts/library.py search <2-4 keywords> [--country SA] [--moment ramadan] [--since 2022] [--client <slug>]
 ```
-Earlier runs may already hold verified, analysed references. Reuse them (re-verify later like everything else).
+Earlier runs may already hold verified, analysed references. Each hit has a page, `library/campaigns/<name>/REFERENCE.md`
+(facts, links, idea, insight, execution); read that instead of re-researching, then re-verify like everything else.
+`library/README.md` is the browsable index (by moment, category, market). The library is shared across clients and
+holds no client names: what a campaign meant for a client lives in `clients/<slug>/library/` (private).
 
 ## 3. Plan the search: 4 rings, 2 languages
 
@@ -70,6 +73,12 @@ Write 8–15 queries before collecting, **including Arabic ones** (e.g. «إعل
 `mena` adds Egypt, the Levant and the Maghreb; `global` needs the best work from at least 3 regions plus the big award
 shows, and queries in the language of the strongest market for the idea. See `sources.md` §8. `score.py` weights regions
 by scope.
+
+**Sparks from elsewhere, always** (brief, pitch, creative question; whatever the scope). Creativity often comes from
+somewhere unexpected, so add 3–5 references from **outside the client's region and category**: award-level ideas,
+mechanics, formats that would never show up in a category search. Search them separately (award winners, Ads of the
+World region lists, other industries; `sources.md` §9) and rank with `score.py … --sparks`, which favours far-away,
+crafted work instead of burying it. They usually sit in the `wildcard` ring.
 
 ## 4. Collect candidates (cheap first)
 
@@ -122,6 +131,9 @@ awards, KPIs, directors or dates; `fetch_meta` gives you what the page states.
 
 - **patterns**: 3–5 observations, each citing ≥2 references (`reference_ids`).
 - **white_space**: what nobody in the category does, written as opportunities.
+- **spark** (on the 3–5 far-away references): one provocation for this client, "What if <client>…?", that borrows the
+  *mechanic or thinking*, not the look. "What if Rawaq's app unlocked a 'taraweeh pour' only 9–11pm near a café?"
+  (from Burger King's Whopper Detour). They get their own dark "Sparks from elsewhere" section in the board and deck.
 - **territories** (`brief`/`pitch`): 3–5, each with an English **and Arabic** name, a 1–2 sentence thesis,
   why it fits this client, the references it stands on, 2–3 example executions, and risks.
 
@@ -154,8 +166,10 @@ as long as the primary link matches. Fix every validation error and judge the wa
 ```bash
 python3 $SCOUT/scripts/build_outputs.py $JOB/references.json --out $JOB --formats <board,deck,report> --brief $JOB/brief.json
 python3 $SCOUT/scripts/check_outputs.py $JOB          # beauty + brand check; writes $JOB/check/*.png
-python3 $SCOUT/scripts/library.py add $JOB/references.json --client <slug>
+python3 $SCOUT/scripts/library.py add $JOB/references.json --client <slug> --client-name "<Client name>"
 ```
+`library.py add` updates the shared pages and index, and writes this client's private notes. If it reports text "kept
+out of the shared library" (it named the client), that's expected; nothing else to do.
 **The outputs wear the client's brand.** When `clients/<slug>/design-system/` exists (made by `zamakan-design-system`),
 the board and deck take everything from it: the logo variant approved for each background, the client's own font files,
 colours by role, corner style, divider and signature graphic element. Without one they use the ZAMAKAN house style.

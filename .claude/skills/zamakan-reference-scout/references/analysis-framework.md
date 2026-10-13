@@ -80,3 +80,12 @@ is not a recommendation.
 ## Before kickoff
 The honest to-do list: videos nobody has watched yet, social feeds web search can't see, client policies an idea
 depends on, rights questions. Short, concrete, owner-able.
+
+## Sparks (3–5)
+A spark is a far-away reference plus one provocation for this client. Write the provocation as a question that borrows
+the **mechanic or thinking**, never the execution:
+- Good: "What if the Rawaq arch became the wordless 'coffee after taraweeh?' signal between friends?" (from McDonald's
+  *Raise Your Arches*: a brand shape turned into an invitation)
+- Weak: "Do a funny film like Burger King." (copies a surface, says nothing about the client)
+A good spark makes the room argue. If it couldn't possibly work in the client's market, say why in `why_relevant`;
+it can still be useful as the outer edge of the conversation.

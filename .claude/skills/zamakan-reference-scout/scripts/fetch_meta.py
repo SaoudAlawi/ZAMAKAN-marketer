@@ -59,14 +59,20 @@ def save_thumb(rec, folder):
     name = hashlib.sha1(rec["url"].encode()).hexdigest()[:12] + ".jpg"
     dst = folder / name
     if not dst.exists():
-        try:
-            req = urllib.request.Request(rec["thumbnail"], headers=_web.HEADERS)
-            with urllib.request.urlopen(req, timeout=20) as r:
-                im = Image.open(io.BytesIO(r.read())).convert("RGB")
-            im.thumbnail((480, 480))
-            im.save(dst, "JPEG", quality=82, optimize=True)
-        except Exception as e:  # noqa: BLE001 - a missing thumbnail never blocks research
-            rec["thumbnail_error"] = str(e)[:120]
+        err = None
+        for cand in [rec["thumbnail"]] + rec.get("thumbnail_alts", []):  # first one that still exists
+            try:
+                req = urllib.request.Request(cand, headers=_web.HEADERS)
+                with urllib.request.urlopen(req, timeout=20) as r:
+                    im = Image.open(io.BytesIO(r.read(60_000_000))).convert("RGB")
+                im.thumbnail((480, 480))
+                im.save(dst, "JPEG", quality=82, optimize=True)
+                rec["thumbnail"] = cand
+                break
+            except Exception as e:  # noqa: BLE001 - a missing thumbnail never blocks research
+                err = str(e)[:120]
+        else:
+            rec["thumbnail_error"] = err
             return rec
     rec["thumbnail_local"] = str(dst)
     return rec

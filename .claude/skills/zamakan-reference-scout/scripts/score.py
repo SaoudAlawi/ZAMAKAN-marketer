@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Pre-rank candidates against a brief, so the agent reads the promising ones first.
 
-Usage: python score.py <candidates.jsonl> --brief brief.json [--top 40] [--out ranked.jsonl]
+Usage: python score.py <candidates.jsonl> --brief brief.json [--top 40] [--out ranked.jsonl] [--sparks]
 
 Scores (0-5, transparent heuristics; the agent's judgement comes after):
   relevance  - brief terms (category, moment, question, channels, competitors) found in the candidate
@@ -9,6 +9,8 @@ Scores (0-5, transparent heuristics; the agent's judgement comes after):
                mena: Arab world 5 · elsewhere 2; global: 3.5 for all (award sources +0.3)
   freshness  - by year: this year/last 5 … older drops; unknown 2.5
   reach      - YouTube views on a log scale (if known)
+--sparks ranks for "sparks from elsewhere" instead: far from the client's region (5) and category (4), with craft
+signals (award shows, Grand Prix/Lions/Pencil in the text, professional work) and classics welcome (freshness floor 2.5).
 Penalties: student work, the brief's `avoid` terms (flagged, not dropped), near-duplicate titles.
 Output keeps every input field and adds `pre_score`, `pre_scores` and `flags`; duplicates are removed.
 """
@@ -53,7 +55,33 @@ def text_of(c):
                                                     "channel", "country_name", "medium_label")).lower()
 
 
-def score(c, b, terms, this_year):
+AWARD_RX = r"grand prix|cannes|lions|d&ad|pencil|one show|effie|clio|titanium|dubai lynx|best of show"
+
+
+def spark_score(c, b, this_year):
+    """Rank for sparks: work from far outside the client's region and category, judged on craft."""
+    t = text_of(c)
+    home = MENA if b.get("scope") == "mena" else GCC
+    country = c.get("country")
+    is_home = country in home or (not country and bool(re.search(GCC_WORDS, t)))
+    region = 0.5 if is_home else (2.5 if country in MENA else (5.0 if country else 3.0))
+    cat_terms = words(b.get("category")) | words(" ".join(b.get("competitors", [])))
+    distance = 2.0 if cat_terms & words(t) else 4.0
+    craft = 2.5 + 1.0 * bool(re.search(AWARD_RX, t)) + 0.5 * (c.get("kind") == "professional") + \
+        0.5 * (c.get("source") in ("adsoftheworld", "lovethework", "dandad", "oneclub")) - 1.5 * (c.get("kind") == "student")
+    yr = c.get("year")
+    fresh = 2.5 if not yr else max(2.5, 5.0 - 0.4 * max(0, this_year - 1 - yr))
+    flags = ["home region: not a spark"] if is_home else []
+    if c.get("kind") == "student":
+        flags.append("student work")
+    parts = {"craft": round(craft, 1), "region": region, "distance": distance, "freshness": round(fresh, 1)}
+    total = 0.35 * craft + 0.3 * region + 0.2 * distance + 0.15 * fresh
+    return round(total, 2), parts, flags, []
+
+
+def score(c, b, terms, this_year, sparks=False):
+    if sparks:
+        return spark_score(c, b, this_year)
     t = text_of(c)
     hits = sorted({w for w in terms if w in t})
     rel = min(5.0, 1.0 + 1.2 * len(hits))
@@ -115,6 +143,7 @@ def main():
     ap.add_argument("--brief", required=True)
     ap.add_argument("--top", type=int, default=40)
     ap.add_argument("--out")
+    ap.add_argument("--sparks", action="store_true", help="rank for sparks from elsewhere (far region and category, craft)")
     a = ap.parse_args()
     b = json.loads(Path(a.brief).read_text(encoding="utf-8"))
     terms = brief_terms(b)
@@ -133,7 +162,7 @@ def main():
             continue
         seen_url.add(c["url"])
         kept.append((who, tw))
-        total, parts, flags, hits = score(c, b, terms, this_year)
+        total, parts, flags, hits = score(c, b, terms, this_year, a.sparks)
         out.append({**c, "pre_score": total, "pre_scores": parts, "flags": flags, "matched": hits})
     out.sort(key=lambda c: -c["pre_score"])
     top = out[:a.top]

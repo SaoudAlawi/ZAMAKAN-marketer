@@ -703,6 +703,11 @@
             "rejected"
           ],
           "description": "verified = a page was fetched and matches; unverified = only seen in search results (keep out of the top 5); rejected = kept for the library's memory, not shown"
+        },
+        "spark": {
+          "type": "string",
+          "minLength": 15,
+          "description": "Sparks from elsewhere: a provocation for this client from work outside its region and category ('What if Rawaq…?'). Set it on 3-5 references from far away so the team sees something different."
         }
       }
     }

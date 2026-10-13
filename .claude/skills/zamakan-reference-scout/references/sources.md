@@ -11,6 +11,7 @@ Tested live from this environment (October 2026). Each source is listed with wha
 6. Live competitor activity
 7. Query patterns per ring (English + Arabic)
 8. Scope: GCC, MENA or global
+9. Sparks from elsewhere
 
 ---
 
@@ -85,6 +86,7 @@ Seasonal moments to search: Ramadan, Eid al-Fitr, Eid al-Adha, Saudi Founding Da
 Riyadh Season, back to school, White Friday. Check the dates in `gulf-culture.md`.
 
 ## 8. Scope: GCC, MENA or global
+9. Sparks from elsewhere
 `brief.scope` changes where the rings look; cultural fit is always judged for the client's own market.
 
 | Scope | direct | category / adjacent | wildcard | Languages |
@@ -97,3 +99,15 @@ Global tips: search award winners by year and medium (`"Cannes Lions" <year> Gra
 `"Effie" <year> gold <category>`), then find the case film on Ads of the World, YouTube or Vimeo. A global reference needs a
 `why_relevant` that says what translates to the client's market and what doesn't. `validate_run.py` warns when a global
 run covers fewer than 3 regions.
+
+## 9. Sparks from elsewhere
+3–5 references from outside the client's region **and** category, in every brief, pitch and creative question. The aim
+is a different conversation in the room, not more of the same. Where to look:
+- **Award winners:** `"Cannes Lions" <year> Grand Prix <Direct|Media|Creative Strategy|Outdoor|Social>`, D&AD Black/Yellow
+  Pencils, One Show Best of Show, Effies Grand. Mechanics and media ideas travel best.
+- **Ads of the World lists outside home:** `aotw-list regions europe|north-america|latin-america|far-east|asia`,
+  and industries far from the client's (`gaming`, `public-interest-ngo`, `fashion`, `sports`, `music`).
+- **The same human truth, another world:** search the insight, not the category: "invitation", "hosting", "late night",
+  "ritual", "waiting", "sound of".
+Rank with `score.py <candidates> --brief brief.json --sparks`. Verify like any reference. Don't use a spark the client's
+direct competitor in the region has already copied.
