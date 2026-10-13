@@ -158,8 +158,18 @@ It runs with and without the skill, 3 runs each, plus your review.
 | 1 | Contract: `brief.schema.json`, `references.schema.json` (one file the agent writes; outputs are generated), `validate_run.py` (honesty + coverage rules); Rawaq Ramadan test brief (md + json); example run from 3 real search results | 14 tests pass | ✅ |
 | 2 | Scripts: `discover.py` (Ads of the World search/lists/related, YouTube search), `fetch_meta.py` (site parsers + oEmbed + Open Graph fallback, thumbnails), `verify.py` (live check, rejects invented/broken), `library.py`, `score.py`; `_web.py` (cache + Chromium fallback) | 14 tests on saved real pages + live; 197 candidates found in seconds | ✅ |
 | 3 | `build_outputs.py`: board.html (self-contained, filters, RTL), deck.pptx (+PDF via LibreOffice), report.md, territories.md; shared library committed (`library/references.jsonl`); real sample run (16 verified refs, 4 territories) | 5 tests + visual check; awaiting your review | ✅ |
-| 4 | SKILL.md (4 modes) + references (sources guide, analysis framework, Gulf calendar & cultural-fit guide) | first end-to-end run | ⬜ |
-| 5 | Evals: with vs without skill, property-based grader, 3 runs each | clear win + your review | ⬜ |
+| 4 | SKILL.md (4 modes) + references (sources, analysis framework, Gulf culture) + worked example + grader | E2E iteration 1: both 11/11, 0 invented links; skill 8.5 vs 12.9 min; 7 tool issues fixed (v0.2.0) | ✅ |
+| 5 | Iteration 2: close the packaging gap (see 3c), harder checks, 3 runs each | clear win + your review | ⬜ |
+
+### 3c. Scout iteration-1 learnings (https://claude.ai/artifact/UAd8URauEJzTHKWNeAGJ4Q)
+The no-skill baseline packaged the same research better. Adopt into the contract and builders:
+1. `insights`: dated, sourced facts about the audience and moment ("Ramadan has two coffees"), shown first.
+2. A competitor check by default in brief mode: one row per named competitor in `competitor_summary`.
+3. `recommendation`: which territories to brief and how they combine.
+4. "Before kickoff" checklist (limits, what to watch or confirm) in the outputs.
+5. Default outputs for a kickoff: board + deck. Reference codes (R01…) for citing in territories.
+6. A better deck design (dark/light rhythm, arch motif); use the client design system when it exists.
+Harder eval checks: insights with sources, competitor coverage, recommendation present, cross-run consistency.
 
 ## 4. Build steps & test gates (Feature 1)
 
@@ -211,6 +221,7 @@ The no-skill baseline did several generic things worth building into the skill:
 - 2026-10-13: Re-scoped to the sub-skill architecture; built the Rawaq sample package and answer key.
 - 2026-10-13: Feature 2 (reference scout) defined; network limits of the cloud environment noted.
 - 2026-10-13: Step 2 done. Design: the agent writes only spec.json + brand.md; scripts generate the rest.
+- 2026-10-13: Scout step 4 done + iteration-1 eval: both 11/11, no invented links; skill faster, baseline better packaged (3c).
 - 2026-10-13: Scout step 3 done: outputs built from a real 16-reference Ramadan run; library committed (user decision).
 - 2026-10-13: Scout step 2 done: web access confirmed after restart; all sources tested live.
 - 2026-10-13: Scout step 1 done. Network allowed by user but not applied to the running session; restarting the session. Apify skipped.

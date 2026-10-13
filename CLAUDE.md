@@ -30,9 +30,8 @@ Rendering uses Playwright with the preinstalled Chromium (`/opt/pw-browsers/chro
 - Explain in plain language; the user is an agency person, not necessarily a developer.
 
 ## Next step
-Feature 2, step 4: SKILL.md for zamakan-reference-scout (4 modes, asks which outputs) + references
-(sources guide, analysis framework, Gulf calendar & cultural-fit guide), then an end-to-end run.
-Steps 1–3 are done: contract, scripts (PLAN §3b "Source notes"), output builders. `library/references.jsonl`
-is committed on purpose (shared agency library); a real sample run is in evals/fixtures/scout/.
-The test brief is `evals/fixtures/scout/rawaq-ramadan-brief.{md,json}`. Apify was skipped by the user, so
-competitor watch uses web search plus the ad-library pages that can be opened.
+Feature 2 (reference scout) iteration 2: implement PLAN §3c (insights, competitor check, recommendation,
+before-kickoff list, deck by default, better deck design), harder grader checks, then re-run with/without skill.
+Iteration-1 comparison: https://claude.ai/artifact/UAd8URauEJzTHKWNeAGJ4Q. The test brief is
+`evals/fixtures/scout/rawaq-ramadan-brief.{md,json}`; grader `evals/grade_scout.py`. Run test agents with
+ZAMAKAN_LIBRARY and ZAMAKAN_SCOUT_CACHE pointing into their sandbox (the committed library holds the sample run).
