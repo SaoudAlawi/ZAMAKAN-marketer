@@ -28,7 +28,7 @@ import sources as S  # noqa: E402
 
 
 HOST_FIX = {"adsoftheworld.com": "www.adsoftheworld.com", "campaignme.com": "campaignme.com", "lbbonline.com": "lbbonline.com"}
-GENERIC_THUMB = re.compile(r"logo|default|placeholder|fallback|og[-_]?image|share[-_]?image|social[-_]?share|site[-_]?image|"
+GENERIC_THUMB = re.compile(r"logo|(?<!hq)(?<!mq)(?<!sd)(?<!maxres)default|placeholder|fallback|og[-_]?image|share[-_]?image|social[-_]?share|site[-_]?image|"
                            r"/brand/|favicon|sprite|blank\.|no[-_]?image", re.I)
 
 

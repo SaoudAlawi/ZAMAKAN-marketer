@@ -180,7 +180,7 @@ Harder eval checks: insights with sources, competitor coverage, recommendation p
 | 2d | **Awesome-style library**: one `REFERENCE.md` analysis per campaign + a browsable `library/README.md` index by category, market and moment | export tests | ✅ |
 | 2e | **Outputs v2**: insights first, competitor table, recommendation, before-kickoff list; board + deck by default for kickoffs; deck redesign | build tests + visual review | ✅ |
 | 2g | **Sparks from elsewhere** (user, during 2d): 3–5 references from outside the client's region *and* category in every brief/pitch/creative question, each with a "What if <client>…?" provocation; `score.py --sparks`; own section in board, deck, report | validator + scorer + output tests | ✅ |
-| 3 | **Iteration 3** (from 40+ benchmark-agent reports): 3a housekeeping, 3b fetching/thumbnails, 3c honest verification evidence, 3d competitor-watch rebuilt, 3e output fixes, 3f ranking, 3g blind judge + repeat runs | 171 tests; then re-benchmark | ✅ built, ⬜ benchmark |
+| 3 | **Iteration 3** (from 40+ benchmark-agent reports): 3a housekeeping, 3b fetching/thumbnails, 3c honest verification evidence, 3d competitor-watch rebuilt, 3e output fixes, 3f ranking, 3g blind judge + repeat runs | 173 tests; partial benchmark (stopped to save tokens) | ✅ |
 | 2f | **Benchmark suite + scorecard**: 5 scenarios (GCC brief, global creative question, competitor watch, pitch, global-scope brief), with vs without skill, repeated runs; quality, real-link rate, consistency, time, tokens; scorecard page tracked across iterations | grader tests; then the benchmark run | ✅ (first pass) |
 
 ## 4. Build steps & test gates (Feature 1)
@@ -233,6 +233,11 @@ The no-skill baseline did several generic things worth building into the skill:
 - 2026-10-13: Re-scoped to the sub-skill architecture; built the Rawaq sample package and answer key.
 - 2026-10-13: Feature 2 (reference scout) defined; network limits of the cloud environment noted.
 - 2026-10-13: Step 2 done. Design: the agent writes only spec.json + brand.md; scripts generate the rest.
+- 2026-10-14: Iteration 3 benchmark stopped early at the user's request (tokens; usage limit hit twice). Done: blind
+  judging of iteration 2 (fixed packets): skill 2 wins, 3 losses, 83% vs 88%; iteration 3 partial checks 31/33 with vs
+  22/25 without, no judging. Found: the skill's examples leaked the Rawaq scenario (fixed, test added); YouTube thumbnails
+  treated as logos (fixed); broken Snapchat click-list links (fixed). Remaining issues in
+  `evals/scorecard/iteration-3-agent-feedback.md`. Next benchmark only when the user wants to spend on it.
 - 2026-10-13: Scout iteration 3 built (benchmark not yet re-run). 3a test definitions moved out of skill folders
   (`evals/skill-evals/`), brand.md fallback. 3b fetch_meta: URL normalising, requested URL kept, oEmbed retry + YouTube
   thumbnail fallback, tiny/logo images dropped and flat ones flagged (real flat ads exist: Coinbase QR, VOO), `--out`

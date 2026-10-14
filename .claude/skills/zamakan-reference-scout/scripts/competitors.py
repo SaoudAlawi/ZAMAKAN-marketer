@@ -32,7 +32,6 @@ def manual_links(name, country="SA"):
         {"what": "Meta Ad Library: active ads", "url": f"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country={country}&q={q}&search_type=keyword_unordered"},
         {"what": "Instagram: profile and recent posts", "url": f"https://www.instagram.com/explore/search/keyword/?q={q}"},
         {"what": "TikTok: account and recent videos", "url": f"https://www.tiktok.com/search?q={q}"},
-        {"what": "Snapchat: public profile and Spotlight", "url": f"https://www.snapchat.com/search?q={q}"},
         {"what": "X: latest posts", "url": f"https://x.com/search?q={q}&f=live"},
         {"what": "TikTok Creative Center: top ads in the country", "url": f"https://ads.tiktok.com/business/creativecenter/inspiration/topads/pc/en?region={country}"},
     ]

@@ -176,3 +176,18 @@ def test_alcohol_flag_for_gulf_clients():
 def test_award_signal_counts_more_in_pitch_mode():
     c = {"title": "Coffee night QR code", "description": "Cannes Lions Grand Prix 2022", "country": "US", "year": 2022}
     assert _score(c, mode="pitch")[0] > _score(c)[0] > _score({**c, "description": ""})[0]
+
+
+def test_youtube_thumbnails_are_not_mistaken_for_logos():
+    """Iteration-3 regression: 'default' matched every hqdefault.jpg / maxresdefault.jpg."""
+    for u in ("https://i.ytimg.com/vi/abc/hqdefault.jpg", "https://i.ytimg.com/vi/abc/maxresdefault.jpg"):
+        assert not F.GENERIC_THUMB.search(u)
+    assert F.GENERIC_THUMB.search("https://site.com/images/default-share.png")
+
+
+def test_skill_examples_dont_leak_the_test_scenario():
+    """The skill's worked examples must not use the benchmark's client or ideas (they anchored the Rawaq answer)."""
+    skill = REPO / ".claude/skills/zamakan-reference-scout"
+    text = (skill / "SKILL.md").read_text() + (skill / "references/analysis-framework.md").read_text()
+    for leak in ("Rawaq", "taraweeh", "riwaq", "Sahm"):
+        assert leak.lower() not in text.lower(), leak

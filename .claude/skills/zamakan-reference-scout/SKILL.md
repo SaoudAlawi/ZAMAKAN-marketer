@@ -133,8 +133,8 @@ awards, KPIs, directors or dates; `fetch_meta` gives you what the page states.
 - **patterns**: 3–5 observations, each citing ≥2 references (`reference_ids`).
 - **white_space**: what nobody in the category does, written as opportunities.
 - **spark** (on the 3–5 far-away references): one provocation for this client, "What if <client>…?", that borrows the
-  *mechanic or thinking*, not the look. "What if Rawaq's app unlocked a 'taraweeh pour' only 9–11pm near a café?"
-  (from Burger King's Whopper Detour). They get their own dark "Sparks from elsewhere" section in the board and deck.
+  *mechanic or thinking*, not the look. "What if the pharmacy's app unlocked a back-to-school check-up only within walking distance
+  of a school gate?" (from Burger King's Whopper Detour; a fictional pharmacy client, for illustration). They get their own dark "Sparks from elsewhere" section in the board and deck.
 - **territories** (`brief`/`pitch`): 3–5, each with an English **and Arabic** name, a 1–2 sentence thesis,
   why it fits this client, the references it stands on, 2–3 example executions, and risks.
 
@@ -152,7 +152,7 @@ References get short codes (R01…) automatically in every output, so cite them 
 ## 8. Write, verify, validate
 
 Write `$JOB/references.json` (schema: `schemas/references.schema.json`; a complete real example is in
-`references/run-example.json`). Give the run a short display `run.title` (e.g. "Rawaq · Ramadan 2027 references");
+`references/run-example.json`). Give the run a short display `run.title` (e.g. "Sanad Pharmacy · Back to school 2027");
 boards and decks use it as their heading. Then:
 ```bash
 python3 $SCOUT/scripts/verify.py $JOB/references.json --write      # opens every link; rejects dead or invented ones

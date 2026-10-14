@@ -8,7 +8,7 @@ Write plainly and specifically, and never claim more than the source says.
   - Good: "Two groups of men on Al Khobar's Corniche compete to invite one lonely stranger to iftar."
   - Weak: "An emotional Ramadan film about togetherness."
 - **why_relevant**: why it matters for *this* client and brief (inspiration, contrast, competitor benchmark, mechanic to borrow).
-  - Good: "Saudi hospitality rivalry played as comedy: the Najdi generosity Rawaq stands for."
+  - Good: "Parents' morning chaos played as comedy: the calm, organised helper the client wants to be."
   - Weak: "Relevant Ramadan campaign."
 
 ## Evidence you haven't seen
@@ -41,18 +41,18 @@ Don't write a teardown from a title, and don't put such a reference in `top`.
 
 ## Patterns (3–5)
 An observation that holds across **at least two** references, phrased as a fact about the category or the moment:
-"Coffee brands in the region stay generic ('savour', 'every moment', seasonal packaging)."
+"Pharmacy brands in the region stay generic ('your health first', smiling families, discount banners)."
 Cite the references in `reference_ids`.
 
 ## White space (2–4)
 What nobody in the category does, phrased as an opportunity the client could take:
-"No Saudi coffee brand owns suhoor or the after-taraweeh coffee run."
+"No pharmacy chain owns the first week of school, when every family buys the same list."
 Check this against your direct-ring references, because a white space someone already owns isn't one.
 
 ## Territories (3–5 in brief/pitch mode)
 A territory is a space for ideas, not one execution. Each one needs:
 - **name** in English and **name_ar** in Arabic. Write the Arabic natively; a Saudi colloquial phrase often works
-  better than a literal translation (*مين يعزم الليلة؟* rather than *من يستضيف الليلة*).
+  better than a literal translation (*خلّها علينا* rather than *اتركها لنا*).
 - **thesis**: 1–2 sentences on what the brand will own.
 - **why_this_client**: the brand truth or asset it stands on (use brand.md if available).
 - **reference_ids**: the 2–3 references that prove it can work. Use different rings if possible.
@@ -63,8 +63,8 @@ Make territories distinct from each other: a safe one, a bold one, and an unexpe
 
 ## Insights (3–5, they open the board and deck)
 A truth about the audience or the market that a strategist would put on slide 2, with a source a client can check:
-- Good: "Saudi Ramadan engagement peaks at night: CST points to 9:00–11:00pm as peak usage hours." (Campaign ME, 2026-02-05)
-- Not an insight: "Ramadan is a time of togetherness." (no source, and everybody knows it)
+- Good: "Half of Saudi parents buy school supplies in the last week before term." (a named survey, with its date and link)
+- Not an insight: "Back to school is a busy time for families." (no source, and everybody knows it)
 Only use pages you opened. Mix kinds: culture (how people behave), data (a number), category (what brands do and why).
 Give the date; a 2019 statistic in a 2027 plan needs saying.
 
@@ -74,7 +74,7 @@ moment, what they own (one line), messaging pillars, and the reference ids. "Non
 
 ## Recommendation
 Pick. Name the lead territory, what supports it, and why, citing an insight or a white space and the competitor gap:
-"Brief 'The after-taraweeh run' as the idea, with 'Who hosts tonight?' as its social engine…" A list of all territories
+"Brief 'The school-gate check-up' as the idea, with 'Ask the pharmacist' as its social engine…" A list of all territories
 is not a recommendation.
 
 ## Before kickoff
@@ -84,7 +84,7 @@ depends on, rights questions. Short, concrete, owner-able.
 ## Sparks (3–5)
 A spark is a far-away reference plus one provocation for this client. Write the provocation as a question that borrows
 the **mechanic or thinking**, never the execution:
-- Good: "What if the Rawaq arch became the wordless 'coffee after taraweeh?' signal between friends?" (from McDonald's
+- Good: "What if the pharmacy's green cross became the wordless 'I've got this' sign between parents?" (from McDonald's
   *Raise Your Arches*: a brand shape turned into an invitation)
 - Weak: "Do a funny film like Burger King." (copies a surface, says nothing about the client)
 A good spark makes the room argue. If it couldn't possibly work in the client's market, say why in `why_relevant`;

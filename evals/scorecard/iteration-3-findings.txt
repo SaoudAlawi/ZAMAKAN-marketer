@@ -1,0 +1,5 @@
+Partial round: stopped early to save tokens (the account also hit its usage limit twice). Complete pairs: Ramadan brief and waiting question; competitor watch with the skill only; pitch and London not run. No blind judging this round.
+Checks: with the skill 31/33 (Ramadan 16/17, waiting 8/8, competitor watch 7/8); without 22/25 (Ramadan 16/17, waiting 6/8).
+The Ramadan result with the skill is contaminated in both iterations: the skill's own worked examples used Rawaq Ramadan ideas. Fixed after this round (examples now use a fictional pharmacy) with a test that guards it.
+Competitor watch with the skill now finds the recent activity it missed last round (Half Million's October 2026 series, Barn's National Day 96 film) through YouTube channel uploads, but its 'check by hand' Snapchat links were broken (fixed).
+Found and fixed after the round: YouTube thumbnails were all treated as logos (an iteration-3 regression). Logged for later: coarse upload dates, an avoid-list check that matches single words, the verify summary counting login-walled pages as verified, bilingual titles failing verification.

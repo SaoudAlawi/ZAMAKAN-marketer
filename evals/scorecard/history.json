@@ -244,5 +244,126 @@
     "judge_reason": "B's references are closer to the real London picture (Qima, % Arabica, Dishoom, Heytea, the luxe Saudi cafés) and it finds a fresh insight in the Jazan/Khawlani coffee origin; its four territories are distinct and grow from the brand name and Saudi coffee rituals. A is solid and slightly better to act on (sourced insights, wildcards, check-first list) but misses Qima and its territories overlap more."
    }
   ]
+ },
+ {
+  "iteration": 3,
+  "date": "2026-10-14",
+  "note": "Partial round, stopped to save tokens; no blind judging.",
+  "skill_version": "0.4.0",
+  "findings": [
+   "Partial round: stopped early to save tokens (the account also hit its usage limit twice). Complete pairs: Ramadan brief and waiting question; competitor watch with the skill only; pitch and London not run. No blind judging this round.",
+   "Checks: with the skill 31/33 (Ramadan 16/17, waiting 8/8, competitor watch 7/8); without 22/25 (Ramadan 16/17, waiting 6/8).",
+   "The Ramadan result with the skill is contaminated in both iterations: the skill's own worked examples used Rawaq Ramadan ideas. Fixed after this round (examples now use a fictional pharmacy) with a test that guards it.",
+   "Competitor watch with the skill now finds the recent activity it missed last round (Half Million's October 2026 series, Barn's National Day 96 film) through YouTube channel uploads, but its 'check by hand' Snapchat links were broken (fixed).",
+   "Found and fixed after the round: YouTube thumbnails were all treated as logos (an iteration-3 regression). Logged for later: coarse upload dates, an avoid-list check that matches single words, the verify summary counting login-walled pages as verified, bilingual titles failing verification."
+  ],
+  "scenarios": {
+   "s1-gcc-brief": "GCC brief: Rawaq Ramadan 2027",
+   "s2-global-question": "Global creative question: making waiting enjoyable",
+   "s3-competitor-watch": "Competitor watch: Saudi coffee chains"
+  },
+  "summary": {
+   "with_skill": {
+    "runs": 3,
+    "quality": 0.94,
+    "real_links": 0.955,
+    "consistency": null,
+    "minutes": 11.3,
+    "tokens_k": 227,
+    "per_scenario": {
+     "s1-gcc-brief": 0.94,
+     "s2-global-question": 1.0,
+     "s3-competitor-watch": 0.88
+    }
+   },
+   "without_skill": {
+    "runs": 2,
+    "quality": 0.845,
+    "real_links": 0.936,
+    "consistency": null,
+    "minutes": 11.5,
+    "tokens_k": 179,
+    "per_scenario": {
+     "s1-gcc-brief": 0.94,
+     "s2-global-question": 0.75
+    }
+   }
+  },
+  "runs": [
+   {
+    "scenario": "s1-gcc-brief",
+    "config": "with_skill",
+    "run": "run-1",
+    "pass_rate": 0.94,
+    "passed": 16,
+    "total": 17,
+    "alive_rate": 0.925,
+    "links": 85,
+    "tokens": 260027,
+    "seconds": 825.0,
+    "failed": [
+     "≥95% of reference links are real and open (no invented/dead links)"
+    ]
+   },
+   {
+    "scenario": "s1-gcc-brief",
+    "config": "without_skill",
+    "run": "run-1",
+    "pass_rate": 0.94,
+    "passed": 16,
+    "total": 17,
+    "alive_rate": 0.971,
+    "links": 35,
+    "tokens": 210143,
+    "seconds": 801.6,
+    "failed": [
+     "Passes the beauty check (layout, contrast, images, fonts, Arabic)"
+    ]
+   },
+   {
+    "scenario": "s2-global-question",
+    "config": "with_skill",
+    "run": "run-1",
+    "pass_rate": 1.0,
+    "passed": 8,
+    "total": 8,
+    "alive_rate": 1.0,
+    "links": 35,
+    "tokens": 214085,
+    "seconds": 631.8,
+    "failed": []
+   },
+   {
+    "scenario": "s2-global-question",
+    "config": "without_skill",
+    "run": "run-1",
+    "pass_rate": 0.75,
+    "passed": 6,
+    "total": 8,
+    "alive_rate": 0.902,
+    "links": 46,
+    "tokens": 147777,
+    "seconds": 584.2,
+    "failed": [
+     "≥95% of reference links are real and open (no invented/dead links)",
+     "Global: references from ≥3 regions"
+    ]
+   },
+   {
+    "scenario": "s3-competitor-watch",
+    "config": "with_skill",
+    "run": "run-1",
+    "pass_rate": 0.88,
+    "passed": 7,
+    "total": 8,
+    "alive_rate": 0.939,
+    "links": 68,
+    "tokens": 207090,
+    "seconds": 571.1,
+    "failed": [
+     "≥95% of reference links are real and open (no invented/dead links)"
+    ]
+   }
+  ]
  }
 ]
