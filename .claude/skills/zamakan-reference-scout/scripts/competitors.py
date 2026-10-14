@@ -37,10 +37,10 @@ def manual_links(name, country="SA"):
     ]
 
 
-def search_queries(name, year, category="", moment=""):
-    first = name.split()[0]
+def search_queries(name, year, category="", moment="", name_ar=None):
+    ar = name_ar or name  # Arabic searches need the Arabic brand name; the English one returns unrelated results
     qs = [f'"{name}" campaign {year}', f'"{name}" campaign {year - 1}', f'"{name}" new ad {year}',
-          f'{first} حملة {year}', f'{first} إعلان جديد',
+          f'"{ar}" حملة إعلانية', f'"{ar}" إعلان جديد',
           f'site:campaignme.com "{name}"', f'site:arabnews.com "{name}"', f'"{name}" agency appointed OR "account win"',
           f'"{name}" partnership OR sponsor {year}']
     if moment:
@@ -78,7 +78,7 @@ def main():
     country = "SA" if "saudi" in (b.get("market") or "saudi").lower() else (S.country_code(b.get("market") or "") or "SA")
     names = b.get("competitors") or []
     L = [f"# Competitor-watch plan: {b.get('client', '')}", "",
-         f"Window: the last {months} months (since {(dt.date.today() - dt.timedelta(days=30 * months)).isoformat()}). "
+         f"Window: the last {months} months (since {S.months_ago(months).isoformat()}). "
          "Older work is context only: tag it `context` and say so.", "",
          "**Can be read from here:** trade press, brand websites and newsrooms, YouTube channels, award archives, Ads of the World.",
          "**Can't be read from here:** Instagram, TikTok, Snapchat, X, the Meta Ad Library. Don't spend searches on them; "
@@ -88,13 +88,17 @@ def main():
     manual = {}
     for name in names:
         L += [f"## {name}", "", "Web searches (in this order, stop when the picture is clear):"]
-        L += [f"- `{q}`" for q in search_queries(name, year, b.get("category", ""), b.get("moment", ""))]
+        L += [f"- `{q}`" for q in search_queries(name, year, b.get("category", ""), b.get("moment", ""), (b.get("competitor_names_ar") or {}).get(name))]
+        if not (b.get("competitor_names_ar") or {}).get(name):
+            L.append(f"- (add the Arabic name in brief.competitor_names_ar for better Arabic searches, e.g. `discover.py youtube <Arabic name> اعلان`)")
         h = handles.get(name)
         if h:
             L += ["", f"YouTube: `discover.py youtube-channel {h} --since-months {months}`"]
         elif a.youtube:
             word = (b.get("category") or "").split("/")[0].split()[-1:] or [""]
-            sug = suggest_channels(name, f"{word[0]} {(b.get('market') or '').split(',')[-1].strip()}")
+            ar = (b.get("competitor_names_ar") or {}).get(name)
+            sug = (suggest_channels(ar, "اعلان") if ar else []) + suggest_channels(name, f"{word[0]} {(b.get('market') or '').split(',')[-1].strip()}")
+            sug = list({c["url"]: c for c in sug}.values())[:5]
             L += ["", "YouTube channel not given. Candidates from search (confirm which is the brand's own before using):"]
             L += [f"- {c['channel']}: {c['url']}" for c in sug] or ["- none found: search `\"<brand>\" youtube channel`"]
         manual[name] = manual_links(name, country)

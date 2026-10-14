@@ -386,6 +386,9 @@ def main():
     print(f"built in {out}: {', '.join(made)} · look: {th['name']} ({th['origin']})")
     for w in warnings:
         print("  warn", w)
+    if kit["source"] == "client" and not (Path(kit["theme"]["origin"]).parent / "brand.md").exists():
+        print("  note: the design system has no brand.md yet (personality and tone came from DESIGN.md/spec.json); "
+              "say so in your delivery notes")
     for m in kit["missing_assets"]:
         print(f"  note: the design system lists '{m}' as missing; it was not invented (ask the client for it)")
     for n in kit["proposed_notes"]:

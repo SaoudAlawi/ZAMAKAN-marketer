@@ -233,6 +233,7 @@ The no-skill baseline did several generic things worth building into the skill:
 - 2026-10-13: Re-scoped to the sub-skill architecture; built the Rawaq sample package and answer key.
 - 2026-10-13: Feature 2 (reference scout) defined; network limits of the cloud environment noted.
 - 2026-10-13: Step 2 done. Design: the agent writes only spec.json + brand.md; scripts generate the rest.
+- 2026-10-14: Fixed the remaining agent-reported issues without new runs (see iteration-3-agent-feedback.md, Status); 178 tests.
 - 2026-10-14: Iteration 3 benchmark stopped early at the user's request (tokens; usage limit hit twice). Done: blind
   judging of iteration 2 (fixed packets): skill 2 wins, 3 losses, 83% vs 88%; iteration 3 partial checks 31/33 with vs
   22/25 without, no judging. Found: the skill's examples leaked the Rawaq scenario (fixed, test added); YouTube thumbnails

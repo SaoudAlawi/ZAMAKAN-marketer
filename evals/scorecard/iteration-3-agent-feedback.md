@@ -26,3 +26,13 @@
 - verify: bilingual titles "Wanasa Mkamela (الوناسة مكمّلة)" fail match → strip parenthesised/Arabic parts before matching
 - AotW descriptions truncated with "…" in detail.jsonl
 - competitors.py useful in brief mode too: document it
+
+## Status (2026-10-14): fixed without new benchmark runs
+- views "7K" parsing, date precision flag, month-accurate windows (validator + plan + channel cutoff), `month` in the contract
+- Arabic search terms use the Arabic brand name (brief.competitor_names_ar); channel suggestions try the Arabic name first
+- avoid-list matches most of a phrase and ignores the brief's own topic words; recipe/cooking/compilation demoted
+- verify: bilingual titles tried in each language; summary splits page read / page exists / video not watched
+- fetch_meta --text warns when the text is tiny or doesn't mention the page title; longer descriptions kept
+- board: territory image panels sized to 1-3 images; mixed-direction titles isolated (dir=auto)
+- build_outputs notes a missing brand.md; refstub.py turns fetched candidates into reference stubs
+- SKILL 0.4.1: refstub, competitors.py in any mode, empty direct ring when the brief excludes local work, competitor-watch cover

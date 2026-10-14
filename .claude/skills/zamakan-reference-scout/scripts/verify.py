@@ -40,7 +40,15 @@ def tokens(text):
 
 
 def matches(ref, page):
-    """True if the fetched page plausibly is this reference."""
+    """True if the fetched page plausibly is this reference (a bilingual title is tried in each language)."""
+    title = ref.get("title") or ""
+    parts = [p for p in re.split(r"[()\[\]|/]", title) if p.strip()]
+    if len(parts) > 1:
+        return any(_matches({**ref, "title": p}, page) for p in [title] + parts)
+    return _matches(ref, page)
+
+
+def _matches(ref, page):
     claimed = tokens(ref.get("title"))
     found = tokens(page.get("title")) | tokens(page.get("final_url", "")) | tokens(page.get("url", "").rsplit("/", 1)[-1])
     brand_ok = bool(tokens(ref.get("brand")) & (found | tokens(page.get("brand")) | tokens(page.get("channel"))
@@ -118,8 +126,14 @@ def main():
         if any(not m for _, _, m, _ in urls):
             extra = "; ".join(f"{s} {u}" for u, s, m, _ in urls if not m)
             print(f"  note       {rid}: verified, but extra link(s) don't match the title (fine for press coverage; check): {extra}")
-    print(f"verified {counts.get('verified', 0)} · unverified {counts.get('unverified', 0)} · rejected {counts.get('rejected', 0)}"
-          f" of {len(refs)}")
+    best = {}
+    for rid, _, after, urls in results:
+        if after == "verified":
+            ev = max((EVIDENCE_RANK.get(e, 0) for *_, e in urls), default=3)
+            best[ev] = best.get(ev, 0) + 1
+    print(f"verified {counts.get('verified', 0)} (page read {best.get(3, 0) + best.get(0, 0)} · page exists, details unconfirmed "
+          f"{best.get(2, 0)} · video, not watched {best.get(1, 0)}) · unverified {counts.get('unverified', 0)} · "
+          f"rejected {counts.get('rejected', 0)} of {len(refs)}")
     if a.write:
         run["run"]["web_access"] = "full"
         path.write_text(json.dumps(run, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

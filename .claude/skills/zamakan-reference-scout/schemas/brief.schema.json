@@ -136,6 +136,13 @@
         "type": "string"
       },
       "description": "Competitor name -> YouTube @handle or channel URL (confirmed official), for discover.py youtube-channel."
+    },
+    "competitor_names_ar": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Competitor name -> Arabic name, for Arabic searches (English names return unrelated Arabic results)."
     }
   }
 }

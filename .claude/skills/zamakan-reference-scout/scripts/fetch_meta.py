@@ -83,6 +83,9 @@ def _fetch(url, with_text=False):
     rec["text_chars"] = len(S.main_text(page["text"]))  # how much readable content the page really has
     if with_text:
         rec["text"] = S.main_text(page["text"])
+        t_words = {w for w in re.findall(r"\w{4,}", (rec.get("title") or "").lower())}
+        if len(rec["text"]) < 300 or (t_words and not t_words & set(re.findall(r"\w{4,}", rec["text"].lower()))):
+            rec["text_warning"] = "text is very short or doesn't mention the page title: probably not the article; open it another way"
     rec.update(http_status=page["status"], via=page["via"] + (" (cache)" if page.get("cached") else ""), fetched_at=now)
     if page.get("final_url") and page["final_url"].rstrip("/") != url.rstrip("/"):
         rec["final_url"] = page["final_url"]

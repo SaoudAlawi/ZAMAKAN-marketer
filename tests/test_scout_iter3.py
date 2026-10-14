@@ -191,3 +191,53 @@ def test_skill_examples_dont_leak_the_test_scenario():
     text = (skill / "SKILL.md").read_text() + (skill / "references/analysis-framework.md").read_text()
     for leak in ("Rawaq", "taraweeh", "riwaq", "Sahm"):
         assert leak.lower() not in text.lower(), leak
+
+
+# ---------------------------------------------------------------- fixes from the iteration-3 agent reports
+def test_views_and_date_precision():
+    import sources as S
+    assert S.views_number("7K views") == 7000 and S.views_number("1.2M views") == 1200000 and S.views_number("7,026 views") == 7026
+    assert S.precision("2 years ago") == "year" and S.precision("3 months ago") == "month" and S.precision("5d ago") == "day"
+    import datetime as dt
+    assert S.months_ago(12, dt.date(2026, 10, 13)) == dt.date(2025, 10, 13)
+
+
+def test_window_uses_months_not_just_years():
+    """14 months old: the old year-only check let this through whenever it fell in last calendar year."""
+    import sources as S
+    from validate_run import validate
+    run = _sample()
+    run["run"]["mode"] = "competitor-watch"
+    d = S.months_ago(14)
+    old = run["references"][0]
+    old.update(year=d.year, month=d.month, tags=[])
+    _, warns = validate(run, brief={"window_months": 12})
+    assert any(old["id"] in w and "window" in w for w in warns)
+
+
+def test_avoid_list_needs_the_phrase_not_one_word():
+    import score as SC
+    b = {"question": "campaigns that made waiting in a bank enjoyable", "avoid": ["boring bank ads", "waiting room stock photos"]}
+    terms = SC.brief_terms(b)
+    fine = SC.score({"title": "ING pays your wait at the bank", "country": "FR"}, b, terms, 2026)
+    assert not any("avoid" in f for f in fine[2])
+    bad = SC.score({"title": "Stock photos of a waiting room, boring", "country": "US"}, b, terms, 2026)
+    assert any("avoid" in f for f in bad[2])
+
+
+def test_bilingual_titles_verify():
+    from verify import matches
+    ref = {"title": "Wanasa Mkamela (الوناسة مكمّلة)", "brand": "Lipton"}
+    assert matches(ref, {"title": "Lipton's Wanasa Mkamela keeps the gathering going", "url": "https://campaignme.com/x/"})
+
+
+def test_refstub_turns_candidates_into_reference_stubs(tmp_path):
+    import subprocess
+    d = tmp_path / "detail.jsonl"
+    d.write_text(json.dumps({"url": "https://www.adsoftheworld.com/campaigns/draw-ketchup", "source": "adsoftheworld", "title": "Draw Ketchup",
+                             "brand": "Heinz", "agency": "Rethink", "country": "CA", "year": 2021, "media": ["integrated"],
+                             "thumbnail": "https://image.adsoftheworld.com/x"}) + "\n" + json.dumps({"url": "https://x.com/dead", "error": "HTTP 404"}) + "\n")
+    out = subprocess.run([sys.executable, SCRIPTS / "refstub.py", d], capture_output=True, text=True, check=True).stdout
+    stubs = json.loads(out)
+    assert len(stubs) == 1 and stubs[0]["brand"] == "Heinz" and stubs[0]["card"]["idea"].startswith("TODO")
+    assert stubs[0]["urls"][0]["url"].endswith("draw-ketchup") and stubs[0]["thumbnail"]["url"]

@@ -2,7 +2,7 @@
 name: zamakan-reference-scout
 description: "Find real campaign references and creative inspiration, then turn them into strategy: a verified reference set (Ads of the World, YouTube, Vimeo, award shows, trade press, competitor ads), quick cards and deep teardowns, patterns, white space and 3-5 creative territories, delivered as a visual board, client deck and/or report plus files other agents can use. Use this whenever someone asks for references, inspiration, a mood board of campaigns, a swipe file, 'what have others done for Ramadan / National Day / a launch', 'show me the best ads about X', competitor ads or what competitors are running, references for a pitch or a creative kickoff, or creative territories grounded in real work. Saudi/GCC-aware, searches in English and Arabic, and never invents campaigns: every reference is checked against its live page."
 metadata:
-  version: 0.4.0
+  version: 0.4.1
 ---
 
 # ZAMAKAN Reference Scout
@@ -95,6 +95,9 @@ Use your **web search tool** for everything else (Vimeo, award shows, Campaign M
 newsrooms, ad libraries). Fetch those hand-picked URLs right away so they have titles before scoring
 (untitled links can't be judged): `fetch_meta.py <url> ... --out $JOB/candidates.jsonl` (add `--text` for articles).
 `--out` adds to the file (a URL fetched again replaces its old line), like `discover.py`.
+
+Turn your shortlist into reference stubs instead of retyping facts: `refstub.py $JOB/detail.jsonl --ids-from shortlist.txt
+> stubs.json` gives each reference's page facts with TODOs for your judgement.
 
 Then rank, read only the best, and rank again with full details:
 ```bash
@@ -223,6 +226,10 @@ python3 $SCOUT/scripts/discover.py youtube-channel @BrandHandle --since-months 1
   Ads of the World, YouTube search and channels, related campaigns and page fetches go through the scripts and cost
   none. If search runs out, carry on with the scripts and say what you couldn't search.
 - **Pass URLs to scripts in a file** (`--from list.jsonl`) when there are many or they contain `()&?`, to avoid shell quoting.
+- **Named competitors, any mode:** run `competitors.py` for the click-list of social and ad-library checks, and add
+  their Arabic names in `brief.competitor_names_ar` (English names in Arabic searches return unrelated results).
+- **The brief excludes local work** ("look globally; we don't need Saudi work"): leave the `direct` ring empty and
+  ignore the coverage warning about it.
 - **No competitors named?** In `brief`/`pitch` mode put the 2–3 nearest benchmarks in `competitor_summary` with
   `benchmark: true`, and add an open question asking who the client sees as rivals.
 - **`country`** is where the campaign ran (Starbucks in Milan is IT), not where the brand comes from; put the brand's
@@ -234,6 +241,6 @@ python3 $SCOUT/scripts/discover.py youtube-channel @BrandHandle --since-months 1
 - **Award level**: an award page that needs a login proves the entry exists, not the level (`evidence: title`). Confirm
   the level from a winners list or trade press before saying "Grand Prix".
 - **Cover image**: set `run.cover` to the reference with the cleanest picture (no burned-in subtitles, not a
-  competitor's own ad). Look at `check/board-desktop.png` to judge.
+  competitor's own ad; in competitor-watch every reference is a competitor's, so just pick the clearest). Look at `check/board-desktop.png` to judge.
 - **Library without a client** (a general creative question): run `library.py add` without `--client`; only the shared
   pages are updated.

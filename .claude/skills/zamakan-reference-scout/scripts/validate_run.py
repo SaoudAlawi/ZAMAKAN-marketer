@@ -138,13 +138,15 @@ def semantic(run, target=None, brief=None):
     if run["run"]["mode"] == "competitor-watch":
         import datetime as _dt
         months = (brief or {}).get("window_months", 12)
-        oldest = _dt.date.today().year - max(1, -(-months // 12))
+        t = _dt.date.today()
+        cut = (t.year * 12 + t.month - 1) - months  # months since year 0
         for c in run.get("competitor_summary", []):
             for k, why in (("owns", "one line on what they own"), ("last_seen", "date of their latest activity seen"),
                            ("manual_checks", "the click-list of social/ad-library checks a person must do")):
                 if not c.get(k):
                     W.append(f"competitor_summary/{c['advertiser']}: no '{k}' ({why})")
-        stale = [r["id"] for r in live if r.get("year") and r["year"] < oldest and "context" not in r.get("tags", [])]
+        stale = [r["id"] for r in live if r.get("year") and "context" not in r.get("tags", [])
+                 and (r["year"] * 12 + (r.get("month") or 12) - 1) < cut]
         if stale:
             W.append(f"older than the {months}-month window (tag 'context' if kept on purpose): {stale}")
     named = [c.lower() for c in (brief or {}).get("competitors", [])]

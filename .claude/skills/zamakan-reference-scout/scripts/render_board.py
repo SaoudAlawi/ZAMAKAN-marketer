@@ -109,6 +109,7 @@ section{padding-block:clamp(40px,6vw,72px)} section+section{border-top:1px solid
 .t .thesis{font-size:19px;line-height:1.5;margin:0;color:var(--ink)} .t .why{margin:0;color:var(--muted)}
 .t .cols{display:grid;grid-template-columns:1fr 1fr;gap:18px} .t ul{margin:6px 0 0;padding-inline-start:18px;display:grid;gap:4px;font-size:15px}
 .t .pics{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;gap:3px;background:var(--line);min-height:300px}
+.t .pics.n1{grid-template-columns:1fr} .t .pics.n2{grid-template-columns:1fr;grid-template-rows:1fr 1fr} .t .pics.n0{display:none}
 .t .pics a{position:relative;display:block;background:var(--chip);overflow:hidden} .t .pics a:first-child{grid-column:1/-1}
 .t .pics img{width:100%;height:100%;object-fit:cover} .code{position:absolute;inset-inline-start:8px;top:8px;font:600 12px/1 var(--body);background:var(--dark);color:var(--on-dark);padding:5px 7px;border-radius:3px}
 .tag{display:inline-block;font:600 11px/1 var(--body);letter-spacing:.08em;text-transform:uppercase;padding:6px 9px;border-radius:999px;background:var(--accent);color:var(--on-accent);margin-inline-start:8px;vertical-align:middle}
@@ -241,7 +242,7 @@ def build(run, brief, client_name, kit, img, codes, h):
                      f'<div class="names"><h3>{E(t["name"])}</h3>{ar}</div>'
                      f'<p class="thesis">{E(t["thesis"])}</p>'
                      + (f'<p class="why"><b>Why {E(who)}:</b> {E(t["why_this_client"])}</p>' if t.get("why_this_client") else "")
-                     + f'<div class="cols">{lists}</div><small class="muted">Built on {built}</small></div><div class="pics">{pics}</div></article>')
+                     + f'<div class="cols">{lists}</div><small class="muted">Built on {built}</small></div><div class="pics n{len(rs)}">{pics}</div></article>')
         S.append(f'<section id="territories"><div class="wrap">{divider}<div class="sec-head"><div><div class="eyebrow">Where we could go</div>'
                  f'<h2>Creative territories</h2></div></div><div class="terr">{"".join(T)}</div></div></section>')
     # sparks from elsewhere: far-away work, each with a provocation for this client
@@ -304,7 +305,7 @@ def build(run, brief, client_name, kit, img, codes, h):
                   f'<span class="code">{codes[r["id"]]}</span></div><div class="body"><div class="badges"><span class="badge ring-{r["ring"]}">{RING_NAME[r["ring"]]}</span>'
                   + h.evidence_badge(r)
                   + ('<span class="badge">deep dive</span>' if r["id"] in run.get("top", []) else "")
-                  + f'</div><div class="brand">{E(r["brand"])}</div><h4>{E(r["title"])}</h4><div class="meta">{E(h.meta_line(r))}</div>'
+                  + f'</div><div class="brand" dir="auto">{E(r["brand"])}</div><h4 dir="auto">{E(r["title"])}</h4><div class="meta">{E(h.meta_line(r))}</div>'
                   f'<p>{E(r["card"]["idea"])}</p><p class="why">{E(r["card"]["why_relevant"])}</p>'
                   f'<a class="go" href="{E(h.primary_url(r))}" target="_blank" rel="noopener">{h.link_label(r)} ↗</a></div></article>')
     ring_btns = "".join(f'<button data-k="ring" data-v="{k}" aria-pressed="false">{RING_NAME[k]} ({sum(r["ring"] == k for r in refs)})</button>'

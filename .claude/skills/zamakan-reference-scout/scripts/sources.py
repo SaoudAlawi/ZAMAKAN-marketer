@@ -87,7 +87,7 @@ def parse_generic(html, url):
     ld = _ld(s)
     title = _meta(s, "og:title", "twitter:title") or (s.title.string if s.title else None)
     rec = {"url": url, "source": site_of(url), "title": _clean(title, 200) or None,
-           "description": _clean(_meta(s, "og:description", "description", "twitter:description"), 400) or None,
+           "description": _clean(_meta(s, "og:description", "description", "twitter:description"), 1200) or None,
            "thumbnail": _meta(s, "og:image", "twitter:image"),
            "published": _meta(s, "article:published_time", "og:published_time", "datePublished")}
     for d in ld:
@@ -256,6 +256,29 @@ def ago_to_date(text, today=None):
     return (today - _dt.timedelta(days=int(m.group(1)) * AGO[m.group(2)])).isoformat()
 
 
+def views_number(text):
+    """'7K views' / '1.2M views' / '7,026 views' / '٧ آلاف' -> int."""
+    m = re.search(r"([\d.,]+)\s*([KkMmBb]?)", text or "")
+    if not m:
+        return None
+    n = float(m.group(1).replace(",", "")) * {"": 1, "k": 1e3, "m": 1e6, "b": 1e9}[m.group(2).lower()]
+    return int(n)
+
+
+def precision(when):
+    """How exact an 'N units ago' date is: 'day' for days/weeks, 'month' for months, 'year' for years."""
+    if not when:
+        return None
+    return "year" if re.search(r"\d+\s*(y|year)", when) else "month" if re.search(r"\d+\s*(mo|month)", when) else "day"
+
+
+def months_ago(n, today=None):
+    import datetime as _dt
+    today = today or _dt.date.today()
+    y, m = divmod(today.year * 12 + today.month - 1 - n, 12)
+    return _dt.date(y, m + 1, min(today.day, 28))
+
+
 def parse_youtube_channel(html, url=""):
     """Recent uploads on a channel's Videos tab (YouTube's 2025+ 'lockup' layout and the older videoRenderer one)."""
     m = re.search(r"var ytInitialData = (\{.*?\});</script>", html, re.S)
@@ -274,12 +297,12 @@ def parse_youtube_channel(html, url=""):
                 parts = [p.get("accessibilityLabel") or (p.get("text") or {}).get("content", "")
                          for row in md.get("metadata", {}).get("contentMetadataViewModel", {}).get("metadataRows", [])
                          for p in row.get("metadataParts", [])]
-                views = next((re.sub(r"[^\d]", "", p) for p in parts if "view" in p), "")
+                views = next((views_number(p) for p in parts if "view" in p.lower()), None)
                 when = next((p for p in parts if "ago" in p), None)
                 out.append({k: x for k, x in {
                     "url": f"https://www.youtube.com/watch?v={lv['contentId']}", "source": "youtube", "channel": channel,
                     "title": _clean((md.get("title") or {}).get("content")), "published": when, "published_date": ago_to_date(when),
-                    "views": int(views) if views else None,
+                    "views": views, "date_precision": precision(when),
                     "thumbnail": f"https://i.ytimg.com/vi/{lv['contentId']}/hqdefault.jpg"}.items() if x not in (None, "")})
                 return
             for x in n.values():

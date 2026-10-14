@@ -754,6 +754,12 @@
           "type": "string",
           "minLength": 15,
           "description": "Sparks from elsewhere: a provocation for this client from work outside its region and category ('What if Rawaq…?'). Set it on 3-5 references from far away so the team sees something different."
+        },
+        "month": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12,
+          "description": "Month the work ran, when known (competitor-watch windows use it)."
         }
       }
     }

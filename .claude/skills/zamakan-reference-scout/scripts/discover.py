@@ -79,7 +79,7 @@ def main():
                 print(f"note: no uploads read from {base} (status {page['status']}); check the handle", file=sys.stderr)
             if a.since_months:
                 import datetime as dt
-                cutoff = (dt.date.today() - dt.timedelta(days=30 * a.since_months)).isoformat()
+                cutoff = S.months_ago(a.since_months).isoformat()
                 got = [c for c in got if (c.get("published_date") or "9999") >= cutoff]
             cards += [{**c, "channel_url": base} for c in got[:a.limit]]
         by = "youtube-channel:" + ",".join(a.args)

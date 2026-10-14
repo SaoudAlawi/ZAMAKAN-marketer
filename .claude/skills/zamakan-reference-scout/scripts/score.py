@@ -111,7 +111,11 @@ def score(c, b, terms, this_year, sparks=False):
     if c.get("kind") == "student":
         flags.append("student work")
     stem = lambda w: w[:-1] if len(w) > 4 and w.endswith("s") else w  # noqa: E731 - lanterns ~ lantern
-    avoid_hits = [a for a in b.get("avoid", []) if any(stem(w) in t for w in words(a) - {"generic", "anything", "feels"})]
+    own = words(" ".join(str(b.get(k) or "") for k in ("question", "category", "audience", "objective")))  # the topic itself
+    def touches(a):
+        ws = [stem(w) for w in words(a) - {"generic", "anything", "feels", "like", "tone"} - own]
+        return bool(ws) and sum(w in t for w in ws) >= max(1, (len(ws) + 1) // 2)  # most of the phrase, not one word
+    avoid_hits = [a for a in b.get("avoid", []) if touches(a)]
     if avoid_hits:
         flags.append("touches avoid-list: " + ", ".join(avoid_hits))
     if re.search(r"\bai (ad|commercial|generated)|i created an ai", t):
@@ -119,7 +123,7 @@ def score(c, b, terms, this_year, sparks=False):
     elif c.get("source") == "youtube" and re.search(
             r"\bnews\b|news agency|updates? tv|\bvlog|reaction|review|tutorial|how to|compilation|fan ?made|\bshorts?\b|"
             r"converting|waking up|routine|explain|prayer time|right time|day in (my|the) life|travel|prank|sketch|\bsnl\b|"
-            r"saturday night live|challenge|recipe|goes to|يوميات|الحياة في",
+            r"saturday night live|challenge|recipe|cooking|mukbang|unboxing|compilation|playlist|goes to|يوميات|الحياة في|طبخ|وصفة",
             (c.get("title", "") + " " + c.get("channel", "")).lower()):
         flags.append("probably not a campaign (news/vlog/sketch/explainer)")
     if c.get("source") == "youtube" and not any(f.startswith("probably not") for f in flags):
