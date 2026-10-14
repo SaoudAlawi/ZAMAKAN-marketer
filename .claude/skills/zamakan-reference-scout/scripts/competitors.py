@@ -90,7 +90,7 @@ def main():
         L += [f"## {name}", "", "Web searches (in this order, stop when the picture is clear):"]
         L += [f"- `{q}`" for q in search_queries(name, year, b.get("category", ""), b.get("moment", ""), (b.get("competitor_names_ar") or {}).get(name))]
         if not (b.get("competitor_names_ar") or {}).get(name):
-            L.append(f"- (add the Arabic name in brief.competitor_names_ar for better Arabic searches, e.g. `discover.py youtube <Arabic name> اعلان`)")
+            L.append("- (add the Arabic name in brief.competitor_names_ar for better Arabic searches, e.g. `discover.py youtube <Arabic name> اعلان`)")
         h = handles.get(name)
         if h:
             L += ["", f"YouTube: `discover.py youtube-channel {h} --since-months {months}`"]

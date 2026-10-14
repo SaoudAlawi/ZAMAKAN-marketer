@@ -284,7 +284,7 @@ def build_report(run, brief, client_name):
             for k in ("channels", "tone", "results"):
                 if td.get(k):
                     L.append(f"- **{k.title()}:** {td[k]}")
-            L += [f"- **What we can borrow:** " + "; ".join(td["transferable"]),
+            L += ["- **What we can borrow:** " + "; ".join(td["transferable"]),
                   f"- **Saudi cultural fit ({td['cultural_fit']['score']}/5):** {td['cultural_fit']['notes']}"]
             if td.get("risks"):
                 L.append("- **Risks:** " + "; ".join(td["risks"]))

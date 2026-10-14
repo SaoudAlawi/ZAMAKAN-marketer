@@ -19,7 +19,6 @@ import datetime as dt
 import json
 import math
 import re
-import sys
 from pathlib import Path
 
 GCC = {"SA", "AE", "KW", "QA", "BH", "OM"}

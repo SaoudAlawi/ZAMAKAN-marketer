@@ -31,6 +31,7 @@ Rendering uses Playwright with the preinstalled Chromium (`/opt/pw-browsers/chro
 - Explain in plain language; the user is an agency person, not necessarily a developer.
 
 ## Next step
+Everything up to here is shipped (README.md at the root explains the project for non-developers).
 Feature 2 (reference scout) iteration 3 is built; its benchmark was stopped early to save tokens (scorecard:
 https://claude.ai/artifact/Gmjx7ao4bA2inZKD9CKsDT; `evals/scorecard/`). Benchmark runs cost ~200k tokens each: never
 launch them without the user's go-ahead on cost. Open issues: `evals/scorecard/iteration-3-agent-feedback.md`.

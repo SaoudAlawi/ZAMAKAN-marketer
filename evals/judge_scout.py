@@ -16,7 +16,6 @@ import json
 import random
 import re
 import sys
-import zipfile
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]

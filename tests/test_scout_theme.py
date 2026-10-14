@@ -15,7 +15,7 @@ sys.path.insert(0, str(SCRIPTS))
 
 import build_outputs as B  # noqa: E402
 import theme as T  # noqa: E402
-from test_scout_outputs import run_path  # noqa: E402,F401  (fixture)
+from test_scout_outputs import run_path  # noqa: E402,F401,F811  (pytest fixture, used by name)
 
 PROSE_ONLY = """# Acme Coffee
 
