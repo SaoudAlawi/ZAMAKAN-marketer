@@ -29,7 +29,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _web  # noqa: E402
-from brandkit import load_kit  # noqa: E402
+from brandkit import load_kit, with_client_logo  # noqa: E402
 from validate_run import GCC, REGION, validate  # noqa: E402
 
 RING_LABEL = {"direct": "Direct · same category, GCC", "category": "Category · worldwide",
@@ -357,6 +357,7 @@ def main():
     ap.add_argument("--brief")
     ap.add_argument("--client-name")
     ap.add_argument("--design", help="zamakan | awesome:<name> | path to a DESIGN.md (default: client's, else zamakan)")
+    ap.add_argument("--logo", help="client logo file (PNG/SVG) when the client has no design system yet; keeps the chosen look")
     ap.add_argument("--no-pdf", action="store_true")
     a = ap.parse_args()
     run, warnings = load_run(a.references)
@@ -365,6 +366,8 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     thumbs = out / "thumbs"
     kit = load_kit(a.design, out)
+    if a.logo:
+        kit = with_client_logo(kit, a.logo, out, a.client_name)
     th = kit["theme"]
     client_name = a.client_name or kit.get("client_name")
     made = []

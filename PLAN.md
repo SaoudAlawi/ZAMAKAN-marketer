@@ -233,6 +233,7 @@ The no-skill baseline did several generic things worth building into the skill:
 - 2026-10-13: Re-scoped to the sub-skill architecture; built the Rawaq sample package and answer key.
 - 2026-10-13: Feature 2 (reference scout) defined; network limits of the cloud environment noted.
 - 2026-10-13: Step 2 done. Design: the agent writes only spec.json + brand.md; scripts generate the rest.
+- 2026-10-15: First real client run (Oman Oil, Ramadan for taxi drivers, MENA, board): 23 references all live (10 read, 8 login walls, 5 videos unwatched), 4 territories. Added `build_outputs.py --logo` (house look + client logo). Fixed a privacy leak: client-relative tags (client-own-work, competitor) no longer reach the shared library. 180 tests.
 - 2026-10-14: Shipped: final polish (unused imports/f-strings removed), plain-language README.md added; PR to `develop`.
 - 2026-10-14: Fixed the remaining agent-reported issues without new runs (see iteration-3-agent-feedback.md, Status); 178 tests.
 - 2026-10-14: Iteration 3 benchmark stopped early at the user's request (tokens; usage limit hit twice). Done: blind

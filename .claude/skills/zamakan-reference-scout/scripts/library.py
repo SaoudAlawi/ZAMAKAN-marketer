@@ -71,9 +71,18 @@ def slugify(*parts):
     return s[:70].rstrip("-") or "campaign"
 
 
+# tags that only mean something relative to one client ("this is our client's own ad", "a rival of our client"): shared,
+# they would reveal who the client is, so they stay in the client's private notes
+CLIENT_RELATIVE_TAGS = {"client-own-work", "own-work", "competitor", "competitor-brand", "rival", "contrast", "benchmark"}
+
+
 def neutral(rec):
     """Shared, client-neutral view of a record (also migrates the old format that stored per-client cards)."""
     out = {k: rec[k] for k in SHARED_FACTS + ["key", "slug", "used", "summary", "teardown", "provenance"] if rec.get(k) not in (None, "", [], {})}
+    if out.get("tags"):
+        out["tags"] = [t for t in out["tags"] if t not in CLIENT_RELATIVE_TAGS]
+        if not out["tags"]:
+            out.pop("tags")
     if not out.get("summary"):
         idea = (rec.get("card") or {}).get("idea") or next(((s.get("card") or {}).get("idea") for s in rec.get("seen_in", []) if s.get("card")), None)
         if idea:

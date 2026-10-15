@@ -177,6 +177,8 @@ out of the shared library" (it named the client), that's expected; nothing else 
 **The outputs wear the client's brand.** When `clients/<slug>/design-system/` exists (made by `zamakan-design-system`),
 the board and deck take everything from it: the logo variant approved for each background, the client's own font files,
 colours by role, corner style, divider and signature graphic element. Without one they use the ZAMAKAN house style.
+**No design system yet but you have the client's logo** (cut from their PDF, or a logo file)? Add `--logo <file>` to
+`build_outputs.py`: the house look, with the client's logo on the cover (on a white panel) and in the footer.
 Never draw a missing brand asset yourself: `build_outputs.py` prints what the design system lists as missing; pass that on.
 
 **Look before you deliver.** `check_outputs.py` catches sideways scrolling, broken images, clipped text, low contrast,

@@ -11,7 +11,6 @@ media:
 moments:
 - ramadan
 tags:
-- competitor
 - majlis
 - late-night
 status: verified
@@ -39,7 +38,7 @@ used_in_runs: 1
 | Year | 2025 |
 | Media | film, social |
 | Moments | ramadan |
-| Tags | competitor, majlis, late-night |
+| Tags | majlis, late-night |
 
 ## Links
 

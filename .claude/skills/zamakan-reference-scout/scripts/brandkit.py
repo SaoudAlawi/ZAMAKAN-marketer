@@ -165,6 +165,27 @@ def load_kit(design=None, out_dir=None):
             "proposed_notes": [], "rules": []}
 
 
+def with_client_logo(kit, logo, out_dir, name=None):
+    """House style (or any look) plus the client's own logo file, for clients without a design system yet.
+    The logo isn't approved on the dark cover, so it sits on a white panel there (a PNG made here, for board and deck)."""
+    from PIL import Image, ImageDraw
+    logo = Path(logo)
+    im = Image.open(logo).convert("RGBA")
+    pad = max(im.height // 4, 8)
+    panel = Image.new("RGBA", (im.width + 2 * pad, im.height + 2 * pad), (0, 0, 0, 0))
+    ImageDraw.Draw(panel).rounded_rectangle((0, 0, panel.width - 1, panel.height - 1), radius=pad, fill=(255, 255, 255, 255))
+    panel.alpha_composite(im, (pad, pad))
+    dst = Path(out_dir) / "thumbs" / f"_logo-panel-{logo.stem}.png"
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    panel.save(dst)
+    svg = str(logo) if logo.suffix == ".svg" else None
+    kit["logos"] = {"on_light": {"id": "client", "svg": svg, "png": str(logo)}, "mark_light": {"id": "client", "svg": svg, "png": str(logo)},
+                    "on_dark": {"id": "client-panel", "svg": None, "png": str(dst)}}
+    kit["client_name"] = kit.get("client_name") or name
+    kit["proposed_notes"].append(f"client logo from {logo.name}, shown on a white panel on dark backgrounds (no design system yet)")
+    return kit
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--design")

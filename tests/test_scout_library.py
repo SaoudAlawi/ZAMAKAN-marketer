@@ -103,3 +103,10 @@ def test_local_paths_never_reach_the_shared_library():
            "thumbnail": {"url": "https://img.x.com/a.jpg", "local": "/w/clients/acme/jobs/2026-scout/thumbs/a.jpg"}}
     assert L.neutral(rec)["thumbnail"] == {"url": "https://img.x.com/a.jpg"}
     assert "thumbnail" not in L.neutral({**rec, "thumbnail": {"local": "/w/clients/acme/x.jpg"}})
+
+
+def test_client_relative_tags_stay_private():
+    """'client-own-work' or 'competitor' only make sense for one client: shared, they'd reveal who the client is."""
+    rec = {"key": "k", "title": "T", "brand": "B", "tags": ["client-own-work", "competitor", "csr"]}
+    assert L.neutral(rec)["tags"] == ["csr"]
+    assert "tags" not in L.neutral({"key": "k", "title": "T", "brand": "B", "tags": ["competitor"]})

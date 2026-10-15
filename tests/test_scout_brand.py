@@ -97,3 +97,15 @@ def test_beauty_check_catches_ugly(client, tmp_path):
     out = C.run_checks(bad)
     errs = " ".join(out["errors"])
     assert not out["ok"] and "low contrast" in errs and "scrolls sideways" in errs and "letter-spaced" in errs
+
+
+def test_house_style_with_client_logo(tmp_path):
+    """A client with no design system yet: house look, but the client's own logo (on a white panel on the dark cover)."""
+    logo = next((REPO / "samples/rawaq/input").rglob("*.png"))
+    kit = K.with_client_logo(K.load_kit("zamakan"), logo, tmp_path, "Rawaq")
+    assert kit["source"] == "house" and kit["client_name"] == "Rawaq"
+    assert kit["logos"]["on_light"]["png"] == str(logo)
+    panel = Path(kit["logos"]["on_dark"]["png"])
+    from PIL import Image
+    im = Image.open(panel)
+    assert panel.exists() and im.getpixel((im.width // 2, 2))[:3] == (255, 255, 255)
