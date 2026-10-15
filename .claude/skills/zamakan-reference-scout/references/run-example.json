@@ -1,0 +1,291 @@
+{
+  "schema_version": "1.0",
+  "run": {
+    "id": "example-saudi-national-moments",
+    "mode": "creative-question",
+    "created": "2026-10-13",
+    "question": "How do brands celebrate Saudi Founding Day and National Day without flag-and-falcon clichés?",
+    "web_access": "full",
+    "queries": [
+      "aotw-list:countries/saudi-arabia",
+      "aotw-search:national",
+      "web-search:Saudi Founding Day campaign"
+    ]
+  },
+  "references": [
+    {
+      "id": "mot-a-living-history",
+      "title": "A Living History",
+      "brand": "Saudi Ministry of Tourism",
+      "ring": "direct",
+      "status": "verified",
+      "urls": [
+        {
+          "url": "https://www.adsoftheworld.com/campaigns/a-living-past",
+          "kind": "case",
+          "source": "adsoftheworld",
+          "http_status": 200,
+          "checked_at": "2026-10-13T11:49:16Z",
+          "verified": true,
+          "title_match": true
+        }
+      ],
+      "card": {
+        "idea": "Founding Day history treated like a painting you lean into and imagine, not a list of dates to observe.",
+        "why_relevant": "Shows how to make heritage feel present without flags or archive clichés."
+      },
+      "scores": {
+        "relevance": 5,
+        "craft": 4,
+        "transferability": 5,
+        "cultural_fit": 5,
+        "freshness": 5
+      },
+      "tags": [
+        "heritage",
+        "insight-led"
+      ],
+      "moments": [
+        "founding-day"
+      ],
+      "provenance": {
+        "found_via": "page-fetch",
+        "queries": [
+          "aotw-list:countries/saudi-arabia"
+        ],
+        "confidence": "high"
+      },
+      "agency": "Takkah",
+      "country": "SA",
+      "year": 2026,
+      "category": "Hospitality, Tourism and Travel and Tourism",
+      "media": [
+        "film"
+      ],
+      "thumbnail": {
+        "url": "https://www.adsoftheworld.com/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBeXdWRXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--71a8ca578814dea6818222484fbd19409a50654b/%D9%87%D9%8A%D9%8A%D9%94%D8%A9%20%D8%A7%D9%84%D8%B2%D9%83%D8%A7%D8%A9%20%D9%88%D8%A7%D9%84%D8%B6%D8%B1%D9%8A%D8%A8%D8%A9%20%D9%88%D8%A7%D9%84%D8%AC%D9%85%D8%A7%D8%B1%D9%83%20(4000%20x%204000%20px)%20(4000%20x%203000%20px).jpg"
+      },
+      "teardown": {
+        "insight": "History is usually presented as something to look at; people connect when they are invited to imagine it.",
+        "idea": "Make three centuries feel 'within us' by treating history like art you interpret.",
+        "execution": "Film for the Ministry of Tourism by Takkah, Founding Day 2026 (details per the case page).",
+        "tone": "Reflective, cinematic",
+        "visual_devices": [
+          "museum framing",
+          "imagination layered on real places"
+        ],
+        "transferable": [
+          "Invite the audience to complete the story instead of narrating it",
+          "Heritage as something lived today"
+        ],
+        "cultural_fit": {
+          "score": 5,
+          "notes": "Saudi government client and Saudi agency; respectful of the founding story."
+        },
+        "risks": [
+          "Abstract ideas need a concrete product link for commercial brands"
+        ]
+      }
+    },
+    {
+      "id": "hungerstation-founding-day",
+      "title": "FOUNDING DAY CAMPAIGN",
+      "brand": "Hunger Station",
+      "ring": "direct",
+      "status": "verified",
+      "urls": [
+        {
+          "url": "https://www.adsoftheworld.com/campaigns/founding-day-campaign",
+          "kind": "case",
+          "source": "adsoftheworld",
+          "http_status": 200,
+          "checked_at": "2026-10-13T11:49:16Z",
+          "verified": true,
+          "title_match": true
+        }
+      ],
+      "card": {
+        "idea": "A young boy carries Founding Day as a living legacy passed between generations.",
+        "why_relevant": "Commercial brand using a child's point of view for a national moment."
+      },
+      "scores": {
+        "relevance": 4,
+        "craft": 4,
+        "transferability": 4,
+        "cultural_fit": 5,
+        "freshness": 5
+      },
+      "tags": [
+        "child-pov",
+        "generations"
+      ],
+      "moments": [
+        "founding-day"
+      ],
+      "provenance": {
+        "found_via": "page-fetch",
+        "queries": [
+          "aotw-list:countries/saudi-arabia"
+        ],
+        "confidence": "high"
+      },
+      "agency": "Nebras Films, WKK",
+      "year": 2026,
+      "category": "Delivery and Rideshare Services and Food",
+      "media": [
+        "film"
+      ],
+      "thumbnail": {
+        "url": "https://www.adsoftheworld.com/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNlg5RWc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--45d14af45cad678d65617a17838924af4371c0db/Still%202026-02-23%20010529_1.9.1.png"
+      }
+    },
+    {
+      "id": "apsco-national-day-2024",
+      "title": "Saudi National Day 2024",
+      "brand": "Apsco",
+      "ring": "adjacent",
+      "status": "verified",
+      "urls": [
+        {
+          "url": "https://www.adsoftheworld.com/campaigns/energy-that-moves-a-nation-314688a2-c95c-4528-a02c-4136fd1912ba",
+          "kind": "case",
+          "source": "adsoftheworld",
+          "http_status": 200,
+          "checked_at": "2026-10-13T11:49:16Z",
+          "verified": true,
+          "title_match": true
+        }
+      ],
+      "card": {
+        "idea": "Apsco powers machines, but Saudi people's ambition is the energy that moves the nation.",
+        "why_relevant": "Shows a B2B brand linking its product truth (energy) to national pride."
+      },
+      "scores": {
+        "relevance": 4,
+        "craft": 3,
+        "transferability": 4,
+        "cultural_fit": 5,
+        "freshness": 4
+      },
+      "tags": [
+        "product-truth",
+        "pride"
+      ],
+      "moments": [
+        "national-day"
+      ],
+      "provenance": {
+        "found_via": "page-fetch",
+        "queries": [
+          "aotw-list:countries/saudi-arabia"
+        ],
+        "confidence": "high"
+      },
+      "agency": "Noon Alif Yaa",
+      "country": "SA",
+      "year": 2024,
+      "category": "Automotive and Personal Transportation and Transport",
+      "media": [
+        "film"
+      ],
+      "thumbnail": {
+        "url": "https://image.adsoftheworld.com/r5b20w54b7zyqbiywzb2q4nzwqnn"
+      }
+    },
+    {
+      "id": "sta-came-for-football",
+      "title": "I came for football, I stayed for more.",
+      "brand": "Saudi Tourism Authority",
+      "ring": "wildcard",
+      "status": "verified",
+      "urls": [
+        {
+          "url": "https://www.adsoftheworld.com/campaigns/i-came-for-football-i-stayed-for-more",
+          "kind": "case",
+          "source": "adsoftheworld",
+          "http_status": 200,
+          "checked_at": "2026-10-13T11:49:16Z",
+          "verified": true,
+          "title_match": true
+        }
+      ],
+      "card": {
+        "idea": "Visitors come to Saudi for a football event and stay for culture, music and nature.",
+        "why_relevant": "Event-to-discovery structure that any brand can borrow for a national moment."
+      },
+      "scores": {
+        "relevance": 3,
+        "craft": 4,
+        "transferability": 4,
+        "cultural_fit": 4,
+        "freshness": 5
+      },
+      "tags": [
+        "events",
+        "discovery"
+      ],
+      "moments": [],
+      "provenance": {
+        "found_via": "page-fetch",
+        "queries": [
+          "aotw-list:countries/saudi-arabia"
+        ],
+        "confidence": "high"
+      },
+      "agency": "BETC Paris",
+      "country": "SA",
+      "year": 2025,
+      "category": "Recreation, Leisure and Travel and Tourism",
+      "media": [
+        "film"
+      ],
+      "thumbnail": {
+        "url": "https://www.adsoftheworld.com/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBMng3RWc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--997ef0a12c6bcbfeb5cf707ded4dd2e890cc8cca/Saudi.jpg"
+      }
+    }
+  ],
+  "top": [
+    "mot-a-living-history"
+  ],
+  "patterns": [
+    {
+      "pattern": "The strongest national-moment work makes heritage personal: a child, an imagined scene, a lived trait.",
+      "reference_ids": [
+        "mot-a-living-history",
+        "hungerstation-founding-day"
+      ]
+    },
+    {
+      "pattern": "Brands earn the moment by linking their own product truth to national pride.",
+      "reference_ids": [
+        "apsco-national-day-2024",
+        "hungerstation-founding-day"
+      ]
+    }
+  ],
+  "white_space": [
+    "Few brands invite people to take part in the moment; most still broadcast a film."
+  ],
+  "territories": [
+    {
+      "id": "history-you-step-into",
+      "name": "History you step into",
+      "name_ar": "تاريخ تعيشه",
+      "thesis": "Let people step into the founding story through the brand's own product or place.",
+      "why_this_client": "Example only: works for brands with physical spaces or experiences.",
+      "reference_ids": [
+        "mot-a-living-history",
+        "sta-came-for-football"
+      ],
+      "example_executions": [
+        "AR window into 1727 Diriyah at the brand's location"
+      ],
+      "risks": [
+        "Historical accuracy must be checked"
+      ]
+    }
+  ],
+  "open_questions": [
+    "Example run: no client attached."
+  ]
+}

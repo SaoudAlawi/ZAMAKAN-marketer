@@ -218,3 +218,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ZAMAKAN: real client brand files & deliverables stay local
+clients/
+*-workspace/
+review-iteration-*.html

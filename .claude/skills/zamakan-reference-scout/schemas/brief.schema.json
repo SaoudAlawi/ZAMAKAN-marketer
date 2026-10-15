@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zamakan.agency/schemas/scout-brief/1.0",
+  "title": "ZAMAKAN reference-scout brief",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "mode",
+    "question"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "mode": {
+      "enum": [
+        "brief",
+        "creative-question",
+        "competitor-watch",
+        "pitch"
+      ]
+    },
+    "client": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "question": {
+      "type": "string",
+      "description": "The ask in one or two sentences, in the user's words"
+    },
+    "category": {
+      "type": "string"
+    },
+    "market": {
+      "type": "string"
+    },
+    "objective": {
+      "enum": [
+        "awareness",
+        "consideration",
+        "conversion",
+        "loyalty",
+        "launch",
+        "reputation",
+        "other"
+      ]
+    },
+    "audience": {
+      "type": "string"
+    },
+    "moment": {
+      "type": "string",
+      "description": "Seasonal/cultural moment, e.g. Ramadan, Eid al-Fitr, Saudi National Day"
+    },
+    "channels": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "competitors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "avoid": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Clichés, competitors' territories, sensitivities"
+    },
+    "rings": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "direct",
+          "category",
+          "adjacent",
+          "wildcard"
+        ]
+      }
+    },
+    "target_count": {
+      "type": "integer",
+      "minimum": 5,
+      "maximum": 60
+    },
+    "outputs": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "board",
+          "deck",
+          "report"
+        ]
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "outputs_defaulted": {
+      "type": "boolean",
+      "description": "true when nobody could be asked and the skill's default outputs were used"
+    },
+    "scope": {
+      "enum": [
+        "gcc",
+        "mena",
+        "global"
+      ],
+      "description": "gcc = favour Saudi/GCC work (default); mena = Arab world; global = no regional preference (fit is still judged for the client's market)"
+    },
+    "markets": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z]{2}$"
+      },
+      "description": "Client's markets (ISO-2), used for cultural fit; default ['SA']"
+    },
+    "window_months": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 60,
+      "description": "competitor-watch: how far back counts as 'now' (default 12)."
+    },
+    "competitor_handles": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Competitor name -> YouTube @handle or channel URL (confirmed official), for discover.py youtube-channel."
+    },
+    "competitor_names_ar": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Competitor name -> Arabic name, for Arabic searches (English names return unrelated Arabic results)."
+    }
+  }
+}

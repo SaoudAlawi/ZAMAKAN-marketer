@@ -1,0 +1,1092 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zamakan.agency/schemas/design-system-spec/1.0",
+  "title": "ZAMAKAN design-system spec",
+  "description": "Single source of truth written by the agent. Every other design-system file (tokens.json, tokens.css, manifest.json, sources.md, preview) is generated from it by scripts.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "client",
+    "colors",
+    "color_roles",
+    "fonts",
+    "type_scale",
+    "logo"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "client": {
+      "type": "object",
+      "required": [
+        "slug",
+        "name"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "slug": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "type": "string"
+        },
+        "name_ar": {
+          "type": "string"
+        },
+        "industry": {
+          "type": "string"
+        },
+        "market": {
+          "type": "string"
+        },
+        "visual_personality": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "guideline_source": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "file": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            },
+            "date": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "colors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/color"
+      }
+    },
+    "tints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "color",
+          "steps_pct",
+          "status"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "color": {
+            "$ref": "#/$defs/id"
+          },
+          "steps_pct": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 100
+            }
+          },
+          "usage": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/$defs/status"
+          },
+          "confidence": {
+            "$ref": "#/$defs/confidence"
+          },
+          "sources": {
+            "$ref": "#/$defs/sources"
+          },
+          "rationale": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "color_roles": {
+      "description": "Semantic roles that consumers use instead of raw colours. Use the canonical names so every client's tokens look the same to other agents; anything else must be prefixed 'x-' (e.g. 'x-price-tag').",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "role",
+          "color",
+          "status"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "role": {
+            "anyOf": [
+              {
+                "enum": [
+                  "text-primary",
+                  "text-heading",
+                  "text-secondary",
+                  "text-inverse",
+                  "text-link",
+                  "background",
+                  "background-inverse",
+                  "surface",
+                  "surface-alt",
+                  "brand",
+                  "brand-secondary",
+                  "accent",
+                  "accent-secondary",
+                  "divider",
+                  "border",
+                  "success",
+                  "warning",
+                  "error"
+                ]
+              },
+              {
+                "type": "string",
+                "pattern": "^x-[a-z0-9]+(-[a-z0-9]+)*$"
+              }
+            ]
+          },
+          "color": {
+            "$ref": "#/$defs/id"
+          },
+          "usage": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/$defs/status"
+          },
+          "confidence": {
+            "$ref": "#/$defs/confidence"
+          },
+          "sources": {
+            "$ref": "#/$defs/sources"
+          },
+          "rationale": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "color_proportions_pct": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 100
+      }
+    },
+    "color_rules": {
+      "$ref": "#/$defs/rules"
+    },
+    "fonts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/font"
+      }
+    },
+    "type_scale": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/type_style"
+      }
+    },
+    "type_rules": {
+      "$ref": "#/$defs/rules"
+    },
+    "logo": {
+      "type": "object",
+      "required": [
+        "variants"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "variants": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/logo_variant"
+          }
+        },
+        "element_order": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "clear_space": {
+          "$ref": "#/$defs/rule"
+        },
+        "on_photography": {
+          "$ref": "#/$defs/rule"
+        },
+        "misuse": {
+          "$ref": "#/$defs/rules"
+        },
+        "rules": {
+          "$ref": "#/$defs/rules"
+        }
+      }
+    },
+    "graphic_elements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "status"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "usage": {
+            "type": "string"
+          },
+          "colors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/id"
+            }
+          },
+          "opacity_pct": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "rules": {
+            "$ref": "#/$defs/rules"
+          },
+          "status": {
+            "$ref": "#/$defs/status"
+          },
+          "confidence": {
+            "$ref": "#/$defs/confidence"
+          },
+          "sources": {
+            "$ref": "#/$defs/sources"
+          },
+          "rationale": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "iconography": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "style": {
+          "enum": [
+            "line",
+            "filled",
+            "duotone",
+            "mixed"
+          ]
+        },
+        "grid_px": {
+          "type": "number"
+        },
+        "stroke_px": {
+          "type": "number"
+        },
+        "caps": {
+          "enum": [
+            "round",
+            "square",
+            "butt"
+          ]
+        },
+        "joins": {
+          "enum": [
+            "round",
+            "miter",
+            "bevel"
+          ]
+        },
+        "colors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "rules": {
+          "$ref": "#/$defs/rules"
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "confidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "sources": {
+          "$ref": "#/$defs/sources"
+        },
+        "rationale": {
+          "type": "string"
+        }
+      }
+    },
+    "photography": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "summary": {
+          "type": "string"
+        },
+        "do": {
+          "$ref": "#/$defs/rules"
+        },
+        "dont": {
+          "$ref": "#/$defs/rules"
+        }
+      }
+    },
+    "layout": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "grids": {
+          "$ref": "#/$defs/rules"
+        },
+        "formats": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/format"
+          }
+        },
+        "rules": {
+          "$ref": "#/$defs/rules"
+        }
+      }
+    },
+    "spacing": {
+      "type": "object",
+      "required": [
+        "base_px",
+        "scale_px",
+        "status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "base_px": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "scale_px": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": 0
+          },
+          "minItems": 3
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "confidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "sources": {
+          "$ref": "#/$defs/sources"
+        },
+        "rationale": {
+          "type": "string"
+        }
+      }
+    },
+    "radii": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/named_value"
+      }
+    },
+    "shadows": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/named_value"
+      }
+    },
+    "borders": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/named_value"
+      }
+    },
+    "components": {
+      "description": "UI/marketing components (buttons, cards, chips…) when the guideline shows them or digital work needs them. Exported to tokens.json, tokens.css (.z-<id>) and DESIGN.md.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "status"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "description": {
+            "type": "string"
+          },
+          "background": {
+            "$ref": "#/$defs/id",
+            "description": "colour id"
+          },
+          "text": {
+            "$ref": "#/$defs/id",
+            "description": "colour id"
+          },
+          "border_color": {
+            "$ref": "#/$defs/id"
+          },
+          "border_width_px": {
+            "type": "number",
+            "minimum": 0
+          },
+          "radius": {
+            "$ref": "#/$defs/id",
+            "description": "radii id"
+          },
+          "typography": {
+            "type": "object",
+            "required": [
+              "level",
+              "script"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "level": {
+                "$ref": "#/$defs/id"
+              },
+              "script": {
+                "enum": [
+                  "latin",
+                  "arabic"
+                ]
+              }
+            }
+          },
+          "padding_px": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "minimum": 0
+            },
+            "minItems": 1,
+            "maxItems": 4
+          },
+          "usage": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/$defs/status"
+          },
+          "confidence": {
+            "$ref": "#/$defs/confidence"
+          },
+          "sources": {
+            "$ref": "#/$defs/sources"
+          },
+          "rationale": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "missing_assets": {
+      "description": "Assets the guideline uses or requires that were not supplied (ask the client for them).",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "asset",
+          "needed_for"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "asset": {
+            "type": "string"
+          },
+          "needed_for": {
+            "type": "string"
+          },
+          "sources": {
+            "$ref": "#/$defs/sources"
+          }
+        }
+      }
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "topic",
+          "values",
+          "chosen",
+          "resolution"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "topic": {
+            "type": "string"
+          },
+          "values": {
+            "type": "array",
+            "minItems": 2,
+            "items": {
+              "type": "object",
+              "required": [
+                "value",
+                "source"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "source": {
+                  "$ref": "#/$defs/source"
+                }
+              }
+            }
+          },
+          "chosen": {
+            "type": "string"
+          },
+          "resolution": {
+            "type": "string"
+          },
+          "needs_client_confirmation": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "hex": {
+      "type": "string",
+      "pattern": "^#[0-9A-F]{6}$"
+    },
+    "status": {
+      "description": "extracted = stated in client files; derived = computed from extracted values; proposed = filled in by the agent where the client files are silent.",
+      "enum": [
+        "extracted",
+        "derived",
+        "proposed"
+      ]
+    },
+    "confidence": {
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "file"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "file": {
+          "type": "string"
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "PDF page number; omit for non-PDF files (logos, fonts)."
+        },
+        "method": {
+          "enum": [
+            "text",
+            "vision",
+            "pixel-sample",
+            "file-metadata",
+            "svg-parse"
+          ]
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    },
+    "rule": {
+      "type": "object",
+      "required": [
+        "text",
+        "status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 3
+        },
+        "kind": {
+          "enum": [
+            "do",
+            "dont",
+            "info"
+          ]
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "confidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "sources": {
+          "$ref": "#/$defs/sources"
+        },
+        "rationale": {
+          "type": "string"
+        }
+      }
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/rule"
+      }
+    },
+    "color": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "hex",
+        "group",
+        "status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "type": "string"
+        },
+        "name_ar": {
+          "type": "string"
+        },
+        "hex": {
+          "$ref": "#/$defs/hex"
+        },
+        "rgb": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 255
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "cmyk": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "pantone": {
+          "type": "string"
+        },
+        "group": {
+          "enum": [
+            "primary",
+            "secondary",
+            "neutral",
+            "accent",
+            "functional"
+          ]
+        },
+        "usage": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "confidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "sources": {
+          "$ref": "#/$defs/sources"
+        },
+        "rationale": {
+          "type": "string"
+        }
+      }
+    },
+    "font": {
+      "type": "object",
+      "required": [
+        "id",
+        "family",
+        "role",
+        "script",
+        "weights",
+        "status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "family": {
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "display",
+            "text",
+            "mono",
+            "accent"
+          ]
+        },
+        "script": {
+          "enum": [
+            "arabic",
+            "latin",
+            "both"
+          ]
+        },
+        "weights": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 900
+          }
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fallback": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "license": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "confidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "sources": {
+          "$ref": "#/$defs/sources"
+        },
+        "rationale": {
+          "type": "string"
+        }
+      }
+    },
+    "type_style": {
+      "type": "object",
+      "required": [
+        "level",
+        "script",
+        "font",
+        "weight",
+        "size_px",
+        "line_height_px",
+        "status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "level": {
+          "$ref": "#/$defs/id"
+        },
+        "script": {
+          "enum": [
+            "arabic",
+            "latin"
+          ]
+        },
+        "font": {
+          "$ref": "#/$defs/id"
+        },
+        "weight": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 900
+        },
+        "size_px": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "line_height_px": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "letter_spacing_em": {
+          "type": "number"
+        },
+        "text_transform": {
+          "enum": [
+            "none",
+            "uppercase",
+            "lowercase",
+            "capitalize"
+          ]
+        },
+        "color": {
+          "$ref": "#/$defs/id"
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "confidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "sources": {
+          "$ref": "#/$defs/sources"
+        },
+        "rationale": {
+          "type": "string"
+        }
+      }
+    },
+    "logo_variant": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "files",
+        "status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "lockup",
+            "wordmark",
+            "symbol"
+          ]
+        },
+        "orientation": {
+          "enum": [
+            "stacked",
+            "horizontal",
+            "square",
+            "other"
+          ]
+        },
+        "colorway": {
+          "enum": [
+            "full-color",
+            "reversed",
+            "mono-dark",
+            "mono-light"
+          ]
+        },
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "usage": {
+          "type": "string"
+        },
+        "approved_backgrounds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "forbidden_backgrounds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "min_size": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "print_mm": {
+              "type": "number"
+            },
+            "digital_px": {
+              "type": "number"
+            }
+          }
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "confidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "sources": {
+          "$ref": "#/$defs/sources"
+        },
+        "rationale": {
+          "type": "string"
+        }
+      }
+    },
+    "format": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "width_px",
+        "height_px",
+        "status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "type": "string"
+        },
+        "width_px": {
+          "type": "integer"
+        },
+        "height_px": {
+          "type": "integer"
+        },
+        "margin_px": {
+          "type": "number"
+        },
+        "safe_zone_px": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "top": {
+              "type": "number"
+            },
+            "bottom": {
+              "type": "number"
+            },
+            "left": {
+              "type": "number"
+            },
+            "right": {
+              "type": "number"
+            }
+          }
+        },
+        "logo_placement": {
+          "type": "string"
+        },
+        "logo_min_px": {
+          "type": "number"
+        },
+        "primary": {
+          "type": "boolean"
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "confidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "sources": {
+          "$ref": "#/$defs/sources"
+        },
+        "rationale": {
+          "type": "string"
+        }
+      }
+    },
+    "named_value": {
+      "type": "object",
+      "required": [
+        "id",
+        "value",
+        "status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "value": {
+          "type": "string",
+          "description": "CSS value, e.g. '8px', '50%', '0 2px 8px rgba(31,27,24,.12)'"
+        },
+        "usage": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "confidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "sources": {
+          "$ref": "#/$defs/sources"
+        },
+        "rationale": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
