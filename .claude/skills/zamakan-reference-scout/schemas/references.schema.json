@@ -70,7 +70,7 @@
             "mena",
             "global"
           ],
-          "description": "gcc = favour Saudi/GCC work (default); mena = Arab world; global = no regional preference (fit is still judged for the client's market)"
+          "description": "gcc = favour GCC work, the client's market first (default); mena = Arab world; global = no regional preference (fit is still judged for the client's market)"
         },
         "cover": {
           "type": "string",

@@ -1,7 +1,6 @@
 # ZAMAKAN Marketer
 
-Marketing and creative skills for **ZAMAKAN (زمكان)**, an agency with many clients working in Arabic and English with a
-Saudi/GCC focus. The skills run inside [Claude Code](https://claude.ai/code): you ask in plain language, and Claude follows
+Marketing and creative skills for **ZAMAKAN (زمكان)**, an Omani agency with many clients across Oman and the GCC, working in Arabic and English. The skills run inside [Claude Code](https://claude.ai/code): you ask in plain language, and Claude follows
 the skill, using small scripts for the mechanical work so its effort goes into judgement.
 
 ## What it can do
@@ -9,7 +8,7 @@ the skill, using small scripts for the mechanical work so its effort goes into j
 | Skill | Ask for… | You get |
 |---|---|---|
 | **Reference scout** (`zamakan-reference-scout`) | "Find us references for the Ramadan kickoff", "What are our competitors running?", "Best ads that made waiting fun, anywhere", "References for our pitch to X" | Real campaigns, every link checked live; insights with sources; competitor check; patterns and white space; 3–5 creative territories with Arabic names; "sparks from elsewhere"; a recommendation and a before-kickoff list. Delivered as an on-brand **board**, **deck** (PowerPoint + PDF) and/or **report**. |
-| **Shot scout** (`zamakan-shot-scout`) | "Maghrib light on the road, warm and spiritual", "Best dolly zoom examples", "Find shots like this frame" (attach an image), "Which DOPs shoot warm portraits?", and for your own creativity: "I'm a writer, inspire me: films about silence" | Cinematic references translated into film language (English and Arabic): a dark, image-first **shot board** grouped by technique, with stills, colour palettes, credits, links that jump to the moment, and "how to shoot it" notes (gear, budget level, Saudi notes, where AI helps). **Inspire me** gives a viewing programme instead: features, free short films and essays in a running order, with checked credits (Wikidata), "what to watch for" per craft (writer, cinematographer, director, editor) and a small exercise after each. |
+| **Shot scout** (`zamakan-shot-scout`) | "Maghrib light on the road, warm and spiritual", "Best dolly zoom examples", "Find shots like this frame" (attach an image), "Which DOPs shoot warm portraits?", and for your own creativity: "I'm a writer, inspire me: films about silence" | Cinematic references translated into film language (English and Arabic): a dark, image-first **shot board** grouped by technique, with stills, colour palettes, credits, links that jump to the moment, and "how to shoot it" notes (gear, budget level, notes for shooting in Oman (or the job's market), where AI helps). **Inspire me** gives a viewing programme instead: features, free short films and essays in a running order, with checked credits (Wikidata), "what to watch for" per craft (writer, cinematographer, director, editor) and a small exercise after each. |
 | **Design system** (`zamakan-design-system`) | "Here are the brand guidelines for client X" | The client's visual identity as files every other skill uses: colours, fonts, logos with usage rules, design tokens, a `DESIGN.md`, and a style tile, each value traced to its page in the guideline. |
 | **Core** (`zamakan-core`) | (used by the others) | Where client files live, how to load a client's brand, and the bilingual quality bar. |
 

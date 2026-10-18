@@ -51,7 +51,7 @@
     },
     "moment": {
       "type": "string",
-      "description": "Seasonal/cultural moment, e.g. Ramadan, Eid al-Fitr, Saudi National Day"
+      "description": "Seasonal/cultural moment, e.g. Ramadan, Eid al-Fitr, Omani National Day, Saudi National Day, Khareef"
     },
     "channels": {
       "type": "array",
@@ -114,7 +114,7 @@
         "mena",
         "global"
       ],
-      "description": "gcc = favour Saudi/GCC work (default); mena = Arab world; global = no regional preference (fit is still judged for the client's market)"
+      "description": "gcc = favour GCC work, the client's market first (default); mena = Arab world; global = no regional preference (fit is still judged for the client's market)"
     },
     "markets": {
       "type": "array",
@@ -122,7 +122,7 @@
         "type": "string",
         "pattern": "^[A-Z]{2}$"
       },
-      "description": "Client's markets (ISO-2), used for cultural fit; default ['SA']"
+      "description": "Client's markets (ISO-2), used for cultural fit; default from zamakan-core/agency.json (['OM'])"
     },
     "window_months": {
       "type": "integer",

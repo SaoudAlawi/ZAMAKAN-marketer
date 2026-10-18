@@ -31,7 +31,10 @@ def fetch_image(url, folder):
     try:
         from urllib.parse import quote
         safe = quote(url, safe=":/?&=%#@+,;~")  # Film-Grab file names contain spaces
-        with urllib.request.urlopen(urllib.request.Request(safe, headers=UA), timeout=25) as r:
+        headers = UA
+        if "wikimedia.org" in url or "wikipedia.org" in url:  # Wikimedia blocks browser-like agents (HTTP 429)
+            headers = {"User-Agent": "ZAMAKAN-shot-scout/0.2 (film stills for internal boards; https://github.com/SaoudAlawi/ZAMAKAN-marketer)"}
+        with urllib.request.urlopen(urllib.request.Request(safe, headers=headers), timeout=25) as r:
             data = r.read()
         im = Image.open(io.BytesIO(data))
         im.seek(0)  # first frame of a gif/webp animation

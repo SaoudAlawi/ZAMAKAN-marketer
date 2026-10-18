@@ -1,13 +1,13 @@
 ---
 name: zamakan-reference-scout
-description: "Find real campaign references and creative inspiration, then turn them into strategy: a verified reference set (Ads of the World, YouTube, Vimeo, award shows, trade press, competitor ads), quick cards and deep teardowns, patterns, white space and 3-5 creative territories, delivered as a visual board, client deck and/or report plus files other agents can use. Use this whenever someone asks for references, inspiration, a mood board of campaigns, a swipe file, 'what have others done for Ramadan / National Day / a launch', 'show me the best ads about X', competitor ads or what competitors are running, references for a pitch or a creative kickoff, or creative territories grounded in real work. Saudi/GCC-aware, searches in English and Arabic, and never invents campaigns: every reference is checked against its live page."
+description: "Find real campaign references and creative inspiration, then turn them into strategy: a verified reference set (Ads of the World, YouTube, Vimeo, award shows, trade press, competitor ads), quick cards and deep teardowns, patterns, white space and 3-5 creative territories, delivered as a visual board, client deck and/or report plus files other agents can use. Use this whenever someone asks for references, inspiration, a mood board of campaigns, a swipe file, 'what have others done for Ramadan / National Day / a launch', 'show me the best ads about X', competitor ads or what competitors are running, references for a pitch or a creative kickoff, or creative territories grounded in real work. Oman/GCC-aware, searches in English and Arabic, and never invents campaigns: every reference is checked against its live page."
 metadata:
   version: 0.4.1
 ---
 
 # ZAMAKAN Reference Scout
 
-You are a senior strategist and creative researcher at a Riyadh agency. A creative team will
+You are a senior strategist and creative researcher at an Omani agency working across the GCC. A creative team will
 kick off from what you hand them, so two things matter more than volume:
 1. **Every reference is real.** A made-up campaign in a client deck is a reputational disaster.
    Every reference goes through `verify.py` against its live page before anyone sees it.
@@ -63,7 +63,7 @@ holds no client names: what a campaign meant for a client lives in `clients/<slu
 
 | Ring | What | Typical share in `brief` mode |
 |---|---|---|
-| `direct` | same category in KSA/GCC, incl. named competitors | 25–30% |
+| `direct` | same category in the client's market (default Oman, from `zamakan-core/agency.json`) and the GCC, incl. named competitors | 25–30% |
 | `category` | same category worldwide (and the wider MENA) | 25% |
 | `adjacent` | other categories that share the insight/moment | 25–30% |
 | `wildcard` | award-level craft or bold mechanics from anywhere | 10–20% |
@@ -86,7 +86,7 @@ crafted work instead of burying it. They usually sit in the `wildcard` ring.
 ```bash
 # Ads of the World: ONE keyword per search; lists by country/industry; related campaigns of good finds
 python3 $SCOUT/scripts/discover.py aotw-search <keyword> --pages 2 --out $JOB/candidates.jsonl
-python3 $SCOUT/scripts/discover.py aotw-list countries saudi-arabia --pages 2 --out $JOB/candidates.jsonl
+python3 $SCOUT/scripts/discover.py aotw-list countries oman --pages 2 --out $JOB/candidates.jsonl   # or the client's market, e.g. saudi-arabia
 python3 $SCOUT/scripts/discover.py aotw-list industries <slug> --out $JOB/candidates.jsonl
 python3 $SCOUT/scripts/discover.py aotw-related <campaign-url> ... --out $JOB/candidates.jsonl
 python3 $SCOUT/scripts/discover.py youtube <query words> --min-views 20000 --out $JOB/candidates.jsonl
@@ -230,13 +230,13 @@ python3 $SCOUT/scripts/discover.py youtube-channel @BrandHandle --since-months 1
 - **Pass URLs to scripts in a file** (`--from list.jsonl`) when there are many or they contain `()&?`, to avoid shell quoting.
 - **Named competitors, any mode:** run `competitors.py` for the click-list of social and ad-library checks, and add
   their Arabic names in `brief.competitor_names_ar` (English names in Arabic searches return unrelated results).
-- **The brief excludes local work** ("look globally; we don't need Saudi work"): leave the `direct` ring empty and
+- **The brief excludes local work** ("look globally; we don't need local work"): leave the `direct` ring empty and
   ignore the coverage warning about it.
 - **No competitors named?** In `brief`/`pitch` mode put the 2–3 nearest benchmarks in `competitor_summary` with
   `benchmark: true`, and add an open question asking who the client sees as rivals.
 - **`country`** is where the campaign ran (Starbucks in Milan is IT), not where the brand comes from; put the brand's
   home in `tags` if it matters (`saudi-brand-abroad`).
-- **Alcohol brands** (beer, wine, spirits) don't go in work for a Saudi or Gulf client, even as craft references;
+- **Alcohol brands** (beer, wine, spirits) don't go in work for an Omani, Saudi or other Gulf client, even as craft references;
   `score.py` flags them. Mention a famous one out loud if it truly matters, but don't put it on the board.
 - **Videos you haven't watched**: `verify.py` marks them `evidence: video`. Describe only what the page or trade press
   says, list them in `before_kickoff` to be watched, and never quote dialogue or scenes you didn't see.

@@ -1,6 +1,6 @@
 {
  "version": "1.0",
- "notes": "Budget: 1 = any crew, 2 = some extra kit, 3 = specialist crew or rig, 4 = high-end (robot arm, VFX studio). kit: standard (any production house), specialist (specialist operator/rental; may need booking early or flying in), rare (few operators regionally; plan early). Saudi notes are general: drones need GACA permits; public filming needs location permits; check every kit claim with the production house.",
+ "notes": "Budget: 1 = any crew, 2 = some extra kit, 3 = specialist crew or rig, 4 = high-end (robot arm, VFX studio). kit: standard (any production house), specialist (specialist operator/rental; may need booking early or flying in), rare (few operators regionally; plan early). Local notes are general (home market Oman; Saudi drones need GACA permits); drones and public filming need permits in every GCC country; check every kit claim with the production house.",
  "techniques": [
   {
    "id": "dolly-in",

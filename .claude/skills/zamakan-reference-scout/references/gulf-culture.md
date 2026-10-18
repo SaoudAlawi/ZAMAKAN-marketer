@@ -9,6 +9,8 @@ treat them as **approximate (±1–2 days)** and confirm closer to the date.
 | Ramadan | ≈ 18 Feb – 19 Mar | ≈ 8 Feb – 9 Mar | ≈ 28 Jan – 26 Feb | peak media season; late-night life; suhoor and iftar occasions |
 | Eid al-Fitr | ≈ 20 Mar | ≈ 10 Mar | ≈ 27 Feb | gifting, new clothes, family visits, Eidiya |
 | Eid al-Adha | ≈ 27 May | ≈ 16 May | ≈ 5 May | Hajj season; family, generosity |
+| Omani National Day | 20–21 Nov | 20–21 Nov | 20–21 Nov | Royal Decree 15/2025 moved it from 18 Nov (holiday dates can shift; check the year's announcement) |
+| Khareef (Dhofar monsoon) | ≈ late Jun – Sep | | | Salalah's green season; peak Gulf tourism to Dhofar; exact dates announced yearly |
 | Saudi Founding Day | 22 Feb | 22 Feb | 22 Feb | heritage, 1727 Diriyah; distinct from National Day |
 | Saudi National Day | 23 Sep | 23 Sep | 23 Sep | green, national pride, Vision 2030 progress |
 | UAE National Day | 2 Dec | 2 Dec | 2 Dec | |
@@ -17,6 +19,23 @@ treat them as **approximate (±1–2 days)** and confirm closer to the date.
 | Back to school | ≈ Aug–Sep | | | |
 
 In 2027–2028 Ramadan overlaps or sits next to Founding Day (22 Feb), so check for clashes and combined opportunities.
+
+Renaissance Day (23 Jul) is no longer an Omani public holiday (cancelled by a 2020 decree); don't plan around it.
+Sources: [Gulf News on the 2025 decree](https://gulfnews.com/world/gulf/oman/national-day-holidays-announced-in-oman-for-public-private-sectors-1.500339433),
+[decree.om RD 15/2025](https://decree.om/2025/rd20250015/).
+
+## Oman (the agency's home market)
+- **Tone:** Omani audiences respond to calm, warm, understated work; humility and hospitality over spectacle. Loud,
+  boastful or flashy treatments read as foreign.
+- **Dress and casting:** Omani men in dishdasha with kumma or massar; casting Omani talent and Omani Arabic matters for
+  local brands (a Saudi or Emirati accent is noticed). Women's styling modest; follow the client's guidance.
+- **Symbols:** the khanjar and the national emblem are official symbols: use them respectfully and only where the
+  brief calls for national codes. Frankincense, falaj, forts, dhows and mountains are loved heritage cues; avoid
+  postcard clichés unless they carry the idea.
+- **Places:** Muscat, the Hajar mountains (Jebel Akhdar, Jebel Shams), Wahiba sands, the coast and Dhofar (Khareef)
+  each carry a different feeling; the client's audience may be very regional.
+- **Production:** filming in public places, with drones and at government sites needs permits; check with the
+  production house (rules change).
 
 ## Cultural-fit checklist (score 0–5)
 Start at 5 and subtract for each issue. Note the reason in `cultural_fit.notes`.

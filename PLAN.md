@@ -286,6 +286,7 @@ The no-skill baseline did several generic things worth building into the skill:
 - 2026-10-13: Re-scoped to the sub-skill architecture; built the Rawaq sample package and answer key.
 - 2026-10-13: Feature 2 (reference scout) defined; network limits of the cloud environment noted.
 - 2026-10-13: Step 2 done. Design: the agent writes only spec.json + brand.md; scripts generate the rest.
+- 2026-10-18: The user is Omani and ZAMAKAN is based in Oman: home market moved to Oman for every skill (`zamakan-core/agency.json`, OM default in briefs, competitor click-lists, Ads of the World country list, 'Shooting in Oman' production notes, Omani calendar + culture notes incl. National Day 20–21 Nov per RD 15/2025). Inspire me puts Omani cinema first (`references/oman-cinema.md`: sources + checked starting list). Oman Oil boards and 'The unsaid' updated. 214 tests.
 - 2026-10-18: Shot scout v0.2.0: Inspire me mode (viewing programmes for writers, DOPs, directors, editors), film_facts.py (Wikidata credits + craft notes), Short of the Week; 33 shot tests.
 - 2026-10-18: Feature 3 (Shot Scout) built end to end (§3c): 8 scripts, 67-technique EN/AR dictionary, dark shot board, 27 tests (207 total); one real run per mode.
 - 2026-10-18: Feature 3 (Shot Scout) planned with the user; see §3c.

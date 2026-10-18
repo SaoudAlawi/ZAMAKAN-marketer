@@ -7,8 +7,13 @@ metadata:
 
 # ZAMAKAN Core
 
-ZAMAKAN is an agency serving many clients, mostly in Saudi Arabia and the GCC, working in
+ZAMAKAN is an agency based in Oman serving many clients in Oman and across the GCC, working in
 Arabic and English. These conventions keep every sub-skill working from the same client facts.
+
+## Home market
+
+`agency.json` (next to this file) holds the agency's home market: **Oman** (`OM`). Skills use it as the default market,
+for local references and for production notes. A job that names its own market (brief.market / markets) uses that instead.
 
 ## Client folders
 

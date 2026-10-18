@@ -91,7 +91,7 @@ def validate(run, target=None):
             W.append("no essay or breakdown: add one way into how it was made")
         countries = Counter(c for s in run["shots"] for c in (s.get("countries") or [])[:1])
         if len(countries) < 3 and len(run["shots"]) >= 5:
-            W.append("few countries: mix world, Arab and Saudi cinema")
+            W.append("few countries: mix world, Arab and Omani/Gulf cinema (see references/oman-cinema.md)")
         no_ex = [s["id"] for s in run["shots"] if s["kind"] in ("film", "short", "scene") and not s.get("exercise")]
         if no_ex:
             W.append(f"no exercise for: {', '.join(no_ex[:5])}")

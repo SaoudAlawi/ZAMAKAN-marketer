@@ -24,6 +24,7 @@ from render_board import data_uri, embedded_fonts, root_css  # noqa: E402
 from theme import contrast, font_links, mix  # noqa: E402
 
 E = html.escape
+HOME = json.loads((Path(__file__).resolve().parents[2] / "zamakan-core" / "agency.json").read_text(encoding="utf-8"))
 EVID = {"content": ("page read", "ok"), "title": ("page exists", "thin"), "video": ("video · not watched", "vid")}
 KIND = {"film": "Film", "commercial": "Commercial", "music-video": "Music video", "short": "Short film", "title-sequence": "Title sequence",
         "series": "Series", "clip": "Clip", "stills": "Film stills", "breakdown": "Breakdown", "motion-design": "Motion design",
@@ -282,7 +283,10 @@ def build(run, base, kit, client_name):
     ps = run.get("production_summary") or {}
     if ps:
         boxes = []
-        for k, lab in (("gear", "Gear list"), ("ksa_notes", "Shooting in Saudi Arabia"), ("ai_notes", "Where AI can help")):
+        market = r.get("market") or HOME["home_name"]
+        if ps.get("ksa_notes") and not ps.get("local_notes"):  # older runs
+            ps = {**ps, "local_notes": ps["ksa_notes"]}
+        for k, lab in (("gear", "Gear list"), ("local_notes", f"Shooting in {market}"), ("ai_notes", "Where AI can help")):
             if ps.get(k):
                 boxes.append(f'<div class="box"><div class="eyebrow">{lab}</div><ul>{"".join(f"<li>{E(x)}</li>" for x in ps[k])}</ul></div>')
         S.append('<section id="production"><div class="wrap"><div class="sec-head"><div class="eyebrow">For the producer</div><h2>How to shoot it</h2>'

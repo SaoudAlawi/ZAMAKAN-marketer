@@ -241,3 +241,12 @@ def test_refstub_turns_candidates_into_reference_stubs(tmp_path):
     stubs = json.loads(out)
     assert len(stubs) == 1 and stubs[0]["brand"] == "Heinz" and stubs[0]["card"]["idea"].startswith("TODO")
     assert stubs[0]["urls"][0]["url"].endswith("draw-ketchup") and stubs[0]["thumbnail"]["url"]
+
+
+def test_home_market_is_oman_when_the_brief_names_none(tmp_path):
+    """The agency is Omani (zamakan-core/agency.json): a brief without a market gets Omani click-lists."""
+    import competitors as CP
+    assert CP.HOME == "OM"
+    assert CP.market_country("Muscat, Oman") == "OM" and CP.market_country("Riyadh, Saudi Arabia") == "SA"
+    assert CP.market_country("") is None
+    assert "country=OM" in CP.manual_links("Shell Oman")[0]["url"]

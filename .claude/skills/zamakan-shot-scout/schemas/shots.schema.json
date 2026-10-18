@@ -116,6 +116,10 @@
     "theme": {
      "type": "string",
      "description": "inspire mode: what they are hungry for, in their words"
+    },
+    "market": {
+     "type": "string",
+     "description": "where the shoot/audience is (default the agency's home market, Oman); the board titles its production notes with it"
     }
    }
   },
@@ -244,13 +248,21 @@
      "type": "array",
      "items": {
       "type": "string"
-     }
+     },
+     "description": "legacy name for local_notes (older runs)"
     },
     "ai_notes": {
      "type": "array",
      "items": {
       "type": "string"
      }
+    },
+    "local_notes": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     },
+     "description": "shooting in the job's market (permits, light windows, culture)"
     }
    }
   },
@@ -536,10 +548,15 @@
        "type": "string"
       },
       "ksa": {
-       "type": "string"
+       "type": "string",
+       "description": "legacy name for local"
       },
       "ai": {
        "type": "string"
+      },
+      "local": {
+       "type": "string",
+       "description": "doable in the job's market? (kit, permits, crews)"
       }
      }
     },

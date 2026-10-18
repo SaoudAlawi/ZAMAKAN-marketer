@@ -1,6 +1,7 @@
 # ZAMAKAN Marketer
 
-Marketing and creative skills for ZAMAKAN, an agency with many clients, working in Arabic and English with a Saudi/GCC focus.
+Marketing and creative skills for ZAMAKAN, an **Omani** agency with many clients across Oman and the GCC, working in Arabic and English.
+Home market defaults live in `.claude/skills/zamakan-core/agency.json` (OM).
 They are built as **sub-skills that share file contracts**, with scripts doing the mechanical work so agents spend tokens on judgement.
 
 **Read `PLAN.md` first.** It has the architecture, every decision made with the user, status per step, and the progress log.

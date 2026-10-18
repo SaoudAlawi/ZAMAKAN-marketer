@@ -23,7 +23,7 @@ from pathlib import Path
 
 GCC = {"SA", "AE", "KW", "QA", "BH", "OM"}
 MENA = GCC | {"EG", "JO", "LB", "MA", "TN", "DZ", "IQ", "PS", "SY", "LY", "YE", "SD", "TR"}
-GCC_WORDS = r"saudi|ksa|riyadh|jeddah|dammam|uae|dubai|abu dhabi|qatar|doha|kuwait|bahrain|oman|muscat|gcc|السعودية|الرياض"
+GCC_WORDS = r"saudi|ksa|riyadh|jeddah|dammam|uae|dubai|abu dhabi|qatar|doha|kuwait|bahrain|oman|muscat|salalah|sohar|nizwa|gcc|السعودية|الرياض|عمان|عُمان|مسقط|صلالة"
 MOMENT_SYNONYMS = {
     "ramadan": ["ramadan", "ramadhan", "iftar", "suhoor", "sohour", "taraweeh", "رمضان", "سحور", "إفطار", "افطار", "fanous", "fawanees"],
     "eid": ["eid", "عيد", "eidiya", "eidiyah"],

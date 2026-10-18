@@ -47,7 +47,7 @@ def country_code(name):
         import pycountry
         return pycountry.countries.lookup(name.strip()).alpha_2
     except Exception:  # noqa: BLE001 - unknown or ambiguous names stay None
-        fixes = {"uae": "AE", "united arab emirates": "AE", "ksa": "SA", "saudi arabia": "SA", "usa": "US",
+        fixes = {"sultanate of oman": "OM", "oman": "OM", "uae": "AE", "united arab emirates": "AE", "ksa": "SA", "saudi arabia": "SA", "usa": "US",
                  "uk": "GB", "united kingdom": "GB", "turkey": "TR", "russia": "RU", "korea": "KR", "south korea": "KR"}
         return fixes.get(name.strip().lower())
 

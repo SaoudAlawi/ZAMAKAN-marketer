@@ -1,0 +1,11 @@
+{
+ "name": "ZAMAKAN",
+ "name_ar": "زمكان",
+ "home_country": "OM",
+ "home_name": "Oman",
+ "home_name_ar": "عُمان",
+ "default_markets": ["OM"],
+ "aotw_country_slug": "oman",
+ "region": "GCC",
+ "notes": "Home market for every skill's defaults (agreed with the user 2026-10-18). Each job can still name its own market (brief.market / brief.markets)."
+}

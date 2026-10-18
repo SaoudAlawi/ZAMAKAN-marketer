@@ -285,7 +285,7 @@ def build_report(run, brief, client_name):
                 if td.get(k):
                     L.append(f"- **{k.title()}:** {td[k]}")
             L += ["- **What we can borrow:** " + "; ".join(td["transferable"]),
-                  f"- **Saudi cultural fit ({td['cultural_fit']['score']}/5):** {td['cultural_fit']['notes']}"]
+                  f"- **Cultural fit ({td['cultural_fit']['score']}/5):** {td['cultural_fit']['notes']}"]
             if td.get("risks"):
                 L.append("- **Risks:** " + "; ".join(td["risks"]))
             L.append("")

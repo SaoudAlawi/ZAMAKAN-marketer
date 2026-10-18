@@ -24,9 +24,25 @@ import _web  # noqa: E402
 import sources as S  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
+HOME = json.loads((HERE.parents[1] / "zamakan-core" / "agency.json").read_text(encoding="utf-8"))["home_country"]  # OM
 
 
-def manual_links(name, country="SA"):
+MARKET_WORDS = [("OM", r"oman|muscat|salalah|عمان|عُمان|مسقط"), ("SA", r"saudi|ksa|riyadh|jeddah|dammam|السعودية|الرياض"),
+                ("AE", r"uae|emirates|dubai|abu dhabi|الإمارات|دبي"), ("QA", r"qatar|doha|قطر"), ("KW", r"kuwait|الكويت"),
+                ("BH", r"bahrain|البحرين"), ("EG", r"egypt|cairo|مصر")]
+
+
+def market_country(text):
+    """'Riyadh, Saudi Arabia' → SA; 'Muscat' → OM; else whatever pycountry recognises; None if nothing."""
+    import re
+    for code, rx in MARKET_WORDS:
+        if re.search(rx, text, re.I):
+            return code
+    return S.country_code(text)
+
+
+def manual_links(name, country=None):
+    country = country or HOME
     q = quote_plus(name)
     return [
         {"what": "Meta Ad Library: active ads", "url": f"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country={country}&q={q}&search_type=keyword_unordered"},
@@ -75,7 +91,7 @@ def main():
     for pair in filter(None, a.handles.split(",")):
         k, _, v = pair.partition("=")
         handles[k.strip()] = v.strip()
-    country = "SA" if "saudi" in (b.get("market") or "saudi").lower() else (S.country_code(b.get("market") or "") or "SA")
+    country = (b.get("markets") or [None])[0] or market_country(b.get("market") or "") or HOME
     names = b.get("competitors") or []
     L = [f"# Competitor-watch plan: {b.get('client', '')}", "",
          f"Window: the last {months} months (since {S.months_ago(months).isoformat()}). "
