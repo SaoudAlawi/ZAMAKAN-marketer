@@ -155,14 +155,21 @@ def resolve(colors, all_colors):
     else:
         accent_text = ink
     on_accent = "#FFFFFF" if contrast("#FFFFFF", accent) >= contrast("#111111", accent) else "#111111"
+    for _ in range(10):  # labels on accent fills must be readable: shift the fill a touch, never the text to grey
+        if contrast(on_accent, accent) >= 4.5:
+            break
+        accent = mix(accent, "#000000" if on_accent == "#FFFFFF" else "#FFFFFF", 0.04)
     panel = pick("surface-card", "surface", "surface-soft", "canvas-soft", "surface-container") or mix(bg, "#FFFFFF", 0.6)
     if panel == bg:
         panel = mix(bg, "#FFFFFF" if lum(bg) < 0.9 else "#000000", 0.04)
     if contrast(ink, panel) < 4.5:
         panel = mix(bg, ink, 0.05)
     muted = pick("muted", "mute", "body", "on-surface-variant", "slate", "stone", "ash") or mix(ink, bg, 0.4)
-    if contrast(muted, bg) < 4.5 or contrast(muted, panel) < 4.5:
-        muted = mix(ink, bg, 0.3)
+    chip = mix(bg, ink, 0.07)
+    for t in (0.3, 0.22, 0.15, 0.08, 0.0):  # readable on the page, cards and placeholder tiles alike
+        if min(contrast(muted, c) for c in (bg, panel, chip)) >= 4.6:
+            break
+        muted = mix(ink, bg, t)
     line = pick("hairline", "outline-variant", "outline", "hairline-soft", "border", "divider") or mix(ink, bg, 0.85)
     if contrast(line, bg) > 4 or contrast(line, bg) < 1.08:
         line = mix(ink, bg, 0.82)
@@ -174,9 +181,18 @@ def resolve(colors, all_colors):
         on_dark = "#FFFFFF" if contrast("#FFFFFF", dark) >= contrast("#111111", dark) else "#111111"
     secondary = [c for c in chromatic if c not in (accent,)][:3]
     rings = (secondary + [mix(accent, ink, 0.45), mix(accent, "#7F7F7F", 0.5), mix(accent, bg, 0.35)])[:3]
+
+    def readable_fill(c):  # a ring colour carries a white or black label: nudge the fill until the label reads
+        on = "#FFFFFF" if contrast("#FFFFFF", c) >= contrast("#111111", c) else "#111111"
+        for _ in range(12):
+            if contrast(on, c) >= 4.6:
+                break
+            c = mix(c, "#000000" if on == "#FFFFFF" else "#FFFFFF", 0.04)
+        return c
+    rings = [readable_fill(c) for c in rings]
     return {"bg": bg, "panel": panel, "ink": ink, "muted": muted, "line": line, "accent": accent, "accent_text": accent_text,
             "on_accent": on_accent,
-            "dark": dark, "on_dark": on_dark, "chip": mix(bg, ink, 0.07),
+            "dark": dark, "on_dark": on_dark, "chip": chip,
             "ring": {"direct": accent, "category": rings[0], "adjacent": rings[1], "wildcard": rings[2]},
             "ring_on": {k: ("#FFFFFF" if contrast("#FFFFFF", c) >= contrast("#111111", c) else "#111111")
                         for k, c in zip(("direct", "category", "adjacent", "wildcard"), [accent] + rings)}}

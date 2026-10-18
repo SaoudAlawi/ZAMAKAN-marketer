@@ -79,6 +79,24 @@ def shaped(img_bytes, w, h, arch=False, radius_frac=0.0):
     return buf.getvalue()
 
 
+def avg_char_width(kit, default=0.52):
+    """Average advance width (in em) of the body font over typical English text, measured from the font file:
+    wide geometric faces (Avant Garde-like) need more room than the 0.52 em most fonts fit in."""
+    sample = "the quick brown fox jumps over a lazy dog while taxi drivers wait at maghrib, 2026 "
+    for f in kit.get("font_files", []):
+        if f.get("script") == "latin" and str(f["path"]).lower().endswith((".ttf", ".otf")) and "bold" not in str(f["path"]).lower():
+            try:
+                from fontTools.ttLib import TTFont
+                font = TTFont(str(f["path"]), lazy=True)
+                cmap, hmtx, upm = font.getBestCmap(), font["hmtx"], font["head"].unitsPerEm
+                widths = [hmtx[cmap[ord(c)]][0] for c in sample if ord(c) in cmap]
+                if widths:  # 0.52 was tuned on IBM Plex Sans (0.445 em average): scale by how much wider this font is
+                    return max(default, round(default * (sum(widths) / len(widths) / upm) / 0.445, 3))
+            except Exception:  # noqa: BLE001
+                pass
+    return default
+
+
 def install_fonts(kit):
     """Make the client's font files visible to LibreOffice for the PDF render (user font dir)."""
     if not kit["font_files"]:
@@ -119,10 +137,12 @@ def build(run, brief, client_name, kit, thumb, codes, h, path, cache):
     logos = {k: logo_png(v, cache) for k, v in kit["logos"].items()}
     page = [0]
 
+    CHAR_W = avg_char_width(kit)
+
     def fit(lines, w, h, size, min_size):
         """Largest size ≤ size whose estimated wrapped height fits the box."""
         while size > min_size:
-            cpl = max(8, w / (size * 0.0353 * 0.52))
+            cpl = max(8, w / (size * 0.0353 * CHAR_W))
             n = sum(max(1, math.ceil(len(l) / cpl)) for l in lines)
             if n * size * 0.0353 * 1.28 <= h:
                 break

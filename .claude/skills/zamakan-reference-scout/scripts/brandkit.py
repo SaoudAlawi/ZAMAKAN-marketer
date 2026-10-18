@@ -136,9 +136,28 @@ def from_design_system(ds):
            "arabic_leads": any(re.search(r"arabic leads", r.get("text", ""), re.I) for r in spec.get("type_rules", [])),
            "missing_assets": [m["asset"] for m in manifest.get("missing_assets", spec.get("missing_assets", []))],
            "proposed_notes": [], "rules": [r["text"] for r in spec.get("color_rules", []) if r.get("kind") == "dont"]}
-    if not logos.get("on_dark"):
-        kit["proposed_notes"].append(f"no logo variant is approved on the cover colour {th['dark']}; the cover uses the light logo on a panel")
+    if not logos.get("on_dark") and (logos.get("on_light") or {}).get("png"):
+        panel = logo_panel(logos["on_light"]["png"], ds / "assets" / f"_panel-{logos['on_light']['id']}.png")
+        logos["on_dark"] = {"id": logos["on_light"]["id"] + "-panel", "svg": None, "png": str(panel)}
+        kit["proposed_notes"].append(f"no logo variant is approved on the cover colour {th['dark']}; the cover uses the light logo on a white panel")
     return kit
+
+
+def logo_panel(png, dst):
+    """The approved light-background logo on a white rounded panel, for dark covers when no reversed logo exists
+    (the logo itself is untouched; nothing is redrawn)."""
+    from PIL import Image, ImageDraw
+    dst = Path(dst)
+    if dst.exists() and dst.stat().st_mtime >= Path(png).stat().st_mtime:
+        return dst
+    im = Image.open(png).convert("RGBA")
+    pad = max(im.height // 4, 8)
+    panel = Image.new("RGBA", (im.width + 2 * pad, im.height + 2 * pad), (0, 0, 0, 0))
+    ImageDraw.Draw(panel).rounded_rectangle((0, 0, panel.width - 1, panel.height - 1), radius=pad, fill=(255, 255, 255, 255))
+    panel.alpha_composite(im, (pad, pad))
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    panel.save(dst)
+    return dst
 
 
 def load_kit(design=None, out_dir=None):
@@ -168,16 +187,8 @@ def load_kit(design=None, out_dir=None):
 def with_client_logo(kit, logo, out_dir, name=None):
     """House style (or any look) plus the client's own logo file, for clients without a design system yet.
     The logo isn't approved on the dark cover, so it sits on a white panel there (a PNG made here, for board and deck)."""
-    from PIL import Image, ImageDraw
     logo = Path(logo)
-    im = Image.open(logo).convert("RGBA")
-    pad = max(im.height // 4, 8)
-    panel = Image.new("RGBA", (im.width + 2 * pad, im.height + 2 * pad), (0, 0, 0, 0))
-    ImageDraw.Draw(panel).rounded_rectangle((0, 0, panel.width - 1, panel.height - 1), radius=pad, fill=(255, 255, 255, 255))
-    panel.alpha_composite(im, (pad, pad))
-    dst = Path(out_dir) / "thumbs" / f"_logo-panel-{logo.stem}.png"
-    dst.parent.mkdir(parents=True, exist_ok=True)
-    panel.save(dst)
+    dst = logo_panel(logo, Path(out_dir) / "thumbs" / f"_logo-panel-{logo.stem}.png")
     svg = str(logo) if logo.suffix == ".svg" else None
     kit["logos"] = {"on_light": {"id": "client", "svg": svg, "png": str(logo)}, "mark_light": {"id": "client", "svg": svg, "png": str(logo)},
                     "on_dark": {"id": "client-panel", "svg": None, "png": str(dst)}}

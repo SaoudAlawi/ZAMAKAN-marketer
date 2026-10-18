@@ -109,3 +109,30 @@ def test_house_style_with_client_logo(tmp_path):
     from PIL import Image
     im = Image.open(panel)
     assert panel.exists() and im.getpixel((im.width // 2, 2))[:3] == (255, 255, 255)
+
+
+def test_dark_cover_gets_logo_on_white_panel(tmp_path):
+    """No reversed logo approved on the dark cover: the approved light logo goes on a white panel (never redrawn)."""
+    from PIL import Image
+    logo = next((REPO / "samples/rawaq/input").rglob("*.png"))
+    panel = K.logo_panel(logo, tmp_path / "p.png")
+    im = Image.open(panel)
+    assert im.getpixel((im.width // 2, 1))[:3] == (255, 255, 255) and im.width > Image.open(logo).width
+
+
+def test_labels_on_brand_fills_stay_readable():
+    """A mid-blue brand colour with white labels (4.3:1) is nudged just enough to pass 4.5:1; rings too."""
+    import theme as T
+    th = T.resolve({"bg": "#FFFFFF", "ink": "#0A3550", "accent": "#0D80BF"}, ["#0D80BF", "#99BF3C", "#DEDEDB"])
+    assert T.contrast(th["on_accent"], th["accent"]) >= 4.5
+    for k, c in th["ring"].items():
+        assert T.contrast(th["ring_on"][k], c) >= 4.5, k
+    assert min(T.contrast(th["muted"], c) for c in (th["bg"], th["panel"], th["chip"])) >= 4.5
+
+
+def test_deck_text_fitting_measures_wide_fonts():
+    import render_deck as RD
+    house = K.load_kit("zamakan")
+    assert RD.avg_char_width(house) == 0.52
+    wide = dict(house, font_files=[{"path": REPO / ".claude/skills/zamakan-reference-scout/assets/fonts/IBMPlexSans[wdth,wght].ttf", "script": "latin"}])
+    assert abs(RD.avg_char_width(wide) - 0.52) < 0.01  # the font the default was tuned on
