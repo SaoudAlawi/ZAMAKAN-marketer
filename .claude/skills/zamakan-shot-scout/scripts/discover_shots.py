@@ -9,6 +9,7 @@ Usage:
   python discover_shots.py filmgrab-stills <film-grab film URL> [--limit 12] --out ...  # the stills of one film
   python discover_shots.py shotcafe "<word>" --out cand.jsonl                            # film stills database
   python discover_shots.py directorsnotes|motionographer|stash "<words>" --out ...      # shorts, motion, VFX articles
+  python discover_shots.py shortoftheweek "<words>" [--limit 10] --out cand.jsonl         # curated short films, free to watch
   python discover_shots.py youtube "<words>" [--min-views 10000] --out cand.jsonl
   python discover_shots.py vimeo <vimeo URL> ... --out cand.jsonl                        # check Vimeo links (oEmbed)
   python discover_shots.py page <url> ... --out cand.jsonl                               # any page from web search
@@ -18,6 +19,7 @@ then pass them to `vimeo` here. Eyecannndy is the richest source: every clip com
 editor, colourist and the original video link. Each line in --out is one candidate (a URL fetched again replaces its line).
 """
 import argparse
+import html as H
 import json
 import re
 import signal
@@ -167,6 +169,37 @@ def articles(site, q):
     return list({r["url"]: r for r in out}.values())
 
 
+# ---------- short films (free to watch)
+def shortoftheweek(q, limit):
+    """Short of the Week's own API: curated shorts with filmmaker, country, minutes, genre, topic and the player link."""
+    data, status = _web.get_json(f"https://www.shortoftheweek.com/api/v1/search?q={quote_plus(q)}&type=film&limit={limit}")
+    out = []
+    for x in (data or {}).get("data", []):
+        if not x.get("post_title") or not x.get("post_date") or not x.get("filmmaker"):
+            continue  # articles (guides, news) have no filmmaker
+        d = x["post_date"][:10].split("-")
+        page = f"https://www.shortoftheweek.com/{d[0]}/{d[1]}/{d[2]}/{x['post_name']}/"
+        play = x.get("play_link") or ""
+        m = re.search(r"player\.vimeo\.com/video/(\d+)", play) or re.search(r"youtube\.com/embed/([\w-]{11})", play)
+        watch = (f"https://vimeo.com/{m.group(1)}" if "vimeo" in play else f"https://www.youtube.com/watch?v={m.group(1)}") if m else None
+        thumb = x.get("background_image") or x.get("thumbnail") or ""
+        rec = {"source": "shortoftheweek", "kind": "short", "url": page, "title": x["post_title"], "year": int(d[0]),
+               "maker": H.unescape(x.get("filmmaker") or ""),
+               "credits": {"director": [H.unescape(n).strip() for n in re.split(r"\s*&amp;\s*|\s*&\s*|,\s*", x["filmmaker"]) if n.strip()]},
+               "description": re.sub(r"<[^>]+>", "", x.get("post_excerpt") or "")[:500],
+               "runtime_min": int(x["duration"]) if str(x.get("duration") or "").isdigit() else None,
+               "countries": [(x.get("country") or {}).get("display_name")] if isinstance(x.get("country"), dict) else [],
+               "genre": (x.get("genre") or {}).get("display_name") if isinstance(x.get("genre"), dict) else None,
+               "topic": (x.get("topic") or {}).get("display_name") if isinstance(x.get("topic"), dict) else None,
+               "thumbnail": ("https:" + thumb) if thumb.startswith("//") else thumb or None, "query": q}
+        if watch:
+            rec["extra_urls"] = [watch]
+        out.append(rec)
+    if not out and status != 200:
+        print(f"  Short of the Week API answered HTTP {status}")
+    return out[:limit]
+
+
 # ---------- video platforms
 def youtube(q, min_views):
     page = _web.get(f"https://www.youtube.com/results?search_query={quote_plus(q)}", browser="never")
@@ -234,6 +267,7 @@ def show(recs):
         who = ", ".join(f"{k} {'/'.join(v)}" for k, v in cred.items() if k in ("director", "dop"))
         tech = ",".join(r.get("techniques_src", [])[:4])
         extra = " · ".join(x for x in [str(r.get("year") or r.get("published") or ""), who, tech,
+                                       f"{r['runtime_min']} min" if r.get("runtime_min") else "", ", ".join(r.get("countries") or []),
                                        f"{r['views']:,} views" if r.get("views") else "", r.get("error", "")] if x)
         print(f"  {r.get('source', ''):<14} {(r.get('title') or '')[:58]:<58} {extra}")
 
@@ -271,6 +305,8 @@ def main():
         recs = youtube(q, a.min_views)[:a.limit * 2]
     elif src == "vimeo":
         recs = vimeo(a.query)
+    elif src == "shortoftheweek":
+        recs = shortoftheweek(q, a.limit)
     elif src == "page":
         recs = pages(a.query)
     else:

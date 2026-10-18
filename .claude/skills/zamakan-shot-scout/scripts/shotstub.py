@@ -16,9 +16,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _shared import techniques  # noqa: E402
 
-KIND = {"eyecannndy": "clip", "filmgrab": "stills", "shotcafe": "stills", "youtube": "clip", "vimeo": "clip",
+KIND = {"wikidata": "film", "shortoftheweek": "short", "eyecannndy": "clip", "filmgrab": "stills", "shotcafe": "stills", "youtube": "clip", "vimeo": "clip",
         "directorsnotes": "short", "motionographer": "motion-design", "stash": "motion-design"}
-URL_KIND = {"eyecannndy": "video", "filmgrab": "stills", "shotcafe": "stills", "youtube": "video", "vimeo": "video",
+URL_KIND = {"wikidata": "article", "shortoftheweek": "article", "eyecannndy": "video", "filmgrab": "stills", "shotcafe": "stills", "youtube": "video", "vimeo": "video",
             "directorsnotes": "article", "motionographer": "article", "stash": "article"}
 
 
@@ -33,6 +33,14 @@ def eye_to_ours():
         for s in t["eyecannndy"]:
             m.setdefault(s, t["id"])
     return m
+
+
+def S_of(url):
+    if "ar.wikipedia" in url:
+        return "Arabic Wikipedia"
+    if "wikidata.org" in url:
+        return "Wikidata"
+    return re.sub(r"^https?://(www\.|player\.)?", "", url).split("/")[0].split(".")[0].capitalize()
 
 
 def key(r):
@@ -63,8 +71,16 @@ def stub(r, techs, seen):
          "techniques": ours, "why": "TODO: why this shot matters for the request",
          "production": {"method": t0["method"] if t0 else "TODO", "how": t0["how"] if t0 else "TODO", "gear": t0["gear"] if t0 else "",
                         "budget": int(t0["budget"]) if t0 else 1, "kit": t0["kit"] if t0 else "", "ai": t0["ai"] if t0 else ""},
-         "provenance": {"found_via": r.get("source") if r.get("source") in ("eyecannndy", "filmgrab", "shotcafe", "youtube", "vimeo") else "article",
+         "provenance": {"found_via": r.get("source") if r.get("source") in ("eyecannndy", "filmgrab", "shotcafe", "youtube", "vimeo", "wikidata", "shortoftheweek") else "article",
                         "query": r.get("query", ""), "confidence": "high" if r.get("source") == "eyecannndy" else "medium"}}
+    for extra in r.get("extra_urls", []):  # e.g. the playable Vimeo link of a short, the Wikidata item
+        k = "video" if re.search(r"youtube\.com|youtu\.be|vimeo\.com", extra) else "article"
+        s["urls"].append({"url": extra, "kind": k, "source": "wikidata" if "wikidata" in extra else S_of(extra)})
+    for k in ("runtime_min", "countries", "title_ar"):
+        if r.get(k):
+            s[k] = r[k]
+    if r.get("kind") in ("film", "short") and r.get("source") in ("wikidata", "shortoftheweek"):
+        s["kind"] = r["kind"]
     if r.get("found_on") and r["found_on"] != primary:
         s["found_on"] = r["found_on"]
     for k in ("year",):

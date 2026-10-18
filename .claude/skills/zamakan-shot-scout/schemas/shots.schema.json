@@ -30,7 +30,8 @@
       "subject",
       "effect",
       "frame-match",
-      "who"
+      "who",
+      "inspire"
      ]
     },
     "created": {
@@ -99,6 +100,22 @@
        }
       }
      }
+    },
+    "roles": {
+     "type": "array",
+     "items": {
+      "enum": [
+       "writer",
+       "dop",
+       "director",
+       "editor"
+      ]
+     },
+     "description": "inspire mode: the crafts the programme speaks to"
+    },
+    "theme": {
+     "type": "string",
+     "description": "inspire mode: what they are hungry for, in their words"
     }
    }
   },
@@ -131,7 +148,6 @@
    "items": {
     "type": "object",
     "required": [
-     "technique",
      "shot_ids"
     ],
     "additionalProperties": false,
@@ -147,6 +163,10 @@
       "items": {
        "type": "string"
       }
+     },
+     "title": {
+      "type": "string",
+      "description": "a programme section name (inspire mode), instead of a technique"
      }
     }
    }
@@ -258,7 +278,6 @@
     "status",
     "techniques",
     "why",
-    "production",
     "provenance"
    ],
    "additionalProperties": false,
@@ -286,7 +305,10 @@
       "stills",
       "breakdown",
       "motion-design",
-      "photography"
+      "photography",
+      "scene",
+      "essay",
+      "interview"
      ]
     },
     "year": {
@@ -425,6 +447,24 @@
        "items": {
         "type": "string"
        }
+      },
+      "writer": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      },
+      "composer": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      },
+      "design": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
       }
      }
     },
@@ -541,7 +581,9 @@
         "web-search",
         "article",
         "library",
-        "known-example"
+        "known-example",
+        "wikidata",
+        "shortoftheweek"
        ]
       },
       "query": {
@@ -557,6 +599,61 @@
      }
     },
     "tags": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "title_ar": {
+     "type": "string"
+    },
+    "runtime_min": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "countries": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "watch_for": {
+     "type": "object",
+     "additionalProperties": false,
+     "properties": {
+      "writer": {
+       "type": "string",
+       "minLength": 10
+      },
+      "dop": {
+       "type": "string",
+       "minLength": 10
+      },
+      "director": {
+       "type": "string",
+       "minLength": 10
+      },
+      "editor": {
+       "type": "string",
+       "minLength": 10
+      }
+     },
+     "description": "inspire mode: what each craft should watch for in THIS film"
+    },
+    "key_scene": {
+     "type": "string",
+     "description": "the scene to study; with `timestamp` only when a source gives one"
+    },
+    "exercise": {
+     "type": "string",
+     "minLength": 10,
+     "description": "a small making task after watching"
+    },
+    "pairs_with": {
+     "type": "string",
+     "description": "a shot id to watch it with (double bill)"
+    },
+    "where_to_watch": {
      "type": "array",
      "items": {
       "type": "string"

@@ -12,6 +12,7 @@ and web-search queries for Vimeo and the trade/motion sites. The agent judges an
 import argparse
 import json
 import re
+import signal
 import sys
 from pathlib import Path
 
@@ -19,7 +20,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _shared import ar_variants, moods, norm, techniques  # noqa: E402
 
 STOP = set(norm("the a an of in on at with and or for to by from like feel feeling look looking shot shots scene scenes "
-                "down up slowing slow getting gets "
+                "down up slowing slow getting gets i'm im me my inspire inspiration motivate films movies cinema watch "
+                "أنا انا اشاهد أشاهد افلام أفلام ابغى أبغى ابي أبي "
                 "reference references cinematic film films video videos ad ads commercial commercials something about some "
                 "want need show me find give we our that this very really kind sort style effect technique "
                 "في من على عند مع عن الى إلى و أو لقطة لقطات مشهد مشاهد مراجع مرجع اعلان إعلان فيلم احساس إحساس شعور مثل نريد ابغى").split())
@@ -62,8 +64,29 @@ def match(text):
     return list(found.values()), subject
 
 
+INSPIRE = re.compile(r"\b(inspire|inspiration|motivate|watch|watchlist|what to watch|cinephile|study)\b|إلهام|الهام|أشاهد|اشاهد|مشاهدة|يحفز|تحفيز", re.I)
+
+
+def roles_of(text):
+    import json as _j
+    from _shared import REFS
+    q = f" {norm(text)} "
+    out = []
+    for r in _j.loads((REFS / "roles.json").read_text(encoding="utf-8"))["roles"]:
+        if any(f" {norm(w)} " in q or (len(norm(w)) > 4 and norm(w) in q) for w in r["words"]):
+            out.append(r["id"])
+    return out
+
+
 def plan(text, max_tech=8):
+    roles = roles_of(text)
     hits, subject = match(text)
+    role_words = {norm(w) for w in sum((r for r in [[]]), [])}
+    if roles:
+        import json as _j
+        from _shared import REFS
+        role_words = {t for r in _j.loads((REFS / "roles.json").read_text(encoding="utf-8"))["roles"] for w in r["words"] for t in norm(w).split()}
+        subject = [w for w in subject if w not in role_words and not any(v in role_words for v in ar_variants(w))]
     named = [h for h in hits if h["why"].startswith("named")]
     hits = named + [h for h in hits if not h["why"].startswith("named")]
     hits = hits[:max(max_tech, len(named))]
@@ -77,8 +100,11 @@ def plan(text, max_tech=8):
     if subj:
         yt.append(f"{subj} cinematic")
         web += [f"site:vimeo.com {subj} cinematography", f"site:directorsnotes.com {subj}", f"{subj} commercial cinematography breakdown"]
+    mode = "inspire" if (roles and INSPIRE.search(text)) or INSPIRE.search(text) and not hits else None
     return {
         "request": text,
+        "mode_hint": mode or ("effect" if any(h["why"].startswith("named") for h in hits) and not subj else "subject"),
+        "roles": roles,
         "subject": subj,
         "techniques": [{"id": h["technique"]["id"], "name": h["technique"]["name"], "name_ar": h["technique"]["name_ar"],
                         "why": h["why"], "feeling": h["technique"]["feeling"]} for h in hits],
@@ -87,12 +113,14 @@ def plan(text, max_tech=8):
             "eyecannndy_search": [x for x in [subj] + [h["technique"]["name"].split(" (")[0] for h in hits[:3]] if x],
             "filmgrab": subject[:3], "shotcafe": subject[:3],
             "youtube": yt[:8], "web_search": web[:8],
+            "shortoftheweek": [subj] if subj else [],
         },
         "next": "Run discover_shots.py for each search, then rank and pick. Add your own terms: the dictionary can't know every subject.",
     }
 
 
 def main():
+    signal.signal(signal.SIGPIPE, signal.SIG_DFL)
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("text")
     ap.add_argument("--json", action="store_true")
@@ -104,6 +132,7 @@ def main():
     if a.json:
         print(json.dumps(p, ensure_ascii=False, indent=1))
         return
+    print(f"mode: {p['mode_hint']}" + (f" · roles: {', '.join(p['roles'])}" if p["roles"] else ""))
     print(f"subject: {p['subject'] or '(none: technique-only request)'}")
     if re.search("[\u0600-\u06FF]", p["subject"]):
         print("  (Arabic subject: also search it in English; Film-Grab, Shot.cafe and Eyecannndy are English-only)")

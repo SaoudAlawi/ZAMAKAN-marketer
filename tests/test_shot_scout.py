@@ -237,3 +237,109 @@ def test_live_eyecannndy_technique():
     recs = DS.eyecannndy("https://eyecannndy.com/technique/dolly-zoom", 2, "technique:dolly-zoom")
     assert recs and all(r["title"] for r in recs)
     assert any(r.get("credits") for r in recs)
+
+
+# ---------- inspire mode
+import film_facts as FF  # noqa: E402
+
+
+def test_film_search_never_returns_a_person(monkeypatch):
+    hits = {"search": [{"id": "Q1", "label": "Nora Ephron", "description": "American film director and writer (1941–2012)"},
+                       {"id": "Q2", "label": "Norah", "description": "2023 Saudi Arabian film"}]}
+    monkeypatch.setattr(FF, "get_json", lambda url, tries=5: (hits, 200))
+    hit, how = FF.search("Norah", 2024)
+    assert hit["id"] == "Q2"
+    hits["search"] = hits["search"][:1]
+    hit, how = FF.search("Norah", 2024)
+    assert hit is None and "no film from 2024" in how
+
+
+def test_craft_sentences_are_extracted(monkeypatch):
+    html_ = ("<div class='mw-parser-output'><section><p>Sophie records the holiday on a MiniDV camera, the footage of which is "
+             "interspersed throughout the film. The film premiered at Cannes in May.</p><p>Ozu often had key scenes take place off camera, "
+             "with the viewer learning about them through dialogue.<sup>[3]</sup></p></section></div>")
+
+    class R:
+        def __init__(self, b):
+            self.b = b
+
+        def read(self):
+            return self.b.encode()
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+    import urllib.request
+    monkeypatch.setattr(urllib.request, "urlopen", lambda req, timeout=25: R(html_))
+    notes = FF.craft_notes("https://en.wikipedia.org/wiki/X")
+    assert any("MiniDV camera" in n for n in notes) and any("off camera" in n for n in notes)
+    assert not any("premiered at Cannes" in n for n in notes)
+
+
+def test_roles_and_inspire_mode_are_detected():
+    p = X.plan("I'm a writer and cinematographer, inspire me: films about silence and what's left unsaid")
+    assert p["mode_hint"] == "inspire" and p["roles"] == ["writer", "dop"]
+    assert "silence" in p["subject"] and "i'm" not in p["subject"] and "films" not in p["subject"]
+    assert "static-frame" in {t["id"] for t in p["techniques"]}
+    p = X.plan("أنا مخرج، أبغى أشاهد أفلام عن الصحراء والوحدة")
+    assert p["mode_hint"] == "inspire" and p["roles"] == ["director"] and "الصحراء" in p["subject"]
+
+
+def test_shortoftheweek_parsing(monkeypatch):
+    data = {"data": [{"post_title": "Father and Daughter", "post_date": "2008-02-10 10:00:00", "post_name": "father-and-daughter",
+                      "filmmaker": "Michael Dudok de Wit", "duration": "8", "country": {"display_name": "Netherlands"},
+                      "play_link": "https://player.vimeo.com/video/123456", "post_excerpt": "<p>A moving tale</p>",
+                      "background_image": "//static.x/still.jpg"},
+                     {"post_title": "Oscars guide", "post_date": "2026-01-01 10:00:00", "post_name": "guide", "filmmaker": ""},
+                     {"post_title": "Acrobats", "post_date": "2024-01-01", "post_name": "acrobats", "filmmaker": "Ana A &amp; Bo B"}]}
+    monkeypatch.setattr(DS._web, "get_json", lambda url, timeout=20: (data, 200))
+    recs = DS.shortoftheweek("father", 5)
+    assert [r["title"] for r in recs] == ["Father and Daughter", "Acrobats"]  # articles without a filmmaker skipped
+    r = recs[0]
+    assert r["url"] == "https://www.shortoftheweek.com/2008/02/10/father-and-daughter/" and r["runtime_min"] == 8
+    assert r["extra_urls"] == ["https://vimeo.com/123456"] and r["thumbnail"].startswith("https://")
+    assert recs[1]["credits"]["director"] == ["Ana A", "Bo B"]
+
+
+def inspire_run(**kw):
+    s1 = shot("f1", kind="film", countries=["Japan"], credits={"director": ["Yasujirō Ozu"]}, credits_source="wikidata",
+              watch_for={"writer": "Key scenes happen off camera; you learn them through dialogue.", "dop": "Low camera, like sitting on a tatami mat."},
+              exercise="Write a scene whose main event happens off screen.", runtime_min=136)
+    s1.pop("production")
+    s2 = shot("s2", kind="short", countries=["Netherlands"], credits={"director": ["Michael Dudok de Wit"]}, credits_source="shortoftheweek",
+              watch_for={"writer": "A whole life told without a word of dialogue.", "dop": "Long shadows and silhouettes carry the time of day."},
+              exercise="Tell a 30-year story in five wordless images.", pairs_with="f1")
+    r = run_of([s1, s2], mode="inspire", groups=[{"title": "Tonight, free", "shot_ids": ["s2"]}, {"title": "An evening", "shot_ids": ["f1"]}])
+    r["run"].update(roles=["writer", "dop"], theme="silence and the unsaid")
+    r.update(kw)
+    return r
+
+
+def test_inspire_run_validates_and_needs_watch_for_per_role():
+    E, W, _ = VS.validate(inspire_run())
+    assert not E, E
+    r = inspire_run()
+    del r["shots"][0]["watch_for"]["dop"]
+    E, _, _ = VS.validate(r)
+    assert any("watch_for missing for dop" in e for e in E)
+    r = inspire_run()
+    r["run"]["roles"] = []
+    E, _, _ = VS.validate(r)
+    assert any("run.roles" in e for e in E)
+    r = inspire_run()
+    r["shots"][0].pop("production", None)
+    r["run"]["mode"] = "subject"
+    r["run"].pop("roles")
+    E, _, _ = VS.validate(r)
+    assert any("production notes missing" in e for e in E)
+
+
+def test_inspire_board_shows_programme(tmp_path):
+    (tmp_path / "shots.json").write_text(json.dumps(inspire_run(), ensure_ascii=False), encoding="utf-8")
+    subprocess.run([sys.executable, SCRIPTS / "build_shot_board.py", tmp_path / "shots.json", "--out", tmp_path], check=True, capture_output=True)
+    h = (tmp_path / "board.html").read_text(encoding="utf-8")
+    for needle in ("A viewing programme", "Tonight, free", "After watching:", "Double bill with", "Cinematographer", "مدير تصوير",
+                   ">01<", ">02<", "136 min", "hours of cinema"):
+        assert needle in h, needle

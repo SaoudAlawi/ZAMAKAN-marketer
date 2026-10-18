@@ -28,7 +28,11 @@ EVID = {"content": ("page read", "ok"), "title": ("page exists", "thin"), "video
 KIND = {"film": "Film", "commercial": "Commercial", "music-video": "Music video", "short": "Short film", "title-sequence": "Title sequence",
         "series": "Series", "clip": "Clip", "stills": "Film stills", "breakdown": "Breakdown", "motion-design": "Motion design",
         "photography": "Photography"}
-MODE = {"subject": "Subject & mood", "effect": "Effect & technique", "frame-match": "Match this frame", "who": "Who does this well"}
+MODE = {"subject": "Subject & mood", "effect": "Effect & technique", "frame-match": "Match this frame", "who": "Who does this well",
+        "inspire": "Inspire me"}
+ROLE = {"writer": ("Writer", "كاتب"), "dop": ("Cinematographer", "مدير تصوير"), "director": ("Director", "مخرج"),
+        "editor": ("Editor · sound · design", "مونتاج · صوت · تصميم")}
+KIND.update({"scene": "Scene", "essay": "Video essay", "interview": "Interview"})
 
 CSS = """
 *{box-sizing:border-box} html{-webkit-text-size-adjust:100%}
@@ -50,7 +54,7 @@ section{padding-block:clamp(44px,6vw,80px);border-top:1px solid var(--hair)}
 .chip{display:inline-flex;gap:8px;align-items:baseline;border:1px solid var(--hair);border-radius:999px;padding:5px 12px;font-size:14px;background:var(--paper)}
 .chip .ar{color:var(--soft);font-size:13px}
 .stats{display:flex;flex-wrap:wrap;gap:28px;margin-top:32px} .stats b{display:block;font:var(--disp-w) 38px/1 var(--disp)} .stats span{color:var(--soft);font-size:13px}
-.hero{margin:0} .hero img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:var(--r)}
+.hero{margin:0} .hero img{width:100%;aspect-ratio:16/9;object-fit:cover;object-position:center 30%;border-radius:var(--r)}
 .hero figcaption{color:var(--soft);font-size:13px;margin-top:8px}
 .look{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:start}
 .swatches{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:18px} .sw{aspect-ratio:1;border-radius:calc(var(--r)/1.5)}
@@ -67,7 +71,7 @@ dl.spec dt{color:var(--soft)} dl.spec dd{margin:0}
 .money{letter-spacing:.06em;color:var(--hi)} .money i{font-style:normal;color:var(--soft);letter-spacing:0;margin-left:2px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr));gap:22px}
 .shot{background:var(--paper);border:1px solid var(--hair);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column}
-.shot .img{position:relative;aspect-ratio:16/9;background:var(--paper2)} .shot .img img{width:100%;height:100%;object-fit:cover}
+.shot .img{position:relative;aspect-ratio:16/9;background:var(--paper2);overflow:hidden} .shot .img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%}
 .shot .noimg{position:absolute;inset:0;display:grid;place-items:center;color:var(--soft);font-size:13px}
 .badge{position:absolute;top:10px;left:10px;font:600 11px/1 var(--body);letter-spacing:.06em;text-transform:uppercase;padding:6px 8px;border-radius:6px;background:rgba(0,0,0,.72);color:#fff}
 .tc{position:absolute;right:10px;bottom:10px;font:600 13px/1 ui-monospace,monospace;padding:6px 8px;border-radius:6px;background:var(--accent);color:var(--on-accent);text-decoration:none}
@@ -75,6 +79,12 @@ dl.spec dt{color:var(--soft)} dl.spec dd{margin:0}
 .shot .meta{color:var(--soft);font-size:13px} .shot .cred{font-size:14px} .shot .cred span{color:var(--soft)}
 .shot .note{color:var(--soft);font-size:14px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin:0}
 .shot .why{font-size:15px;margin:0}
+.num{position:absolute;left:10px;bottom:10px;font:var(--disp-w) 28px/1 var(--disp);color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.7)}
+.wf{display:grid;gap:8px;margin:2px 0} .wf div{border-left:2px solid var(--hi);padding:2px 0 2px 10px;font-size:14px}
+.wf b{display:block;font:600 11px/1.3 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--hi)} .wf b .ar{letter-spacing:0;text-transform:none;font-weight:400;margin-inline-start:6px}
+.scene{font-size:14px;color:var(--soft);margin:0} .scene b{color:var(--on-dark);font-weight:600}
+.ex{background:var(--paper2);border-radius:calc(var(--r)/1.5);padding:10px 12px;font-size:14px} .ex b{color:var(--hi);font-weight:600}
+.pair{font-size:13px;color:var(--soft)}
 .pal{display:flex;gap:0;height:10px;border-radius:5px;overflow:hidden;margin-top:2px} .pal i{flex:1}
 .prod{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--soft);border-top:1px solid var(--hair);padding-top:10px;margin-top:auto}
 .links{display:flex;gap:14px;font-size:14px;flex-wrap:wrap}
@@ -127,29 +137,42 @@ def img_tag(shot, base, alt=True):
     return '<div class="noimg">no preview: open the link</div>'
 
 
-def shot_card(s, base, techs):
+def shot_card(s, base, techs, roles=(), num=None, shots=None):
     primary = s["urls"][0]
     ev = max((u.get("evidence") for u in s["urls"] if u.get("evidence")), key=lambda e: {"content": 3, "title": 2, "video": 1}[e], default=None)
     badge = f'<span class="badge">{EVID[ev][0]}</span>' if ev else ""
     video = next((u["url"] for u in s["urls"] if u["kind"] == "video"), None)
     tc = f'<a class="tc" href="{E(at_time(video, s["timestamp"]))}" title="jump to the moment">▶ {E(s["timestamp"])}</a>' if s.get("timestamp") and video else ""
-    meta = " · ".join(x for x in [KIND.get(s["kind"], s["kind"]), str(s.get("year") or ""), s.get("maker") or ""] if x)
+    meta = " · ".join(x for x in [KIND.get(s["kind"], s["kind"]), str(s.get("year") or ""), s.get("maker") or "",
+                                   f'{s["runtime_min"]} min' if s.get("runtime_min") else "", ", ".join((s.get("countries") or [])[:2])] if x)
     cr = s.get("credits") or {}
-    cred = " · ".join(f'<span>{lab}</span> {E(", ".join(cr[k]))}' for k, lab in (("director", "Dir."), ("dop", "DOP"), ("production", "Prod."), ("agency", "Agency")) if cr.get(k))
+    cred = " · ".join(f'<span>{lab}</span> {E(", ".join(cr[k][:3]))}' for k, lab in (("director", "Dir."), ("writer", "Writer"), ("dop", "DOP"), ("editor", "Editor"),
+                      ("composer", "Music"), ("production", "Prod."), ("agency", "Agency")) if cr.get(k) and (k not in ("writer", "editor", "composer") or roles))
     pal = "".join(f'<i style="background:{c}"></i>' for c in s.get("palette", [])[:5])
-    p = s["production"]
+    p = s.get("production")
     tech_names = ", ".join(techs[t]["name"].split(" (")[0] for t in s["techniques"] if t in techs)
     links = [f'<a href="{E(primary["url"])}" target="_blank" rel="noopener">{"Watch" if primary["kind"] == "video" else "Open"} ↗</a>']
-    links += [f'<a href="{E(u["url"])}" target="_blank" rel="noopener">{E(u.get("source") or u["kind"])} ↗</a>' for u in s["urls"][1:3]]
+    links += [f'<a href="{E(u["url"])}" target="_blank" rel="noopener">{("Watch on " + E(u.get("source") or "video")) if u["kind"] == "video" else E(u.get("source") or u["kind"])} ↗</a>'
+              for u in s["urls"][1:3]]
     if s.get("found_on"):
         links.append(f'<a href="{E(s["found_on"])}" target="_blank" rel="noopener">found on {E(s["provenance"]["found_via"])} ↗</a>')
-    return (f'<article class="shot" id="shot-{s["id"]}"><div class="img">{img_tag(s, base)}{badge}{tc}</div><div class="body">'
+    wf = "".join(f'<div><b>{ROLE[r][0]} · <span class="ar" lang="ar">{ROLE[r][1]}</span></b>{E(s["watch_for"][r])}</div>'
+                 for r in roles if r in (s.get("watch_for") or {}))
+    inspire = ((f'<div class="wf">{wf}</div>' if wf else "")
+               + (f'<p class="scene"><b>Key scene:</b> {E(s["key_scene"])}</p>' if s.get("key_scene") else "")
+               + (f'<div class="ex"><b>After watching:</b> {E(s["exercise"])}</div>' if s.get("exercise") else "")
+               + (f'<div class="pair">Double bill with <a href="#shot-{s["pairs_with"]}">{E((shots or {}).get(s["pairs_with"], {}).get("title", s["pairs_with"]))}</a></div>'
+                  if s.get("pairs_with") else ""))
+    prod = ((f'<div class="prod"><span>{E(tech_names)}</span><span>{E(p["method"])}</span>{money(p["budget"])}'
+             + (f'<span>AI: {E(p["ai"].split(":")[0])}</span>' if p.get("ai") else "") + "</div>") if p
+            else f'<div class="prod"><span>{E(tech_names)}</span></div>')
+    numtag = f'<span class="num">{num:02d}</span>' if num else ""
+    return (f'<article class="shot" id="shot-{s["id"]}"><div class="img">{img_tag(s, base)}{badge}{tc}{numtag}</div><div class="body">'
             f'<div class="meta">{E(meta)}</div><h3>{E(s["title"])}</h3>'
             + (f'<div class="cred">{cred}</div>' if cred else "")
             + (f'<p class="note">{E(s["shot_note"])}</p>' if s.get("shot_note") else "")
-            + f'<p class="why">{E(s["why"])}</p>' + (f'<div class="pal" title="palette">{pal}</div>' if pal else "")
-            + f'<div class="prod"><span>{E(tech_names)}</span><span>{E(p["method"])}</span>{money(p["budget"])}'
-            + (f'<span>AI: {E(p["ai"].split(":")[0])}</span>' if p.get("ai") else "") + "</div>"
+            + f'<p class="why">{E(s["why"])}</p>' + inspire + (f'<div class="pal" title="palette">{pal}</div>' if pal else "")
+            + prod
             + f'<div class="links">{"".join(links)}</div></div></article>')
 
 
@@ -177,7 +200,9 @@ def build(run, base, kit, client_name):
         for s in run["shots"]:
             order.setdefault(s["techniques"][0], []).append(s["id"])
         groups = [{"technique": t, "shot_ids": ids} for t, ids in order.items()]
-    lang_ids = [g["technique"] for g in groups]
+    inspire = r["mode"] == "inspire"
+    roles = r.get("roles") or []
+    lang_ids = [g["technique"] for g in groups if g.get("technique")] or list(dict.fromkeys(s["techniques"][0] for s in run["shots"]))
     chips = "".join(f'<span class="chip">{E(techs[t]["name"].split(" (")[0])}<span class="ar" lang="ar">{E(techs[t]["name_ar"].split(" (")[0])}</span></span>'
                     for t in lang_ids if t in techs)
     ev = {"content": 0, "title": 0, "video": 0}
@@ -191,13 +216,25 @@ def build(run, base, kit, client_name):
             f'{" · " + E(", ".join(cover_shot.get("credits", {}).get("director", []))) if cover_shot.get("credits", {}).get("director") else ""}</figcaption></figure>'
             if cover_shot else "<div></div>")
     S = []
+    if inspire:
+        role_chips = "".join(f'<span class="chip">{ROLE[x][0]}<span class="ar" lang="ar">{ROLE[x][1]}</span></span>' for x in roles if x in ROLE)
+        kinds = [s["kind"] for s in run["shots"]]
+        mins = sum(s.get("runtime_min") or 0 for s in run["shots"])
+        countries = {c for s in run["shots"] for c in (s.get("countries") or [])[:1]}
+        stats = (f'<div><b>{kinds.count("film")}</b><span>features</span></div><div><b>{kinds.count("short")}</b><span>shorts</span></div>'
+                 f'<div><b>{round(mins / 60) if mins else "?"}</b><span>hours of cinema</span></div><div><b>{len(countries)}</b><span>countries</span></div>')
+        lang = (f'<div class="lang"><div class="eyebrow">For</div><div class="chips">{role_chips}</div></div>'
+                + (f'<div class="lang"><div class="eyebrow">Look for</div><div class="chips">{chips}</div></div>' if chips else ""))
+        eyebrow = "A viewing programme"
+    else:
+        stats = (f'<div><b>{len(run["shots"])}</b><span>shots</span></div><div><b>{len(lang_ids)}</b><span>techniques</span></div>'
+                 f'<div><b>{srcs}</b><span>sources</span></div><div><b>{sum(s["status"] == "verified" for s in run["shots"])}</b><span>links checked</span></div>')
+        lang = f'<div class="lang"><div class="eyebrow">In film language</div><div class="chips">{chips}</div></div>' if chips else ""
+        eyebrow = "The request"
     S.append(f'<header class="cover"><div class="wrap"><div class="topbar">{brand}<div class="eyebrow" style="text-align:end">Shot scout · '
-             f'{E(MODE[r["mode"]])}<br>{E(r["created"])}</div></div><div class="cov"><div><div class="eyebrow">The request</div>'
-             f'<h1>{E(title)}</h1><p class="lede">{E(r["request"])}</p>'
-             + (f'<div class="lang"><div class="eyebrow">In film language</div><div class="chips">{chips}</div></div>' if chips else "")
-             + f'<div class="stats"><div><b>{len(run["shots"])}</b><span>shots</span></div><div><b>{len(lang_ids)}</b><span>techniques</span></div>'
-             f'<div><b>{srcs}</b><span>sources</span></div><div><b>{sum(s["status"] == "verified" for s in run["shots"])}</b><span>links checked</span></div></div>'
-             f'</div>{hero}</div></div></header>')
+             f'{E(MODE[r["mode"]])}<br>{E(r["created"])}</div></div><div class="cov"><div><div class="eyebrow">{eyebrow}</div>'
+             f'<h1>{E(title)}</h1><p class="lede">{E(r.get("theme") or r["request"])}</p>'
+             + lang + f'<div class="stats">{stats}</div></div>{hero}</div></div></header>')
     look = run.get("look") or {}
     frame = r.get("frame")
     if look or frame:
@@ -214,11 +251,22 @@ def build(run, base, kit, client_name):
             spec = "".join(f"<dt>{lab}</dt><dd>{E(frame[k])}</dd>" for k, lab in (("shot_size", "Shot"), ("lens", "Lens"), ("light", "Light"), ("movement", "Movement")) if frame.get(k))
             right = f'<div class="frame"><div class="eyebrow" style="margin-bottom:10px">Your frame</div>{fimg}<p>{E(frame["description"])}</p><dl class="spec">{spec}</dl></div>'
         S.append(f'<section id="look"><div class="wrap look"><div>{left}</div>{right}</div></section>')
-    for g in groups:
-        t = techs.get(g["technique"])
-        cards = "".join(shot_card(shots[i], base, techs) for i in g["shot_ids"] if i in shots)
-        if t and cards:
-            S.append(f'<section id="t-{t["id"]}"><div class="wrap">{tech_head(t, g.get("note"))}<div class="grid">{cards}</div></div></section>')
+    n = 0
+    for gi, g in enumerate(groups):
+        t = techs.get(g.get("technique") or "")
+        cards = []
+        for i in g["shot_ids"]:
+            if i in shots:
+                n += 1
+                cards.append(shot_card(shots[i], base, techs, roles, n if inspire else None, shots))
+        if not cards:
+            continue
+        if t and not g.get("title"):
+            head = tech_head(t, g.get("note"))
+        else:
+            head = (f'<div class="sec-head"><div class="eyebrow">{"Part " + str(gi + 1) if inspire else "Group"}</div><h2>{E(g.get("title") or t["name"])}</h2>'
+                    + (f'<p>{E(g["note"])}</p>' if g.get("note") else "") + "</div>")
+        S.append(f'<section id="g-{gi}"><div class="wrap">{head}<div class="grid">{"".join(cards)}</div></div></section>')
     if run.get("people"):
         cards = []
         for p in run["people"]:
@@ -269,7 +317,13 @@ def shots_md(run):
         cr = s.get("credits") or {}
         L += [f"## {s['title']} ({s.get('year', '')})", f"- Link: {s['urls'][0]['url']}" + (f" at {s['timestamp']}" if s.get("timestamp") else ""),
               f"- Techniques: {', '.join(techs[t]['name'] for t in s['techniques'] if t in techs)}",
-              f"- Why: {s['why']}", f"- How: {s['production']['how']} (budget {s['production']['budget']}/4, {s['production']['method']})"]
+              f"- Why: {s['why']}"]
+        if s.get("production"):
+            L.append(f"- How: {s['production']['how']} (budget {s['production']['budget']}/4, {s['production']['method']})")
+        for role, note in (s.get("watch_for") or {}).items():
+            L.append(f"- Watch for ({role}): {note}")
+        if s.get("exercise"):
+            L.append(f"- Exercise: {s['exercise']}")
         if cr:
             L.append("- Credits: " + "; ".join(f"{k} {', '.join(v)}" for k, v in cr.items()))
         L.append("")

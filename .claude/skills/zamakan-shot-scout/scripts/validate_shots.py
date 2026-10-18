@@ -37,7 +37,19 @@ def validate(run, target=None):
     shots = {s["id"]: s for s in run["shots"]}
     if "TODO" in json.dumps(run):
         E.append("TODOs left in the file (fill or delete them)")
+    mode = run["run"]["mode"]
+    roles = run["run"].get("roles") or []
     for s in run["shots"]:
+        if mode != "inspire" and not s.get("production"):
+            E.append(f"{s['id']}: production notes missing (required outside inspire mode)")
+        if mode == "inspire":
+            missing = [r for r in roles if r not in (s.get("watch_for") or {})]
+            if s["kind"] not in ("essay", "interview", "breakdown") and missing:
+                E.append(f"{s['id']}: watch_for missing for {', '.join(missing)}")
+            if s.get("pairs_with") and s["pairs_with"] not in shots:
+                E.append(f"{s['id']}: pairs_with '{s['pairs_with']}' is not a shot id")
+            if s["kind"] in ("film", "short") and not s.get("credits"):
+                W.append(f"{s['id']}: no credits: look them up with film_facts.py")
         for t in s["techniques"]:
             if t not in techs:
                 E.append(f"{s['id']}: technique '{t}' is not in techniques.json (use an id from it, or add the technique there)")
@@ -54,18 +66,35 @@ def validate(run, target=None):
             W.append(f"{s['id']}: timestamp but no video link")
     grouped = set()
     for g in run.get("groups", []):
-        if g["technique"] not in techs:
+        if not g.get("technique") and not g.get("title"):
+            E.append("a group needs a technique id or a title")
+        elif g.get("technique") and g["technique"] not in techs:
             E.append(f"group '{g['technique']}' is not a technique id")
         for sid in g["shot_ids"]:
             if sid not in shots:
-                E.append(f"group '{g['technique']}' points at missing shot '{sid}'")
+                E.append(f"group '{g.get('technique') or g.get('title')}' points at missing shot '{sid}'")
             grouped.add(sid)
     loose = [s for s in shots if s not in grouped]
     if run.get("groups") and loose:
         W.append(f"shots in no group: {', '.join(loose[:6])}")
     if not run.get("groups"):
         W.append("no groups: the board will group by each shot's first technique")
-    mode = run["run"]["mode"]
+    if mode == "inspire":
+        if not roles:
+            E.append("inspire mode needs run.roles (writer, dop, director, editor)")
+        kinds = Counter(s["kind"] for s in run["shots"])
+        if kinds.get("film", 0) < 2:
+            W.append("fewer than 2 feature films: the programme needs at least a couple of evenings")
+        if not kinds.get("short"):
+            W.append("no short film: add one that can be watched free tonight (shortoftheweek)")
+        if not any(k in kinds for k in ("essay", "interview", "breakdown")):
+            W.append("no essay or breakdown: add one way into how it was made")
+        countries = Counter(c for s in run["shots"] for c in (s.get("countries") or [])[:1])
+        if len(countries) < 3 and len(run["shots"]) >= 5:
+            W.append("few countries: mix world, Arab and Saudi cinema")
+        no_ex = [s["id"] for s in run["shots"] if s["kind"] in ("film", "short", "scene") and not s.get("exercise")]
+        if no_ex:
+            W.append(f"no exercise for: {', '.join(no_ex[:5])}")
     if mode == "frame-match" and not run["run"].get("frame"):
         E.append("frame-match mode needs run.frame (the frame described in film terms)")
     if mode == "who":

@@ -6,9 +6,11 @@ description: >
   (director, DOP), timestamps and production notes (rig, budget, doable in Saudi Arabia, AI-feasible). Four modes:
   subject/mood ("desert at dawn, lonely and epic"), effect/technique ("dolly zoom", "speed ramp", "liquid splash"),
   match this frame (an uploaded still or screenshot → similar shots), and who does this well (directors, DOPs,
-  production houses known for a look). Use this whenever someone asks for cinematic, film, visual or mood references,
+  production houses known for a look), and inspire me (a viewing programme for a writer, cinematographer, director
+  or editor: films, free short films, scenes and essays, with what to watch for and an exercise). Use this whenever someone asks for cinematic, film, visual or mood references,
   a look book, shot references for a treatment or shoot, "how do we shoot X", "find shots like this image",
-  "references on Vimeo", a technique or VFX reference, or which director/DOP to brief. Speaks film language in
+  "references on Vimeo", a technique or VFX reference, which director/DOP to brief, or "what should I watch" to get
+  inspired as a filmmaker ("I'm a writer, inspire me", "films about silence", "أبغى أفلام تلهمني"). Speaks film language in
   English and Arabic, searches Eyecannndy, Film-Grab, Vimeo, YouTube and trade press, and never invents a shot:
   every link is checked live. For campaign/strategy references use zamakan-reference-scout instead.
 ---
@@ -30,7 +32,9 @@ how, gear, budget 1–4, kit level, AI note, Eyecannndy slugs) and `references/m
 - Client work follows `zamakan-core`: `python3 $CORE/scripts/client.py job <slug> shots-<topic>` makes `$JOB`.
   No client: `$JOB = jobs/<date>-shots-<topic>/` at the repo root (git-ignored).
 - Mode, from the request: **subject** (a subject, place or mood), **effect** (a named technique or effect),
-  **frame-match** (they gave an image), **who** (they want people). Ask once only if it changes the search: what the
+  **frame-match** (they gave an image), **who** (they want people), **inspire** (a filmmaker wants to watch something
+  to feed their creativity; `expand.py` prints the mode hint and the roles it heard). Inspire mode is personal, not client
+  work: no client folder, no brand; see "Inspire mode" below. Ask once only if it changes the search: what the
   references are for (treatment, mood film, shoot plan), any must-avoid, and whether the board should wear the
   client's brand. Otherwise go.
 
@@ -106,6 +110,30 @@ content and rebuild rather than editing HTML. `shots.md` is written for other ag
 Reply briefly: counts (shots, techniques, sources, verified with evidence levels), the look in one line, the 3–4
 technique groups with one standout shot each, the production headline (budget, the expensive part), where the files
 are, what to watch before the meeting.
+
+## Inspire mode (a viewing programme)
+
+For a writer, cinematographer, director or editor who wants to *watch* something that sparks ideas. Same tools, a
+different deliverable: 6–10 titles in a running order.
+1. `expand.py "<their words>"` → roles (`writer`, `dop`, `director`, `editor`) and the theme. Ask once only if the
+   role is unclear.
+2. Choose titles with judgement: the theme first, then range. Aim for **2–4 features** (an evening each), **2 short
+   films free to watch tonight** (`discover_shots.py shortoftheweek <word>`), **1–2 scenes or clips** (Eyecannndy) and
+   **1–2 essays or breakdowns** (YouTube video essays, ASC articles). Mix world, Arab and Saudi cinema; include at least
+   one older film and one from the last five years.
+3. **Facts only from lookups:** `film_facts.py --titles titles.txt --craft --out candidates.jsonl` gives year, credits
+   (writer, director, DOP, editor, composer), runtime, countries, the Arabic title and *craft notes* (sentences from
+   Wikipedia about camera, lenses, light, editing, sound, casting). Even famous credits are easy to get wrong: look
+   them up. If a title isn't found, try the original or Arabic title (`"نورة" --year 2024`); check the match line.
+4. For each title write, in shots.json: `why` (why it fits *them*), `watch_for` (one note per requested role, about
+   *this* film, grounded in the craft notes or the source; `references/roles.json` has prompts per craft), `exercise`
+   (one small making task; patterns in roles.json), `key_scene` only when a source describes it, `pairs_with` for a
+   double bill. `techniques` are what to *look for* (lead first). `production` is optional in this mode.
+5. `groups` become the parts of the programme, with a `title` and a one-line note (e.g. "Tonight, free", "Three
+   evenings", "From our region", "How it's done"). Set `run.roles` and `run.theme`.
+6. Verify, palette, validate, build and check exactly as in steps 5–6. The board shows a numbered running order,
+   "watch for" per craft, the exercise and the double bills.
+Never summarise plots you haven't read about; never claim what happens in a scene unless the source says it.
 
 ## Rules
 - **Never invent**: no shot, scene, timestamp, credit, award or result that a source doesn't state. A thumbnail you

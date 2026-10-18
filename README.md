@@ -9,7 +9,7 @@ the skill, using small scripts for the mechanical work so its effort goes into j
 | Skill | Ask for… | You get |
 |---|---|---|
 | **Reference scout** (`zamakan-reference-scout`) | "Find us references for the Ramadan kickoff", "What are our competitors running?", "Best ads that made waiting fun, anywhere", "References for our pitch to X" | Real campaigns, every link checked live; insights with sources; competitor check; patterns and white space; 3–5 creative territories with Arabic names; "sparks from elsewhere"; a recommendation and a before-kickoff list. Delivered as an on-brand **board**, **deck** (PowerPoint + PDF) and/or **report**. |
-| **Shot scout** (`zamakan-shot-scout`) | "Maghrib light on the road, warm and spiritual", "Best dolly zoom examples", "Find shots like this frame" (attach an image), "Which DOPs shoot warm portraits?" | Cinematic references translated into film language (English and Arabic): a dark, image-first **shot board** grouped by technique, with stills, colour palettes, credits, links that jump to the moment, and "how to shoot it" notes (gear, budget level, Saudi notes, where AI helps). |
+| **Shot scout** (`zamakan-shot-scout`) | "Maghrib light on the road, warm and spiritual", "Best dolly zoom examples", "Find shots like this frame" (attach an image), "Which DOPs shoot warm portraits?", and for your own creativity: "I'm a writer, inspire me: films about silence" | Cinematic references translated into film language (English and Arabic): a dark, image-first **shot board** grouped by technique, with stills, colour palettes, credits, links that jump to the moment, and "how to shoot it" notes (gear, budget level, Saudi notes, where AI helps). **Inspire me** gives a viewing programme instead: features, free short films and essays in a running order, with checked credits (Wikidata), "what to watch for" per craft (writer, cinematographer, director, editor) and a small exercise after each. |
 | **Design system** (`zamakan-design-system`) | "Here are the brand guidelines for client X" | The client's visual identity as files every other skill uses: colours, fonts, logos with usage rules, design tokens, a `DESIGN.md`, and a style tile, each value traced to its page in the guideline. |
 | **Core** (`zamakan-core`) | (used by the others) | Where client files live, how to load a client's brand, and the bilingual quality bar. |
 
@@ -58,7 +58,7 @@ PLAN.md                  every decision, status per step, and the progress log
   on five scenarios; see the [scorecard](https://claude.ai/artifact/Gmjx7ao4bA2inZKD9CKsDT) (private link; share it from
   the page). Honest summary: no invented links on either side; the skill's work is more structured and actionable, quality
   is roughly even, and competitor watch was rebuilt after the last full round. Open issues are in `evals/scorecard/`.
-- **Shot scout:** new, v0.1.0. Tested on four real requests (one per mode); 15-shot Oman Oil "Maghrib on the road" board.
+- **Shot scout:** new, v0.2.0 (with Inspire me). Tested on four real requests (one per mode); 15-shot Oman Oil "Maghrib on the road" board.
   Vimeo is reached through web search + a link check (its own search blocks us); a free Vimeo developer key would add
   direct search later. ShotDeck and Behance block us.
 - **Design system:** first round done and paused (PLAN §3, §5b).

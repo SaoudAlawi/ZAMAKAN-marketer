@@ -396,6 +396,31 @@
     "orbit",
     "long-lens"
    ]
+  },
+  {
+   "id": "quiet",
+   "words": [
+    "silence",
+    "silent",
+    "quiet",
+    "unsaid",
+    "unspoken",
+    "restraint",
+    "stillness of people",
+    "صمت",
+    "صامت",
+    "هدوء",
+    "سكوت",
+    "المسكوت عنه"
+   ],
+   "techniques": [
+    "static-frame",
+    "wide-lonely",
+    "oner",
+    "frame-in-frame",
+    "symmetry"
+   ],
+   "keeps_subject": true
   }
  ]
 }

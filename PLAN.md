@@ -183,7 +183,7 @@ Harder eval checks: insights with sources, competitor coverage, recommendation p
 | 3 | **Iteration 3** (from 40+ benchmark-agent reports): 3a housekeeping, 3b fetching/thumbnails, 3c honest verification evidence, 3d competitor-watch rebuilt, 3e output fixes, 3f ranking, 3g blind judge + repeat runs | 173 tests; partial benchmark (stopped to save tokens) | ✅ |
 | 2f | **Benchmark suite + scorecard**: 5 scenarios (GCC brief, global creative question, competitor watch, pitch, global-scope brief), with vs without skill, repeated runs; quality, real-link rate, consistency, time, tokens; scorecard page tracked across iterations | grader tests; then the benchmark run | ✅ (first pass) |
 
-## 3c. Feature 3: Shot Scout (cinematic references), ✅ BUILT v0.1.0 (2026-10-18)
+## 3c. Feature 3: Shot Scout (cinematic references), ✅ BUILT v0.2.0 (2026-10-18, + Inspire me)
 
 **Goal:** cinematic references for a subject, mood or effect: better than searching Vimeo, because the skill speaks
 film language, searches the right source for each need, and tells production how to shoot it.
@@ -226,6 +226,13 @@ listings), `palette.py`, `validate_shots.py`, `build_shot_board.py`. 67 techniqu
 "Maghrib on the road" (subject, 15 shots), "speed ramp" (effect), "warm light DOPs" (who), the station frame
 (frame-match; the link check caught a video made private). Learned: Eyecannndy search is single-word; `site:vimeo.com`
 search is thin; shots.net is good for commercial credits; film clips on Eyecannndy often have no video link.
+**Inspire me (v0.2.0, agreed 2026-10-18):** a mode for filmmakers' own creativity (writer, cinematographer,
+director, editor): features, free shorts, scenes and essays in a running order. `film_facts.py` (Wikidata + Wikipedia:
+checked credits, runtime, countries, Arabic title, `--craft` how-it-was-made sentences), Short of the Week API,
+`roles.json` (watch-for prompts and exercises per craft), a "quiet" mood, programme board (numbered order, watch-for per
+role, exercise, double bills). Real run: "The unsaid" (writer + DOP), 10 titles from 7 countries incl. Theeb and Norah.
+Learned: Wikimedia rate-limits browser-like agents (use our own agent name + backoff); title search must reject people
+("Norah" matched Nora Ephron) and try Arabic titles; a guessed Wikidata id was wrong, so facts only from lookups.
 - **3f Tests + one real run** per mode on a small test set (answer keys in `evals/fixtures/shots/`, never shown to the
   agent under test). No benchmark runs without the user's go-ahead on cost.
 
@@ -279,6 +286,7 @@ The no-skill baseline did several generic things worth building into the skill:
 - 2026-10-13: Re-scoped to the sub-skill architecture; built the Rawaq sample package and answer key.
 - 2026-10-13: Feature 2 (reference scout) defined; network limits of the cloud environment noted.
 - 2026-10-13: Step 2 done. Design: the agent writes only spec.json + brand.md; scripts generate the rest.
+- 2026-10-18: Shot scout v0.2.0: Inspire me mode (viewing programmes for writers, DOPs, directors, editors), film_facts.py (Wikidata credits + craft notes), Short of the Week; 33 shot tests.
 - 2026-10-18: Feature 3 (Shot Scout) built end to end (§3c): 8 scripts, 67-technique EN/AR dictionary, dark shot board, 27 tests (207 total); one real run per mode.
 - 2026-10-18: Feature 3 (Shot Scout) planned with the user; see §3c.
 - 2026-10-15: First real client run (Oman Oil, Ramadan for taxi drivers, MENA, board): 23 references all live (10 read, 8 login walls, 5 videos unwatched), 4 territories. Added `build_outputs.py --logo` (house look + client logo). Fixed a privacy leak: client-relative tags (client-own-work, competitor) no longer reach the shared library. 180 tests.
