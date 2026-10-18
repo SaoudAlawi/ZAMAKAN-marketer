@@ -9,10 +9,11 @@ the skill, using small scripts for the mechanical work so its effort goes into j
 | Skill | Ask for… | You get |
 |---|---|---|
 | **Reference scout** (`zamakan-reference-scout`) | "Find us references for the Ramadan kickoff", "What are our competitors running?", "Best ads that made waiting fun, anywhere", "References for our pitch to X" | Real campaigns, every link checked live; insights with sources; competitor check; patterns and white space; 3–5 creative territories with Arabic names; "sparks from elsewhere"; a recommendation and a before-kickoff list. Delivered as an on-brand **board**, **deck** (PowerPoint + PDF) and/or **report**. |
+| **Shot scout** (`zamakan-shot-scout`) | "Maghrib light on the road, warm and spiritual", "Best dolly zoom examples", "Find shots like this frame" (attach an image), "Which DOPs shoot warm portraits?" | Cinematic references translated into film language (English and Arabic): a dark, image-first **shot board** grouped by technique, with stills, colour palettes, credits, links that jump to the moment, and "how to shoot it" notes (gear, budget level, Saudi notes, where AI helps). |
 | **Design system** (`zamakan-design-system`) | "Here are the brand guidelines for client X" | The client's visual identity as files every other skill uses: colours, fonts, logos with usage rules, design tokens, a `DESIGN.md`, and a style tile, each value traced to its page in the guideline. |
 | **Core** (`zamakan-core`) | (used by the others) | Where client files live, how to load a client's brand, and the bilingual quality bar. |
 
-The two work together: when a client has a design system, the scout's boards and decks wear that client's logo, fonts,
+The scouts work together with the design system: when a client has a design system, the scout's boards and decks wear that client's logo, fonts,
 colours and shapes. Without one they use the ZAMAKAN house style.
 
 ## How to use it
@@ -31,6 +32,8 @@ then to build its design system.
 
 - **Nothing is invented.** Every reference is opened and matched to its page. Boards say how strong the evidence is:
   *page read*, *page exists, details unconfirmed* (login walls), or *video, not watched*.
+- **Videos aren't watched by Claude.** Shot notes come from the source (Eyecannndy, the maker's description, trade
+  press) or from the thumbnail Claude looked at; anything unwatched is on the board's "watch before the meeting" list.
 - **Some places can't be read from here:** Instagram, TikTok, Snapchat, X and the Meta Ad Library. Competitor reports
   include a "check by hand" list of links for a person to open (about 5 minutes per brand).
 - **Client material stays private.** `clients/` is never committed. The shared campaign library in `library/` holds no
@@ -40,7 +43,7 @@ then to build its design system.
 ## Folders
 
 ```
-.claude/skills/          the three skills (instructions, scripts, schemas, references)
+.claude/skills/          the skills (instructions, scripts, schemas, references)
 library/                 shared campaign library: README index + one REFERENCE.md per campaign
 clients/                 your clients (private, git-ignored): input/, design-system/, jobs/, library/
 samples/rawaq/           a fictional test client (guideline PDF, logos, fonts) used for development
@@ -55,6 +58,9 @@ PLAN.md                  every decision, status per step, and the progress log
   on five scenarios; see the [scorecard](https://claude.ai/artifact/Gmjx7ao4bA2inZKD9CKsDT) (private link; share it from
   the page). Honest summary: no invented links on either side; the skill's work is more structured and actionable, quality
   is roughly even, and competitor watch was rebuilt after the last full round. Open issues are in `evals/scorecard/`.
+- **Shot scout:** new, v0.1.0. Tested on four real requests (one per mode); 15-shot Oman Oil "Maghrib on the road" board.
+  Vimeo is reached through web search + a link check (its own search blocks us); a free Vimeo developer key would add
+  direct search later. ShotDeck and Behance block us.
 - **Design system:** first round done and paused (PLAN §3, §5b).
 
 ## For developers

@@ -1,0 +1,568 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "ZAMAKAN shot scout run",
+ "type": "object",
+ "required": [
+  "schema_version",
+  "run",
+  "shots"
+ ],
+ "additionalProperties": false,
+ "properties": {
+  "schema_version": {
+   "const": "1.0"
+  },
+  "run": {
+   "type": "object",
+   "required": [
+    "id",
+    "mode",
+    "created",
+    "request"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string"
+    },
+    "mode": {
+     "enum": [
+      "subject",
+      "effect",
+      "frame-match",
+      "who"
+     ]
+    },
+    "created": {
+     "type": "string"
+    },
+    "client": {
+     "type": "string"
+    },
+    "title": {
+     "type": "string"
+    },
+    "request": {
+     "type": "string"
+    },
+    "subject": {
+     "type": "string"
+    },
+    "purpose": {
+     "type": "string"
+    },
+    "web_access": {
+     "enum": [
+      "full",
+      "search-only"
+     ]
+    },
+    "queries": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "cover": {
+     "type": "string"
+    },
+    "frame": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "description"
+     ],
+     "properties": {
+      "file": {
+       "type": "string"
+      },
+      "description": {
+       "type": "string",
+       "minLength": 20
+      },
+      "shot_size": {
+       "type": "string"
+      },
+      "lens": {
+       "type": "string"
+      },
+      "light": {
+       "type": "string"
+      },
+      "movement": {
+       "type": "string"
+      },
+      "palette": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      }
+     }
+    }
+   }
+  },
+  "look": {
+   "type": "object",
+   "additionalProperties": false,
+   "properties": {
+    "summary": {
+     "type": "string"
+    },
+    "summary_ar": {
+     "type": "string"
+    },
+    "palette": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "traits": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "groups": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "technique",
+     "shot_ids"
+    ],
+    "additionalProperties": false,
+    "properties": {
+     "technique": {
+      "type": "string"
+     },
+     "note": {
+      "type": "string"
+     },
+     "shot_ids": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     }
+    }
+   }
+  },
+  "shots": {
+   "type": "array",
+   "items": {
+    "$ref": "#/$defs/shot"
+   }
+  },
+  "people": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "name",
+     "role",
+     "known_for",
+     "shot_ids"
+    ],
+    "additionalProperties": false,
+    "properties": {
+     "name": {
+      "type": "string"
+     },
+     "role": {
+      "enum": [
+       "director",
+       "dop",
+       "production",
+       "studio",
+       "editor",
+       "colorist",
+       "vfx"
+      ]
+     },
+     "known_for": {
+      "type": "string"
+     },
+     "shot_ids": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "links": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "region": {
+      "type": "string"
+     },
+     "note": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "production_summary": {
+   "type": "object",
+   "additionalProperties": false,
+   "properties": {
+    "gear": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "budget": {
+     "type": "string"
+    },
+    "ksa_notes": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "ai_notes": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "watch_list": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  },
+  "open_questions": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  }
+ },
+ "$defs": {
+  "shot": {
+   "type": "object",
+   "required": [
+    "id",
+    "title",
+    "kind",
+    "urls",
+    "status",
+    "techniques",
+    "why",
+    "production",
+    "provenance"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string",
+     "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "title": {
+     "type": "string"
+    },
+    "maker": {
+     "type": "string",
+     "description": "artist, brand, studio or film's director: helps match the live page"
+    },
+    "kind": {
+     "enum": [
+      "film",
+      "commercial",
+      "music-video",
+      "short",
+      "title-sequence",
+      "series",
+      "clip",
+      "stills",
+      "breakdown",
+      "motion-design",
+      "photography"
+     ]
+    },
+    "year": {
+     "type": "integer",
+     "minimum": 1890,
+     "maximum": 2100
+    },
+    "country": {
+     "type": "string",
+     "pattern": "^[A-Z]{2}$"
+    },
+    "urls": {
+     "type": "array",
+     "minItems": 1,
+     "items": {
+      "type": "object",
+      "required": [
+       "url",
+       "kind"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "url": {
+        "type": "string",
+        "pattern": "^https?://"
+       },
+       "kind": {
+        "enum": [
+         "video",
+         "stills",
+         "article",
+         "library",
+         "award-entry",
+         "case",
+         "brand-site"
+        ]
+       },
+       "source": {
+        "type": "string"
+       },
+       "http_status": {
+        "type": "integer"
+       },
+       "checked_at": {
+        "type": "string"
+       },
+       "verified": {
+        "type": "boolean"
+       },
+       "title_match": {
+        "type": "boolean"
+       },
+       "evidence": {
+        "enum": [
+         "content",
+         "title",
+         "video"
+        ]
+       },
+       "timestamp": {
+        "type": "string",
+        "pattern": "^\\d{1,2}:\\d{2}(:\\d{2})?$"
+       }
+      }
+     }
+    },
+    "status": {
+     "enum": [
+      "verified",
+      "unverified",
+      "rejected"
+     ]
+    },
+    "found_on": {
+     "type": "string",
+     "description": "the library page where it was found (Eyecannndy technique page, Film-Grab), when the primary link is elsewhere"
+    },
+    "timestamp": {
+     "type": "string",
+     "pattern": "^\\d{1,2}:\\d{2}(:\\d{2})?$",
+     "description": "the moment, only when a source states it"
+    },
+    "techniques": {
+     "type": "array",
+     "minItems": 1,
+     "items": {
+      "type": "string"
+     }
+    },
+    "shot_note": {
+     "type": "string",
+     "description": "what happens in this shot, as the source describes it"
+    },
+    "credits": {
+     "type": "object",
+     "additionalProperties": false,
+     "properties": {
+      "director": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      },
+      "dop": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      },
+      "editor": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      },
+      "colorist": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      },
+      "production": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      },
+      "agency": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      },
+      "vfx": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      }
+     }
+    },
+    "credits_source": {
+     "type": "string",
+     "description": "where the credits come from (e.g. eyecannndy, the case page)"
+    },
+    "thumbnail": {
+     "type": "object",
+     "additionalProperties": false,
+     "properties": {
+      "url": {
+       "type": "string"
+      },
+      "local": {
+       "type": "string"
+      }
+     }
+    },
+    "stills": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "palette": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "pattern": "^#[0-9A-Fa-f]{6}$"
+     }
+    },
+    "why": {
+     "type": "string",
+     "minLength": 10
+    },
+    "production": {
+     "type": "object",
+     "required": [
+      "method",
+      "how",
+      "budget"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "method": {
+       "enum": [
+        "practical",
+        "rig",
+        "vfx",
+        "edit",
+        "ai",
+        "mixed"
+       ]
+      },
+      "how": {
+       "type": "string",
+       "minLength": 10
+      },
+      "gear": {
+       "type": "string"
+      },
+      "budget": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 4
+      },
+      "kit": {
+       "type": "string"
+      },
+      "ksa": {
+       "type": "string"
+      },
+      "ai": {
+       "type": "string"
+      }
+     }
+    },
+    "scores": {
+     "type": "object",
+     "additionalProperties": false,
+     "properties": {
+      "relevance": {
+       "type": "number",
+       "minimum": 0,
+       "maximum": 5
+      },
+      "craft": {
+       "type": "number",
+       "minimum": 0,
+       "maximum": 5
+      },
+      "feasibility": {
+       "type": "number",
+       "minimum": 0,
+       "maximum": 5
+      }
+     }
+    },
+    "provenance": {
+     "type": "object",
+     "required": [
+      "found_via"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "found_via": {
+       "enum": [
+        "eyecannndy",
+        "filmgrab",
+        "shotcafe",
+        "youtube",
+        "vimeo",
+        "web-search",
+        "article",
+        "library",
+        "known-example"
+       ]
+      },
+      "query": {
+       "type": "string"
+      },
+      "confidence": {
+       "enum": [
+        "high",
+        "medium",
+        "low"
+       ]
+      }
+     }
+    },
+    "tags": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    }
+   }
+  }
+ }
+}
