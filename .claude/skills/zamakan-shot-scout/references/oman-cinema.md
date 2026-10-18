@@ -1,6 +1,7 @@
 # Omani cinema: where to find it, and a checked starting list (2026-10-18)
 
-ZAMAKAN is an Omani agency, so Omani films come first in any regional part of a programme or board. Omani cinema is
+ZAMAKAN is an Omani agency. This guide helps find Omani films when they fit a request; it is never a quota or a
+filter (the best work from anywhere always comes first). Omani cinema is
 young and mostly **short films and documentaries**; few are on Wikidata or streaming platforms, so finding them takes
 these sources rather than `film_facts.py` alone.
 
@@ -37,7 +38,7 @@ these sources rather than `film_facts.py` alone.
 | إنسان، ديانة الماء، وردة، سرقف | 2024 | (see article) | Award winners, Dhofar International Film Festival 2024 | [Oman Daily](https://www.omandaily.om/ampArticle/1164162) |
 
 ## How to use it
-- In Inspire me, open the regional part with an Omani title that fits the theme; say honestly when it can't be
+- In Inspire me, include an Omani title when one genuinely fits the theme; say honestly when it can't be
   streamed ("festival film: watch for screenings, or ask the Oman Film Society"), and put that in `watch_list`.
 - In client work (subject or frame-match), search Omani makers first for local looks: YouTube in Arabic, Oman Daily.
 - Add new finds here with their source, so the list grows with every run.

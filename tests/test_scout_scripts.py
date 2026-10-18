@@ -121,6 +121,7 @@ def test_canon_youtube_variants():
 
 def test_score_prefers_relevant_gcc_and_flags():
     brief = json.loads((FIX / "rawaq-ramadan-brief.json").read_text(encoding="utf-8"))
+    brief["scope"] = "gcc"  # the GCC preference only applies when asked for (the default is global)
     terms = SC.brief_terms(brief)
     good = {"title": "Ramadan suhoor coffee nights", "brand": "Barn's", "country": "SA", "year": 2026}
     far = {"title": "Summer sale", "brand": "Shoe Co", "country": "US", "year": 2012}
@@ -130,6 +131,16 @@ def test_score_prefers_relevant_gcc_and_flags():
     assert any("AI demo" in f for f in s_ai[2]) and s_ai[0] < s_good[0]
     lantern = SC.score({"title": "Lantern lights for Ramadan", "country": "AE"}, brief, terms, 2026)
     assert any("avoid-list" in f for f in lantern[2])
+
+
+def test_default_scope_is_global_no_regional_limit():
+    """The user doesn't want outputs limited: with no scope set, a great campaign from anywhere scores like a local one."""
+    brief = json.loads((FIX / "rawaq-ramadan-brief.json").read_text(encoding="utf-8"))
+    brief.pop("scope", None)
+    terms = SC.brief_terms(brief)
+    local = SC.score({"title": "Ramadan suhoor coffee nights", "brand": "A", "country": "OM", "year": 2026}, brief, terms, 2026)
+    far = SC.score({"title": "Ramadan suhoor coffee nights", "brand": "B", "country": "BR", "year": 2026}, brief, terms, 2026)
+    assert local[1]["region"] == far[1]["region"]
 
 
 # ---------------------------------------------------------------- live (needs internet)

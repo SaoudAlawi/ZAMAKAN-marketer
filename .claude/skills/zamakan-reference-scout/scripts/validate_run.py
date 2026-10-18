@@ -125,7 +125,7 @@ def semantic(run, target=None, brief=None):
             W.append(f"sparks should come from outside the client's region: {local}")
     if target and len(live) < target:
         W.append(f"coverage: {len(live)} references, target {target}")
-    scope = run["run"].get("scope", "gcc")
+    scope = run["run"].get("scope", "global")
     if scope == "global":
         regions = {REGION.get(r.get("country")) for r in live} - {None}
         if len(regions) < 3:

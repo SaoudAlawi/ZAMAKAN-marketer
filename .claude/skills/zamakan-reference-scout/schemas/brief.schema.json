@@ -85,8 +85,7 @@
     },
     "target_count": {
       "type": "integer",
-      "minimum": 5,
-      "maximum": 60
+      "minimum": 5
     },
     "outputs": {
       "type": "array",
@@ -114,7 +113,7 @@
         "mena",
         "global"
       ],
-      "description": "gcc = favour GCC work, the client's market first (default); mena = Arab world; global = no regional preference (fit is still judged for the client's market)"
+      "description": "global = no regional preference (default: the best work from anywhere); gcc = favour GCC work, only when asked; mena = favour the Arab world, only when asked (fit is still judged for the client's market)"
     },
     "markets": {
       "type": "array",
@@ -127,7 +126,6 @@
     "window_months": {
       "type": "integer",
       "minimum": 1,
-      "maximum": 60,
       "description": "competitor-watch: how far back counts as 'now' (default 12)."
     },
     "competitor_handles": {

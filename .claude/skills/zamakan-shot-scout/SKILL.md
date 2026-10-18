@@ -65,10 +65,10 @@ Gulf/Arab work. Then pass the URLs to `vimeo`/`page`.
 python3 $SHOT/scripts/shotstub.py $JOB/candidates.jsonl --list                  # keys + titles + techniques
 python3 $SHOT/scripts/contact_sheet.py $JOB/candidates.jsonl --out $JOB/sheet.jpg [--frame $JOB/frame.jpg] [--keys k.txt]
 ```
-Open `sheet.jpg` and pick like a DOP: composition, light, colour, lens. Aim for **12–20 shots** in subject mode
-(at least 3 lead techniques, more than one source, some regional work), **5–10** in effect mode (range: how different
-directors use it, plus one breakdown), **4–8** in frame-match (closest first), **3–5 people** with 1–3 shots each in
-who mode. Several clips from one video are fine when they show different shots; one is usually enough.
+Open `sheet.jpg` and pick like a DOP: composition, light, colour, lens. Aim for **at least 12 shots** in subject mode
+(at least 3 lead techniques, more than one source, some regional work), **at least 5** in effect mode (range: how different
+directors use it, plus one breakdown), **at least 4** in frame-match (closest first), **at least 3 people** with their shots in
+who mode. These are floors, not caps: keep every shot that genuinely earns its place. Several clips from one video are fine when they show different shots; one is usually enough.
 
 ## 4. Write shots.json
 ```bash
@@ -114,12 +114,12 @@ are, what to watch before the meeting.
 ## Inspire mode (a viewing programme)
 
 For a writer, cinematographer, director or editor who wants to *watch* something that sparks ideas. Same tools, a
-different deliverable: 6–10 titles in a running order.
+different deliverable: a running order of titles (at least 6; as many as genuinely serve the request, no cap).
 1. `expand.py "<their words>"` → roles (`writer`, `dop`, `director`, `editor`) and the theme. Ask once only if the
    role is unclear.
-2. Choose titles with judgement: the theme first, then range. Aim for **2–4 features** (an evening each), **2 short
+2. Choose titles with judgement: the theme first, then range. Aim for **at least 2 features** (an evening each), **2 short
    films free to watch tonight** (`discover_shots.py shortoftheweek <word>`), **1–2 scenes or clips** (Eyecannndy) and
-   **1–2 essays or breakdowns** (YouTube video essays, ASC articles). **Omani cinema first** in the regional part (`references/oman-cinema.md`: where to find it, a checked starting list), then the Gulf and Arab world, then the world; include at least
+   **1–2 essays or breakdowns** (YouTube video essays, ASC articles). Range is the point: the best films from anywhere. Include Omani and Gulf cinema whenever it genuinely fits (`references/oman-cinema.md` helps find it), but never as a quota or an ordering rule; include at least
    one older film and one from the last five years.
 3. **Facts only from lookups:** `film_facts.py --titles titles.txt --craft --out candidates.jsonl` gives year, credits
    (writer, director, DOP, editor, composer), runtime, countries, the Arabic title and *craft notes* (sentences from

@@ -5,7 +5,7 @@ Usage: python score.py <candidates.jsonl> --brief brief.json [--top 40] [--out r
 
 Scores (0-5, transparent heuristics; the agent's judgement comes after):
   relevance  - brief terms (category, moment, question, channels, competitors) found in the candidate
-  region     - depends on brief.scope: gcc (default) GCC 5 · MENA 3.5 · elsewhere 2 · unknown 2.5;
+  region     - depends on brief.scope: global (default) no regional preference; gcc: GCC 5 · MENA 3.5 · elsewhere 2 · unknown 2.5;
                mena: Arab world 5 · elsewhere 2; global: 3.5 for all (award sources +0.3)
   freshness  - by year: this year/last 5 … older drops; unknown 2.5
   reach      - YouTube views on a log scale (if known)
@@ -92,7 +92,7 @@ def score(c, b, terms, this_year, sparks=False):
         rel = 2.5
     country = c.get("country")
     is_gcc = country in GCC or (not country and bool(re.search(GCC_WORDS, t)))
-    scope = b.get("scope", "gcc")
+    scope = b.get("scope", "global")
     if scope == "global":  # no regional preference: judge the work, not where it ran
         region = 3.5
     elif scope == "mena":
@@ -134,7 +134,7 @@ def score(c, b, terms, this_year, sparks=False):
     elif not hits:
         flags.append("no brief words matched: probably off-topic")
     gulf = re.search(r"saudi|ksa|riyadh|jeddah|gcc|gulf|uae|dubai|qatar|kuwait|bahrain|oman", " ".join(str(b.get(k) or "") for k in ("market", "client", "category")), re.I) \
-        or b.get("scope", "gcc") in ("gcc", "mena")
+        or b.get("scope", "global") in ("gcc", "mena")
     if gulf and re.search(ALCOHOL_RX, t):
         flags.append("alcohol brand: not for a Saudi/Gulf client")
     award = bool(re.search(AWARD_RX, t))

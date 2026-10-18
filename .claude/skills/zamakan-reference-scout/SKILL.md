@@ -37,14 +37,15 @@ Work out the **mode**:
 
 | Mode | Sounds like | Do |
 |---|---|---|
-| `brief` | a client brief, a campaign, a season | all 4 rings, 20–30 references, top 3–5 teardowns, 3–5 territories |
-| `creative-question` | "best ads that use humour about money", "heritage without clichés" | wide search on one idea, 12–20 references, patterns, 2–3 territories optional |
+| `brief` | a client brief, a campaign, a season | all 4 rings, at least 20 references (no upper limit: keep every one that earns its place), top 3–5 teardowns, 3–5 territories |
+| `creative-question` | "best ads that use humour about money", "heritage without clichés" | wide search on one idea, at least 12 references (no upper limit), patterns, 2–3 territories optional |
 | `competitor-watch` | "what are X, Y, Z running now?" | live ads and recent posts per competitor, `competitor_summary`, patterns, white space |
-| `pitch` | "references for our pitch to X" | 10–15 award-level or proven references, every one verified, top 5 teardowns, territories |
+| `pitch` | "references for our pitch to X" | at least 10 award-level or proven references, every one verified, top 5 teardowns, territories |
 
 Write `$JOB/brief.json` (schema: `schemas/brief.schema.json`), using the user's words for `question`.
 **Ask the user once, up front:** anything missing that changes the search (market, moment, competitors,
-what to avoid), the **scope** (`gcc`, `mena` or `global`: where to look for work; default `gcc`) and **which outputs
+what to avoid), the **scope** (`global`, `gcc` or `mena`: where to look for work; default `global`, the best work from anywhere. The
+home market (Oman) and the client's market shape fit and the `direct` ring; they never limit where references come from) and **which outputs
 they want: board, deck, report** (any combination). If you can't ask (autonomous run), use these defaults:
 `brief`/`pitch` → board + deck (a kickoff needs both), `creative-question` → board, `competitor-watch` → report + board.
 Set `outputs_defaulted: true` in brief.json and mention it in your final message.
