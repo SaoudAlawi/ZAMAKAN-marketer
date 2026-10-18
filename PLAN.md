@@ -183,6 +183,45 @@ Harder eval checks: insights with sources, competitor coverage, recommendation p
 | 3 | **Iteration 3** (from 40+ benchmark-agent reports): 3a housekeeping, 3b fetching/thumbnails, 3c honest verification evidence, 3d competitor-watch rebuilt, 3e output fixes, 3f ranking, 3g blind judge + repeat runs | 173 tests; partial benchmark (stopped to save tokens) | ✅ |
 | 2f | **Benchmark suite + scorecard**: 5 scenarios (GCC brief, global creative question, competitor watch, pitch, global-scope brief), with vs without skill, repeated runs; quality, real-link rate, consistency, time, tokens; scorecard page tracked across iterations | grader tests; then the benchmark run | ✅ (first pass) |
 
+## 3c. Feature 3: Shot Scout (cinematic references), 📝 PLANNED (agreed 2026-10-18)
+
+**Goal:** cinematic references for a subject, mood or effect: better than searching Vimeo, because the skill speaks
+film language, searches the right source for each need, and tells production how to shoot it.
+
+**Decisions (with the user, 2026-10-18)**
+- Separate skill `zamakan-shot-scout`, reusing the reference scout's web, link-checking, brand-kit and board scripts.
+- Four modes from day one: **subject/mood** ("desert at dawn, lonely and epic"), **effect/technique** ("dolly zoom",
+  "liquid macro"), **match this frame** (an uploaded still → similar shots), **who does this well** (directors, DOPs,
+  production houses known for a look).
+- Every shot gets **production notes**: how it was done (practical / rig / VFX / edit), budget level, doable in KSA,
+  AI-feasible.
+- Vimeo without an API key for now: found through web search, each video checked through Vimeo's oEmbed. A free
+  Vimeo developer key (environment secret) can be added later for direct search.
+
+**Source map (tested 2026-10-18)**
+| Need | Sources (reachable) | Blocked |
+|---|---|---|
+| Technique / effect | Eyecannndy, YouTube breakdowns, No Film School, ASC | |
+| Film stills by look | Film-Grab, Shot.cafe, MovieStillsDB, Flim.ai / Frameset (search depth to test) | ShotDeck |
+| Commercials + credits | Vimeo (via search + oEmbed), Shots, LBB, Directors Notes, Ads of the World | Vimeo search page |
+| Motion / VFX / titles | Motionographer, Stash, Art of the Title | Behance |
+
+**Steps (each tested before the next)**
+- **3a Contract:** shot brief (mode, subject, effect, frame, purpose, client) + `shots.json` schema: technique, shot
+  size, movement, lens, light, colour palette, frame rate, credits (director, DOP, production), timestamp, evidence
+  level, production notes.
+- **3b Film-language dictionary:** `techniques.json` (~60 techniques: movement, lens, speed, light, transitions, VFX,
+  edit) with English/Arabic names, synonyms, search terms per source, canonical examples (verified links) and
+  production notes. Lets plain words ("time slowing down") become searchable terms (speed ramp, high frame rate).
+- **3c Discovery:** `discover_shots.py` adapters per source (above) + Vimeo via search and oEmbed; verify reuses
+  the scout's `verify.py`.
+- **3d Image tools:** colour palette from stills/thumbnails; frame-match guide (agent describes the frame in film terms,
+  then searches).
+- **3e Shot board:** grouped by technique; stills, palettes, credits, timestamps, "how to shoot it"; client or house
+  look; one self-contained HTML; passes `check_outputs.py`.
+- **3f Tests + one real run** per mode on a small test set (answer keys in `evals/fixtures/shots/`, never shown to the
+  agent under test). No benchmark runs without the user's go-ahead on cost.
+
 ## 4. Build steps & test gates (Feature 1)
 
 | # | Step | Test gate | Status |
@@ -233,6 +272,7 @@ The no-skill baseline did several generic things worth building into the skill:
 - 2026-10-13: Re-scoped to the sub-skill architecture; built the Rawaq sample package and answer key.
 - 2026-10-13: Feature 2 (reference scout) defined; network limits of the cloud environment noted.
 - 2026-10-13: Step 2 done. Design: the agent writes only spec.json + brand.md; scripts generate the rest.
+- 2026-10-18: Feature 3 (Shot Scout) planned with the user; see §3c.
 - 2026-10-15: First real client run (Oman Oil, Ramadan for taxi drivers, MENA, board): 23 references all live (10 read, 8 login walls, 5 videos unwatched), 4 territories. Added `build_outputs.py --logo` (house look + client logo). Fixed a privacy leak: client-relative tags (client-own-work, competitor) no longer reach the shared library. 180 tests.
 - 2026-10-14: Shipped: final polish (unused imports/f-strings removed), plain-language README.md added; PR to `develop`.
 - 2026-10-14: Fixed the remaining agent-reported issues without new runs (see iteration-3-agent-feedback.md, Status); 178 tests.
