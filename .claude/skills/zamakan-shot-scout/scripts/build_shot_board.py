@@ -265,7 +265,7 @@ def build(run, base, kit, client_name):
         if t and not g.get("title"):
             head = tech_head(t, g.get("note"))
         else:
-            head = (f'<div class="sec-head"><div class="eyebrow">{"Part " + str(gi + 1) if inspire else "Group"}</div><h2>{E(g.get("title") or t["name"])}</h2>'
+            head = (f'<div class="sec-head"><div class="eyebrow">{"Part " + str(gi + 1)}</div><h2>{E(g.get("title") or t["name"])}</h2>'
                     + (f'<p>{E(g["note"])}</p>' if g.get("note") else "") + "</div>")
         S.append(f'<section id="g-{gi}"><div class="wrap">{head}<div class="grid">{"".join(cards)}</div></div></section>')
     if run.get("people"):
