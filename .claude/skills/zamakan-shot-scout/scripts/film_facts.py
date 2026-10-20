@@ -189,16 +189,16 @@ def main():
     found = []
     for i, (t, y) in enumerate(items):
         if i:
-            time.sleep(1.5)  # be gentle with Wikidata
+            time.sleep(4)  # be gentle with Wikidata (it rate-limits bursts)
         f = facts(t, y)
         if a.craft and f.get("wikipedia"):
             f["craft_notes"] = craft_notes(f["wikipedia"])
         found.append(f)
+        if not a.json:
+            show(f)
+            sys.stdout.flush()  # one film at a time, so a slow (rate-limited) run shows progress
     if a.json:
         print(json.dumps(found, ensure_ascii=False, indent=1))
-    else:
-        for f in found:
-            show(f)
     if a.out:
         from discover_shots import write
         write([as_candidate(f) for f in found if not f.get("error")], a.out)

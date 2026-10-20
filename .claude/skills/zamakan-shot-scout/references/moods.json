@@ -421,6 +421,95 @@
     "symmetry"
    ],
    "keeps_subject": true
+  },
+  {
+   "id": "turmoil",
+   "words": [
+    "turmoil",
+    "inner turmoil",
+    "unstable",
+    "instability",
+    "mood swings",
+    "emotional intensity",
+    "intense emotions",
+    "volatile",
+    "panic",
+    "anxiety",
+    "breakdown",
+    "mental illness",
+    "mental health",
+    "psychological",
+    "borderline",
+    "bpd",
+    "impulsive",
+    "rage",
+    "اضطراب",
+    "قلق",
+    "تقلب",
+    "تقلبات المزاج",
+    "نوبة",
+    "انهيار",
+    "صحة نفسية"
+   ],
+   "techniques": [
+    "snorricam",
+    "handheld",
+    "step-print",
+    "dutch-angle",
+    "speed-ramp",
+    "montage",
+    "dolly-zoom"
+   ]
+  },
+  {
+   "id": "dissociation",
+   "words": [
+    "dissociation",
+    "dissociative",
+    "numb",
+    "emptiness",
+    "empty inside",
+    "unreal",
+    "depersonalisation",
+    "depersonalization",
+    "identity",
+    "unstable identity",
+    "fragmented",
+    "fragmentation",
+    "انفصال",
+    "فراغ",
+    "هوية",
+    "تشظي"
+   ],
+   "techniques": [
+    "double-exposure",
+    "reflection",
+    "frame-in-frame",
+    "halation",
+    "static-frame"
+   ]
+  },
+  {
+   "id": "abandonment",
+   "words": [
+    "abandonment",
+    "fear of abandonment",
+    "rejection",
+    "attachment",
+    "clinging",
+    "loss",
+    "left behind",
+    "هجر",
+    "خوف من الهجر",
+    "رفض",
+    "فقدان"
+   ],
+   "techniques": [
+    "wide-lonely",
+    "shallow-focus",
+    "rack-focus",
+    "frame-in-frame"
+   ]
   }
  ]
 }

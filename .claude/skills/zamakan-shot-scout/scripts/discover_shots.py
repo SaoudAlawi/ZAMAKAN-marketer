@@ -232,16 +232,41 @@ def key(r):
     return f"eye:{r['clip_id']}" if r.get("clip_id") else r.get("url")
 
 
+def youtube_description(url):
+    """The uploader's own description and channel from a YouTube watch page (oEmbed has neither)."""
+    import time
+    for wait in (0, 8, 20):  # YouTube throttles quick repeats (HTTP 429): back off politely
+        time.sleep(wait)
+        page = _web.get(url, browser="never", use_cache=False)  # a cached copy may be a stripped page
+        if page.get("status") != 429:
+            break
+    h = page.get("text") or ""
+    m = re.search(r'"shortDescription":"((?:[^"\\]|\\.)*)"', h)
+    ch = re.search(r'"ownerChannelName":"((?:[^"\\]|\\.)*)"', h)
+    date = re.search(r'"publishDate":"([^"]+)"', h)
+    dec = (lambda x: json.loads(f'"{x}"')) if m or ch else None
+    return {"description": dec(m.group(1)) if m else "", "channel": dec(ch.group(1)) if ch else None,
+            "published": date.group(1)[:10] if date else None}
+
+
 def pages(urls):
     """Any page you found by web search (trade press with credits, a case page, a director's site)."""
+    import time
     from fetch_meta import fetch_one
     out = []
     for u in urls:
         r = fetch_one(u, with_text=True)
         vid = re.search(r"youtube\.com|youtu\.be|vimeo\.com", u)
+        if re.search(r"youtube\.com/watch|youtu\.be/", u):
+            time.sleep(2)
+            yt = youtube_description(u)
+            r["description"] = yt["description"]
+            r["channel"] = yt["channel"] or r.get("channel")
+            r["published"] = yt["published"]
         out.append({"source": S.site_of(u), "kind": "video" if vid else "article", "url": u, "title": r.get("title"),
                     "description": (r.get("description") or "") + ("\n" + r["text"][:800] if r.get("text") else ""),
                     "thumbnail": r.get("thumbnail"), "http_status": r.get("http_status"), "error": r.get("error"),
+                    "channel": r.get("channel"), "published": r.get("published"),
                     "timestamps": timestamps(r.get("text") or r.get("description") or "")})
     return out
 

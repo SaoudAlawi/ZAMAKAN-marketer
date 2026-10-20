@@ -20,7 +20,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _shared import ar_variants, moods, norm, techniques  # noqa: E402
 
 STOP = set(norm("the a an of in on at with and or for to by from like feel feeling look looking shot shots scene scenes "
-                "down up slowing slow getting gets i'm im me my inspire inspiration motivate films movies cinema watch "
+                "down up slowing slow getting gets short shorts about i'm im me my inspire inspiration motivate films movies cinema watch "
                 "أنا انا اشاهد أشاهد افلام أفلام ابغى أبغى ابي أبي "
                 "reference references cinematic film films video videos ad ads commercial commercials something about some "
                 "want need show me find give we our that this very really kind sort style effect technique "
