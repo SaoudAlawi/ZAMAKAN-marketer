@@ -27,6 +27,38 @@ Results land in `clients/<client>/jobs/<date>-scout-<topic>/`.
 New client? Ask Claude to set one up from the brand files (`python3 .claude/skills/zamakan-core/scripts/client.py init <slug> --from <folder>`),
 then to build its design system.
 
+## Installing it
+
+**In this project (works now).** Clone the repo and open the folder in Claude Code. The skills in `.claude/skills/`
+load automatically. They only work inside this folder.
+
+**On your computer, for every project (works now).** Copy the four skill folders into your personal skills folder and
+install the Python packages once:
+```bash
+cp -r .claude/skills/zamakan-* ~/.claude/skills/
+pip install -r requirements.txt
+```
+Copy all four together, because they use each other (the shot scout uses the reference scout's scripts and core's
+Oman settings). When the skills are improved, copy them again.
+
+**As a plugin (planned, not built yet).** The repo can become a small plugin store, so a teammate installs it with:
+```
+/plugin marketplace add SaoudAlawi/ZAMAKAN-marketer
+/plugin install zamakan@zamakan-marketer
+```
+Plan:
+- **Layout:** the four skills move into one plugin folder (`plugins/zamakan/`), together because they depend on each
+  other. Two small settings files are added: `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json`.
+- **Python packages:** each person still runs `pip install -r requirements.txt` once. Plugins don't install Python
+  packages by themselves.
+- **Private repo:** each teammate sets up GitHub access once (`gh auth login`, then `gh auth setup-git`).
+- **Updates:** they arrive when the plugin's version number goes up. Auto-update can be switched on in `/plugin`.
+- **Client files:** `clients/` stays in each person's own working folder, as now.
+- **Cloud sessions:** they don't load plugins and use the repo copy instead.
+
+The skills then appear as `/zamakan:zamakan-shot-scout` and so on.
+([Claude Code plugin docs](https://code.claude.com/docs/en/plugins/overview.md))
+
 ## What to know
 
 - **Nothing is invented.** Every reference is opened and matched to its page. Boards say how strong the evidence is:
