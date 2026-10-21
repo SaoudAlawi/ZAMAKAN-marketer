@@ -114,6 +114,7 @@ def plan(text, max_tech=8):
             "filmgrab": subject[:3], "shotcafe": subject[:3],
             "youtube": yt[:8], "web_search": web[:8],
             "shortoftheweek": [subj] if subj else [],
+            "docs": [subj] if subj else [],  # discover_shots.py docs: documentary shorts, doc channels, YouTube
         },
         "next": "Run discover_shots.py for each search, then rank and pick. Add your own terms: the dictionary can't know every subject.",
     }

@@ -103,7 +103,8 @@ def facts(title, year=None):
            "year": years[0] if years else None, "wikidata": f"https://www.wikidata.org/wiki/{qid}", "match": how,
            "credits": {r: [names.get(i, i) for i in ids] for r, ids in people.items() if ids},
            "runtime_min": int(min(mins)) if mins else None, "countries": [names.get(c, c) for c in countries],
-           "kind": "short" if re.search(r"short", hit.get("description") or "", re.I) else "film"}
+           "kind": "documentary" if re.search(r"documentary", hit.get("description") or "", re.I)
+           else "short" if re.search(r"short", hit.get("description") or "", re.I) else "film"}
     if year and rec["year"] and abs(rec["year"] - int(year)) > 1:
         rec["warning"] = f"Wikidata says {rec['year']}, you asked for {year}: is this the right film?"
     if en:

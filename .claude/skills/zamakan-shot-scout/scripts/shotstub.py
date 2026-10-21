@@ -79,7 +79,7 @@ def stub(r, techs, seen):
     for k in ("runtime_min", "countries", "title_ar"):
         if r.get(k):
             s[k] = r[k]
-    if r.get("kind") in ("film", "short") and r.get("source") in ("wikidata", "shortoftheweek"):
+    if r.get("kind") == "documentary" or (r.get("kind") in ("film", "short") and r.get("source") in ("wikidata", "shortoftheweek")):
         s["kind"] = r["kind"]
     if r.get("found_on") and r["found_on"] != primary:
         s["found_on"] = r["found_on"]

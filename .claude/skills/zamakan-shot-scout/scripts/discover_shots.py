@@ -10,6 +10,9 @@ Usage:
   python discover_shots.py shotcafe "<word>" --out cand.jsonl                            # film stills database
   python discover_shots.py directorsnotes|motionographer|stash "<words>" --out ...      # shorts, motion, VFX articles
   python discover_shots.py shortoftheweek "<words>" [--limit 10] --out cand.jsonl         # curated short films, free to watch
+  python discover_shots.py docs "<words>" --out cand.jsonl                               # documentaries: SOTW docs + doc channels + YouTube
+  python discover_shots.py channel-search @guardiandocumentaries "<words>" --out ...    # search inside one YouTube channel
+  python discover_shots.py shortoftheweek "<words>" --genre documentary --out ...      # documentary shorts only
   python discover_shots.py youtube "<words>" [--min-views 10000] --out cand.jsonl
   python discover_shots.py vimeo <vimeo URL> ... --out cand.jsonl                        # check Vimeo links (oEmbed)
   python discover_shots.py page <url> ... --out cand.jsonl                               # any page from web search
@@ -195,9 +198,46 @@ def shortoftheweek(q, limit):
         if watch:
             rec["extra_urls"] = [watch]
         out.append(rec)
-    if not out and status != 200:
+    if not out and status not in (200, 414):  # 414 is how this API says "no results"
         print(f"  Short of the Week API answered HTTP {status}")
     return out[:limit]
+
+
+# ---------- documentaries
+DOC_CHANNELS = {  # YouTube channels that publish full documentaries (checked 2026-10-21)
+    "@guardiandocumentaries": "Guardian Documentaries",
+    "@nytopinion": "The New York Times Op-Docs",       # Op-Docs live on the Opinion channel
+    "@aljazeeradocumentary": "Al Jazeera Documentary (Arabic)",
+    "@AlJazeeraEnglish": "Al Jazeera English (Witness, 101 East)",
+    "@BBCStories": "BBC Stories",
+    "@povdocs": "POV",
+}
+
+
+def channel_search(handle, q, limit=8):
+    """Search inside one YouTube channel (its own search page)."""
+    page = _web.get(f"https://www.youtube.com/{handle}/search?query={quote_plus(q)}", browser="never", use_cache=False)
+    words = [w.lower() for w in re.findall(r"\w{4,}", q)]
+    out = []
+    for c in S.parse_youtube_search(page.get("text") or ""):
+        title = (c.get("title") or "").lower()
+        if words and not any(w in title for w in words):
+            continue  # a channel search with no match lists the channel's latest uploads: not results
+        if len(out) >= limit:
+            break
+        out.append({"source": "youtube", "kind": "documentary", "url": c["url"], "title": c.get("title"),
+                    "channel": c.get("channel") or DOC_CHANNELS.get(handle, handle), "views": c.get("views"),
+                    "published": c.get("published"), "thumbnail": c.get("thumbnail"), "query": f"{handle}: {q}"})
+    return out
+
+
+def documentaries(q, limit):
+    """Documentaries on a subject: Short of the Week's documentary genre, the documentary channels, and YouTube."""
+    out = [dict(r, kind="documentary") for r in shortoftheweek(q, 40) if (r.get("genre") or "").lower() == "documentary"][:limit]
+    for handle in DOC_CHANNELS:
+        out += channel_search(handle, q, max(2, limit // 2))
+    out += [dict(r, kind="documentary") for r in youtube(f"{q} documentary", 50000)[:limit]]
+    return list({r["url"]: r for r in out}.values())
 
 
 # ---------- video platforms
@@ -303,6 +343,7 @@ def main():
     ap.add_argument("query", nargs="+")
     ap.add_argument("--limit", type=int, default=12)
     ap.add_argument("--min-views", type=int, default=10000)
+    ap.add_argument("--genre", help="shortoftheweek only: keep one genre, e.g. documentary")
     ap.add_argument("--out")
     a = ap.parse_args()
     q = " ".join(a.query)
@@ -331,7 +372,14 @@ def main():
     elif src == "vimeo":
         recs = vimeo(a.query)
     elif src == "shortoftheweek":
-        recs = shortoftheweek(q, a.limit)
+        recs = shortoftheweek(q, 40 if a.genre else a.limit)
+        if a.genre:  # the API ignores genre filters: filter here
+            recs = [r for r in recs if (r.get("genre") or "").lower() == a.genre.lower()][:a.limit]
+        recs = [dict(r, kind="documentary") if (r.get("genre") or "").lower() == "documentary" else r for r in recs]
+    elif src == "docs":
+        recs = documentaries(q, a.limit)
+    elif src == "channel-search":
+        recs = channel_search(a.query[0], " ".join(a.query[1:]), a.limit)
     elif src == "page":
         recs = pages(a.query)
     else:

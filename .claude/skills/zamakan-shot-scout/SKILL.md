@@ -11,7 +11,8 @@ description: >
   a look book, shot references for a treatment or shoot, "how do we shoot X", "find shots like this image",
   "references on Vimeo", a technique or VFX reference, which director/DOP to brief, or "what should I watch" to get
   inspired as a filmmaker ("I'm a writer, inspire me", "films about silence", "أبغى أفلام تلهمني"). Speaks film language in
-  English and Arabic, searches Eyecannndy, Film-Grab, Vimeo, YouTube and trade press, and never invents a shot:
+  English and Arabic, covers fiction, short films and documentaries, searches Eyecannndy, Film-Grab, Vimeo, YouTube,
+  documentary channels and trade press, and never invents a shot:
   every link is checked live. For campaign/strategy references use zamakan-reference-scout instead.
 ---
 
@@ -134,6 +135,23 @@ different deliverable: a running order of titles (at least 6; as many as genuine
 6. Verify, palette, validate, build and check exactly as in steps 5–6. The board shows a numbered running order,
    "watch for" per craft, the exercise and the double bills.
 Never summarise plots you haven't read about; never claim what happens in a scene unless the source says it.
+
+## Documentaries (any mode)
+
+Include documentaries whenever the subject is about real people or real experience (health, communities, history,
+work, places), or when asked. They are references for **how real life is filmed**: interviews, observation, archive,
+reenactment, animation, self-documentation (techniques in `techniques.json`, category `documentary`).
+```bash
+python3 $SHOT/scripts/discover_shots.py docs "<subject>" --out $JOB/candidates.jsonl     # SOTW documentary shorts + doc channels + YouTube
+python3 $SHOT/scripts/discover_shots.py channel-search @aljazeeradocumentary "<Arabic words>" --out ...  # Arabic documentaries
+python3 $SHOT/scripts/film_facts.py "<feature doc title>" --year <y> --craft --out ...   # feature documentaries (kind: documentary)
+```
+- `kind: documentary` (or `docuseries`). Check who made it: a broadcaster or documentary channel (Guardian, NYT Op-Docs,
+  Al Jazeera, BBC, POV) or an independent maker; say which in `why`.
+- **Ethics:** documentaries show real people. Note consent-sensitive material (health, children, grief) and trigger
+  warnings the makers give; don't reuse a real person's story as a creative device without saying so.
+- Separate *documentaries* from *explainers and lectures* (a psychiatrist explaining a condition is useful research,
+  but tag it `essay`, not documentary).
 
 ## Rules
 - **Never invent**: no shot, scene, timestamp, credit, award or result that a source doesn't state. A thumbnail you

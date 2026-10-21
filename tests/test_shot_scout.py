@@ -343,3 +343,31 @@ def test_inspire_board_shows_programme(tmp_path):
     for needle in ("A viewing programme", "Tonight, free", "After watching:", "Double bill with", "Cinematographer", "مدير تصوير",
                    ">01<", ">02<", "136 min", "hours of cinema"):
         assert needle in h, needle
+
+
+# ---------- documentaries
+def test_documentary_techniques_and_mood():
+    ts = _shared.tech_by_id()
+    for t in ("talking-head", "direct-address", "observational", "archival", "reenactment", "animated-doc", "diary-film", "essay-film"):
+        assert ts[t]["category"] == "documentary"
+    p = X.plan("documentaries about borderline personality disorder")
+    assert "borderline" in p["subject"]  # a diagnosis stays the subject, not a mood
+    assert {"observational", "talking-head"} <= {t["id"] for t in p["techniques"]}
+    assert p["searches"]["docs"] == [p["subject"]]
+
+
+def test_channel_search_drops_unrelated_uploads(monkeypatch):
+    fake = [{"url": "https://www.youtube.com/watch?v=aaaaaaaaaaa", "title": "Living With Borderline Personality Disorder"},
+            {"url": "https://www.youtube.com/watch?v=bbbbbbbbbbb", "title": "Extreme Heat Is the New Normal | Op-Docs"}]
+    monkeypatch.setattr(DS._web, "get", lambda url, **kw: {"text": "", "status": 200})
+    monkeypatch.setattr(DS.S, "parse_youtube_search", lambda h: fake)
+    recs = DS.channel_search("@nytopinion", "borderline personality")
+    assert [r["title"] for r in recs] == ["Living With Borderline Personality Disorder"]
+    assert recs[0]["kind"] == "documentary"
+
+
+def test_documentaries_are_a_kind(tmp_path):
+    s = shot("d1", kind="documentary", title="Border", urls=[{"url": "https://www.youtube.com/watch?v=abc", "kind": "video", "evidence": "video"}])
+    E, _, _ = VS.validate(run_of([s], watch_list=["Watch Border (d1)"]))
+    assert not E, E
+    assert BB.KIND["documentary"] == "Documentary"

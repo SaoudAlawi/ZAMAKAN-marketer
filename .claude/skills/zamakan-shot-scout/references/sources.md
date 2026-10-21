@@ -14,6 +14,7 @@
 | Motion design / VFX | Motionographer, Stash | *script* `motionographer` / `stash <words>` | Their site search is weak; prefer web search + `page`. |
 | Any video | YouTube | *script* `youtube <words> --min-views 20000` | Good for breakdowns ("how it's done") and Arabic ads; noisy for looks. |
 | Vimeo | Vimeo | web search for links, then *script* `vimeo <url> ...` | Vimeo's own search blocks us (403, even in a browser). `site:vimeo.com` web searches return few results. The oEmbed check gives title, maker, date, duration, thumbnail and description, including timestamps the maker mentions ("look at 00:32"). A free Vimeo developer key would enable direct search later. |
+| Documentaries | Short of the Week (genre Documentary), YouTube channels: Guardian Documentaries, NYT Opinion (Op-Docs), Al Jazeera Documentary الجزيرة الوثائقية (Arabic), Al Jazeera English (Witness), BBC Stories, POV | *script* `docs <words>`, `channel-search @handle <words>`, `shortoftheweek <w> --genre documentary` | Channel search only keeps titles containing your words (a no-match search lists the latest uploads). Short of the Week answers HTTP 414 when nothing matches. Feature docs: `film_facts.py` (Wikidata says "documentary film"). Reachable but no script yet: IDFA, POV (pbs.org/pov), Al Jazeera Witness pages, documentary.org; NYT site 403. |
 | Blocked | ShotDeck, Behance, FilmFreeway | none | Login/403. Don't spend effort on them. |
 
 ## Search tips

@@ -436,11 +436,6 @@
     "panic",
     "anxiety",
     "breakdown",
-    "mental illness",
-    "mental health",
-    "psychological",
-    "borderline",
-    "bpd",
     "impulsive",
     "rage",
     "اضطراب",
@@ -448,8 +443,7 @@
     "تقلب",
     "تقلبات المزاج",
     "نوبة",
-    "انهيار",
-    "صحة نفسية"
+    "انهيار"
    ],
    "techniques": [
     "snorricam",
@@ -510,6 +504,53 @@
     "rack-focus",
     "frame-in-frame"
    ]
+  },
+  {
+   "id": "documentary",
+   "words": [
+    "documentary",
+    "documentaries",
+    "doc",
+    "docs",
+    "real stories",
+    "true story",
+    "real people",
+    "testimony",
+    "وثائقي",
+    "وثائقيات",
+    "أفلام وثائقية",
+    "قصص حقيقية"
+   ],
+   "techniques": [
+    "observational",
+    "talking-head",
+    "archival",
+    "diary-film"
+   ],
+   "keeps_subject": false
+  },
+  {
+   "id": "mental-health",
+   "words": [
+    "borderline",
+    "bpd",
+    "mental health",
+    "mental illness",
+    "psychological",
+    "صحة نفسية",
+    "personality disorder",
+    "bipolar",
+    "depression",
+    "anxiety disorder",
+    "اضطراب الشخصية",
+    "اكتئاب"
+   ],
+   "techniques": [
+    "handheld",
+    "snorricam",
+    "double-exposure"
+   ],
+   "keeps_subject": true
   }
  ]
 }

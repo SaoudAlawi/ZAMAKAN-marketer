@@ -33,7 +33,8 @@ MODE = {"subject": "Subject & mood", "effect": "Effect & technique", "frame-matc
         "inspire": "Inspire me"}
 ROLE = {"writer": ("Writer", "كاتب"), "dop": ("Cinematographer", "مدير تصوير"), "director": ("Director", "مخرج"),
         "editor": ("Editor · sound · design", "مونتاج · صوت · تصميم")}
-KIND.update({"scene": "Scene", "essay": "Video essay", "interview": "Interview"})
+KIND.update({"scene": "Scene", "essay": "Video essay", "interview": "Interview", "documentary": "Documentary",
+             "docuseries": "Documentary series"})
 
 CSS = """
 *{box-sizing:border-box} html{-webkit-text-size-adjust:100%}
@@ -223,7 +224,8 @@ def build(run, base, kit, client_name):
         mins = sum(s.get("runtime_min") or 0 for s in run["shots"])
         countries = {c for s in run["shots"] for c in (s.get("countries") or [])[:1]}
         stats = (f'<div><b>{kinds.count("film")}</b><span>features</span></div><div><b>{kinds.count("short")}</b><span>shorts</span></div>'
-                 f'<div><b>{round(mins / 60) if mins else "?"}</b><span>hours of cinema</span></div><div><b>{len(countries)}</b><span>countries</span></div>')
+                 + (f'<div><b>{kinds.count("documentary") + kinds.count("docuseries")}</b><span>documentaries</span></div>' if "documentary" in kinds or "docuseries" in kinds else "")
+                 + f'<div><b>{round(mins / 60) if mins else "?"}</b><span>hours of cinema</span></div><div><b>{len(countries)}</b><span>countries</span></div>')
         lang = (f'<div class="lang"><div class="eyebrow">For</div><div class="chips">{role_chips}</div></div>'
                 + (f'<div class="lang"><div class="eyebrow">Look for</div><div class="chips">{chips}</div></div>' if chips else ""))
         eyebrow = "A viewing programme"

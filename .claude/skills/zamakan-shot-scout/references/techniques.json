@@ -2088,6 +2088,261 @@
    "search_terms": [
     "light trails timelapse"
    ]
+  },
+  {
+   "id": "talking-head",
+   "name": "Talking-head interview",
+   "name_ar": "مقابلة مباشرة (رأس متحدث)",
+   "category": "documentary",
+   "synonyms": [
+    "interview",
+    "talking head",
+    "sit-down interview",
+    "testimony",
+    "مقابلة",
+    "شهادة"
+   ],
+   "feeling": "Trust and testimony: a person telling their own truth.",
+   "how": "Subject framed (often off-centre) speaking to an interviewer beside the camera; B-roll cut over it.",
+   "method": "practical",
+   "gear": "Camera, lav/boom mic, soft key light",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "no: real testimony is the point",
+   "eyecannndy": [
+    "interview"
+   ],
+   "examples": [
+    "The Thin Blue Line (1988)"
+   ],
+   "search_terms": [
+    "documentary interview lighting",
+    "talking head interview setup"
+   ]
+  },
+  {
+   "id": "direct-address",
+   "name": "Direct address (Interrotron)",
+   "name_ar": "مخاطبة الكاميرا مباشرة",
+   "category": "documentary",
+   "synonyms": [
+    "interrotron",
+    "eye contact interview",
+    "looking into the lens",
+    "to camera",
+    "fourth wall",
+    "مخاطبة الكاميرا"
+   ],
+   "feeling": "Intimacy and confrontation: the subject looks straight at you.",
+   "how": "The interviewer's face is projected over the lens (Errol Morris's Interrotron) or the subject is asked to look into the lens.",
+   "method": "rig",
+   "gear": "Teleprompter-style interview rig",
+   "budget": "2",
+   "kit": "specialist",
+   "ai": "no",
+   "eyecannndy": [
+    "fourth-wall"
+   ],
+   "examples": [
+    "The Fog of War (2003)"
+   ],
+   "search_terms": [
+    "interrotron interview",
+    "direct to camera documentary"
+   ]
+  },
+  {
+   "id": "observational",
+   "name": "Observational / fly-on-the-wall",
+   "name_ar": "تصوير رصدي (ذبابة على الحائط)",
+   "category": "documentary",
+   "synonyms": [
+    "observational",
+    "fly on the wall",
+    "verite",
+    "cinema verite",
+    "direct cinema",
+    "vérité",
+    "رصدي",
+    "سينما الحقيقة"
+   ],
+   "feeling": "Being there: life unfolding without being explained.",
+   "how": "A small crew films events as they happen, without interviews or narration, over long periods.",
+   "method": "practical",
+   "gear": "Small camera, on-camera mic, long access",
+   "budget": "2",
+   "kit": "standard (needs time and trust)",
+   "ai": "no",
+   "eyecannndy": [
+    "shaky-cam"
+   ],
+   "examples": [
+    "Salesman (1969)",
+    "Honeyland (2019)"
+   ],
+   "search_terms": [
+    "observational documentary",
+    "cinema verite documentary"
+   ]
+  },
+  {
+   "id": "archival",
+   "name": "Archival footage / found footage",
+   "name_ar": "مواد أرشيفية",
+   "category": "documentary",
+   "synonyms": [
+    "archival",
+    "archive footage",
+    "found footage",
+    "news footage",
+    "home movies",
+    "أرشيف",
+    "مواد أرشيفية",
+    "لقطات أرشيفية"
+   ],
+   "feeling": "The weight of the past; history in its own images.",
+   "how": "Existing footage (news, home video, film archives) licensed and edited into the story.",
+   "method": "edit",
+   "gear": "Archive research, licences, edit",
+   "budget": "2",
+   "kit": "standard (licensing costs vary)",
+   "ai": "partly: AI must never fake archive",
+   "eyecannndy": [
+    "vhs"
+   ],
+   "examples": [
+    "Senna (2010)",
+    "Amy (2015)"
+   ],
+   "search_terms": [
+    "archival documentary editing",
+    "found footage documentary"
+   ]
+  },
+  {
+   "id": "reenactment",
+   "name": "Reenactment / dramatised reconstruction",
+   "name_ar": "إعادة تمثيل",
+   "category": "documentary",
+   "synonyms": [
+    "reenactment",
+    "re-enactment",
+    "reconstruction",
+    "dramatisation",
+    "إعادة تمثيل",
+    "مشاهد ممثلة"
+   ],
+   "feeling": "Showing what no camera saw, openly staged.",
+   "how": "Key moments restaged with actors or the real people, stylised so the audience knows it's reconstructed.",
+   "method": "practical",
+   "gear": "Small drama crew, art department",
+   "budget": "3",
+   "kit": "standard",
+   "ai": "partly: AI reconstructions must be labelled",
+   "eyecannndy": [
+    "tableau-shots"
+   ],
+   "examples": [
+    "The Thin Blue Line (1988)",
+    "The Act of Killing (2012)"
+   ],
+   "search_terms": [
+    "documentary reenactment",
+    "dramatised reconstruction"
+   ]
+  },
+  {
+   "id": "animated-doc",
+   "name": "Animated documentary",
+   "name_ar": "وثائقي بالرسوم المتحركة",
+   "category": "documentary",
+   "synonyms": [
+    "animated documentary",
+    "animadoc",
+    "animation over interview",
+    "وثائقي متحرك"
+   ],
+   "feeling": "Protection and imagination: real voices, images that can show inner worlds or protect identities.",
+   "how": "Real interviews or recordings set to animation.",
+   "method": "vfx",
+   "gear": "Animation studio, recorded interviews",
+   "budget": "3",
+   "kit": "specialist",
+   "ai": "partly: AI can help animate, voices stay real",
+   "eyecannndy": [
+    "traditional"
+   ],
+   "examples": [
+    "Waltz with Bashir (2008)",
+    "Flee (2021)"
+   ],
+   "search_terms": [
+    "animated documentary"
+   ]
+  },
+  {
+   "id": "diary-film",
+   "name": "Self-documentation / diary film",
+   "name_ar": "فيلم يوميات (توثيق ذاتي)",
+   "category": "documentary",
+   "synonyms": [
+    "diary",
+    "self-shot",
+    "video diary",
+    "first person documentary",
+    "vlog",
+    "personal documentary",
+    "يوميات",
+    "توثيق ذاتي"
+   ],
+   "feeling": "First-person honesty: the maker's own life and voice.",
+   "how": "The filmmaker or subject films themselves (phone, camcorder) and narrates in the first person.",
+   "method": "practical",
+   "gear": "Phone or small camera, a mic",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "no",
+   "eyecannndy": [
+    "first-person-pov",
+    "vhs"
+   ],
+   "examples": [
+    "Tarnation (2003)"
+   ],
+   "search_terms": [
+    "video diary documentary",
+    "first person documentary"
+   ]
+  },
+  {
+   "id": "essay-film",
+   "name": "Essay film / voiceover",
+   "name_ar": "فيلم مقالي (تعليق صوتي)",
+   "category": "documentary",
+   "synonyms": [
+    "essay film",
+    "voiceover",
+    "narration",
+    "poetic documentary",
+    "فيلم مقالي",
+    "تعليق صوتي"
+   ],
+   "feeling": "A mind thinking aloud over images; reflective, poetic.",
+   "how": "Images (shot or found) cut to a personal written narration.",
+   "method": "edit",
+   "gear": "Writing, voice recording, edit",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "partly: AI voices are a poor fit for a personal essay",
+   "eyecannndy": [
+    "collage"
+   ],
+   "examples": [
+    "Sans Soleil (1983)"
+   ],
+   "search_terms": [
+    "essay film voiceover"
+   ]
   }
  ]
 }
