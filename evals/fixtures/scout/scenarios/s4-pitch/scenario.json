@@ -1,0 +1,50 @@
+{
+ "title": "Pitch: Sahm Pay, Saudi National Day 2027",
+ "mode": "pitch",
+ "client": "sahm-pay",
+ "design_system": false,
+ "request": "The pitch request is in brief.md (in the working directory). Pull together the references and territories for the pitch deck.",
+ "job": "clients/sahm-pay/jobs/2026-10-13-scout-national-day",
+ "checks": [
+  {
+   "type": "min_links",
+   "n": 10
+  },
+  {
+   "type": "alive_rate",
+   "min": 1.0,
+   "label": "Every link works (pitch)"
+  },
+  {
+   "type": "topic_ratio",
+   "rx": "national day|founding day|اليوم الوطني|يوم التأسيس|saudi day|\\b93\\b|\\b94\\b|\\b95\\b",
+   "min": 0.25,
+   "context": true,
+   "label": "≥25% National/Founding Day work"
+  },
+  {
+   "type": "mentions",
+   "rx": "cannes|lions|d&ad|effie|dubai lynx|one show|clio|grand prix|gold|silver|bronze|shortlist",
+   "n": 3,
+   "label": "Award-level evidence (≥3 mentions)"
+  },
+  {
+   "type": "territories",
+   "min": 3,
+   "max": 5
+  },
+  {
+   "type": "avoid",
+   "rx": "falcon|desert|flag-waving|صقر|صحراء"
+  },
+  {
+   "type": "deck"
+  },
+  {
+   "type": "global_refs",
+   "n": 2,
+   "label": "≥2 references from outside the Middle East"
+  }
+ ],
+ "id": "s4-pitch"
+}

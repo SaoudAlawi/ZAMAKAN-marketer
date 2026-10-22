@@ -1,0 +1,24 @@
+{
+ "scores": {
+  "with_skill": {
+   "insight": 5,
+   "references": 5,
+   "ideas": 4,
+   "usefulness": 5,
+   "presentation": 4
+  },
+  "without_skill": {
+   "insight": 4,
+   "references": 4,
+   "ideas": 5,
+   "usefulness": 4,
+   "presentation": 5
+  }
+ },
+ "winner": "with_skill",
+ "reason": "A wins narrowly on substance: dated, quantified Saudi insights (Visa night-spend shift, YouGov, SFDA), every competitor checked in a transparent table, 25 wide-ranging references honest about what was not seen. B has the sharper lead idea ('The Second Pour') with kickoff-ready Arabic lines and a more polished bilingual layout, but fewer references and a thinner competitor check.",
+ "key": {
+  "A": "with_skill",
+  "B": "without_skill"
+ }
+}

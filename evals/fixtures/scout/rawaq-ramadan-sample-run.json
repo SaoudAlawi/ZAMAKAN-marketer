@@ -1,0 +1,1380 @@
+{
+ "schema_version": "1.0",
+ "run": {
+  "id": "rawaq-ramadan-2027-sample",
+  "mode": "brief",
+  "client": "rawaq",
+  "created": "2026-10-13",
+  "brief_file": "brief.json",
+  "question": "References and 3-5 creative territories for Rawaq's Ramadan 2027 campaign (suhoor gatherings and the after-taraweeh coffee run).",
+  "web_access": "full",
+  "queries": [
+   "aotw-list:countries/saudi-arabia",
+   "aotw-list:industries/non-alcoholic-drinks",
+   "aotw-search:detour",
+   "aotw-search:iftar",
+   "aotw-search:ramadan",
+   "aotw-search:suhoor",
+   "web-search:Cannes Lions Grand Prix fast food mechanic",
+   "web-search:vimeo Ramadan commercial Saudi",
+   "youtube:ramadan coffee commercial",
+   "youtube:saudi ramadan ad 2025"
+  ],
+  "title": "Rawaq · Ramadan 2027 references",
+  "scope": "gcc"
+ },
+ "references": [
+  {
+   "id": "alj-toyota-iftar-better-together",
+   "title": "Iftar is always better together",
+   "brand": "Abdul Latif Jameel Motors",
+   "ring": "direct",
+   "status": "verified",
+   "urls": [
+    {
+     "url": "https://www.adsoftheworld.com/campaigns/iftar-is-always-better-together",
+     "kind": "case",
+     "source": "adsoftheworld",
+     "http_status": 200,
+     "checked_at": "2026-10-13T13:02:11Z",
+     "verified": true,
+     "title_match": true
+    }
+   ],
+   "card": {
+    "idea": "Two groups of men on Al Khobar's Corniche compete to invite one lonely stranger to iftar, then decide to break the fast together.",
+    "why_relevant": "Saudi Ramadan humour built on hospitality rivalry: the exact Najdi generosity Rawaq stands for."
+   },
+   "scores": {
+    "relevance": 5,
+    "craft": 4,
+    "transferability": 5,
+    "cultural_fit": 5,
+    "freshness": 4
+   },
+   "tags": [
+    "humour",
+    "hospitality",
+    "generosity"
+   ],
+   "moments": [
+    "ramadan"
+   ],
+   "provenance": {
+    "found_via": "page-fetch",
+    "confidence": "high"
+   },
+   "agency": "Serviceplan Experience",
+   "country": "SA",
+   "year": 2024,
+   "category": "Automotive and Personal Transportation",
+   "media": [
+    "integrated"
+   ],
+   "thumbnail": {
+    "url": "https://www.adsoftheworld.com/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBMGFDRFE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--f523b36abc1cd28d6efbcf355c3ddde08ec0b950/Ramadan3.png"
+   },
+   "teardown": {
+    "insight": "In Saudi Ramadan, generosity is competitive: people fight for the honour of hosting a guest.",
+    "idea": "Turn the hospitality rivalry into comedy and resolve it with togetherness.",
+    "execution": "Comedic film shot on location at Al Khobar Corniche (directed by Abdullah Khamees, DeJaVu); the brand appears as the enabler, not the hero.",
+    "channels": "Film for social/digital, Ramadan 2024",
+    "tone": "Warm, witty, local",
+    "visual_devices": [
+     "real Saudi location",
+     "ensemble cast",
+     "escalating gag"
+    ],
+    "transferable": [
+     "Make Rawaq the stage for the 'who hosts?' rivalry after taraweeh",
+     "Comedy that celebrates a cultural trait rather than mocking it"
+    ],
+    "cultural_fit": {
+     "score": 5,
+     "notes": "Saudi production, Saudi behaviour, no clichés; a car brand owning hospitality leaves the café space open."
+    },
+    "risks": [
+     "Humour around worship moments must stay on the social side (iftar, gatherings), never the prayer itself"
+    ]
+   }
+  },
+  {
+   "id": "half-million-your-2nd-half",
+   "title": "Your 2nd Half",
+   "brand": "Half Million Coffee",
+   "ring": "direct",
+   "status": "verified",
+   "urls": [
+    {
+     "url": "https://www.adsoftheworld.com/campaigns/your-2nd-half",
+     "kind": "case",
+     "source": "adsoftheworld",
+     "http_status": 200,
+     "checked_at": "2026-10-13T13:02:11Z",
+     "verified": true,
+     "title_match": true
+    }
+   ],
+   "card": {
+    "idea": "POV film that makes the Half Million cup the viewer's constant companion through life's moments.",
+    "why_relevant": "Direct Riyadh competitor: shows the category default of 'the cup as companion'."
+   },
+   "scores": {
+    "relevance": 4,
+    "craft": 3,
+    "transferability": 3,
+    "cultural_fit": 5,
+    "freshness": 3
+   },
+   "tags": [
+    "pov",
+    "product-hero"
+   ],
+   "moments": [],
+   "provenance": {
+    "found_via": "page-fetch",
+    "confidence": "high"
+   },
+   "agency": "TTP",
+   "country": "SA",
+   "year": 2023,
+   "category": "Drinks (Non Alcoholic)",
+   "media": [
+    "film"
+   ],
+   "thumbnail": {
+    "url": "https://image.adsoftheworld.com/nrqwwhw4l0kxio76mlqiukytfku2"
+   }
+  },
+  {
+   "id": "baladna-heart-of-every-moment",
+   "title": "Ramadan 2026 – “At the Heart of Every Moment”",
+   "brand": "Baladna",
+   "ring": "direct",
+   "status": "verified",
+   "urls": [
+    {
+     "url": "https://www.adsoftheworld.com/campaigns/baladna-ramadan-2026-at-the-heart-of-every-moment",
+     "kind": "case",
+     "source": "adsoftheworld",
+     "http_status": 200,
+     "checked_at": "2026-10-13T13:02:11Z",
+     "verified": true,
+     "title_match": true
+    }
+   ],
+   "card": {
+    "idea": "Baladna brings back its Sidra Tree platform to sit at the centre of every Ramadan moment.",
+    "why_relevant": "Gulf F&B brand running a multi-year Ramadan platform: a model for owning the season year after year."
+   },
+   "scores": {
+    "relevance": 4,
+    "craft": 4,
+    "transferability": 4,
+    "cultural_fit": 4,
+    "freshness": 5
+   },
+   "tags": [
+    "platform",
+    "heritage-symbol"
+   ],
+   "moments": [
+    "ramadan"
+   ],
+   "provenance": {
+    "found_via": "page-fetch",
+    "confidence": "high"
+   },
+   "agency": "X Qatar",
+   "country": "QA",
+   "year": 2026,
+   "category": "Food",
+   "media": [
+    "digital",
+    "film",
+    "integrated"
+   ],
+   "thumbnail": {
+    "url": "https://www.adsoftheworld.com/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBekdWRXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--91ae84307a339d09b196f28f46e09524c6482fc9/Screenshot%20(1).png"
+   }
+  },
+  {
+   "id": "saib-ramadan-eid-2024",
+   "title": "Ramadan & Eid Greeting 2024 (SAIB Bank)",
+   "brand": "The Saudi Investment Bank",
+   "ring": "direct",
+   "status": "verified",
+   "urls": [
+    {
+     "url": "https://www.adsoftheworld.com/campaigns/ramadan-amp-eid-greeting-2024-saib-bank",
+     "kind": "case",
+     "source": "adsoftheworld",
+     "http_status": 200,
+     "checked_at": "2026-10-13T13:02:11Z",
+     "verified": true,
+     "title_match": true
+    }
+   ],
+   "card": {
+    "idea": "Saudi bank's Ramadan and Eid greeting film.",
+    "why_relevant": "Shows the generic Saudi Ramadan greeting format Rawaq should avoid looking like."
+   },
+   "scores": {
+    "relevance": 2,
+    "craft": 2,
+    "transferability": 1,
+    "cultural_fit": 4,
+    "freshness": 4
+   },
+   "tags": [
+    "greeting"
+   ],
+   "moments": [
+    "ramadan"
+   ],
+   "provenance": {
+    "found_via": "page-fetch",
+    "confidence": "high"
+   },
+   "agency": "Impact BBDO",
+   "country": "SA",
+   "year": 2024,
+   "category": "Media",
+   "media": [
+    "digital",
+    "other",
+    "packaging"
+   ],
+   "thumbnail": {
+    "url": "https://www.adsoftheworld.com/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNG5TRUE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--1dbdf2f0a5d9ac5cddcfb95184c3ff7202910c12/SAIB%235483%20MKT%20-%20Ramadan%202024%20V02.jpg"
+   }
+  },
+  {
+   "id": "costa-ramadan-2024",
+   "title": "Costa Coffee Ramadan campaign",
+   "brand": "Costa",
+   "ring": "category",
+   "status": "verified",
+   "urls": [
+    {
+     "url": "https://www.adsoftheworld.com/campaigns/costa-coffee-ramadan-campaign",
+     "kind": "case",
+     "source": "adsoftheworld",
+     "http_status": 200,
+     "checked_at": "2026-10-13T13:02:11Z",
+     "verified": true,
+     "title_match": true
+    }
+   ],
+   "card": {
+    "idea": "Costa's Ramadan 2024 campaign across digital and seasonal packaging.",
+    "why_relevant": "Global coffee chain in the region: seasonal packaging as the Ramadan carrier."
+   },
+   "scores": {
+    "relevance": 4,
+    "craft": 3,
+    "transferability": 3,
+    "cultural_fit": 3,
+    "freshness": 4
+   },
+   "tags": [
+    "packaging"
+   ],
+   "moments": [
+    "ramadan"
+   ],
+   "provenance": {
+    "found_via": "page-fetch",
+    "confidence": "high"
+   },
+   "agency": "Brand Bazaar",
+   "country": "EG",
+   "year": 2024,
+   "category": "Drinks (Non Alcoholic)",
+   "media": [
+    "digital",
+    "packaging"
+   ],
+   "thumbnail": {
+    "url": "https://www.adsoftheworld.com/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNlJBRHc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--b786ce34d125c97092ed12ebe09bbc663151c8bf/Iphone%2015%20Pro.jpg"
+   }
+  },
+  {
+   "id": "nespresso-time-to-savour",
+   "title": "Nespresso Ramadan 2019 #TimeToSavour",
+   "brand": "Nespresso",
+   "ring": "category",
+   "status": "verified",
+   "urls": [
+    {
+     "url": "https://www.youtube.com/watch?v=KAUJOH-uGPU",
+     "kind": "video",
+     "source": "youtube",
+     "http_status": 200,
+     "checked_at": "2026-10-13T13:02:11Z",
+     "verified": true,
+     "title_match": true
+    }
+   ],
+   "card": {
+    "idea": "#TimeToSavour: Ramadan as a time to slow down and savour coffee.",
+    "why_relevant": "Coffee owning the slower rhythm of Ramadan nights in MEA."
+   },
+   "scores": {
+    "relevance": 4,
+    "craft": 4,
+    "transferability": 3,
+    "cultural_fit": 4,
+    "freshness": 2
+   },
+   "tags": [
+    "ritual",
+    "slow"
+   ],
+   "moments": [
+    "ramadan"
+   ],
+   "provenance": {
+    "found_via": "web-search",
+    "confidence": "high"
+   },
+   "media": [
+    "film"
+   ],
+   "thumbnail": {
+    "url": "https://i.ytimg.com/vi/KAUJOH-uGPU/hqdefault.jpg"
+   }
+  },
+  {
+   "id": "nescafe-dolce-gusto-sweet-iftar",
+   "title": "Have a sweet Iftar",
+   "brand": "NESCAFÉ Dolce Gusto",
+   "ring": "category",
+   "status": "verified",
+   "urls": [
+    {
+     "url": "https://www.youtube.com/watch?v=nMHmKzgB7Fw",
+     "kind": "video",
+     "source": "youtube",
+     "http_status": 200,
+     "checked_at": "2026-10-13T13:02:11Z",
+     "verified": true,
+     "title_match": true
+    }
+   ],
+   "card": {
+    "idea": "Have a sweet Iftar: capsule coffee positioned around the iftar dessert moment.",
+    "why_relevant": "Coffee anchored to a specific Ramadan meal moment."
+   },
+   "scores": {
+    "relevance": 3,
+    "craft": 3,
+    "transferability": 3,
+    "cultural_fit": 4,
+    "freshness": 3
+   },
+   "tags": [
+    "meal-moment"
+   ],
+   "moments": [
+    "ramadan"
+   ],
+   "provenance": {
+    "found_via": "web-search",
+    "confidence": "high"
+   },
+   "media": [
+    "film"
+   ],
+   "thumbnail": {
+    "url": "https://i.ytimg.com/vi/nMHmKzgB7Fw/hqdefault.jpg"
+   }
+  },
+  {
+   "id": "ms-tea-coffee-ramadan",
+   "title": "M&S Tea & Coffee for Every Ramadan Moment",
+   "brand": "Marks & Spencer Middle East",
+   "ring": "category",
+   "status": "verified",
+   "urls": [
+    {
+     "url": "https://www.youtube.com/watch?v=QNaalKtjEnk",
+     "kind": "video",
+     "source": "youtube",
+     "http_status": 200,
+     "checked_at": "2026-10-13T13:02:11Z",
+     "verified": true,
+     "title_match": true
+    }
+   ],
+   "card": {
+    "idea": "M&S Middle East: tea and coffee for every Ramadan moment.",
+    "why_relevant": "Retail framing of hot drinks across the Ramadan day."
+   },
+   "scores": {
+    "relevance": 3,
+    "craft": 2,
+    "transferability": 2,
+    "cultural_fit": 4,
+    "freshness": 3
+   },
+   "tags": [
+    "retail"
+   ],
+   "moments": [
+    "ramadan"
+   ],
+   "provenance": {
+    "found_via": "web-search",
+    "confidence": "high"
+   },
+   "media": [
+    "film"
+   ],
+   "thumbnail": {
+    "url": "https://i.ytimg.com/vi/QNaalKtjEnk/hqdefault.jpg"
+   }
+  },
+  {
+   "id": "ikea-togetherness-assembled",
+   "title": "Togetherness Assembled",
+   "brand": "IKEA",
+   "ring": "adjacent",
+   "status": "verified",
+   "urls": [
+    {
+     "url": "https://www.adsoftheworld.com/campaigns/togetherness-assembled",
+     "kind": "case",
+     "source": "adsoftheworld",
+     "http_status": 200,
+     "checked_at": "2026-10-13T13:02:11Z",
+     "verified": true,
+     "title_match": true
+    }
+   ],
+   "card": {
+    "idea": "Through the eyes of Sami, a little boy, IKEA shows the family 'assembling' Ramadan moments together.",
+    "why_relevant": "Togetherness made tangible through the product's own verb ('assemble')."
+   },
+   "scores": {
+    "relevance": 4,
+    "craft": 5,
+    "transferability": 4,
+    "cultural_fit": 4,
+    "freshness": 3
+   },
+   "tags": [
+    "family",
+    "child-pov",
+    "product-truth"
+   ],
+   "moments": [
+    "ramadan"
+   ],
+   "provenance": {
+    "found_via": "page-fetch",
+    "confidence": "high"
+   },
+   "agency": "GREY Dubai",
+   "country": "AE",
+   "year": 2023,
+   "category": "Household Products",
+   "media": [
+    "integrated"
+   ],
+   "thumbnail": {
+    "url": "https://www.adsoftheworld.com/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNkpFQ2c9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--b97c9e4dbb6d29b715fd5ce18f41087916bf1e06/5.jpg"
+   },
+   "teardown": {
+    "insight": "Ramadan memories are built by families together, small acts that add up.",
+    "idea": "'Assemble' (the IKEA product truth) becomes assembling togetherness.",
+    "execution": "Emotional film told through a child's eyes, plus integrated rollout showing home-furnishing functionality (GREY Dubai, 2023).",
+    "channels": "Integrated: film + supporting assets",
+    "tone": "Heartwarming, family",
+    "visual_devices": [
+     "child point of view",
+     "home interiors",
+     "family table"
+    ],
+    "transferable": [
+     "Find Rawaq's own product verb (roast, pour, brew) and attach it to the Ramadan ritual",
+     "Tell the season through one character's eyes"
+    ],
+    "cultural_fit": {
+     "score": 4,
+     "notes": "Gulf family values; IKEA's family-home angle differs from Rawaq's friends/late-night angle."
+    },
+    "risks": [
+     "Family-film territory is crowded in Ramadan"
+    ]
+   }
+  },
+  {
+   "id": "sendwave-sound-of-ramadan",
+   "title": "The Sound of Ramadan",
+   "brand": "Sendwave",
+   "ring": "adjacent",
+   "status": "verified",
+   "urls": [
+    {
+     "url": "https://www.adsoftheworld.com/campaigns/the-sound-of-ramadan",
+     "kind": "case",
+     "source": "adsoftheworld",
+     "http_status": 200,
+     "checked_at": "2026-10-13T13:02:12Z",
+     "verified": true,
+     "title_match": true
+    }
+   ],
+   "card": {
+    "idea": "Ramadan's soundtrack (plates before iftar, oil bubbling, prayer beads) completed by one more sound: the app's 'ping'.",
+    "why_relevant": "Sound as an ownable sensory signature of the season."
+   },
+   "scores": {
+    "relevance": 4,
+    "craft": 5,
+    "transferability": 5,
+    "cultural_fit": 4,
+    "freshness": 5
+   },
+   "tags": [
+    "sound",
+    "sensory",
+    "brand-asset"
+   ],
+   "moments": [
+    "ramadan"
+   ],
+   "provenance": {
+    "found_via": "page-fetch",
+    "confidence": "high"
+   },
+   "year": 2026,
+   "category": "Electronics, Technology and Finance",
+   "media": [
+    "digital",
+    "integrated",
+    "other"
+   ],
+   "thumbnail": {
+    "url": "https://www.adsoftheworld.com/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBN29GRXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--fc51c6a7dffe1861f8bc7d6e6f2b5e272331162b/Screenshot%202026-03-13%20at%2017.20.38.png"
+   },
+   "teardown": {
+    "insight": "Ramadan is recognised by its sounds before its sights.",
+    "idea": "Insert the brand's own sound into the season's soundtrack.",
+    "execution": "Sound-led content built from real Ramadan sounds, with the product notification as the final note (2026).",
+    "channels": "Digital, content, integrated",
+    "tone": "Intimate, sensory",
+    "visual_devices": [
+     "close-up sound sources",
+     "rhythmic editing"
+    ],
+    "transferable": [
+     "Rawaq's sounds (grinder, pour, cup on saucer) as the after-taraweeh signal",
+     "A sonic logo for Snapchat/TikTok"
+    ],
+    "cultural_fit": {
+     "score": 4,
+     "notes": "Uses universal Ramadan sounds respectfully; the remittance context differs from Rawaq's."
+    },
+    "risks": [
+     "Avoid using the adhan or Quran recitation as 'brand sound'"
+    ]
+   }
+  },
+  {
+   "id": "britannia-live-ramadan",
+   "title": "Live Ramadan",
+   "brand": "Britannia",
+   "ring": "adjacent",
+   "status": "verified",
+   "urls": [
+    {
+     "url": "https://www.adsoftheworld.com/campaigns/live-ramadan",
+     "kind": "case",
+     "source": "adsoftheworld",
+     "http_status": 200,
+     "checked_at": "2026-10-13T13:02:12Z",
+     "verified": true,
+     "title_match": true
+    }
+   ],
+   "card": {
+    "idea": "A day in the life of people exempt from fasting (travellers, nursing mothers, the unwell) who still live the spirit of Ramadan.",
+    "why_relevant": "An overlooked audience and a fresh, compassionate angle on the month."
+   },
+   "scores": {
+    "relevance": 4,
+    "craft": 4,
+    "transferability": 4,
+    "cultural_fit": 4,
+    "freshness": 5
+   },
+   "tags": [
+    "inclusion",
+    "compassion"
+   ],
+   "moments": [
+    "ramadan"
+   ],
+   "provenance": {
+    "found_via": "page-fetch",
+    "confidence": "high"
+   },
+   "agency": "Amber Communications",
+   "country": "AE",
+   "year": 2026,
+   "category": "Candy, Snacks",
+   "media": [
+    "film"
+   ],
+   "thumbnail": {
+    "url": "https://image.adsoftheworld.com/g3pby9bheo8kzo2c44xr0kfikjof"
+   },
+   "teardown": {
+    "insight": "Not everyone fasts, yet everyone belongs to Ramadan.",
+    "idea": "Show the month through those who cannot fast, and the kindness around them.",
+    "execution": "Film following several characters from suhoor to evening (Amber Communications, UAE, 2026).",
+    "channels": "Film",
+    "tone": "Quiet, observational, kind",
+    "visual_devices": [
+     "day-in-the-life structure",
+     "small gestures"
+    ],
+    "transferable": [
+     "Rawaq as a respectful daytime space for those not fasting (travellers, nursing mothers)",
+     "Kindness shown in small gestures, not speeches"
+    ],
+    "cultural_fit": {
+     "score": 4,
+     "notes": "Respectful and inclusive, but daytime café service during Ramadan is sensitive in KSA; check regulations and tone."
+    },
+    "risks": [
+     "Daytime food and drink imagery during fasting hours could offend; keep it after iftar or clearly in a permitted context"
+    ]
+   }
+  },
+  {
+   "id": "indrive-fanous-ride",
+   "title": "Fanous Ride - Case video",
+   "brand": "inDrive",
+   "ring": "adjacent",
+   "status": "verified",
+   "urls": [
+    {
+     "url": "https://www.adsoftheworld.com/campaigns/fanous-ride-case-video",
+     "kind": "case",
+     "source": "adsoftheworld",
+     "http_status": 200,
+     "checked_at": "2026-10-13T13:02:12Z",
+     "verified": true,
+     "title_match": true
+    }
+   ],
+   "card": {
+    "idea": "inDrive reworks the Ramadan song 'Wahawy Ya Wahawy' into a story about freedom of choice, mixing music, culture, AI and human craft.",
+    "why_relevant": "Reinterpreting a beloved Ramadan tradition instead of repeating it."
+   },
+   "scores": {
+    "relevance": 3,
+    "craft": 4,
+    "transferability": 4,
+    "cultural_fit": 3,
+    "freshness": 5
+   },
+   "tags": [
+    "music",
+    "reinvention",
+    "ai-craft"
+   ],
+   "moments": [
+    "ramadan"
+   ],
+   "provenance": {
+    "found_via": "page-fetch",
+    "confidence": "high"
+   },
+   "agency": "inlab",
+   "country": "EG",
+   "year": 2026,
+   "category": "Transport",
+   "media": [
+    "digital"
+   ],
+   "thumbnail": {
+    "url": "https://www.adsoftheworld.com/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBd3FtRXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--f6d553bfb000ee2b200faecf1d05348d7155688f/Screenshot%202026-09-09%20132452.jpg"
+   }
+  },
+  {
+   "id": "egypt-sohour-of-kindness",
+   "title": "Turning Diplomacy into Experience: Sohour of Kindness",
+   "brand": "Egyptian Diplomatic Club",
+   "ring": "adjacent",
+   "status": "verified",
+   "urls": [
+    {
+     "url": "https://www.adsoftheworld.com/campaigns/turning-diplomacy-into-experience-sohour-of-kindness",
+     "kind": "case",
+     "source": "adsoftheworld",
+     "http_status": 200,
+     "checked_at": "2026-10-13T13:02:12Z",
+     "verified": true,
+     "title_match": true
+    }
+   ],
+   "card": {
+    "idea": "A formal institution hosts a 'Sohour of Kindness' experience to feel open and human.",
+    "why_relevant": "Suhoor as an experiential hosting moment, Rawaq's core occasion."
+   },
+   "scores": {
+    "relevance": 4,
+    "craft": 3,
+    "transferability": 4,
+    "cultural_fit": 4,
+    "freshness": 5
+   },
+   "tags": [
+    "suhoor",
+    "experiential",
+    "hosting"
+   ],
+   "moments": [
+    "ramadan"
+   ],
+   "provenance": {
+    "found_via": "page-fetch",
+    "confidence": "high"
+   },
+   "agency": "Sara's Communications",
+   "country": "EG",
+   "year": 2026,
+   "category": "Other, Professional Services, and Public Interest",
+   "media": [
+    "integrated"
+   ],
+   "thumbnail": {
+    "url": "https://www.adsoftheworld.com/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBOWtVRXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--eaf081f1f259fcb691436e6b4401eb3e7244aa8a/ramadan-event-sohour-of-kindness-egyptian-diplomatic-club-sara-events-saras-communications-sara-advertising-main-presentation-cover.jpg"
+   }
+  },
+  {
+   "id": "mos-big-miss-out",
+   "title": "The Big Miss-Out",
+   "brand": "Ministry of Sport KSA",
+   "ring": "wildcard",
+   "status": "verified",
+   "urls": [
+    {
+     "url": "https://www.adsoftheworld.com/campaigns/the-big-miss-out",
+     "kind": "case",
+     "source": "adsoftheworld",
+     "http_status": 200,
+     "checked_at": "2026-10-13T13:02:12Z",
+     "verified": true,
+     "title_match": true
+    }
+   ],
+   "card": {
+    "idea": "Saudi Ministry of Sport makes people afraid of missing a cycling race: built for attention, not awareness.",
+    "why_relevant": "Saudi FOMO mechanics that could make missing a Rawaq Ramadan night feel like a loss."
+   },
+   "scores": {
+    "relevance": 3,
+    "craft": 4,
+    "transferability": 4,
+    "cultural_fit": 5,
+    "freshness": 5
+   },
+   "tags": [
+    "fomo",
+    "attention"
+   ],
+   "moments": [],
+   "provenance": {
+    "found_via": "page-fetch",
+    "confidence": "high"
+   },
+   "agency": "Takkah",
+   "country": "SA",
+   "year": 2026,
+   "category": "Sports",
+   "media": [
+    "digital",
+    "film",
+    "packaging"
+   ],
+   "thumbnail": {
+    "url": "https://www.adsoftheworld.com/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNjRyRXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--98b47a93f17b732c4ac1389d1b7a93d7a2f1b1a5/Alula%204000x3000.jpg"
+   }
+  },
+  {
+   "id": "riyadh-season-roblox",
+   "title": "Riyadh Season as never seen before",
+   "brand": "Riyadh Season",
+   "ring": "wildcard",
+   "status": "verified",
+   "urls": [
+    {
+     "url": "https://www.adsoftheworld.com/campaigns/riyadh-season-as-never-seen-before",
+     "kind": "case",
+     "source": "adsoftheworld",
+     "http_status": 200,
+     "checked_at": "2026-10-13T13:02:12Z",
+     "verified": true,
+     "title_match": true
+    }
+   ],
+   "card": {
+    "idea": "Riyadh Season rebuilt inside Roblox so young Saudis can explore the festival as a game.",
+    "why_relevant": "Gen-Z platform play for a seasonal moment in Riyadh."
+   },
+   "scores": {
+    "relevance": 2,
+    "craft": 4,
+    "transferability": 3,
+    "cultural_fit": 5,
+    "freshness": 5
+   },
+   "tags": [
+    "gaming",
+    "gen-z"
+   ],
+   "moments": [
+    "riyadh-season"
+   ],
+   "provenance": {
+    "found_via": "page-fetch",
+    "confidence": "high"
+   },
+   "agency": "BigTime Creative Shop",
+   "country": "SA",
+   "year": 2025,
+   "category": "Gaming and Recreation, Leisure",
+   "media": [
+    "integrated"
+   ],
+   "thumbnail": {
+    "url": "https://www.adsoftheworld.com/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBK21oRWc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--724a3a533c73ef31c830ffd6c00fe4961c337b65/Screenshot%202025-10-29%20073035.jpg"
+   }
+  },
+  {
+   "id": "lipton-tea-for-togetherness",
+   "title": "Tea is For Togetherness | Ramadan Mubarak",
+   "brand": "Lipton",
+   "ring": "category",
+   "status": "verified",
+   "urls": [
+    {
+     "url": "https://www.youtube.com/watch?v=mCsXITDz6nA",
+     "kind": "video",
+     "source": "youtube",
+     "http_status": 200,
+     "checked_at": "2026-10-13T13:02:13Z",
+     "verified": true,
+     "title_match": true
+    }
+   ],
+   "card": {
+    "idea": "Tea is for togetherness: Lipton's Ramadan greeting.",
+    "why_relevant": "Hot-drink brand claiming togetherness: the crowded territory to avoid."
+   },
+   "scores": {
+    "relevance": 2,
+    "craft": 2,
+    "transferability": 1,
+    "cultural_fit": 3,
+    "freshness": 3
+   },
+   "tags": [
+    "togetherness"
+   ],
+   "moments": [
+    "ramadan"
+   ],
+   "provenance": {
+    "found_via": "web-search",
+    "confidence": "high"
+   },
+   "media": [
+    "film"
+   ],
+   "thumbnail": {
+    "url": "https://i.ytimg.com/vi/mCsXITDz6nA/hqdefault.jpg"
+   }
+  },
+  {
+   "id": "starbucks-keep-the-gathering-flowing",
+   "title": "Keep the Gathering Flowing",
+   "brand": "Starbucks",
+   "agency": "Impact BBDO",
+   "year": 2025,
+   "country": "SA",
+   "ring": "direct",
+   "status": "verified",
+   "media": [
+    "film",
+    "social"
+   ],
+   "moments": [
+    "ramadan"
+   ],
+   "tags": [
+    "competitor",
+    "majlis",
+    "late-night"
+   ],
+   "urls": [
+    {
+     "url": "https://campaignme.com/starbucks-keeps-the-gathering-flowing-in-community-first-ramadan-campaign/",
+     "kind": "article",
+     "source": "campaignme",
+     "http_status": 200,
+     "checked_at": "2026-10-13T13:02:13Z",
+     "verified": true,
+     "title_match": true
+    }
+   ],
+   "card": {
+    "idea": "Starbucks frames its Gulf coffeehouses as community hubs for modern Ramadan nights.",
+    "why_relevant": "The biggest competitor already claims 'the café as the Ramadan gathering place'; Rawaq must be more specific."
+   },
+   "scores": {
+    "relevance": 5,
+    "craft": 3.5,
+    "transferability": 2,
+    "cultural_fit": 4,
+    "freshness": 4
+   },
+   "provenance": {
+    "found_via": "page-fetch",
+    "confidence": "high",
+    "notes": "Campaign Middle East, 27 Mar 2025"
+   }
+  },
+  {
+   "id": "barns-iftar-meals-roads",
+   "title": "1 million iftar meals at traffic signals",
+   "brand": "Barn's",
+   "year": 2024,
+   "country": "SA",
+   "ring": "direct",
+   "status": "verified",
+   "media": [
+    "activation",
+    "pr"
+   ],
+   "moments": [
+    "ramadan"
+   ],
+   "tags": [
+    "competitor",
+    "csr",
+    "pre-iftar"
+   ],
+   "urls": [
+    {
+     "url": "https://gulfnews.com/world/gulf/saudi/saudi-arabia-distributes-1-million-iftar-meals-in-riyadh-jeddah-and-dammam-to-curb-road-crashes-1.101742312",
+     "kind": "article",
+     "source": "gulfnews.com",
+     "http_status": 200,
+     "checked_at": "2026-10-13T13:02:13Z",
+     "verified": true,
+     "title_match": true
+    }
+   ],
+   "card": {
+    "idea": "Barn's and a national centre hand out 1 million iftar meals at traffic signals in Riyadh, Jeddah and Dammam to cut pre-iftar crashes.",
+    "why_relevant": "A Saudi coffee competitor owns the road moment before iftar; Rawaq's 'run' should live after taraweeh instead."
+   },
+   "scores": {
+    "relevance": 5,
+    "craft": 3,
+    "transferability": 3,
+    "cultural_fit": 5,
+    "freshness": 3
+   },
+   "provenance": {
+    "found_via": "page-fetch",
+    "confidence": "high",
+    "notes": "Gulf News, 20 Mar 2024"
+   }
+  },
+  {
+   "id": "burger-king-whopper-detour",
+   "title": "The Whopper Detour",
+   "brand": "Burger King",
+   "agency": "FCB New York",
+   "country": "US",
+   "year": 2018,
+   "category": "Food",
+   "media": [
+    "digital"
+   ],
+   "ring": "wildcard",
+   "status": "verified",
+   "urls": [
+    {
+     "url": "https://www.adsoftheworld.com/campaigns/the-whopper-detour",
+     "kind": "case",
+     "source": "adsoftheworld",
+     "verified": true,
+     "checked_at": "2026-10-13T13:02:13Z",
+     "http_status": 200,
+     "title_match": true
+    },
+    {
+     "url": "https://www.adweek.com/creativity/whopper-detour-burger-kings-masterpiece-of-trolling-wins-direct-grand-prix-at-cannes/",
+     "kind": "article",
+     "source": "adweek",
+     "http_status": 200,
+     "checked_at": "2026-10-13T13:02:13Z",
+     "verified": true,
+     "title_match": true
+    }
+   ],
+   "thumbnail": {
+    "url": "https://www.adsoftheworld.com/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBcEdmIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--b4d7c625bb45073b96758d58d4d2d1850949165e/thumbnail_353629"
+   },
+   "awards": [
+    {
+     "show": "Cannes Lions",
+     "year": 2019,
+     "level": "Grand Prix",
+     "category": "Direct"
+    },
+    {
+     "show": "Cannes Lions",
+     "year": 2019,
+     "level": "Grand Prix",
+     "category": "Titanium"
+    }
+   ],
+   "card": {
+    "idea": "A 1-cent Whopper in the Burger King app that only unlocked when you were standing near a McDonald's.",
+    "why_relevant": "A location-and-time mechanic that turns a moment and a place into the offer: the after-taraweeh window is exactly that kind of moment."
+   },
+   "spark": "What if Rawaq's app unlocked a 'taraweeh pour' only between 9 and 11pm, within a short walk of a Rawaq café?",
+   "tags": [
+    "geofencing",
+    "app",
+    "mechanic",
+    "challenger"
+   ],
+   "moments": [],
+   "provenance": {
+    "found_via": "web-search",
+    "confidence": "high"
+   },
+   "scores": {
+    "relevance": 3,
+    "craft": 5,
+    "transferability": 4,
+    "cultural_fit": 3,
+    "freshness": 2
+   }
+  },
+  {
+   "id": "heinz-draw-ketchup",
+   "title": "Draw Ketchup",
+   "brand": "Heinz",
+   "agency": "Rethink",
+   "country": "CA",
+   "year": 2021,
+   "category": "Food",
+   "media": [
+    "integrated"
+   ],
+   "ring": "wildcard",
+   "status": "verified",
+   "urls": [
+    {
+     "url": "https://www.adsoftheworld.com/campaigns/draw-ketchup",
+     "kind": "case",
+     "source": "adsoftheworld",
+     "verified": true,
+     "checked_at": "2026-10-13T13:02:13Z",
+     "http_status": 200,
+     "title_match": true
+    }
+   ],
+   "thumbnail": {
+    "url": "https://image.adsoftheworld.com/wqujivkw95so0gqxtm27bhogfw7t"
+   },
+   "card": {
+    "idea": "People around the world were asked to draw ketchup; almost all drew a Heinz bottle, proving the brand is the category.",
+    "why_relevant": "A cheap, participatory way to prove ownership of a symbol: Rawaq's arch and the dallah are symbols worth testing the same way."
+   },
+   "spark": "What if we asked Riyadh to draw 'a coffee night' and showed that what people draw is a riwaq: the arch Rawaq already owns?",
+   "tags": [
+    "participation",
+    "brand-symbol",
+    "social-experiment"
+   ],
+   "moments": [],
+   "provenance": {
+    "found_via": "page-fetch",
+    "confidence": "high"
+   },
+   "scores": {
+    "relevance": 3,
+    "craft": 5,
+    "transferability": 4,
+    "cultural_fit": 4,
+    "freshness": 3
+   }
+  },
+  {
+   "id": "mcdonalds-raise-your-arches",
+   "title": "Raise Your Arches",
+   "brand": "McDonald's UK",
+   "agency": "Leo Burnett UK",
+   "country": "GB",
+   "year": 2023,
+   "category": "Food",
+   "media": [
+    "film",
+    "social"
+   ],
+   "ring": "wildcard",
+   "status": "verified",
+   "urls": [
+    {
+     "url": "https://musebyclios.com/advertising/fancy-a-mcdonalds-raise-your-eyebrows-um-arches-to-deliver-the-message/",
+     "kind": "article",
+     "source": "musebyclios",
+     "verified": true,
+     "checked_at": "2026-10-13T13:02:13Z",
+     "http_status": 200,
+     "title_match": true
+    },
+    {
+     "url": "https://mobilemarketingmagazine.com/mcdonalds-launches-raise-your-arches-campaign-the-first-not-to-feature-the-firms-restaurants-or-food/",
+     "kind": "article",
+     "source": "mobilemarketingmagazine",
+     "verified": true,
+     "checked_at": "2026-10-13T13:02:13Z",
+     "http_status": 200,
+     "title_match": true
+    }
+   ],
+   "thumbnail": {
+    "url": "https://cdn.musebyclios.com/wp-content/uploads/2024/06/11202025/MCDS-1.jpg"
+   },
+   "card": {
+    "idea": "A raised eyebrow shaped like the golden arches becomes a wordless invitation to go to McDonald's; no food, no restaurant shown (Edgar Wright directed the film).",
+    "why_relevant": "A brand shape turned into a social signal between friends, the same job an after-taraweeh coffee invitation does."
+   },
+   "spark": "What if the Rawaq arch became the wordless 'coffee after taraweeh?' signal between friends: a gesture, a sticker, a Snap lens?",
+   "tags": [
+    "brand-asset",
+    "gesture",
+    "invitation",
+    "no-product"
+   ],
+   "moments": [],
+   "provenance": {
+    "found_via": "web-search",
+    "confidence": "high"
+   },
+   "scores": {
+    "relevance": 4,
+    "craft": 5,
+    "transferability": 5,
+    "cultural_fit": 4,
+    "freshness": 3
+   }
+  }
+ ],
+ "top": [
+  "alj-toyota-iftar-better-together",
+  "sendwave-sound-of-ramadan",
+  "ikea-togetherness-assembled",
+  "britannia-live-ramadan"
+ ],
+ "patterns": [
+  {
+   "pattern": "Togetherness is the default Ramadan message across categories; brands win when they attach it to their own product truth.",
+   "reference_ids": [
+    "ikea-togetherness-assembled",
+    "lipton-tea-for-togetherness",
+    "alj-toyota-iftar-better-together"
+   ]
+  },
+  {
+   "pattern": "The freshest 2026 work uses the senses (sound, music) instead of lanterns and crescents.",
+   "reference_ids": [
+    "sendwave-sound-of-ramadan",
+    "indrive-fanous-ride"
+   ]
+  },
+  {
+   "pattern": "Coffee brands in the region stay generic ('savour', 'every moment', seasonal packaging).",
+   "reference_ids": [
+    "nespresso-time-to-savour",
+    "costa-ramadan-2024",
+    "ms-tea-coffee-ramadan"
+   ]
+  }
+ ],
+ "white_space": [
+  "No Saudi coffee brand owns suhoor or the after-taraweeh coffee run.",
+  "Najdi hospitality rivalry is owned by a car brand, not a hospitality brand.",
+  "Nobody has made a café's own sounds the signal that Ramadan night has begun."
+ ],
+ "territories": [
+  {
+   "id": "after-taraweeh-run",
+   "name": "The after-taraweeh run",
+   "name_ar": "مشوار ما بعد التراويح",
+   "thesis": "Own the moment Riyadh steps out after taraweeh: Rawaq is where the night's majlis begins.",
+   "why_this_client": "Rawaq's 9 cafés are the destination; the brand idea is a riwaq, the place guests gather.",
+   "reference_ids": [
+    "alj-toyota-iftar-better-together",
+    "nespresso-time-to-savour",
+    "half-million-your-2nd-half"
+   ],
+   "example_executions": [
+    "Snapchat lens timed to taraweeh end in Riyadh",
+    "'Seat saved' OOH near mosques' main roads (respectful distance)"
+   ],
+   "risks": [
+    "Never imply leaving prayer early; the moment starts after it"
+   ]
+  },
+  {
+   "id": "who-hosts-tonight",
+   "name": "Who hosts tonight?",
+   "name_ar": "مين يعزم الليلة؟",
+   "thesis": "Turn the friendly fight over who pays and who hosts into Rawaq's Ramadan game.",
+   "why_this_client": "Najdi generosity is Rawaq's heritage; the rivalry is a loved Saudi trait.",
+   "reference_ids": [
+    "alj-toyota-iftar-better-together",
+    "egypt-sohour-of-kindness",
+    "mos-big-miss-out"
+   ],
+   "example_executions": [
+    "TikTok series of 'hosting duels' at suhoor",
+    "In-café 'the table pays it forward' mechanic"
+   ]
+  },
+  {
+   "id": "sound-of-the-riwaq",
+   "name": "The sound of the riwaq",
+   "name_ar": "صوت الرواق",
+   "thesis": "Make the grinder, the pour and the cup on the saucer the sounds that say Ramadan night has started.",
+   "why_this_client": "Crafted, sensory brand; a sonic asset works on Snapchat/TikTok and in-café.",
+   "reference_ids": [
+    "sendwave-sound-of-ramadan",
+    "indrive-fanous-ride"
+   ],
+   "example_executions": [
+    "ASMR-style night series",
+    "Sonic logo at the end of every Ramadan post"
+   ],
+   "risks": [
+    "Keep religious sounds (adhan, recitation) out of brand audio"
+   ]
+  },
+  {
+   "id": "everyone-at-the-table",
+   "name": "Everyone at the table",
+   "name_ar": "الكل على الطاولة",
+   "thesis": "Suhoor at Rawaq welcomes everyone: friends, families, travellers, those who can't fast.",
+   "why_this_client": "Generous, inclusive hospitality is the brand's essence.",
+   "reference_ids": [
+    "britannia-live-ramadan",
+    "ikea-togetherness-assembled"
+   ],
+   "risks": [
+    "Daytime consumption imagery is sensitive; keep visuals after iftar"
+   ]
+  }
+ ],
+ "open_questions": [
+  "Confirm daytime opening policy during Ramadan before using 'Everyone at the table'.",
+  "Budget split between Snapchat and TikTok?"
+ ],
+ "insights": [
+  {
+   "id": "after-taraweeh-coffee",
+   "text": "Going for coffee together after Taraweeh is an intimate invitation between friends; coffee shops are 'alive in the evening' in Ramadan.",
+   "source_url": "https://arab.news/nk2vw",
+   "source_name": "Arab News",
+   "date": "2025-03-23",
+   "kind": "culture"
+  },
+  {
+   "id": "peak-9-11pm",
+   "text": "Saudi Ramadan engagement peaks at night: CST points to 9:00–11:00pm as peak usage hours.",
+   "source_url": "https://campaignme.com/ramadan-2026-what-brands-must-rethink-about-engagement-timing-and-trust/",
+   "source_name": "Campaign Middle East",
+   "date": "2026-02-05",
+   "kind": "data"
+  },
+  {
+   "id": "short-coffee-window",
+   "text": "Coffee consumption drops in Ramadan because the window between breaking the fast and sleeping is only 4–5 hours (Nescafé's stated problem).",
+   "source_url": "https://www.adsoftheworld.com/campaigns/unattainable-cup-of-coffee",
+   "source_name": "Ads of the World",
+   "kind": "category"
+  }
+ ],
+ "competitor_summary": [
+  {
+   "advertiser": "Starbucks KSA",
+   "found_campaign": true,
+   "reference_ids": [
+    "starbucks-keep-the-gathering-flowing"
+   ],
+   "messaging_pillars": [
+    "community hub",
+    "modern Ramadan nights"
+   ],
+   "checked": "Campaign ME, Ads of the World, web search 2026-10-13",
+   "notes": "Owns 'the gathering' generically."
+  },
+  {
+   "advertiser": "Barn's",
+   "found_campaign": true,
+   "reference_ids": [
+    "barns-iftar-meals-roads"
+   ],
+   "checked": "Gulf News, web search 2026-10-13",
+   "notes": "Owns the pre-iftar road moment (CSR)."
+  },
+  {
+   "advertiser": "Half Million",
+   "found_campaign": false,
+   "reference_ids": [
+    "half-million-your-2nd-half"
+   ],
+   "checked": "Ads of the World, web search 2026-10-13",
+   "notes": "Product-hero work, no Ramadan campaign found."
+  },
+  {
+   "advertiser": "Dose Café",
+   "found_campaign": false,
+   "checked": "web search 2026-10-13",
+   "notes": "No Ramadan campaign found; check own social."
+  },
+  {
+   "advertiser": "Overdose",
+   "found_campaign": false,
+   "checked": "web search 2026-10-13",
+   "notes": "No Ramadan campaign found; check own social."
+  }
+ ],
+ "recommendation": {
+  "summary": "Brief 'The after-taraweeh run' as the campaign idea, with 'Who hosts tonight?' as its social engine and 'The sound of the riwaq' as the in-café and sonic layer.",
+  "territory_ids": [
+   "after-taraweeh-run",
+   "who-hosts-tonight",
+   "sound-of-the-riwaq"
+  ],
+  "rationale": "It owns a moment no competitor holds (Starbucks owns the gathering, Barn's the pre-iftar road) and fits the 9–11pm peak."
+ },
+ "before_kickoff": [
+  "Scroll Half Million, Dose and Overdose Ramadan 2026 posts on Instagram, TikTok and Snapchat (web search doesn't index them).",
+  "Watch the YouTube references before quoting execution details.",
+  "Confirm Rawaq's daytime opening policy during Ramadan before using 'Everyone at the table'."
+ ]
+}

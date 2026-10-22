@@ -1,0 +1,50 @@
+{
+ "title": "Competitor watch: Saudi coffee chains",
+ "mode": "competitor-watch",
+ "client": "rawaq",
+ "design_system": true,
+ "request": "The request is in brief.md (in the working directory). Please do the competitor watch.",
+ "job": "clients/rawaq/jobs/2026-10-13-scout-competitors",
+ "checks": [
+  {
+   "type": "min_links",
+   "n": 10
+  },
+  {
+   "type": "alive_rate",
+   "min": 0.95
+  },
+  {
+   "type": "competitors",
+   "names": [
+    "Barn's",
+    "Half Million",
+    "Dose",
+    "Starbucks"
+   ],
+   "links_each": 1
+  },
+  {
+   "type": "mentions",
+   "rx": "\\b2026\\b",
+   "n": 5,
+   "label": "Recent: ≥5 mentions of 2026 activity"
+  },
+  {
+   "type": "limitations"
+  },
+  {
+   "type": "no_estimates"
+  },
+  {
+   "type": "mentions",
+   "rx": "gap|white space|opportunit|فرصة",
+   "n": 2,
+   "label": "Gaps for Rawaq named"
+  },
+  {
+   "type": "written_report"
+  }
+ ],
+ "id": "s3-competitor-watch"
+}

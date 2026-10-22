@@ -1,0 +1,13 @@
+{
+  "skill_name": "zamakan-design-system",
+  "evals": [
+    {
+      "id": 1,
+      "name": "rawaq-full-build",
+      "prompt": "We just signed a new client, Rawaq Coffee Roasters (Riyadh specialty coffee). Their brand files are in clients/rawaq/input (guidelines PDF, logos, fonts). Build their design system so our other agents can produce on-brand work from it.",
+      "expected_output": "A complete design system in clients/rawaq/design-system: all 8 colours with correct HEX and Arabic names, Saffron conflict (#E3A33B vs #E4A23C) flagged with #E3A33B chosen, Charcoal #1F1B18 found, logo variants with backgrounds/min sizes/clear space, misuse rules recovered from the image-only page, bilingual type scale, proposals (spacing/radii/shadow) clearly marked, machine-readable tokens.",
+      "files": ["samples/rawaq/input"],
+      "grader": "evals/grade_design_system.py (answer key: evals/fixtures/rawaq/answer-key.json)"
+    }
+  ]
+}
