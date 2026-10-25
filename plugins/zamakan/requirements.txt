@@ -3,6 +3,7 @@ pymupdf>=1.24
 fonttools>=4.50
 pillow>=10
 python-pptx>=1.0  # client decks
+python-docx>=1.2  # script desk (templates, formatted scripts, comments)
 playwright>=1.45  # uses a system/bundled Chromium; set ZAMAKAN_CHROMIUM to override
 beautifulsoup4>=4.12
 lxml>=5

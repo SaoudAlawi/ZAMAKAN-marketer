@@ -23,7 +23,7 @@ def test_marketplace_points_at_plugin():
 
 def test_plugin_holds_every_skill_and_its_requirements():
     names = sorted(d.name for d in (PLUGIN / "skills").iterdir() if (d / "SKILL.md").is_file())
-    assert names == ["zamakan-core", "zamakan-design-system", "zamakan-reference-scout", "zamakan-shot-scout"]
+    assert names == ["zamakan-core", "zamakan-design-system", "zamakan-reference-scout", "zamakan-script-desk", "zamakan-shot-scout"]
     assert (PLUGIN / "requirements.txt").is_file()
     assert "plugins/zamakan/requirements.txt" in (ROOT / "requirements.txt").read_text(encoding="utf-8")
 

@@ -14,7 +14,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve()
 REQ = next((p / "requirements.txt" for p in HERE.parents if (p / "requirements.txt").is_file()), None)
 PACKAGES = {"jsonschema": "jsonschema", "pymupdf": "pymupdf", "fontTools": "fonttools", "PIL": "pillow", "playwright": "playwright",
-            "bs4": "beautifulsoup4", "lxml": "lxml", "pptx": "python-pptx"}
+            "bs4": "beautifulsoup4", "lxml": "lxml", "pptx": "python-pptx", "docx": "python-docx"}
 
 
 def check():

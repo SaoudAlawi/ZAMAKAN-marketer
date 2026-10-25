@@ -1,0 +1,40 @@
+{
+ "note": "The reader's viewpoints. Each has a colour (margin comments and report) and questions to ask the draft. Verdicts: green = working, amber = needs work, red = a problem that holds the script back (like a reader's Recommend / Consider / Pass, but per viewpoint and for the writer). Built from common coverage criteria (premise, structure, character, dialogue, pacing, theme, marketability) plus Arabic and production concerns.",
+ "verdicts": {
+  "green": {"en": "Working", "ar": "يعمل", "hex": "#1E9E5A"},
+  "amber": {"en": "Needs work", "ar": "يحتاج عملاً", "hex": "#E0A100"},
+  "red": {"en": "Holds it back", "ar": "يعيق النص", "hex": "#D64545"}
+ },
+ "lenses": [
+  {"id": "premise", "name": "Premise and originality", "name_ar": "الفكرة والأصالة", "hex": "#16A34A",
+   "ask": ["Can the story be told in one clear line (who wants what, against what)?", "What is fresh here, and what have we seen many times?", "Is the premise big enough for the running time, or too big for a short?"],
+   "evidence": "logline you can write from the draft; similar films only if you know them for certain"},
+  {"id": "structure", "name": "Structure", "name_ar": "البناء", "hex": "#2F6FDB",
+   "ask": ["Where are the inciting incident, turns and climax (scene numbers)? Do they fall near the chosen structure's beats (digest)?", "Does every setup pay off, and every payoff have a setup?", "Do any scenes repeat what we already know?", "Are the stakes resolved by the hero's action, or too easily?"],
+   "evidence": "beat positions from digest.py; scene numbers"},
+  {"id": "character", "name": "Character", "name_ar": "الشخصيات", "hex": "#8B5CF6",
+   "ask": ["What does the protagonist want, need and fear? Do they drive the story with choices, or react to it?", "Does anyone change? Is the change earned by events on screen?", "Do supporting characters want something of their own?"],
+   "evidence": "the scenes where the protagonist decides (or doesn't)"},
+  {"id": "dialogue", "name": "Dialogue and dialect", "name_ar": "الحوار واللهجة", "hex": "#0D9488",
+   "ask": ["Do characters say exactly what they feel (on the nose), or is there subtext?", "Does each character sound like themselves, and keep one dialect or register unless a switch means something?", "Are speeches too long for the screen?"],
+   "evidence": "quotes; digest dialect changes and longest speech"},
+  {"id": "visual", "name": "Visual storytelling", "name_ar": "السرد البصري", "hex": "#EA8A00",
+   "ask": ["Does the action show what we will see and hear, or narrate thoughts the camera can't film?", "Which moments are told in words that could be shown in images?", "Are there images that carry meaning (motifs, mirrors, bookends)?"],
+   "evidence": "digest telling lines; quotes from action"},
+  {"id": "pacing", "name": "Pacing", "name_ar": "الإيقاع", "hex": "#DB2777",
+   "ask": ["Does each scene change something (a value turns)? Which scenes could be cut?", "Do scenes enter late and leave early?", "Is the length right for the story (pages vs minutes)?"],
+   "evidence": "scene shares and silent scenes from digest"},
+  {"id": "theme", "name": "Theme and meaning", "name_ar": "الموضوع والمعنى", "hex": "#B58900",
+   "ask": ["What is the film about underneath the plot? Is it shown through choices, or stated?", "Does the ending answer the question the film asks?"],
+   "evidence": "the ending and the protagonist's last choice"},
+  {"id": "culture", "name": "Cultural truth and sensitivity", "name_ar": "الصدق الثقافي والحساسية", "hex": "#9A3412",
+   "ask": ["Do places, customs, family roles and speech ring true for where the story is set?", "Is anything likely to meet resistance from audiences, broadcasters or censors in the intended markets (GCC, MENA)? Say what and why, without self-censoring the writer's intent.", "Are women, workers and minorities written as people, not types?"],
+   "evidence": "specific lines or details; name the market"},
+  {"id": "production", "name": "Producibility", "name_ar": "قابلية التنفيذ", "hex": "#6B7280",
+   "ask": ["What will be expensive or hard (night exteriors, sea, weather, crowds, stunts, animals, children, many locations)?", "Is the cost where the story needs it, or could a cheaper choice say the same?", "Is it shootable in the planned market and budget?"],
+   "evidence": "digest production flags and location count"},
+  {"id": "festival", "name": "Audience and festival fit", "name_ar": "الجمهور والمهرجانات", "hex": "#0891B2",
+   "ask": ["Who is this for, and where would it play (festivals, platforms, TV)?", "For a short: is the running time within the usual limits of the festivals or funds the writer targets (check their current rules before quoting them)?", "What would make it stand out in a programme?"],
+   "evidence": "running time; named festivals only with their current rules checked"}
+ ]
+}

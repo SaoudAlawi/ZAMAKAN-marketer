@@ -6,6 +6,7 @@ Marketing and creative skills from ZAMAKAN (زمكان), an Omani agency, in Ara
 |---|---|---|
 | **Reference scout** | "References for our Ramadan kickoff", "What are our competitors running?" | Real campaigns (every link checked live), insights with sources, patterns, white space, creative territories and a recommendation, as an HTML board, a deck (PowerPoint + PDF) and/or a report |
 | **Shot scout** | "Maghrib light on the road, warm and spiritual", "Best dolly zoom examples", "Find shots like this frame", "I'm a writer, inspire me" | Cinematic references (films, shorts, documentaries) as a shot board with stills, palettes, credits and how-to-shoot notes, or a viewing programme for filmmakers |
+| **Script desk** | "Template for a 12-minute short", «نسّق السيناريو», «ملاحظات على مسودتي» | Structure templates in Word, a formatter (right-to-left Arabic, Word + PDF + Fountain) and a reader's notes from ten viewpoints, colour-coded in your Word file. It helps you write; it never writes for you |
 | **Design system** | "Here are the brand guidelines for client X" | The client's colours, fonts, logos and rules as files every other skill uses |
 | **Core** | (used by the others) | Client folders, brand loading, the bilingual quality bar |
 
@@ -19,7 +20,7 @@ In Claude Code:
 Then, once per computer, install the Python packages (the list in this folder's `requirements.txt`) and the browser
 the skills render with:
 ```bash
-pip install jsonschema pymupdf fonttools pillow python-pptx playwright beautifulsoup4 lxml pycountry
+pip install jsonschema pymupdf fonttools pillow python-pptx python-docx playwright beautifulsoup4 lxml pycountry
 python3 -m playwright install chromium
 ```
 LibreOffice is optional (decks also come as PDF when it is installed). Not sure what's missing? Ask Claude to

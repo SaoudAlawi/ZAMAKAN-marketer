@@ -75,6 +75,7 @@ python3 $CORE/scripts/client.py job <slug> <job-name>       # create jobs/<date>
 | Skill | Does |
 |---|---|
 | `zamakan-design-system` | Brand files → verified design system (this contract) |
+| `zamakan-script-desk` | Helps a writer write a film or short (never writes it): structure templates in Word, a formatter (right-to-left Arabic, Word + PDF + Fountain) and a reader's notes from ten viewpoints with colour-coded comments |
 | `zamakan-shot-scout` | Cinematic references for a subject, effect or frame (Eyecannndy, Film-Grab, Vimeo, YouTube) → film language, shot board with palettes, credits and how-to-shoot notes |
 | `zamakan-reference-scout` | Verified campaign references (Ads of the World, YouTube, Vimeo, award shows, trade press, competitor ads) → analysis, white space, creative territories; board / deck / report |
 
