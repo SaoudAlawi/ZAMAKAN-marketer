@@ -25,11 +25,11 @@ LENSES = json.loads((S.SKILL / "references" / "lenses.json").read_text(encoding=
 LENS = {x["id"]: x for x in LENSES["lenses"]}
 VERDICT = LENSES["verdicts"]
 UI = {"ar": {"notes": "ملاحظات القراءة", "story": "القصة كما فهمناها", "overall": "الحكم العام", "lens": "زاوية القراءة", "verdict": "الحكم",
-             "summary": "الخلاصة", "next": "أولويات المسودة القادمة", "questions": "أسئلة للكاتب", "legend": "ألوان الملاحظات في الهامش",
+             "summary": "الخلاصة", "next": "أولويات المسودة القادمة", "questions": "أسئلة للكاتب", "legend": "ألوان الملاحظات في الهامش", "since": "منذ المسودة السابقة",
              "author": "قارئ زمكان", "kinds": {"issue": "ملاحظة", "question": "سؤال", "strength": "نقطة قوة"},
              "promise": "هذه ملاحظات وأسئلة لمساعدتك على الكتابة، لا إعادة كتابة لنصك."},
       "en": {"notes": "Reader's notes", "story": "The story as we read it", "overall": "Overall", "lens": "Viewpoint", "verdict": "Verdict",
-             "summary": "Summary", "next": "Priorities for the next draft", "questions": "Questions for the writer", "legend": "Margin comment colours",
+             "summary": "Summary", "next": "Priorities for the next draft", "questions": "Questions for the writer", "legend": "Margin comment colours", "since": "Since the last draft",
              "author": "ZAMAKAN reader", "kinds": {"issue": "Note", "question": "Question", "strength": "Strength"},
              "promise": "These are notes and questions to help you write, not a rewrite of your script."}}
 
@@ -72,6 +72,22 @@ def check(sc, notes):
     for lid, x in have.items():
         if x["verdict"] in ("amber", "red") and not any(n["lens"] == lid and n["kind"] != "strength" for n in notes["notes"]):
             errs.append(f"lens '{lid}' is {x['verdict']} but has no note pointing to a scene")
+    st = next((x for x in S.STRUCTURES["structures"] if x["id"] == notes.get("structure")), None)
+    for beat, n in (notes.get("turns") or {}).items():
+        if st and beat not in {b["id"] for b in st["beats"]}:
+            errs.append(f"turns: '{beat}' is not a beat of {notes.get('structure')} ({', '.join(b['id'] for b in st['beats'])})")
+        if not 1 <= n <= nscenes:
+            errs.append(f"turns: {beat} → scene {n} does not exist")
+    if notes.get("turns") and not st:
+        errs.append("turns given but 'structure' is missing or unknown")
+    tens = notes.get("tension") or {}
+    bad = [k for k in tens if not k.isdigit() or not 1 <= int(k) <= nscenes]
+    if bad:
+        errs.append(f"tension: unknown scenes {bad}")
+    if tens and len(tens) < nscenes:
+        warns.append(f"tension covers {len(tens)} of {nscenes} scenes; give every scene a value for a true curve")
+    if not tens:
+        warns.append("no tension values: the report has no tension curve")
     if not any(n["kind"] == "strength" for n in notes["notes"]) and not any(x.get("strengths") for x in notes["lenses"]):
         warns.append("no strengths noted: say what works, too")
     return errs, warns
@@ -87,6 +103,17 @@ def shade_runs(p, hex_):
     for r in p.runs:
         rpr = r._r.get_or_add_rPr()
         rpr.append(S._el("w:shd", **{"w:val": "clear", "w:color": "auto", "w:fill": tint(hex_)}))
+
+
+def verdict_runs(p, v, lang):
+    """● in the status colour, then icon + label in ink: the colour never carries the verdict alone."""
+    for text, col in (("● ", VERDICT[v]["hex"]), (f"{VERDICT[v]['icon']} {VERDICT[v][lang]}", None)):
+        r = p.add_run(text)
+        r.bold = True
+        if col:
+            r.font.color.rgb = S.RGBColor.from_string(col.lstrip("#"))
+        if lang == "ar":
+            r._r.get_or_add_rPr().append(S._el("w:rtl"))
 
 
 def cell_text(cell, text, lang, bold=False, fill=None, color=None):
@@ -117,7 +144,7 @@ def para(doc, text, lang, style=None, bold=False, color=None, size=None):
     return p
 
 
-def notes_page(doc, sc, notes, lang):
+def notes_page(doc, sc, notes, lang, images=()):
     u = UI[lang]
     # insert the notes page before the script body: build it at the end, then move its elements to the front
     body = doc.element.body
@@ -127,7 +154,8 @@ def notes_page(doc, sc, notes, lang):
     para(doc, u["story"], lang, style="Heading 3")
     para(doc, notes["logline_read"], lang)
     v = notes["overall"]["verdict"]
-    para(doc, f"{u['overall']}: ● {VERDICT[v][lang]}", lang, bold=True, color=VERDICT[v]["hex"])
+    pv = para(doc, f"{u['overall']}: ", lang, bold=True)
+    verdict_runs(pv, v, lang)
     para(doc, notes["overall"]["summary"], lang)
     t = doc.add_table(rows=1, cols=3)
     t.style = "Table Grid"
@@ -143,9 +171,44 @@ def notes_page(doc, sc, notes, lang):
         if not x:
             continue
         row = t.add_row().cells
-        cell_text(row[0], "■ " + (L["name_ar"] if lang == "ar" else L["name"]), lang, bold=True, color=L["hex"])
-        cell_text(row[1], "● " + VERDICT[x["verdict"]][lang], lang, bold=True, color=VERDICT[x["verdict"]]["hex"])
+        cell_text(row[0], "", lang)
+        for text, col in (("■ ", L["hex"]), (L["name_ar"] if lang == "ar" else L["name"], None)):
+            rr = row[0].paragraphs[0].add_run(text)
+            rr.bold = True
+            if col:
+                rr.font.color.rgb = S.RGBColor.from_string(col.lstrip("#"))
+            if lang == "ar":
+                rr._r.get_or_add_rPr().append(S._el("w:rtl"))
+        cell_text(row[1], "", lang)
+        verdict_runs(row[1].paragraphs[0], x["verdict"], lang)
         cell_text(row[2], x["summary"], lang)
+    for img in images:  # the charts, as pictures
+        doc.add_paragraph()
+        doc.add_picture(str(img), width=S.Inches(5.9))
+    widths = (1.35, 1.15, 3.3)  # viewpoint and verdict narrow, summary wide
+    t.autofit = False
+    pr.append(S._el("w:tblLayout", **{"w:type": "fixed"}))
+    for gc, w in zip(t._tbl.tblGrid.findall(S.qn("w:gridCol")), widths):
+        gc.set(S.qn("w:w"), str(int(w * 1440)))
+    for row in t.rows:
+        for cell, w in zip(row.cells, widths):
+            cell.width = S.Inches(w)
+    prev = (notes.get("previous") or {}).get("items") or []
+    if prev:
+        icons = {"resolved": ("✓", "#0ca30c"), "partly": ("◐", "#fab219"), "open": ("!", "#d03b3b"), "dropped": ("–", "#8a8984")}
+        labels = {"ar": {"resolved": "حُلّت", "partly": "جزئياً", "open": "قائمة", "dropped": "لم تعد تنطبق"},
+                  "en": {"resolved": "resolved", "partly": "partly", "open": "open", "dropped": "no longer applies"}}
+        para(doc, u["since"], lang, style="Heading 3")
+        for it in sorted(prev, key=lambda x: list(icons).index(x["status"])):
+            pp = para(doc, "", lang)
+            for text, col in ((icons[it["status"]][0] + " ", icons[it["status"]][1]),
+                              (f"{labels[lang][it['status']]}: {it['text']}" + (f" — {it['comment']}" if it.get("comment") else ""), None)):
+                r = pp.add_run(text)
+                if col:
+                    r.font.color.rgb = S.RGBColor.from_string(col.lstrip("#"))
+                    r.bold = True
+                if lang == "ar":
+                    r._r.get_or_add_rPr().append(S._el("w:rtl"))
     para(doc, u["next"], lang, style="Heading 3")
     for i, item in enumerate(notes["next_draft"], 1):
         para(doc, f"{S.digits(i, lang)}. {item}", lang)
@@ -156,11 +219,13 @@ def notes_page(doc, sc, notes, lang):
     para(doc, u["legend"], lang, style="Heading 3")
     lg = para(doc, "", lang, size=9)
     for L in LENS.values():
-        r = lg.add_run(f"■ {L['name_ar'] if lang == 'ar' else L['name']}    ")
-        r.font.color.rgb = S.RGBColor.from_string(L["hex"].lstrip("#"))
-        r.font.size = S.Pt(9)
-        if lang == "ar":
-            r._r.get_or_add_rPr().append(S._el("w:rtl"))
+        for text, col in (("■ ", L["hex"]), (f"{L['name_ar'] if lang == 'ar' else L['name']}    ", None)):
+            r = lg.add_run(text)
+            if col:
+                r.font.color.rgb = S.RGBColor.from_string(col.lstrip("#"))
+            r.font.size = S.Pt(9)
+            if lang == "ar":
+                r._r.get_or_add_rPr().append(S._el("w:rtl"))
     pb = doc.add_paragraph()
     pb.add_run().add_break(S.WD_BREAK.PAGE)
     added = list(body)[start:]
@@ -180,28 +245,34 @@ def notes_page(doc, sc, notes, lang):
         body.insert(anchor + k, el)
 
 
-def annotate(sc, notes, lang):
+def anchor_index(sc, note):
+    """The element a note belongs to: the line holding its quote, else the scene heading."""
+    head = next(s["start"] for s in sc["scenes"] if s["n"] == note["scene"])
+    q = norm(note.get("quote"))
+    if q:
+        for i, e in enumerate(sc["elements"]):
+            if e.get("scene") == note["scene"] and q in norm(e["text"]):
+                return i
+    return head
+
+
+def annotate(sc, notes, lang, images=()):
     pmap = {}
     doc = F.build_docx(sc, pmap=pmap)
     u = UI[lang]
-    by_scene = {}
-    for idx, e in enumerate(sc["elements"]):
-        if e.get("scene"):
-            by_scene.setdefault(e["scene"], []).append(idx)
     heading_of = {s["n"]: s["start"] for s in sc["scenes"]}
     for n in notes["notes"]:
         L = LENS[n["lens"]]
-        target = heading_of[n["scene"]]
-        if n.get("quote"):
-            q = norm(n["quote"])
-            target = next((i for i in by_scene.get(n["scene"], []) if q and q in norm(sc["elements"][i]["text"])), target)
+        target = anchor_index(sc, n)
         p = pmap.get(target) or pmap.get(heading_of[n["scene"]])
         if not p or not p.runs:
             continue
         shade_runs(p, L["hex"])
         tag = f"■ {L['name_ar'] if lang == 'ar' else L['name']} · {u['kinds'][n['kind']]}"
-        doc.add_comment(p.runs, text=f"{tag}\n{n['text']}", author=u["author"], initials="ZR")
-    notes_page(doc, sc, notes, lang)
+        # one reviewer per viewpoint: Word gives each its own margin colour and lets the writer show or hide it
+        who = L["name_ar"] if lang == "ar" else L["name"]
+        doc.add_comment(p.runs, text=f"{tag}\n{n['text']}", author=who, initials=L["id"][:2].upper())
+    notes_page(doc, sc, notes, lang, images)
     return doc
 
 
@@ -212,6 +283,7 @@ def main():
     ap.add_argument("--out")
     ap.add_argument("--name")
     ap.add_argument("--check", action="store_true")
+    ap.add_argument("--stats", help="stats.json from digest.py: adds the charts to the notes page")
     a = ap.parse_args()
     sc = json.loads(Path(a.script).read_text(encoding="utf-8"))
     notes = json.loads(Path(a.notes).read_text(encoding="utf-8"))
@@ -233,7 +305,16 @@ def main():
     lang = notes.get("lang") or sc["lang"]
     name = a.name or (re.sub(r"[^\w؀-ۿ-]+", "-", (sc.get("title_page") or {}).get("title") or "script").strip("-") + "-notes")
     path = out / f"{name}.docx"
-    annotate(sc, notes, lang).save(path)
+    images = []
+    if a.stats:
+        import charts as C
+        from side_notes import scene_marks
+        stats = json.loads(Path(a.stats).read_text(encoding="utf-8"))
+        st = next((x for x in S.STRUCTURES["structures"] if x["id"] == notes.get("structure")), None)
+        frags = [C.beat_map(stats, notes, st, scene_marks(sc, notes), lang), C.tension_curve(stats, notes, st, lang),
+                 C.presence(stats, lang), C.dialect_map(stats, lang)]
+        images = C.to_pngs([f for f in frags if f], out / ".charts", lang)
+    annotate(sc, notes, lang, images).save(path)
     print(f"annotated script → {path}")
 
 

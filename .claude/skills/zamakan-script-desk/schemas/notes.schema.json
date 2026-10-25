@@ -3,25 +3,216 @@
  "$id": "https://zamakan.agency/schemas/script-notes/1",
  "title": "Script reader notes (written by Claude, read by annotate.py and report.py)",
  "type": "object",
- "required": ["schema", "lang", "logline_read", "overall", "lenses", "notes", "next_draft"],
+ "required": [
+  "schema",
+  "lang",
+  "logline_read",
+  "overall",
+  "lenses",
+  "notes",
+  "next_draft"
+ ],
  "additionalProperties": false,
  "properties": {
-  "schema": {"const": "zamakan-script-notes/1"},
-  "lang": {"enum": ["ar", "en"], "description": "language of the notes (default: the script's)"},
-  "structure": {"type": "string", "description": "structure id the draft was read against (references/structures.json)"},
-  "kind": {"enum": ["short", "feature"]},
-  "logline_read": {"type": "string", "description": "the story in one line as the reader understood it; lets the writer see if it lands"},
-  "overall": {"type": "object", "required": ["verdict", "summary"], "additionalProperties": false,
-   "properties": {"verdict": {"enum": ["green", "amber", "red"]}, "summary": {"type": "string"}}},
-  "lenses": {"type": "array", "minItems": 1, "items": {"type": "object", "required": ["id", "verdict", "summary"], "additionalProperties": false,
-   "properties": {"id": {"type": "string"}, "verdict": {"enum": ["green", "amber", "red"]}, "summary": {"type": "string"},
-    "strengths": {"type": "array", "items": {"type": "string"}}}}},
-  "notes": {"type": "array", "items": {"type": "object", "required": ["scene", "lens", "kind", "text"], "additionalProperties": false,
-   "properties": {"scene": {"type": "integer", "minimum": 1}, "lens": {"type": "string"},
-    "kind": {"enum": ["issue", "question", "strength"]},
-    "text": {"type": "string", "description": "the note: what you saw and a question for the writer; never a rewrite of their lines"},
-    "quote": {"type": "string", "description": "exact words from that scene to anchor the comment (optional)"}}}},
-  "questions_for_writer": {"type": "array", "items": {"type": "string"}},
-  "next_draft": {"type": "array", "minItems": 1, "maxItems": 5, "items": {"type": "string"}, "description": "the top priorities, in order"}
+  "schema": {
+   "const": "zamakan-script-notes/1"
+  },
+  "lang": {
+   "enum": [
+    "ar",
+    "en"
+   ],
+   "description": "language of the notes (default: the script's)"
+  },
+  "structure": {
+   "type": "string",
+   "description": "structure id the draft was read against (references/structures.json)"
+  },
+  "kind": {
+   "enum": [
+    "short",
+    "feature"
+   ]
+  },
+  "logline_read": {
+   "type": "string",
+   "description": "the story in one line as the reader understood it; lets the writer see if it lands"
+  },
+  "overall": {
+   "type": "object",
+   "required": [
+    "verdict",
+    "summary"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "verdict": {
+     "enum": [
+      "green",
+      "amber",
+      "red"
+     ]
+    },
+    "summary": {
+     "type": "string"
+    }
+   }
+  },
+  "lenses": {
+   "type": "array",
+   "minItems": 1,
+   "items": {
+    "type": "object",
+    "required": [
+     "id",
+     "verdict",
+     "summary"
+    ],
+    "additionalProperties": false,
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "verdict": {
+      "enum": [
+       "green",
+       "amber",
+       "red"
+      ]
+     },
+     "summary": {
+      "type": "string"
+     },
+     "strengths": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     }
+    }
+   }
+  },
+  "notes": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "scene",
+     "lens",
+     "kind",
+     "text"
+    ],
+    "additionalProperties": false,
+    "properties": {
+     "scene": {
+      "type": "integer",
+      "minimum": 1
+     },
+     "lens": {
+      "type": "string"
+     },
+     "kind": {
+      "enum": [
+       "issue",
+       "question",
+       "strength"
+      ]
+     },
+     "text": {
+      "type": "string",
+      "description": "the note: what you saw and a question for the writer; never a rewrite of their lines"
+     },
+     "quote": {
+      "type": "string",
+      "description": "exact words from that scene to anchor the comment (optional)"
+     }
+    }
+   }
+  },
+  "questions_for_writer": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  },
+  "next_draft": {
+   "type": "array",
+   "minItems": 1,
+   "maxItems": 5,
+   "items": {
+    "type": "string"
+   },
+   "description": "the top priorities, in order"
+  },
+  "turns": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "integer",
+    "minimum": 1
+   },
+   "description": "beat id of the chosen structure → the scene where the script actually makes that turn (for the beat map); leave out beats the script doesn't have"
+  },
+  "tension": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "integer",
+    "minimum": 0,
+    "maximum": 5
+   },
+   "description": "scene number (as text) → tension 0-5 as the reader felt it, every scene (for the tension curve)"
+  },
+  "previous": {
+   "type": "object",
+   "required": [
+    "items"
+   ],
+   "additionalProperties": false,
+   "description": "for a new draft: what happened to each note of the previous reading (ids from compare.py)",
+   "properties": {
+    "draft": {
+     "type": "string",
+     "description": "which draft the previous notes were on, e.g. 1"
+    },
+    "items": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "id",
+       "status",
+       "text"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "id": {
+        "type": "integer",
+        "minimum": 0
+       },
+       "status": {
+        "enum": [
+         "resolved",
+         "partly",
+         "open",
+         "dropped"
+        ]
+       },
+       "text": {
+        "type": "string",
+        "description": "the old note in a few words"
+       },
+       "scene": {
+        "type": "integer",
+        "minimum": 1,
+        "description": "where it stands now (new scene number), if anywhere"
+       },
+       "comment": {
+        "type": "string",
+        "description": "what changed, in a sentence"
+       }
+      }
+     }
+    }
+   }
+  }
  }
 }

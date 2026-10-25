@@ -38,6 +38,7 @@ def words(text):
 
 def norm_word(w):
     w = re.sub("[ً-ْ]", "", w)
+    w = re.sub("[\u060C\u061B\u061F\u0640]", "", w)  # Arabic comma, semicolon, question mark, tatweel
     return w[1:] if len(w) > 3 and w[0] in "وف" else w
 
 
@@ -50,6 +51,45 @@ def dialect_scores(text):
         if hits:
             out[k] = sorted(hits)
     return out
+
+
+STOP = set("""في من إلى على عن مع هذا هذه ذلك التي الذي ما لا لم لن إن أن كان يا و ف ثم أو بل قد كل بعد قبل هو هي أنا أنت أنتِ نحن هم
+the a an and or to of in on at is are was it you i me my we he she they this that not no yes""".split())
+
+
+def voices(els, lang):
+    """Per speaking character: how they talk (line length, questions, exclamations, their own words, main dialect),
+    and pairs that may sound alike. Hints for the dialogue viewpoint."""
+    by = defaultdict(list)
+    cur = None
+    for e in els:
+        if e["type"] == "character":
+            cur = e.get("name", e["text"])
+        elif e["type"] == "dialogue" and cur:
+            by[cur].append(e["text"])
+    all_words = Counter(norm_word(w) for ls in by.values() for ln in ls for w in words(ln))
+    out = []
+    for c, ls in by.items():
+        if len(ls) < 2:
+            continue
+        ws = [norm_word(w) for ln in ls for w in words(ln)]
+        own = Counter(w for w in ws if w not in STOP and len(w) > 2)
+        distinct = sorted(own, key=lambda w: (-own[w] / all_words[w], -own[w]))[:4]
+        dial = Counter()
+        for ln in ls:
+            for k, h in dialect_scores(ln).items():
+                dial[k] += len(h)
+        out.append({"name": c, "lines": len(ls), "avg_words": round(len(ws) / len(ls), 1),
+                    "questions": round(sum(("؟" in ln or "?" in ln) for ln in ls) / len(ls), 2),
+                    "exclaims": round(sum("!" in ln for ln in ls) / len(ls), 2), "own_words": distinct,
+                    "dialect": dial.most_common(1)[0][0] if dial else None})
+    alike = []
+    for i, a in enumerate(out):
+        for b in out[i + 1:]:
+            if abs(a["avg_words"] - b["avg_words"]) < 1.5 and abs(a["questions"] - b["questions"]) < 0.15 and \
+                    abs(a["exclaims"] - b["exclaims"]) < 0.15 and a["dialect"] == b["dialect"]:
+                alike.append([a["name"], b["name"]])
+    return out, alike
 
 
 def digest(sc, structure=None):
@@ -66,6 +106,7 @@ def digest(sc, structure=None):
     speech_words = action_words = 0
     longest = (0, None, None)
     dial = defaultdict(lambda: defaultdict(dict))  # character -> scene -> variety hits
+    lines_cs = Counter()  # (character, scene) -> dialogue lines
     cur = None
     for e in els:
         if e["type"] == "character":
@@ -73,6 +114,7 @@ def digest(sc, structure=None):
             lines[cur] += 1
             scenes_of[cur].add(e.get("scene"))
         elif e["type"] == "dialogue" and cur:
+            lines_cs[(cur, e.get("scene"))] += 1
             n = len(words(e["text"]))
             wc[cur] += n
             speech_words += n
@@ -125,6 +167,19 @@ def digest(sc, structure=None):
         kinds = set(dom.values())
         if len(kinds) > 1:
             mixed.append({"character": who, "by_scene": {str(k): v for k, v in sorted(dom.items(), key=lambda kv: kv[0] or 0)}})
+    # grids for the charts: who is in which scene (lines; 0 = present without speaking), dialect per scene
+    order_chars = [c for c, _ in lines.most_common()]
+    presence_grid = {}
+    for c in order_chars:
+        row = {}
+        for r in rows:
+            k = lines_cs.get((c, r["n"]), 0)
+            if k or c in r["speakers"] or any(e["type"] == "action" and c in e["text"] for e in by_scene[r["n"]]):
+                row[str(r["n"])] = k
+        presence_grid[c] = row
+    dialect_grid = {c: {str(scn): max(h.items(), key=lambda kv: len(kv[1]))[0] for scn, h in per.items() if h}
+                    for c, per in dial.items()}
+    voice_rows, alike = voices(els, lang)
     repeats = []
     for i, a in enumerate(rows):
         for b in rows[i + 1:]:
@@ -154,7 +209,7 @@ def digest(sc, structure=None):
         "longest_speech": {"words": longest[0], "character": longest[1], "scene": longest[2]},
         "longest_scenes": sorted(rows, key=lambda r: -r["share"])[:3] and [r["n"] for r in sorted(rows, key=lambda r: -r["share"])[:3]],
         "silent_scenes": [r["n"] for r in rows if not r["dialogue_lines"]],
-        "telling_lines": telling, "production": dict(prod), "dialect_mix": mixed, "same_place_same_people": repeats,
+        "telling_lines": telling, "production": dict(prod), "dialect_mix": mixed, "presence_grid": presence_grid, "voices": voice_rows, "similar_voices": alike, "dialect_grid": dialect_grid, "same_place_same_people": repeats,
         "beats": beats, "sections": sections, "scene_rows": rows,
     }
 
@@ -180,6 +235,11 @@ def show(d):
         out.append("dialect changes: " + " · ".join(f"{m['character']} {m['by_scene']}" for m in d["dialect_mix"]))
     if d["same_place_same_people"]:
         out.append("same place + same speakers (possible repeat): " + ", ".join(f"S{a}/S{b}" for a, b in d["same_place_same_people"]))
+    if d.get("voices"):
+        out.append("voices: " + " · ".join(f"{v['name']} {v['avg_words']}w/line, ?{int(v['questions'] * 100)}% !{int(v['exclaims'] * 100)}%, "
+                                         f"{v['dialect'] or '-'}, words: {'، '.join(v['own_words'])}" for v in d["voices"]))
+    if d.get("similar_voices"):
+        out.append("may sound alike (similar length, questions, dialect): " + ", ".join(f"{a}/{b}" for a, b in d["similar_voices"]))
     if d["silent_scenes"]:
         out.append(f"scenes with no dialogue: {d['silent_scenes']}")
     if d["production"]:

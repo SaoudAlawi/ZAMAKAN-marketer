@@ -129,7 +129,8 @@ def notes(**over):
 
 
 def test_notes_checker(sc):
-    assert A.check(sc, notes()) == ([], [])
+    errs, warns = A.check(sc, notes())
+    assert errs == [] and any("tension" in w for w in warns)
     bad = notes()
     bad["lenses"][1]["verdict"] = "red"  # red with no note
     bad["notes"].append({"scene": 99, "lens": "structure", "kind": "issue", "text": "x"})
@@ -162,3 +163,82 @@ def test_cli_end_to_end(tmp_path):
     assert r.returncode == 0 and "unsure" in r.stdout
     r = subprocess.run([sys.executable, str(DESK / "scripts" / "show.py"), str(js), "9"], capture_output=True, text=True)
     assert "الجدة:" in r.stdout and "S9" in r.stdout
+
+
+# ---- v0.2: charts, side notes, voices, draft comparison ----
+import charts as C  # noqa: E402
+import compare as CMP  # noqa: E402
+import side_notes as SN  # noqa: E402
+
+SAMPLE2 = ROOT / "samples" / "script-desk" / "al-mirsah-draft2.txt"
+
+
+def full_notes():
+    n = notes()
+    n["structure"] = "short-one-moment"
+    n["lenses"][2]["verdict"] = "red"  # character
+    n["notes"] += [{"scene": 8, "lens": "character", "kind": "issue", "text": "القرار قرار سالم. ماذا تختار مريم؟", "quote": "مريم بتطلع مع حمد"},
+                   {"scene": 4, "lens": "structure", "kind": "question", "text": "ما دور البوصلة؟"}]
+    n["lenses"][1]["verdict"] = "amber"
+    n["turns"] = {"hook": 1, "turn": 8, "after": 13}
+    n["tension"] = {str(i): (5 if i == 7 else 2) for i in range(1, 14)}
+    return n
+
+
+def test_turns_and_tension_are_checked(sc):
+    n = full_notes()
+    assert A.check(sc, n)[0] == []
+    n["turns"]["midpoint"] = 5  # not a beat of short-one-moment
+    n["tension"]["40"] = 3
+    errs = A.check(sc, n)[0]
+    assert any("not a beat" in e for e in errs) and any("unknown scenes" in e for e in errs)
+
+
+def test_scene_marks_worst_wins(sc):
+    m = SN.scene_marks(sc, full_notes())
+    assert m[8] == "red" and m[4] == "question" and m[1] == "green"
+
+
+def test_side_notes_place_cards_beside_their_lines(sc):
+    page = SN.build(sc, full_notes(), "ar")
+    assert page.count('class="card') == 3 and 'dir="rtl"' in page
+    i = page.index("مريم بتطلع مع حمد")  # the quoted line, then its card in the same row
+    assert page.index("القرار قرار سالم", i) - i < 400
+
+
+def test_charts_render_for_arabic(sc):
+    d = D.digest(sc, "short-one-moment")
+    st = next(s for s in S.STRUCTURES["structures"] if s["id"] == "short-one-moment")
+    frags = C.all_charts(d, full_notes(), st, SN.scene_marks(sc, full_notes()), "ar")
+    assert len(frags) == 6
+    html = "".join(frags)
+    assert "خريطة المحطات" in html and "منحنى التوتر" in html and "خريطة اللهجات" in html and "لوحة التصوير" in html
+    assert "#d03b3b" in html  # the red scene in the health strip
+    assert C.strip_kind({"int_ext": "خارجي", "time": "ليل"}) == "ext_night" and C.strip_kind({"int_ext": "داخلي", "time": "فجر"}) == "dawn_dusk"
+
+
+def test_voice_profiles(sc):
+    d = D.digest(sc)
+    v = {x["name"]: x for x in d["voices"]}
+    assert v["الجدة"]["avg_words"] > v["مريم"]["avg_words"] * 2
+    assert all("،" not in w and "؟" not in w for x in d["voices"] for w in x["own_words"])
+
+
+def test_compare_drafts(sc):
+    sc2 = P.parse(SAMPLE2)
+    c = CMP.compare(sc, full_notes(), sc2)
+    assert c["cut"] == [5, 7, 9] and c["scene_map"]["1"]["status"] == "same"
+    assert 1 not in c["reread"] and 7 in c["reread"]
+    by = {it["old_scene"]: it for it in c["previous_notes"]}
+    assert by[8]["new_scene"] == 7 and by[8]["start"].startswith("re-read")
+    assert by[4]["start"].startswith("probably open")  # compass scene unchanged: Claude must still check elsewhere
+
+
+def test_previous_section_in_outputs(sc):
+    n = full_notes()
+    n["previous"] = {"draft": "1", "items": [{"id": 0, "status": "resolved", "text": "قرار مريم", "scene": 7},
+                                             {"id": 1, "status": "open", "text": "سطر الأفكار في المشهد ١", "scene": 1}]}
+    assert A.check(sc, n)[0] == []
+    import report as R
+    page = R.build(sc, n, D.digest(sc, "short-one-moment"), "ar")
+    assert "منذ المسودة 1" in page and "حُلّت" in page and "ما زالت قائمة" in page
