@@ -5,10 +5,11 @@ whole script to check a few scenes.
 Usage: python show.py script.json 3 5 7-9        # scene numbers or ranges; --all for everything (short films)
 """
 import json
+import re
 import sys
 from pathlib import Path
 
-TAG = {"scene_heading": "##", "action": "", "character": "@", "parenthetical": "  ", "dialogue": "  > ", "transition": "->",
+TAG = {"scene_heading": "##", "action": "", "character": "@", "parenthetical": "  ", "dialogue": "  > ", "transition": "→ ",
        "centered": "<>", "section": "#", "synopsis": "=", "note": "[[]]"}
 
 
@@ -37,7 +38,7 @@ def main():
             continue
         t = e["type"]
         if t == "scene_heading":
-            print(f"\n## S{e['scene']} {e['text']}")
+            print(f"\n## S{e['scene']} " + re.sub(r"^\s*(?:(?:مشهد|م)\s*[\d٠-٩]+|[\d٠-٩]+)\s*[:.\-–)]?\s*", "", e["text"]))
         elif t == "character":
             cue = e.get("name", e["text"])
         elif t == "dialogue":

@@ -236,6 +236,27 @@ Learned: Wikimedia rate-limits browser-like agents (use our own agent name + bac
 - **3f Tests + one real run** per mode on a small test set (answer keys in `evals/fixtures/shots/`, never shown to the
   agent under test). No benchmark runs without the user's go-ahead on cost.
 
+## 3e. Feature 4: Script Desk (screenwriting help), ✅ BUILT v0.1.0 (2026-10-25)
+
+Agreed with the user: a sub-skill that **helps you write, never writes for you**; film and short film first; Arabic
+first. Prior art checked: no Arabic-aware screenwriting skill exists (community Claude skills write scenes for you;
+coverage SaaS is closed and English); reused Hekaya's Arabic screenplay vocabulary (MIT), WriterDuet's mirrored RTL
+layout, afterwriting's idea of measurable stats; python-docx (MIT) for Word; GPL apps (Trelby, KIT Scenarist) not used.
+
+| Part | Script | Notes |
+|---|---|---|
+| Templates | `build_template.py` | 7 structures in `references/structures.json` (three acts, Save the Cat, hero's journey, story circle, 8 sequences, kishōtenketsu, short "one moment"); page targets from running time; questions only; draft section in screenplay styles |
+| Formatter | `parse_script.py`, `format_script.py` | Word styles → Fountain/Hekaya marks → vocabulary → layout; unsure lines listed for Claude (no full read); Word + PDF (bundled OFL fonts embedded) + Fountain; RTL with mirrored margins (Word/LibreOffice treat left indent/alignment as start side in RTL paragraphs, tested) |
+| Reader | `digest.py`, `show.py`, `annotate.py`, `report.py` | ~1.3k-token digest first, then only needed scenes; 10 viewpoints in `references/lenses.json` with colours; green/amber/red; notes schema + checker (scene exists, quote found, every amber/red has a note, rewrite warning); Word comments shaded by viewpoint + one-page HTML report |
+
+Test (2026-10-25): fictional Omani short «المرساة» (`samples/script-desk/`) with 9 planted flaws (answer key in
+`evals/fixtures/script-desk/`). Digest alone flagged 4 (repeat, dialect switch, telling line, night-storm cost). Blind
+reader agent (~80k tokens, full workflow): **8/9 flaws found** + both planted strengths; missed "empty scene 6" (called
+it a quiet strength); extra valid notes (mother disappears, 17-year-old at sea with a 25-year-old man unremarked).
+Fixed from its feedback: SKILL.md now says every amber/red viewpoint needs a scene note and how to treat a page/minute
+gap; show.py headings cleaned. Open: Arabic page-per-minute ratio and font norms unverified (calibrate with real
+Arabic scripts); two-column (documentary/TV) layout not built; FDX import not built.
+
 ## 4. Build steps & test gates (Feature 1)
 
 | # | Step | Test gate | Status |
@@ -286,6 +307,7 @@ The no-skill baseline did several generic things worth building into the skill:
 - 2026-10-13: Re-scoped to the sub-skill architecture; built the Rawaq sample package and answer key.
 - 2026-10-13: Feature 2 (reference scout) defined; network limits of the cloud environment noted.
 - 2026-10-13: Step 2 done. Design: the agent writes only spec.json + brand.md; scripts generate the rest.
+- 2026-10-25: Script desk built (§3e): templates, Arabic RTL formatter (Word/PDF/Fountain), ten-viewpoint reader with coloured comments and report; blind test 8/9 planted flaws; plugin 1.1.0.
 - 2026-10-25: Installable plugin (user: "a skill that anyone can use"). The repo is now a Claude Code marketplace (`.claude-plugin/marketplace.json`) with one plugin, `plugins/zamakan` (v1.0.0, all four skills, since they share scripts). Skills stay real folders in `.claude/skills/` (cloud sessions load them); `plugins/zamakan/skills` is a link that Claude Code resolves into real files on install (tested in a clean home: install, then client/library/board/deck run from the cache). New `zamakan-core/scripts/workspace.py`: outputs go to the user's project folder (never the plugin cache or ~), and a project `zamakan-agency.json` overrides the home market for other agencies. New `doctor.py` checks Python, packages, Chromium, LibreOffice and web access. `claude plugin validate` passes; tests/test_plugin.py added. Open: no LICENSE yet (the user's choice); the shared library/ is not shipped in the plugin (each user's library starts empty).
 - 2026-10-21: Shot scout documentaries (user request): `docs` search (Short of the Week documentary genre + YouTube channels Guardian Documentaries, NYT Op-Docs, Al Jazeera Documentary (Arabic), Al Jazeera English, BBC Stories, POV + YouTube), `channel-search`, `--genre`; 8 documentary techniques (interview, direct address, observational, archival, reenactment, animated doc, diary film, essay film); documentary + mental-health moods; kind documentary/docuseries; ethics rules (consent, trigger warnings, documentaries vs explainers). BPD board now 27 references with a Documentaries part. 221 tests.
 - 2026-10-18: Oman Oil campaign recreated in the client's theme: a light design system from the one-page brand sheet (blue #0D80BF, green #99BF3C, grey #DEDEDB; GE Flow / ITC Avant Garde named, stand-ins Tajawal + TeX Gyre Adventor until the files arrive), 21-slide deck (pptx + pdf). Renderer fixes: logo on a white panel on dark covers when no reversed logo exists, fills/rings/muted text nudged to stay readable, deck text fitting measured from the actual font (wide faces). 218 tests.

@@ -79,6 +79,8 @@ Token rules first: **read the digest, then only the scenes you need.**
    the writer can see if it lands), an overall verdict and summary, a verdict for every viewpoint, notes tied to scene
    numbers (`kind` issue / question / strength; `quote` = exact words from that scene to anchor the comment), questions
    for the writer, and the top 3-5 priorities for the next draft. Notes language = the script's, unless asked.
+   **Every amber or red viewpoint needs at least one note tied to a scene** (the checker refuses it otherwise): for a
+   whole-script concern such as festival fit or length, anchor it to the scene that shows it best (often scene 1 or the last).
 6. Check and build:
    ```bash
    python3 $DESK/scripts/annotate.py $JOB/script.json $JOB/notes.json --check
@@ -99,7 +101,9 @@ Token rules first: **read the digest, then only the scenes you need.**
 - **Facts you can't check stay out:** don't quote festival rules, durations or fund criteria unless you checked the
   current page; don't claim a film is similar to another unless you know both.
 - **Running time:** one page ≈ one minute is the English convention; the Arabic ratio is unverified (Arabic set in
-  14 pt Naskh runs differently). Say so, and suggest timing a read-through.
+  14 pt Naskh runs differently). When pages and the planned minutes differ by more than about a quarter, raise it once
+  (under pacing) as a question, not a fault: suggest timing a read-through, and ask whether the story needs more room or
+  the film is shorter than planned.
 
 ## Deliver
 Reply briefly: what you made, the overall verdict and the 3 priorities (for a Read), where the files are, and any
