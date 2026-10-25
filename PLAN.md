@@ -295,6 +295,17 @@ whether Salem's words sound Emirati rather than Sur. Fixed from its feedback: a 
 table and stripboard in reports, two PDF words split by pdftotext, the tension warning on focused passes, first-pages
 charts now show only the read scenes, per-line dialect voting, phone overflow of wide tables.
 
+**v0.5.0 (2026-10-25, user: "the writer gives the general story and you provide a template").** Story idea → template:
+Claude writes a small story_map.json (the writer's exact words placed on the chosen structure's beats, open questions
+about this story, gaps); `story_template.py` checks every quote is the writer's own words (invented events are refused)
+and builds a Word template around the story (story untouched in blue, what we heard / still open, structure + one
+alternative, page targets and a rough scene count per beat, beats with fragments, questions in grey, gaps in amber,
+characters, places, styled draft section) and a one-page story map. Blind test (~75k tokens) on a Gulf voice-note
+transcript and an English idea: stories kept verbatim (fillers included), kishotenketsu / short-one-moment chosen with
+reasons, the unknown middle and endings left as amber gaps, nothing invented; the "no gaps" warning stopped one
+stretch (an ending wish placed on a beat). Fixed from its feedback: story map wraps onto one page, working title from
+the writer's first words (no more file clashes), rule on reusing a quote.
+
 ## 4. Build steps & test gates (Feature 1)
 
 | # | Step | Test gate | Status |
@@ -345,6 +356,7 @@ The no-skill baseline did several generic things worth building into the skill:
 - 2026-10-13: Re-scoped to the sub-skill architecture; built the Rawaq sample package and answer key.
 - 2026-10-13: Feature 2 (reference scout) defined; network limits of the cloud environment noted.
 - 2026-10-13: Step 2 done. Design: the agent writes only spec.json + brand.md; scripts generate the rest.
+- 2026-10-25: Script desk v0.5 (§3e): story idea → template (story map, Word template, one-page map); blind test on a voice note and an English idea; plugin 1.5.0.
 - 2026-10-25: Script desk v0.4 (§3e): verdict anchors, quality warnings, PDF/FDX input, Amiri font, focused passes, tension overlay; blind PDF/first-pages test; plugin 1.4.0.
 - 2026-10-25: Script desk v0.3 (§3e): intent sheet, margin conversation, scene cards with reorder, arc chart; blind intent test met all five musts; plugin 1.3.0.
 - 2026-10-25: Script desk v0.2 (§3e): side comments (Word reviewers per viewpoint, side-notes PDF), six charts, voice profiles, draft comparison; blind new-draft test matched the answer key; plugin 1.2.0.

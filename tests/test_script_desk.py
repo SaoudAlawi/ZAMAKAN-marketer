@@ -451,3 +451,14 @@ def test_story_template_docx_and_map(tmp_path):
     assert "«عمها يرفض»" in texts
     page = ST.build_map(MAP)
     assert 'class="gap"' in page and page.count('class="frag"') == 3 and 'dir="rtl"' in page
+
+
+def test_story_working_title_and_duplicate_fragments():
+    m = json.loads(json.dumps(MAP))
+    m.pop("title")
+    assert ST.working_title(m) == "بنت عمرها ١٧"
+    m["story"] = "اممم فكرة فيلم يعني... رجل كبير في السن"
+    assert ST.working_title(m) == "رجل كبير في"
+    d = json.loads(json.dumps(MAP))
+    d["beats"]["turn"]["fragments"] = ["عمها يرفض"]
+    assert any("two beats" in w for w in ST.check(d)[1])

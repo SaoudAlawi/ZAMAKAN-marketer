@@ -53,9 +53,10 @@ them a template shaped around **their** story, without writing any of it.
    - `story`: exactly as sent; `heard`: hero, want, obstacle, turn, ending (plus world, tone, theme if present), each
      with the writer's **exact words** as `quote`, or no quote when the story doesn't say it (that is a gap), and an
      `open_question` about this story;
-   - `beats`: for each beat, the writer's fragments that seem to belong there (exact quotes; a fragment may appear once)
+   - `beats`: for each beat, the writer's fragments that seem to belong there (exact quotes; the same words can be in `heard` and on one beat, not on two beats)
      and 1-2 questions about this story ("the uncle refuses: once, or harder each time?", not "who opposes the hero?");
      beats the story doesn't reach get questions only: they show as gaps;
+   - `title` only if the writer gave one (else the files use their first words as a working label);
    - `characters` as the writer names them; `places` with a cost question when it matters (sea, night, crowds).
    Never add an event, a name, a line or an answer. Everything you add is a question.
 3. `python3 $DESK/scripts/story_template.py $JOB/story_map.json --check`, then `--out $JOB`: the Word template (story

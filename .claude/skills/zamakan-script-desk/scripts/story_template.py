@@ -45,6 +45,15 @@ T = {"ar": {"built": "مبني على فكرة قصتك", "yours": "قصتك ب�
             "map": "Story map", "map_sub": "The structure's beats, your words where they seem to belong, the gaps in amber."}}
 
 
+def working_title(sm):
+    """The writer's title, else their first words (a working label, so two ideas never share file names)."""
+    if sm.get("title"):
+        return sm["title"]
+    words = re.findall(r"[\w\u0600-\u06FF]+", sm["story"])
+    skip = {"اممم", "امم", "يعني", "فكرة", "فيلم", "um", "so", "idea", "a", "an", "the"}
+    return " ".join([w for w in words if w.lower() not in skip][:3]) or "story"
+
+
 def norm(t):
     return re.sub(r"[ً-ْـ\s«»\"'“”.,،:!?؟…\-]+", "", t or "").lower()
 
@@ -68,6 +77,12 @@ def check(sm):
     for where, q in quotes:
         if q and norm(q) not in story:
             errs.append(f"{where}: «{q[:50]}» is not the writer's words (quote exactly, or leave it out)")
+    seen = {}
+    for b, v in sm["beats"].items():
+        for q in v.get("fragments", []):
+            if norm(q) in seen:
+                warns.append(f"«{q[:40]}» is placed on two beats ({seen[norm(q)]}, {b}); put it where it fits best and ask about the other")
+            seen[norm(q)] = b
     ids = {b["id"] for b in st["beats"]}
     for b in sm["beats"]:
         if b not in ids:
@@ -100,7 +115,7 @@ def build_docx(sm):
     doc = S.new_document(lang)
     for _ in range(8):
         doc.add_paragraph()
-    p = B.para(doc, sm.get("title") or ("فيلمي" if ar else "MY FILM"), lang, size=22, bold=True)
+    p = B.para(doc, working_title(sm), lang, size=22, bold=True)
     p.alignment = 1
     q = B.para(doc, f"{t['built']} · {S.digits(sm['minutes'], lang)} {t['min']}", lang, grey=True)
     q.alignment = 1
@@ -189,15 +204,15 @@ def build_map(sm):
         mine = sm["beats"].get(b["id"], {})
         frags = "".join(f'<div class="frag">«{E(f)}»</div>' for f in mine.get("fragments", [])) or f'<div class="gap">{E(t["empty"])}</div>'
         qs = "".join(f"<li>{E(q)}</li>" for q in (mine.get("questions") or [])[:2])
-        cols.append(f'<div class="beat" style="flex:{max(b["end"] - b["at"], 8)}"><div class="bh"><b>{E(b["name_ar"] if ar else b["name"])}</b>'
+        cols.append(f'<div class="beat" style="flex:{max(b["end"] - b["at"], 12)} 1 0"><div class="bh"><b>{E(b["name_ar"] if ar else b["name"])}</b>'
                     f'<span>{t["pages"]} {S.digits(a, lang)}–{S.digits(z, lang)} · ≈{S.digits(counts[b["id"]], lang)}</span></div>{frags}<ul>{qs}</ul></div>')
-    title = sm.get("title") or ""
+    title = working_title(sm)
     css = """:root{--bg:#fcfcfb;--ink:#1d1b18;--muted:#5e5a53;--card:#fff;--line:#e4dfd5;--blue:#dbe8fb;--amber:#fdecc8}
 @media (prefers-color-scheme:dark){:root:where(:not([data-theme=light])){--bg:#1a1a19;--ink:#f0efec;--muted:#c3c2b7;--card:#222220;--line:#3a3935;--blue:#1f3550;--amber:#4a3a12}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.6 "IBM Plex Sans Arabic","Amiri",system-ui,sans-serif}
 .wrap{max-width:1200px;margin:0 auto;padding:24px 16px 40px}h1{font-size:26px;margin:0}.sub{color:var(--muted);margin:2px 0 14px}
 .story{background:var(--blue);border-radius:10px;padding:10px 14px;margin-bottom:14px}.legend{font-size:12.5px;color:var(--muted);margin-bottom:10px}
-.lane{display:flex;gap:8px;align-items:stretch}.beat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-width:0}
+.lane{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}.beat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-width:150px;break-inside:avoid}
 .bh{display:flex;flex-direction:column;margin-bottom:6px}.bh span{font-size:11.5px;color:var(--muted)}
 .frag{background:var(--blue);border-radius:6px;padding:4px 7px;margin:4px 0;font-size:13px}.gap{background:var(--amber);border-radius:6px;padding:4px 7px;margin:4px 0;font-size:13px;font-weight:700}
 ul{margin:4px 0 0;padding-inline-start:16px;color:var(--muted);font-size:12.5px}
@@ -231,7 +246,7 @@ def main():
         return
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
-    stem = re.sub(r"[^\w؀-ۿ-]+", "-", sm.get("title") or "story").strip("-") or "story"
+    stem = re.sub(r"[^\w\u0600-\u06FF-]+", "-", working_title(sm)).strip("-") or "story"
     docx = out / f"{stem}-story-template.docx"
     build_docx(sm).save(docx)
     page = out / f"{stem}-story-map.html"
