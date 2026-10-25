@@ -46,6 +46,8 @@ def check():
         except Exception as e:  # noqa: BLE001
             ok = False
             lines.append(f"✗ Chromium won't start ({str(e).splitlines()[0][:80]}) → python3 -m playwright install chromium")
+    lines.append("✓ pdftotext (reading PDF scripts)" if shutil.which("pdftotext") else
+                 "· pdftotext not found (optional: needed to read PDF scripts) → brew install poppler / apt install poppler-utils")
     office = shutil.which("soffice") or shutil.which("libreoffice")
     lines.append("✓ LibreOffice (deck PDFs)" if office else
                  "· LibreOffice not found (optional: decks come as .pptx only) → https://www.libreoffice.org/download/")
