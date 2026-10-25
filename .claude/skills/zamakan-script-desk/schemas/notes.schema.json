@@ -213,6 +213,92 @@
      }
     }
    }
+  },
+  "intent_check": {
+   "type": "array",
+   "description": "when the writer gave an intent sheet: does the script do what they are going for? One item per stated aim, open question or deliberate choice",
+   "items": {
+    "type": "object",
+    "required": [
+     "intent",
+     "lands",
+     "note"
+    ],
+    "additionalProperties": false,
+    "properties": {
+     "intent": {
+      "type": "string",
+      "description": "the writer's aim or question, in a few words"
+     },
+     "lands": {
+      "enum": [
+       "yes",
+       "partly",
+       "no"
+      ]
+     },
+     "note": {
+      "type": "string"
+     },
+     "scene": {
+      "type": "integer",
+      "minimum": 1
+     }
+    }
+   }
+  },
+  "arcs": {
+   "type": "object",
+   "maxProperties": 3,
+   "description": "up to 3 main characters: how their inner state moves (for the arc chart). value -2 (lowest) .. +2 (highest); give points only where it changes",
+   "additionalProperties": {
+    "type": "object",
+    "required": [
+     "start",
+     "end",
+     "points"
+    ],
+    "additionalProperties": false,
+    "properties": {
+     "start": {
+      "type": "string",
+      "description": "what they want or believe at the start, a few words"
+     },
+     "end": {
+      "type": "string",
+      "description": "where they end, a few words"
+     },
+     "points": {
+      "type": "object",
+      "additionalProperties": {
+       "type": "object",
+       "required": [
+        "value"
+       ],
+       "additionalProperties": false,
+       "properties": {
+        "value": {
+         "type": "integer",
+         "minimum": -2,
+         "maximum": 2
+        },
+        "want": {
+         "type": "string",
+         "description": "what they want in this scene, if it changed"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "cards": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "string",
+    "maxLength": 90
+   },
+   "description": "optional: scene number → the scene in one line (8-12 words) for the scene cards; else the first action line is used"
   }
  }
 }

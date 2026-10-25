@@ -55,7 +55,7 @@ def match(old, new):
     return m, cut
 
 
-def compare(old, old_notes, new):
+def compare(old, old_notes, new, replies=None):
     m, cut = match(old, new)
     old_to_new = {v["old"]: b for b, v in m.items() if v["old"]}
     items = []
@@ -69,7 +69,11 @@ def compare(old, old_notes, new):
             start = "probably open: scene unchanged"
         else:
             start = "re-read: scene changed"
-        items.append({"id": i, "old_scene": n["scene"], "new_scene": now, "lens": n["lens"], "start": start, "text": n["text"][:160]})
+        item = {"id": i, "old_scene": n["scene"], "new_scene": now, "lens": n["lens"], "start": start, "text": n["text"][:160]}
+        r = (replies or {}).get(i)
+        if r:
+            item["writer"] = {"done": r["done"], "replies": [x["text"] for x in r["replies"]]}
+        items.append(item)
     reread = sorted(b for b, v in m.items() if v["status"] != "same")
     return {"scene_map": {str(k): v for k, v in sorted(m.items())}, "cut": cut, "reread": reread, "previous_notes": items,
             "old_scenes": len(old["scenes"]), "new_scenes": len(new["scenes"])}
@@ -84,6 +88,9 @@ def show(c, new_path="new/script.json"):
            "", "## previous notes (id · old scene → new scene · starting status); strengths are left out, so ids skip them"]
     for it in c["previous_notes"]:
         out.append(f"[{it['id']}] S{it['old_scene']} → {('S' + str(it['new_scene'])) if it['new_scene'] else 'cut'} · {it['lens']} · {it['start']} · {it['text'][:90]}")
+        w = it.get("writer")
+        if w:
+            out.append("      writer: " + ("marked resolved. " if w["done"] else "") + " | ".join(w["replies"]))
     return "\n".join(out)
 
 
@@ -93,9 +100,11 @@ def main():
     ap.add_argument("old_notes")
     ap.add_argument("new_script")
     ap.add_argument("--out")
+    ap.add_argument("--replies", help="replies.json from replies.py (the writer's answers in the margin)")
     a = ap.parse_args()
     load = lambda p: json.loads(Path(p).read_text(encoding="utf-8"))  # noqa: E731
-    c = compare(load(a.old_script), load(a.old_notes), load(a.new_script))
+    replies = {r["id"]: r for r in load(a.replies)} if a.replies else None
+    c = compare(load(a.old_script), load(a.old_notes), load(a.new_script), replies)
     if a.out:
         Path(a.out).write_text(json.dumps(c, ensure_ascii=False, indent=1), encoding="utf-8")
     print(show(c, a.new_script))

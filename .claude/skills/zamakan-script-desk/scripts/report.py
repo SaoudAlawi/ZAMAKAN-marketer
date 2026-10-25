@@ -22,11 +22,11 @@ E = html.escape
 T = {"ar": {"title": "قراءة النص", "story": "القصة كما فهمناها", "numbers": "بالأرقام", "pages": "صفحات", "scenes": "مشاهد",
             "locations": "مواقع", "roles": "أدوار متكلمة", "dialogue": "نسبة الحوار", "strip": "أين تقع الملاحظات",
             "by_scene": "الملاحظات مشهداً مشهداً", "next": "أولويات المسودة القادمة", "questions": "أسئلة للكاتب",
-            "works": "ما ينجح", "visuals": "النص بصرياً", "side": "اقرأ النص مع الملاحظات على الجانب", "scene": "مشهد", "foot": "زمكان · مساعد الكتابة. ملاحظات وأسئلة، لا إعادة كتابة."},
+            "works": "ما ينجح", "visuals": "النص بصرياً", "intent": "هل يحقق النص ما تريده؟", "side": "اقرأ النص مع الملاحظات على الجانب", "scene": "مشهد", "foot": "زمكان · مساعد الكتابة. ملاحظات وأسئلة، لا إعادة كتابة."},
      "en": {"title": "Script reading", "story": "The story as we read it", "numbers": "By the numbers", "pages": "pages", "scenes": "scenes",
             "locations": "locations", "roles": "speaking roles", "dialogue": "dialogue share", "strip": "Where the notes fall",
             "by_scene": "Notes, scene by scene", "next": "Priorities for the next draft", "questions": "Questions for the writer",
-            "works": "What works", "visuals": "The script at a glance", "side": "Read the script with the notes on the side", "scene": "Scene", "foot": "ZAMAKAN · script desk. Notes and questions, not rewrites."}}
+            "works": "What works", "visuals": "The script at a glance", "intent": "Does the script do what you are going for?", "side": "Read the script with the notes on the side", "scene": "Scene", "foot": "ZAMAKAN · script desk. Notes and questions, not rewrites."}}
 
 CSS = """
 :root{--bg:#F6F4EF;--ink:#1D1B18;--muted:#5E5A53;--card:#FFFFFF;--line:#E4DFD5}
@@ -85,6 +85,12 @@ def build(sc, notes, stats, lang, side_link=None):
         nums = [(stats.get("pages") or "?", t["pages"]), (stats["scenes"], t["scenes"]), (stats["locations"], t["locations"]),
                 (stats["speaking_roles"], t["roles"]), (f'{stats["dialogue_share"]}%', t["dialogue"])]
         h.append(f'<h2>{t["numbers"]}</h2><div class="nums">' + "".join(f'<div class="num"><b>{E(str(S.digits(v, lang) if isinstance(v, int) else v))}</b>{E(k)}</div>' for v, k in nums) + "</div>")
+    ic = notes.get("intent_check") or []
+    if ic:
+        lands = {"yes": ("✓", "#0ca30c"), "partly": ("◐", "#fab219"), "no": ("✕", "#d03b3b")}
+        h.append(f'<h2>{t["intent"]}</h2>' + "".join(
+            f'<div class="note" style="--c:{lands[it["lands"]][1]}"><div class="t">{lands[it["lands"]][0]} {E(it["intent"])}'
+            f'{(" · " + t["scene"] + " " + S.digits(it["scene"], lang)) if it.get("scene") else ""}</div>{E(it["note"])}</div>' for it in ic))
     prev = (notes.get("previous") or {}).get("items") or []
     if prev:
         h.append(prev_section(prev, notes["previous"].get("draft"), lang))

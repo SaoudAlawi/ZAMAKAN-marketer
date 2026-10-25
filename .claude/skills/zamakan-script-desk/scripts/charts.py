@@ -229,9 +229,50 @@ def voices_table(stats, lang):
                  "How each character talks: line length, questions, exclamations, dialect and their own words.", table)
 
 
+ARC = ["#2a78d6", "#eb6834", "#1baf7a"]  # the three validated categorical colours
+
+
+def arc_chart(stats, notes, lang):
+    arcs = (notes or {}).get("arcs") or {}
+    if not arcs:
+        return ""
+    ar = lang == "ar"
+    X = _x(lang, pad=50)
+    H, top, bot = 250, 24, 200
+    Y = lambda v: (top + bot) / 2 - v / 2 * (bot - top) / 2  # noqa: E731
+    pos = {str(r["n"]): r["pos"] + r["share"] / 2 for r in stats["scene_rows"]}
+    s = [f'<svg viewBox="0 0 {W} {H}" style="direction:ltr" role="img" aria-label="arcs">']
+    for v in (-2, -1, 0, 1, 2):
+        s.append(f'<line x1="{X(0)}" y1="{Y(v)}" x2="{X(100)}" y2="{Y(v)}" stroke="{GRID}" stroke-width="{1.5 if v == 0 else 1}"/>')
+        s.append(f'<text x="{X(0) + (16 if ar else -16)}" y="{Y(v) + 4}" font-size="11" text-anchor="middle" class="m">{v:+d}</text>'.replace("+0", "0"))
+    rows = []
+    for i, (name, a) in enumerate(list(arcs.items())[:3]):
+        col = ARC[i]
+        pts = sorted(((pos[k], v["value"], k, v.get("want")) for k, v in a["points"].items() if k in pos), key=lambda p: p[0] if not ar else -p[0])
+        pts = sorted(pts, key=lambda p: float(p[2]))
+        if not pts:
+            continue
+        path = " ".join(f"{X(x)},{Y(v)}" for x, v, _, _ in pts)
+        s.append(f'<polyline fill="none" stroke="{col}" stroke-width="2" points="{path}"/>')
+        for x, v, k, want in pts:
+            tip = f"{name} · {('مشهد' if ar else 'scene')} {k} · {v:+d}" + (f" · {want}" if want else "")
+            s.append(f'<circle cx="{X(x)}" cy="{Y(v)}" r="5" fill="{col}" stroke="var(--card)" stroke-width="2"><title>{E(tip)}</title></circle>')
+        lx, lv = X(pts[-1][0]), pts[-1][1]
+        s.append(f'<text x="{lx + (-8 if ar else 8)}" y="{Y(lv) - 8}" font-size="12.5" text-anchor="{"end" if ar else "start"}" style="font-weight:700">{E(name)}</text>')
+        rows.append(f'<span><i style="background:{col}"></i><b style="background:none;color:var(--ink);width:auto">{E(name)}</b>: {E(a["start"])} ← {E(a["end"])}</span>'
+                    if ar else f'<span><i style="background:{col}"></i><b style="background:none;color:var(--ink);width:auto">{E(name)}</b>: {E(a["start"])} → {E(a["end"])}</span>')
+    for r in stats["scene_rows"]:
+        s.append(f'<text x="{X(r["pos"] + r["share"] / 2)}" y="{bot + 22}" font-size="11" text-anchor="middle" class="m">{r["n"]}</text>')
+    s.append("</svg>")
+    title = "أقواس الشخصيات" if ar else "Character arcs"
+    sub = "الحال الداخلية لكل شخصية رئيسية على طول الفيلم (−٢ أدنى، +٢ أعلى)، وما تريده في البداية والنهاية." if ar else \
+        "Each main character's inner state across the film (-2 lowest, +2 highest), and what they want at the start and the end."
+    return _wrap(title, sub, "".join(s), '<div class="lg" style="flex-direction:column;gap:4px">' + "".join(rows) + "</div>")
+
+
 def all_charts(stats, notes, structure, marks, lang):
     return [c for c in (beat_map(stats, notes, structure, marks, lang), tension_curve(stats, notes, structure, lang),
-                        presence(stats, lang), dialect_map(stats, lang), voices_table(stats, lang), stripboard(stats, lang)) if c]
+                        arc_chart(stats, notes, lang), presence(stats, lang), dialect_map(stats, lang), voices_table(stats, lang), stripboard(stats, lang)) if c]
 
 
 def to_pngs(fragments, out_dir, lang, stem="chart"):

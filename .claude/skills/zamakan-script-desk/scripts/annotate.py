@@ -25,11 +25,11 @@ LENSES = json.loads((S.SKILL / "references" / "lenses.json").read_text(encoding=
 LENS = {x["id"]: x for x in LENSES["lenses"]}
 VERDICT = LENSES["verdicts"]
 UI = {"ar": {"notes": "ملاحظات القراءة", "story": "القصة كما فهمناها", "overall": "الحكم العام", "lens": "زاوية القراءة", "verdict": "الحكم",
-             "summary": "الخلاصة", "next": "أولويات المسودة القادمة", "questions": "أسئلة للكاتب", "legend": "ألوان الملاحظات في الهامش", "since": "منذ المسودة السابقة",
+             "summary": "الخلاصة", "next": "أولويات المسودة القادمة", "questions": "أسئلة للكاتب", "legend": "ألوان الملاحظات في الهامش", "since": "منذ المسودة السابقة", "intent": "هل يحقق النص ما تريده؟", "scene": "مشهد",
              "author": "قارئ زمكان", "kinds": {"issue": "ملاحظة", "question": "سؤال", "strength": "نقطة قوة"},
              "promise": "هذه ملاحظات وأسئلة لمساعدتك على الكتابة، لا إعادة كتابة لنصك."},
       "en": {"notes": "Reader's notes", "story": "The story as we read it", "overall": "Overall", "lens": "Viewpoint", "verdict": "Verdict",
-             "summary": "Summary", "next": "Priorities for the next draft", "questions": "Questions for the writer", "legend": "Margin comment colours", "since": "Since the last draft",
+             "summary": "Summary", "next": "Priorities for the next draft", "questions": "Questions for the writer", "legend": "Margin comment colours", "since": "Since the last draft", "intent": "Does the script do what you are going for?", "scene": "scene",
              "author": "ZAMAKAN reader", "kinds": {"issue": "Note", "question": "Question", "strength": "Strength"},
              "promise": "These are notes and questions to help you write, not a rewrite of your script."}}
 
@@ -38,7 +38,7 @@ def norm(t):
     return re.sub(r"[ً-ْـ\s«»\"'“”.,،:!?؟…-]+", "", t or "")
 
 
-def check(sc, notes):
+def check(sc, notes, intent=None):
     import jsonschema
     errs, warns = [], []
     schema = json.loads((S.SKILL / "schemas" / "notes.schema.json").read_text(encoding="utf-8"))
@@ -88,6 +88,15 @@ def check(sc, notes):
         warns.append(f"tension covers {len(tens)} of {nscenes} scenes; give every scene a value for a true curve")
     if not tens:
         warns.append("no tension values: the report has no tension curve")
+    for name, arc in (notes.get("arcs") or {}).items():
+        bad = [k for k in arc["points"] if not k.isdigit() or not 1 <= int(k) <= nscenes]
+        if bad:
+            errs.append(f"arcs: {name} has unknown scenes {bad}")
+    if intent and not notes.get("intent_check"):
+        errs.append("an intent sheet was given: add intent_check (does the script do what the writer is going for?)")
+    for i, it in enumerate(notes.get("intent_check") or []):
+        if it.get("scene") and not 1 <= it["scene"] <= nscenes:
+            errs.append(f"intent_check {i}: scene {it['scene']} does not exist")
     if not any(n["kind"] == "strength" for n in notes["notes"]) and not any(x.get("strengths") for x in notes["lenses"]):
         warns.append("no strengths noted: say what works, too")
     return errs, warns
@@ -193,6 +202,20 @@ def notes_page(doc, sc, notes, lang, images=()):
     for row in t.rows:
         for cell, w in zip(row.cells, widths):
             cell.width = S.Inches(w)
+    ic = notes.get("intent_check") or []
+    if ic:
+        lands = {"yes": ("✓", "#0ca30c"), "partly": ("◐", "#fab219"), "no": ("✕", "#d03b3b")}
+        para(doc, u["intent"], lang, style="Heading 3")
+        for it in ic:
+            pp = para(doc, "", lang)
+            for text, col, bold in ((lands[it["lands"]][0] + " ", lands[it["lands"]][1], True), (it["intent"] + ": ", None, True),
+                                    (it["note"] + (f" ({u['scene']} {S.digits(it['scene'], lang)})" if it.get("scene") else ""), None, False)):
+                r = pp.add_run(text)
+                r.bold = bold or None
+                if col:
+                    r.font.color.rgb = S.RGBColor.from_string(col.lstrip("#"))
+                if lang == "ar":
+                    r._r.get_or_add_rPr().append(S._el("w:rtl"))
     prev = (notes.get("previous") or {}).get("items") or []
     if prev:
         icons = {"resolved": ("✓", "#0ca30c"), "partly": ("◐", "#fab219"), "open": ("!", "#d03b3b"), "dropped": ("–", "#8a8984")}
@@ -261,14 +284,14 @@ def annotate(sc, notes, lang, images=()):
     doc = F.build_docx(sc, pmap=pmap)
     u = UI[lang]
     heading_of = {s["n"]: s["start"] for s in sc["scenes"]}
-    for n in notes["notes"]:
+    for k, n in enumerate(notes["notes"]):
         L = LENS[n["lens"]]
         target = anchor_index(sc, n)
         p = pmap.get(target) or pmap.get(heading_of[n["scene"]])
         if not p or not p.runs:
             continue
         shade_runs(p, L["hex"])
-        tag = f"■ {L['name_ar'] if lang == 'ar' else L['name']} · {u['kinds'][n['kind']]}"
+        tag = f"■ {L['name_ar'] if lang == 'ar' else L['name']} · {u['kinds'][n['kind']]} · #{k}"  # #k lets replies.py find the note
         # one reviewer per viewpoint: Word gives each its own margin colour and lets the writer show or hide it
         who = L["name_ar"] if lang == "ar" else L["name"]
         doc.add_comment(p.runs, text=f"{tag}\n{n['text']}", author=who, initials=L["id"][:2].upper())
@@ -284,10 +307,12 @@ def main():
     ap.add_argument("--name")
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--stats", help="stats.json from digest.py: adds the charts to the notes page")
+    ap.add_argument("--intent", help="intent.json: requires an intent_check in the notes")
     a = ap.parse_args()
     sc = json.loads(Path(a.script).read_text(encoding="utf-8"))
     notes = json.loads(Path(a.notes).read_text(encoding="utf-8"))
-    errs, warns = check(sc, notes)
+    intent = json.loads(Path(a.intent).read_text(encoding="utf-8")) if a.intent else None
+    errs, warns = check(sc, notes, intent)
     for w in warns:
         print("  warn ", w)
     for e in errs:
@@ -311,7 +336,7 @@ def main():
         from side_notes import scene_marks
         stats = json.loads(Path(a.stats).read_text(encoding="utf-8"))
         st = next((x for x in S.STRUCTURES["structures"] if x["id"] == notes.get("structure")), None)
-        frags = [C.beat_map(stats, notes, st, scene_marks(sc, notes), lang), C.tension_curve(stats, notes, st, lang),
+        frags = [C.beat_map(stats, notes, st, scene_marks(sc, notes), lang), C.tension_curve(stats, notes, st, lang), C.arc_chart(stats, notes, lang),
                  C.presence(stats, lang), C.dialect_map(stats, lang)]
         images = C.to_pngs([f for f in frags if f], out / ".charts", lang)
     annotate(sc, notes, lang, images).save(path)

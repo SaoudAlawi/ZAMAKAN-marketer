@@ -242,3 +242,88 @@ def test_previous_section_in_outputs(sc):
     import report as R
     page = R.build(sc, n, D.digest(sc, "short-one-moment"), "ar")
     assert "منذ المسودة 1" in page and "حُلّت" in page and "ما زالت قائمة" in page
+
+
+# ---- v0.3: intent sheet, margin conversation, scene cards, arcs ----
+import cards as CARDS  # noqa: E402
+import intent as INT  # noqa: E402
+import replies as REP  # noqa: E402
+
+
+def filled_intent(tmp_path, sc):
+    from docx import Document
+    path = tmp_path / "intent.docx"
+    INT.form("ar", "المرساة", sc).save(path)
+    d = Document(path)
+    t = d.tables[0]
+    t.cell(0, 1).paragraphs[0].add_run("عن الحزن حين يتحول إلى فعل")
+    t.cell(4, 1).paragraphs[0].add_run("الجدة تبارك بالفصحى عمداً")
+    t.cell(4, 1).add_paragraph("النهاية مفتوحة عمداً")
+    t.cell(6, 1).paragraphs[0].add_run("١٢ دقيقة")
+    for row in d.tables[1].rows[1:]:
+        name = row.cells[0].text.strip()
+        row.cells[1].paragraphs[0].add_run({"الجدة": "يتنقل", "الأم": "خليجي"}.get(name, ""))
+    d.save(path)
+    return INT.read(path)
+
+
+def test_intent_round_trip_and_declared_dialects(tmp_path, sc):
+    it = filled_intent(tmp_path, sc)
+    assert it["about"].startswith("عن الحزن") and it["intentional"] == ["الجدة تبارك بالفصحى عمداً", "النهاية مفتوحة عمداً"]
+    assert it["minutes"] == 12 and {c["name"]: c["dialect"] for c in it["characters"]}["الجدة"] == "mixed"
+    d = D.digest(sc, intent=it)
+    flagged = {m["character"]: m for m in d["dialect_mix"]}
+    assert "الجدة" not in flagged  # declared as switching on purpose
+    assert flagged["الأم"]["declared"] == "gulf" and "2" in flagged["الأم"]["by_scene"]
+    assert "writer's intent" in D.show(d)
+
+
+def test_intent_check_required_when_intent_given(sc):
+    n = full_notes()
+    assert any("intent_check" in e for e in A.check(sc, n, intent={"about": "x"})[0])
+    n["intent_check"] = [{"intent": "x", "lands": "partly", "note": "y", "scene": 8}]
+    assert A.check(sc, n, intent={"about": "x"})[0] == []
+
+
+def test_replies_read_back_from_word(tmp_path, sc):
+    n = full_notes()
+    doc = A.annotate(sc, n, "ar")
+    target = next(p for p in doc.paragraphs if "مريم بتطلع مع حمد" in p.text)
+    doc.add_comment(target.runs, text="معك حق، بغيّرها.", author="الكاتب", initials="K")
+    out = tmp_path / "back.docx"
+    doc.save(out)
+    items = REP.read(out, n)
+    by = {i["id"]: i for i in items}
+    k = next(i for i, x in enumerate(n["notes"]) if x.get("quote") == "مريم بتطلع مع حمد")
+    assert by[k]["replies"][0]["text"] == "معك حق، بغيّرها." and by[k]["scene"] == 8
+    sc2 = P.parse(SAMPLE2)
+    c = CMP.compare(sc, n, sc2, {i["id"]: i for i in items})
+    assert next(x for x in c["previous_notes"] if x["id"] == k)["writer"]["replies"] == ["معك حق، بغيّرها."]
+
+
+def test_cards_board_table_and_reorder(tmp_path, sc):
+    stats = D.digest(sc, "short-one-moment")
+    page = CARDS.board(sc, stats, full_notes(), "ar")
+    assert page.count('class="c"') == 13 and "الضغط" in page
+    path = tmp_path / "cards.docx"
+    CARDS.table(sc, full_notes(), "ar").save(path)
+    from docx import Document
+    d = Document(path)
+    for row in d.tables[0].rows[1:]:
+        n = int(row.cells[0].text)
+        row.cells[1].paragraphs[0].add_run({6: "7", 7: "6", 9: "x"}.get(n, str(n)))
+    d.save(path)
+    order, dropped = CARDS.read_order(path, 13)
+    assert order[5:7] == [7, 6] and dropped == [9] and len(order) == 12
+    new = CARDS.reorder(sc, order)
+    assert len(new["scenes"]) == 12 and new["scenes"][5]["was"] == 7 and new["scenes"][5]["place"] == "البحر المفتوح"
+
+
+def test_arc_chart(sc):
+    n = full_notes()
+    n["arcs"] = {"مريم": {"start": "تنتظر", "end": "تبحر", "points": {"1": {"value": -1}, "13": {"value": 2, "want": "أن تبحر"}}}}
+    assert A.check(sc, n)[0] == []
+    html = C.arc_chart(D.digest(sc), n, "ar")
+    assert "أقواس الشخصيات" in html and "تنتظر" in html and "#2a78d6" in html
+    n["arcs"]["مريم"]["points"]["99"] = {"value": 0}
+    assert any("unknown scenes" in e for e in A.check(sc, n)[0])

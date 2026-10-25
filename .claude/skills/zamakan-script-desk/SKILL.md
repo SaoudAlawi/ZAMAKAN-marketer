@@ -2,7 +2,7 @@
 name: zamakan-script-desk
 description: "Help a screenwriter write a film or short film (never write it for them), Arabic first and English too: Word templates that scaffold a story structure with page targets (three acts, Save the Cat, hero's journey, story circle, eight sequences, kishōtenketsu, short-film shapes), a formatter that turns a rough draft (Word, Fountain or plain text) into a correctly laid-out screenplay (right-to-left Arabic, scene numbers, Word + PDF + Fountain), and a script reader that gives notes from ten viewpoints (premise, structure, character, dialogue and dialect, visual storytelling, pacing, theme, cultural truth, producibility, festival fit) with green/amber/red verdicts and colour-coded margin comments. Use this whenever someone wants to plan a screenplay, needs a script template or beat sheet, asks to format or clean up a script («نسّق السيناريو»), wants feedback, notes or coverage on a draft («قيّم السيناريو», «ملاحظات على النص»), or asks how their script is structured. For finding film references to watch, use zamakan-shot-scout instead."
 metadata:
-  version: 0.2.0
+  version: 0.3.0
 ---
 
 # ZAMAKAN Script Desk
@@ -26,6 +26,14 @@ git-ignored: unpublished scripts stay private). Call that folder `$JOB`.
 | Format / clean up / lay out a draft | **Format** below |
 | Notes / feedback / coverage / "is it working?" | **Read** below (formats first if needed) |
 | A new draft of a script you read before | **New draft** below (re-reads only what changed) |
+| Try a different scene order | **Scene cards** below |
+
+**Read to the writer's intent.** Before a first full read, offer the intent sheet: a one-page Word form (what the film is
+about, the question it asks, what they are unsure of, deliberate choices, each character's dialect, where it should
+play). `python3 $DESK/scripts/intent.py form --lang ar --title "<title>" --script $JOB/script.json --out $JOB/<title>-intent.docx`;
+read it back with `intent.py read <filled.docx> --out $JOB/intent.json`. If the writer answers in the chat instead,
+write `intent.json` yourself with the same keys. If they skip it, read anyway and say the notes are not judged against
+an intent.
 
 Ask once, up front, only what changes the work: feature or short and the planned running time; Arabic or English
 (detect it from the draft when there is one); for Read, what kind of notes they want now (a full read, or one
@@ -66,7 +74,7 @@ and Hekaya-style tools read it).
 Token rules first: **read the digest, then only the scenes you need.**
 
 1. Parse (and fix) as in Format, then format so the page count is known.
-2. `python3 $DESK/scripts/digest.py $JOB/script.json --structure <id> --out $JOB/stats.json` gives one line per scene
+2. `python3 $DESK/scripts/digest.py $JOB/script.json --structure <id> [--intent $JOB/intent.json] --out $JOB/stats.json` gives one line per scene
    plus the measurable facts: length, speakers, day/night, locations, the protagonist (in most scenes), dialect changes
    per character, voice profiles (line length, questions, own words, dialect; pairs that may sound alike), action lines
    that narrate thoughts, same-place-same-people repeats, silent scenes, production flags, and where the structure's
@@ -85,10 +93,15 @@ Token rules first: **read the digest, then only the scenes you need.**
    whole-script concern such as festival fit or length, anchor it to the scene that shows it best (often scene 1 or the last).
    Two small fields feed the charts (about 100 tokens): `turns` = for each beat of the chosen structure, the scene where
    the script actually makes that turn (leave out beats it doesn't have); `tension` = every scene's tension 0-5 as you
-   felt it reading. Give them honestly; a flat curve is a finding.
+   felt it reading. Give them honestly; a flat curve is a finding. Optional, for the pictures: `arcs` (up to 3 main
+   characters: start, end, and points only where their inner state moves, -2..+2, with what they want there) and
+   `cards` (a scene in 8-12 words, for the scene cards).
+   **With an intent sheet:** add `intent_check`: one item per stated aim, open question and deliberate choice, `lands`
+   yes / partly / no with a note (and a scene). Deliberate choices are not flagged as faults; question one only when it
+   clearly works against what the writer says they want, and say why in one sentence. Answer every "unsure" point.
 6. Check and build:
    ```bash
-   python3 $DESK/scripts/annotate.py $JOB/script.json $JOB/notes.json --check
+   python3 $DESK/scripts/annotate.py $JOB/script.json $JOB/notes.json --check [--intent $JOB/intent.json]
    python3 $DESK/scripts/annotate.py $JOB/script.json $JOB/notes.json --stats $JOB/stats.json --out $JOB   # Word: notes page with charts + margin comments
    python3 $DESK/scripts/side_notes.py $JOB/script.json $JOB/notes.json --out $JOB        # the script with the notes as side comments (HTML + PDF)
    python3 $DESK/scripts/report.py $JOB/script.json $JOB/notes.json --stats $JOB/stats.json --out $JOB --check   # one-page report with charts
@@ -109,12 +122,25 @@ Colour code: the ten viewpoints share three colour families, always with the vie
 (premise, structure, pacing, theme), orange = people and voice (character, dialogue, culture), green-teal = screen and
 making (visual, production, festival). Verdicts: green ✓ working, amber ! needs work, red ✕ holds it back.
 
+## Scene cards
+
+```bash
+python3 $DESK/scripts/cards.py board $JOB/script.json --stats $JOB/stats.json --notes $JOB/notes.json --out $JOB   # HTML + PDF board
+python3 $DESK/scripts/cards.py table $JOB/script.json --notes $JOB/notes.json --out $JOB/<title>-cards.docx       # Word table to reorder
+python3 $DESK/scripts/cards.py reorder $JOB/script.json <filled-cards.docx> --out $JOB/script-reordered.json
+```
+The board shows every scene as a card grouped by beat, with its mark, one line, who is in it, its length and what
+drives cost. To try a new order, the writer fills "new order" (or moves rows; x drops a scene); `reorder` rebuilds the
+script in that order (each scene keeps `was`, its old number). Then run digest.py and format_script.py on it and tell
+the writer what the new order does to the beats and the tension; don't judge the scenes again.
+
 ## New draft
 
 When the writer brings draft 2 of a script you read before, read only what changed:
 ```bash
 python3 $DESK/scripts/parse_script.py <draft2> --out $JOB2/script.json   # and format it, as above
-python3 $DESK/scripts/compare.py $JOB1/script.json $JOB1/notes.json $JOB2/script.json --out $JOB2/compare.json
+python3 $DESK/scripts/replies.py <the notes .docx the writer sent back> --notes $JOB1/notes.json --out $JOB2/replies.json   # if they replied
+python3 $DESK/scripts/compare.py $JOB1/script.json $JOB1/notes.json $JOB2/script.json [--replies $JOB2/replies.json] --out $JOB2/compare.json
 python3 $DESK/scripts/digest.py $JOB2/script.json --structure <same id> --out $JOB2/stats.json
 python3 $DESK/scripts/show.py $JOB2/script.json <the scenes compare.py lists to re-read>
 ```
@@ -127,6 +153,16 @@ are not listed, so ids skip them). Status: **resolved** = the problem is gone (a
 changed direction. An unchanged scene keeps its old note open unless something elsewhere fixed it (a setup that now
 pays off later, a character now answered in a new scene): check the scenes an old note depends on, not only the
 changed ones. The report and the Word notes page open with "since the last draft".
+
+**The conversation in the margin.** Writers answer notes in Word: a Reply, a comment of their own on the same line,
+text typed into the note, or Resolve. `replies.py` collects them (each Word comment carries its note number, #n), and
+`compare.py --replies` shows them next to each old note. Respect them:
+- "deliberate / مقصود": the writer's choice. Mark the old note `dropped` (comment: "the writer's choice"), don't raise it
+  again; only if it now clearly works against their own intent, say so once, in one sentence.
+- "fixed / تم" or Resolved: check it in the new draft; resolved only if it is.
+- "disagree / لا أوافق" with a reason: weigh the reason. Either withdraw the note (`dropped`, say why) or keep it with
+  one new argument. Never repeat the same note in the same words.
+- a question back: answer it in the new notes (questions_for_writer or the note's comment).
 
 ### How to write notes
 - **Point, then ask.** "In scene 8 the decision to send Maryam to sea is her uncle's. What does she choose?" beats
@@ -148,4 +184,5 @@ changed ones. The report and the Word notes page open with "since the last draft
 Reply briefly: what you made, the overall verdict and the 3 priorities (for a Read), where the files are, and any
 unsure lines you decided (for a new draft: how many old notes are resolved, partly, open). Files: `<title>-template.docx`,
 `<title>.docx/.pdf/.fountain`, `<title>-notes.docx` (the writer's copy with margin comments and charts),
-`<title>-side-notes.pdf/.html` (the script with side comments), `<title>-report.html`.
+`<title>-side-notes.pdf/.html` (the script with side comments), `<title>-report.html`, and when made
+`<title>-intent.docx`, `<title>-cards.html/.pdf`, `<title>-cards.docx`.

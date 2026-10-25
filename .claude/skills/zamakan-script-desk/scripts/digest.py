@@ -92,7 +92,7 @@ def voices(els, lang):
     return out, alike
 
 
-def digest(sc, structure=None):
+def digest(sc, structure=None, intent=None):
     els, lang = sc["elements"], sc["lang"]
     scenes = sc["scenes"]
     by_scene = defaultdict(list)
@@ -157,6 +157,7 @@ def digest(sc, structure=None):
         for k, rx in PRODUCTION.items():
             if rx and re.search(rx, txt, re.I):
                 prod[k].append(r["n"])
+    declared = {c["name"]: c.get("dialect") for c in (intent or {}).get("characters", []) if c.get("dialect")}
     mixed = []
     for who, per in dial.items():
         dom = {}
@@ -165,6 +166,13 @@ def digest(sc, structure=None):
             if len(best[1]) >= 2 or len(hits) == 1 and len(best[1]) >= 1:
                 dom[scn] = best[0]
         kinds = set(dom.values())
+        if declared.get(who) == "mixed":
+            continue  # the writer says this character switches on purpose
+        if declared.get(who):  # declared dialect: flag the scenes that leave it
+            off = {k: v for k, v in dom.items() if v != declared[who]}
+            if off:
+                mixed.append({"character": who, "declared": declared[who], "by_scene": {str(k): v for k, v in sorted(off.items(), key=lambda kv: kv[0] or 0)}})
+            continue
         if len(kinds) > 1:
             mixed.append({"character": who, "by_scene": {str(k): v for k, v in sorted(dom.items(), key=lambda kv: kv[0] or 0)}})
     # grids for the charts: who is in which scene (lines; 0 = present without speaking), dialect per scene
@@ -210,7 +218,7 @@ def digest(sc, structure=None):
         "longest_scenes": sorted(rows, key=lambda r: -r["share"])[:3] and [r["n"] for r in sorted(rows, key=lambda r: -r["share"])[:3]],
         "silent_scenes": [r["n"] for r in rows if not r["dialogue_lines"]],
         "telling_lines": telling, "production": dict(prod), "dialect_mix": mixed, "presence_grid": presence_grid, "voices": voice_rows, "similar_voices": alike, "dialect_grid": dialect_grid, "same_place_same_people": repeats,
-        "beats": beats, "sections": sections, "scene_rows": rows,
+        "beats": beats, "sections": sections, "scene_rows": rows, "intent": intent or None,
     }
 
 
@@ -223,7 +231,20 @@ def show(d):
            f"longest speech {d['longest_speech']['words']} words ({d['longest_speech']['character']}, S{d['longest_speech']['scene']})",
            "characters: " + "; ".join(f"{c['name']} {c['lines']} lines/{c['words']}w/{c['scenes']} sc" for c in d["characters"][:8]),
            f"protagonist (in most scenes): {d['protagonist_guess']} · absent from scenes {d['scenes_without_protagonist'] or '-'}",
-           "", "## scenes (S | position% | share% | heading | speakers | first action)"]
+           ]
+    it = d.get("intent")
+    if it:
+        out.append("## writer's intent (judge the script against this)")
+        for k in ("about", "question", "feel", "audience", "notes_wanted"):
+            if it.get(k):
+                out.append(f"{k}: {it[k]}")
+        for k in ("unsure", "intentional"):
+            if it.get(k):
+                out.append(f"{k}: " + " | ".join(it[k]))
+        for c in it.get("characters", []):
+            if c.get("dialect") or c.get("deliberate"):
+                out.append(f"character {c['name']}: dialect {c.get('dialect_text') or c.get('dialect') or '?'}" + (f"; deliberate: {c['deliberate']}" if c.get("deliberate") else ""))
+    out += ["", "## scenes (S | position% | share% | heading | speakers | first action)"]
     for r in d["scene_rows"]:
         out.append(f"S{r['n']} | {r['pos']}% | {r['share']}% | {r['int_ext'] or ''} - {r['place'] or ''} - {r['time'] or ''} | "
                    f"{', '.join(r['speakers']) or '(silent)'} | {r['first']}")
@@ -232,7 +253,7 @@ def show(d):
     if d["telling_lines"]:
         out.append("action lines that narrate thoughts/feelings: " + " · ".join(f"S{t['scene']}: {t['text'][:60]}" for t in d["telling_lines"][:8]))
     if d["dialect_mix"]:
-        out.append("dialect changes: " + " · ".join(f"{m['character']} {m['by_scene']}" for m in d["dialect_mix"]))
+        out.append("dialect changes: " + " · ".join(f"{m['character']}" + (f" (declared {m['declared']}, leaves it in)" if m.get("declared") else "") + f" {m['by_scene']}" for m in d["dialect_mix"]))
     if d["same_place_same_people"]:
         out.append("same place + same speakers (possible repeat): " + ", ".join(f"S{a}/S{b}" for a, b in d["same_place_same_people"]))
     if d.get("voices"):
@@ -258,9 +279,11 @@ def main():
     ap.add_argument("script")
     ap.add_argument("--structure")
     ap.add_argument("--out")
+    ap.add_argument("--intent", help="intent.json from intent.py (or written from the conversation)")
     a = ap.parse_args()
     sc = json.loads(Path(a.script).read_text(encoding="utf-8"))
-    d = digest(sc, a.structure)
+    intent = json.loads(Path(a.intent).read_text(encoding="utf-8")) if a.intent else None
+    d = digest(sc, a.structure, intent)
     if a.out:
         Path(a.out).write_text(json.dumps(d, ensure_ascii=False, indent=1, default=list), encoding="utf-8")
     print(show(d))
