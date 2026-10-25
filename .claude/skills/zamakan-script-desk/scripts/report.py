@@ -14,7 +14,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _screenplay as S  # noqa: E402
-from annotate import LENS, UI, VERDICT, check  # noqa: E402
+from annotate import LENS, UI, VERDICT, check, scope_label  # noqa: E402
 import charts as C  # noqa: E402
 from side_notes import scene_marks  # noqa: E402
 
@@ -67,7 +67,7 @@ def prev_section(items, draft, lang):
     return f'<h2>{E(title)}</h2><div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px">{counts}</div>{rows}'
 
 
-def build(sc, notes, stats, lang, side_link=None):
+def build(sc, notes, stats, lang, side_link=None, prev=None):
     t, u = T[lang], UI[lang]
     name = lambda L: L["name_ar"] if lang == "ar" else L["name"]  # noqa: E731
     ov = notes["overall"]
@@ -78,6 +78,7 @@ def build(sc, notes, stats, lang, side_link=None):
          '<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">'
          f'<style>{CSS}{C.CSS}</style></head><body><div class="wrap">',
          f'<div class="kicker">{t["title"]}</div><h1>{E(title)}</h1>',
+         (f'<p class="chip" style="margin:6px 0 0">{E(scope_label(notes, lang))}</p>' if scope_label(notes, lang) else "") +
          f'<div class="hero"><div class="kicker">{t["story"]}</div><p style="font-size:18px;margin:6px 0 14px">{E(notes["logline_read"])}</p>'
          f'<span class="chip"><b class="mk" style="background:{VERDICT[ov["verdict"]]["hex"]}">{VERDICT[ov["verdict"]]["icon"]}</b>{E(VERDICT[ov["verdict"]][lang])}</span>'
          f'<p>{E(ov["summary"])}</p></div>']
@@ -97,7 +98,7 @@ def build(sc, notes, stats, lang, side_link=None):
     if stats:
         st = next((x for x in S.STRUCTURES["structures"] if x["id"] == notes.get("structure")), None)
         h.append(f'<h2>{t["visuals"]}</h2>')
-        h += C.all_charts(stats, notes, st, scene_marks(sc, notes), lang)
+        h += C.all_charts(stats, notes, st, scene_marks(sc, notes), lang, prev)
     if side_link:
         h.append(f'<p><a href="{E(side_link)}">{t["side"]} →</a></p>')
     h.append(f'<h2>{u["notes"]}</h2><div class="grid">')
@@ -164,6 +165,8 @@ def main():
     ap.add_argument("--out", default=".")
     ap.add_argument("--name")
     ap.add_argument("--check", action="store_true", help="screenshot desktop + phone and report sideways scrolling")
+    ap.add_argument("--previous-stats", help="the previous draft's stats.json, to overlay its tension curve")
+    ap.add_argument("--previous-notes", help="the previous draft's notes.json")
     a = ap.parse_args()
     sc = json.loads(Path(a.script).read_text(encoding="utf-8"))
     notes = json.loads(Path(a.notes).read_text(encoding="utf-8"))
@@ -178,7 +181,10 @@ def main():
     name = a.name or (re.sub(r"[^\w؀-ۿ-]+", "-", (sc.get("title_page") or {}).get("title") or "script").strip("-") + "-report")
     path = out / f"{name}.html"
     side = out / (name.replace("-report", "") + "-side-notes.html")
-    path.write_text(build(sc, notes, stats, lang, side.name if side.exists() else None), encoding="utf-8")
+    prev = None
+    if a.previous_stats and a.previous_notes:
+        prev = (json.loads(Path(a.previous_stats).read_text(encoding="utf-8")), json.loads(Path(a.previous_notes).read_text(encoding="utf-8")))
+    path.write_text(build(sc, notes, stats, lang, side.name if side.exists() else None, prev), encoding="utf-8")
     print(f"report → {path}")
     if a.check:
         for label, shot, over in screenshot(path):

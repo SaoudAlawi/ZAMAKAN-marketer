@@ -2,7 +2,7 @@
 name: zamakan-script-desk
 description: "Help a screenwriter write a film or short film (never write it for them), Arabic first and English too: Word templates that scaffold a story structure with page targets (three acts, Save the Cat, hero's journey, story circle, eight sequences, kishōtenketsu, short-film shapes), a formatter that turns a rough draft (Word, Fountain or plain text) into a correctly laid-out screenplay (right-to-left Arabic, scene numbers, Word + PDF + Fountain), and a script reader that gives notes from ten viewpoints (premise, structure, character, dialogue and dialect, visual storytelling, pacing, theme, cultural truth, producibility, festival fit) with green/amber/red verdicts and colour-coded margin comments. Use this whenever someone wants to plan a screenplay, needs a script template or beat sheet, asks to format or clean up a script («نسّق السيناريو»), wants feedback, notes or coverage on a draft («قيّم السيناريو», «ملاحظات على النص»), or asks how their script is structured. For finding film references to watch, use zamakan-shot-scout instead."
 metadata:
-  version: 0.3.0
+  version: 0.4.0
 ---
 
 # ZAMAKAN Script Desk
@@ -56,7 +56,7 @@ screenplay styles. Tell the writer: drafting in those styles makes formatting an
 ## Format
 
 ```bash
-python3 $DESK/scripts/parse_script.py <draft> --out $JOB/script.json         # Word, .fountain or .txt; Arabic or English
+python3 $DESK/scripts/parse_script.py <draft> --out $JOB/script.json         # Word, PDF, Final Draft (.fdx), .fountain or .txt; Arabic or English
 python3 $DESK/scripts/parse_script.py <draft> --out $JOB/script.json --fix $JOB/fixes.json   # only if it listed unsure lines
 python3 $DESK/scripts/format_script.py $JOB/script.json --out $JOB           # Word + PDF + Fountain; page count ≈ minutes
 ```
@@ -64,6 +64,10 @@ The parser prints a few **unsure lines** (usually a one-off speaker such as «ص
 those from the line and the line after it; write `{"<index>": "character"}` to `fixes.json`; never read the whole
 script to format it. Options: `--paper a4|letter`, `--font "Simplified Arabic"` (the font named in the Word file;
 the PDF always embeds Amiri, so its text can be copied and searched), `--latin-digits`, `--no-numbers`.
+
+PDFs are read from their layout (indents tell character, parenthetical and dialogue apart; Arabic text is put back
+in reading order); a PDF whose text layer is broken (some fonts, scanned pages) reads badly: then ask for the Word or
+Final Draft file. English scripts also get a `.fdx` for Final Draft.
 
 Arabic layout: right to left, binding margin on the right, the standard screenplay indents mirrored (as in
 WriterDuet's right-to-left template); scene headings rebuilt as «داخلي - المكان - ليل» and numbered. Final Draft does
@@ -84,7 +88,8 @@ Token rules first: **read the digest, then only the scenes you need.**
    a **feature** in chunks of 10-15 scenes (`show.py … 1-12`), writing notes into `$JOB/notes.json` as you go instead of
    keeping the whole script in mind. Each element line ends with its index [n].
 4. Judge each viewpoint in `references/lenses.json` (ten, each with its questions and colour). Verdict per viewpoint:
-   **green** working, **amber** needs work, **red** holds the script back. Say what works too (`strengths`, and notes of
+   **green** working, **amber** needs work, **red** holds the script back; pick it by the viewpoint's `anchors` (one
+   sentence per colour), not by feel, so the same script gets the same colours every time. Say what works too (`strengths`, and notes of
    kind `strength`).
 5. Write `$JOB/notes.json` (schema `schemas/notes.schema.json`): your one-line reading of the story (`logline_read`, so
    the writer can see if it lands), an overall verdict and summary, a verdict for every viewpoint, notes tied to scene
@@ -107,7 +112,16 @@ Token rules first: **read the digest, then only the scenes you need.**
    python3 $DESK/scripts/side_notes.py $JOB/script.json $JOB/notes.json --out $JOB        # the script with the notes as side comments (HTML + PDF)
    python3 $DESK/scripts/report.py $JOB/script.json $JOB/notes.json --stats $JOB/stats.json --out $JOB --check   # one-page report with charts
    ```
-   Fix every error; look at the report screenshots before you send it.
+   Fix every error, and every quality warning unless you have a reason (summaries of two or three short sentences;
+   each issue or question ends by asking the writer something; no generic phrases like "needs more depth"; no two
+   notes saying the same thing). Look at the report screenshots before you send it.
+
+**Focused passes** (cheaper; say so in `scope`):
+- *First pages* ("read it like a festival reader"): `show.py $JOB/script.json --pages 10 --stats $JOB/stats.json`
+  shows only the scenes in the first 10 pages; `scope` = {"kind": "first-pages", "pages": 10}; verdicts are needed only
+  for premise, character, dialogue, visual and pacing; say what made you want to keep reading, or not.
+- *One or more viewpoints* ("dialogue only"): `scope` = {"kind": "lenses", "lenses": ["dialogue"]}; read with the
+  digest's voices and dialect lines; verdicts only for those viewpoints.
 
 **What the writer gets.** Every note sits **beside the line it is about**, as a side comment:
 - in Word, a margin comment per note; each viewpoint is its own reviewer, so Word colours them apart and the writer can
@@ -153,7 +167,8 @@ are not listed, so ids skip them). Status: **resolved** = the problem is gone (a
 **partly** = better but not there; **open** = still there; **dropped** = the note no longer applies because the story
 changed direction. An unchanged scene keeps its old note open unless something elsewhere fixed it (a setup that now
 pays off later, a character now answered in a new scene): check the scenes an old note depends on, not only the
-changed ones. The report and the Word notes page open with "since the last draft".
+changed ones. The report and the Word notes page open with "since the last draft". Pass
+`--previous-stats $JOB1/stats.json --previous-notes $JOB1/notes.json` to report.py to overlay the old tension curve.
 
 **The conversation in the margin.** Writers answer notes in Word: a Reply, a comment of their own on the same line,
 text typed into the note, or Resolve. `replies.py` collects them (each Word comment carries its note number, #n), and

@@ -74,9 +74,19 @@ def check(sc, notes, intent=None):
     if errs:
         return errs, warns
     have = {x["id"]: x for x in notes["lenses"]}
-    for lid in LENS:
+    scope = notes.get("scope") or {"kind": "full"}
+    required = list(LENS)
+    if scope["kind"] == "lenses":
+        required = scope.get("lenses") or []
+        if not required:
+            errs.append("scope lenses: name the viewpoints this pass covers")
+    elif scope["kind"] == "first-pages":
+        required = ["premise", "character", "dialogue", "visual", "pacing"]  # what the opening pages can show
+        if not scope.get("pages"):
+            errs.append("scope first-pages: say how many pages were read")
+    for lid in required:
         if lid not in have:
-            errs.append(f"lens '{lid}' has no verdict (every viewpoint gets one, even green)")
+            errs.append(f"lens '{lid}' has no verdict" + (" (every viewpoint gets one, even green)" if scope["kind"] == "full" else f" (in scope for this {scope['kind']} pass)"))
     for lid in have:
         if lid not in LENS:
             errs.append(f"unknown lens '{lid}' (use: {', '.join(LENS)})")
@@ -142,6 +152,18 @@ def shade_runs(p, hex_):
         rpr.append(S._el("w:shd", **{"w:val": "clear", "w:color": "auto", "w:fill": tint(hex_)}))
 
 
+def scope_label(notes, lang):
+    """A line saying what this reading covers, when it is not a full read."""
+    sc = notes.get("scope") or {"kind": "full"}
+    if sc["kind"] == "first-pages":
+        return f"قراءة أول {S.digits(sc.get('pages', 10), lang)} صفحات فقط، كما يقرأها قارئ المهرجان" if lang == "ar" else \
+            f"First {sc.get('pages', 10)} pages only, the way a festival reader meets the script"
+    if sc["kind"] == "lenses":
+        names = [(LENS[i]["name_ar"] if lang == "ar" else LENS[i]["name"]) for i in sc.get("lenses", []) if i in LENS]
+        return ("قراءة مركّزة: " + "، ".join(names)) if lang == "ar" else ("Focused pass: " + ", ".join(names))
+    return ""
+
+
 def verdict_runs(p, v, lang):
     """● in the status colour, then icon + label in ink: the colour never carries the verdict alone."""
     for text, col in (("● ", VERDICT[v]["hex"]), (f"{VERDICT[v]['icon']} {VERDICT[v][lang]}", None)):
@@ -188,6 +210,8 @@ def notes_page(doc, sc, notes, lang, images=()):
     start = len(body) - (1 if body[-1].tag == S.qn("w:sectPr") else 0)  # new paragraphs go in before sectPr
     para(doc, u["notes"], lang, style="Heading 1")
     para(doc, u["promise"], lang, color="#777777", size=10)
+    if scope_label(notes, lang):
+        para(doc, scope_label(notes, lang), lang, bold=True)
     para(doc, u["story"], lang, style="Heading 3")
     para(doc, notes["logline_read"], lang)
     v = notes["overall"]["verdict"]

@@ -299,6 +299,33 @@
     "maxLength": 90
    },
    "description": "optional: scene number → the scene in one line (8-12 words) for the scene cards; else the first action line is used"
+  },
+  "scope": {
+   "type": "object",
+   "required": [
+    "kind"
+   ],
+   "additionalProperties": false,
+   "description": "what this reading covers (default full). first-pages: how a festival reader meets the script; lenses: a focused pass (e.g. dialogue only)",
+   "properties": {
+    "kind": {
+     "enum": [
+      "full",
+      "first-pages",
+      "lenses"
+     ]
+    },
+    "pages": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "lenses": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    }
+   }
   }
  }
 }

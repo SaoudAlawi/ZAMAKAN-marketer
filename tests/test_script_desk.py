@@ -327,3 +327,75 @@ def test_arc_chart(sc):
     assert "أقواس الشخصيات" in html and "تنتظر" in html and "#2a78d6" in html
     n["arcs"]["مريم"]["points"]["99"] = {"value": 0}
     assert any("unknown scenes" in e for e in A.check(sc, n)[0])
+
+
+# ---- v0.4: yardstick, quality checks, PDF/FDX, focused passes, tension overlay ----
+def test_every_lens_has_anchors():
+    for L in A.LENS.values():
+        assert set(L["anchors"]) == {"green", "amber", "red"}
+        assert all(L["anchors"][v]["ar"] and L["anchors"][v]["en"] for v in L["anchors"])
+
+
+def test_quality_warnings():
+    n = notes()
+    n["lenses"][0]["summary"] = "جملة. " * 5
+    n["notes"] += [{"scene": 2, "lens": "dialogue", "kind": "issue", "text": "الحوار يحتاج إلى عمق."},
+                   {"scene": 2, "lens": "dialogue", "kind": "issue", "text": "الحوار يحتاج إلى عمق!"}]
+    w = A.quality(n)
+    assert any("summary" in x for x in w) and any("end with a question" in x for x in w)
+    assert any("generic phrase" in x for x in w) and any("nearly the same" in x for x in w)
+
+
+def test_scope_first_pages_and_lenses(sc):
+    n = notes(lenses=[{"id": i, "verdict": "green", "summary": "x"} for i in ("premise", "character", "dialogue", "visual", "pacing")])
+    n["scope"] = {"kind": "first-pages", "pages": 3}
+    assert A.check(sc, n)[0] == [] and "أول ٣ صفحات" in A.scope_label(n, "ar")
+    n2 = notes(lenses=[{"id": "dialogue", "verdict": "green", "summary": "x"}], notes=[{"scene": 2, "lens": "dialogue", "kind": "strength", "text": "x"}])
+    n2["scope"] = {"kind": "lenses", "lenses": ["dialogue"]}
+    assert A.check(sc, n2)[0] == []
+    n2["scope"] = {"kind": "full"}
+    assert any("has no verdict" in e for e in A.check(sc, n2)[0])
+
+
+@pytest.mark.skipif(not SOFFICE or not shutil.which("pdftotext"), reason="needs LibreOffice and pdftotext")
+def test_arabic_pdf_round_trip(sc, tmp_path):
+    import re as _re
+    out = tmp_path / "f.docx"
+    F.build_docx(sc).save(out)
+    pdf, err = S.to_pdf(out, tmp_path)
+    assert pdf, err
+    back = P.parse(pdf)
+    assert back["title_page"]["title"] == "المرساة" and back["title_page"]["draft_date"] == "٢٠٢٦/١٠/٢٥"
+    assert [e["type"] for e in back["elements"]] == [e["type"] for e in sc["elements"]]
+    norm = lambda t: _re.sub(r"\W", "", _re.sub(r"^\s*(?:مشهد\s*)?[\d٠-٩]+\s*[.\-–]?\s*", "", t))  # noqa: E731
+    assert all(norm(a["text"]) == norm(b["text"]) for a, b in zip(back["elements"], sc["elements"]))
+
+
+def test_fdx_round_trip(tmp_path):
+    f = tmp_path / "x.fountain"
+    f.write_text("INT. KITCHEN - NIGHT\n\nA kettle.\n\nSARA\n(quietly)\nNot tonight.\n\nCUT TO:\n\nEXT. STREET - DAY\n\nRain.\n", encoding="utf-8")
+    s = P.parse(f)
+    fdx = tmp_path / "x.fdx"
+    fdx.write_text(F.to_fdx(s), encoding="utf-8")
+    back = P.parse(fdx)
+    assert [e["type"] for e in back["elements"]] == [e["type"] for e in s["elements"]]
+    assert back["scenes"][1]["int_ext"].startswith("EXT")
+
+
+def test_show_first_pages(sc, tmp_path):
+    d = D.digest(sc)
+    d["pages"] = 6
+    st = tmp_path / "st.json"
+    st.write_text(json.dumps(d, ensure_ascii=False), encoding="utf-8")
+    import show as SH
+    keep = SH.wanted(["--pages", "2", "--stats", str(st)], 13)
+    assert 1 in keep and 13 not in keep
+
+
+def test_tension_overlay(sc):
+    d = D.digest(sc)
+    n_old = full_notes()
+    n_new = full_notes()
+    n_new["tension"] = {str(i): 3 for i in range(1, 14)}
+    html = C.tension_curve(d, n_new, None, "ar", (d, n_old))
+    assert "المسودة السابقة" in html and "stroke-dasharray=\"6 5\"" in html

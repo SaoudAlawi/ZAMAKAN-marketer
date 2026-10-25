@@ -27,14 +27,16 @@ TXT = {"ar": {"beat": "خريطة المحطات", "beat_sub": "أعلى: أين
               "dialect": "خريطة اللهجات", "dialect_sub": "اللهجة الغالبة في حوار كل شخصية في كل مشهد (تلميح، لا حكم).",
               "strip": "لوحة التصوير", "strip_sub": "كل مشهد بألوان لوحات الإنتاج المعروفة، مع ما يرفع الكلفة.",
               "scene": "مشهد", "lines": "أسطر", "silent": "حاضر دون كلام", "none": "لا ملاحظات", "len": "الطول",
-              "marks": {"red": "مشكلة", "amber": "ملاحظة", "question": "سؤال", "green": "قوة"}, "expected": "المتوقع", "actual": "الفعلي"},
+              "marks": {"red": "مشكلة", "amber": "ملاحظة", "question": "سؤال", "green": "قوة"}, "expected": "المتوقع", "actual": "الفعلي",
+              "now": "هذه المسودة", "before": "المسودة السابقة", "overlay": "الخط المتقطع: المسودة السابقة."},
        "en": {"beat": "Beat map", "beat_sub": "Top: where the structure expects each beat. Bottom: scenes at their real length, coloured by their most serious note. Lines join each beat to the scene where it actually happens.",
               "tension": "Tension curve", "tension_sub": "Tension as the reader felt it, scene by scene (0-5), across the film.",
               "presence": "Character presence", "presence_sub": "Who is in each scene; darker = more lines of dialogue.",
               "dialect": "Dialect map", "dialect_sub": "Main dialect of each character's dialogue per scene (a hint, not a verdict).",
               "strip": "Stripboard", "strip_sub": "Each scene in the usual production-board colours, with what drives cost.",
               "scene": "Scene", "lines": "lines", "silent": "present, silent", "none": "no notes", "len": "length",
-              "marks": {"red": "problem", "amber": "note", "question": "question", "green": "strength"}, "expected": "expected", "actual": "actual"}}
+              "marks": {"red": "problem", "amber": "note", "question": "question", "green": "strength"}, "expected": "expected", "actual": "actual",
+              "now": "this draft", "before": "previous draft", "overlay": "Dashed: the previous draft."}}
 
 CSS = """
 .viz{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:14px 0}
@@ -96,7 +98,8 @@ def beat_map(stats, notes, structure, marks, lang):
     return _wrap(t["beat"], t["beat_sub"], "".join(s), legend)
 
 
-def tension_curve(stats, notes, structure, lang):
+def tension_curve(stats, notes, structure, lang, prev=None):
+    """Tension per scene (0-5). prev = (old stats, old notes) overlays the previous draft's curve, dashed and grey."""
     tens = (notes or {}).get("tension") or {}
     if not tens:
         return ""
@@ -110,7 +113,19 @@ def tension_curve(stats, notes, structure, lang):
         s.append(f'<text x="{X(0) + (14 if lang == "ar" else -14)}" y="{Y(v) + 4}" font-size="11" text-anchor="middle" class="m">{v}</text>')
     for b in (structure or {}).get("beats", []):
         s.append(f'<line x1="{X(b["at"])}" y1="{top}" x2="{X(b["at"])}" y2="{bot}" stroke="{GRID}" stroke-width="1" stroke-dasharray="3 4"><title>{E(b["name_ar"] if lang == "ar" else b["name"])}</title></line>')
-    pts = [(X(r["pos"] + r["share"] / 2), Y(tens[str(r["n"])]), r["n"], tens[str(r["n"])]) for r in stats["scene_rows"] if str(r["n"]) in tens]
+
+    def curve(st, tn):
+        return [(X(r["pos"] + r["share"] / 2), Y(tn[str(r["n"])]), r["n"], tn[str(r["n"])]) for r in st["scene_rows"] if str(r["n"]) in tn]
+    legend = ""
+    if prev and (prev[1] or {}).get("tension"):
+        old = curve(prev[0], prev[1]["tension"])
+        if old:
+            s.append('<polyline fill="none" stroke="#8a8984" stroke-width="2" stroke-dasharray="6 5" points="' + " ".join(f"{x},{y}" for x, y, _, _ in old) + '"/>')
+            for x, y, n, v in old:
+                s.append(f'<circle cx="{x}" cy="{y}" r="3.5" fill="#8a8984"><title>{t["before"]} · {t["scene"]} {n} · {v}/5</title></circle>')
+            legend = (f'<div class="lg"><span><i style="background:#2a78d6"></i>{E(t["now"])}</span>'
+                      f'<span><i style="background:#8a8984"></i>{E(t["before"])}</span></div>')
+    pts = curve(stats, tens)
     if pts:
         s.append('<polyline fill="none" stroke="#2a78d6" stroke-width="2" points="' + " ".join(f"{x},{y}" for x, y, _, _ in pts) + '"/>')
         for x, y, n, v in pts:
@@ -119,7 +134,7 @@ def tension_curve(stats, notes, structure, lang):
         hi = max(pts, key=lambda p: p[3])
         s.append(f'<text x="{hi[0]}" y="{hi[1] - 10}" font-size="12" text-anchor="middle">{t["scene"]} {hi[2]}</text>')
     s.append("</svg>")
-    return _wrap(t["tension"], t["tension_sub"], "".join(s))
+    return _wrap(t["tension"], t["tension_sub"] + (" " + t["overlay"] if legend else ""), "".join(s), legend)
 
 
 def _grid(stats, cell, title, sub, legend, lang, max_rows=10):
@@ -270,8 +285,8 @@ def arc_chart(stats, notes, lang):
     return _wrap(title, sub, "".join(s), '<div class="lg" style="flex-direction:column;gap:4px">' + "".join(rows) + "</div>")
 
 
-def all_charts(stats, notes, structure, marks, lang):
-    return [c for c in (beat_map(stats, notes, structure, marks, lang), tension_curve(stats, notes, structure, lang),
+def all_charts(stats, notes, structure, marks, lang, prev=None):
+    return [c for c in (beat_map(stats, notes, structure, marks, lang), tension_curve(stats, notes, structure, lang, prev),
                         arc_chart(stats, notes, lang), presence(stats, lang), dialect_map(stats, lang), voices_table(stats, lang), stripboard(stats, lang)) if c]
 
 

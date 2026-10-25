@@ -3,6 +3,7 @@
 whole script to check a few scenes.
 
 Usage: python show.py script.json 3 5 7-9        # scene numbers or ranges; --all for everything (short films)
+       python show.py script.json --pages 10 --stats stats.json   # the scenes in the first 10 pages
 """
 import json
 import re
@@ -16,6 +17,11 @@ TAG = {"scene_heading": "##", "action": "", "character": "@", "parenthetical": "
 def wanted(args, total):
     if "--all" in args:
         return set(range(1, total + 1))
+    if "--pages" in args:
+        n = float(args[args.index("--pages") + 1])
+        st = json.loads(Path(args[args.index("--stats") + 1]).read_text(encoding="utf-8"))
+        pages = st.get("pages") or total
+        return {r["n"] for r in st["scene_rows"] if r["pos"] / 100 * pages < n}
     out = set()
     for a in args:
         if "-" in a:
