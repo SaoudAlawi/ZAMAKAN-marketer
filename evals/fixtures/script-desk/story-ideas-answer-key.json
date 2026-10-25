@@ -1,0 +1,13 @@
+{
+ "note": "What a good story → template run should do. Never show this file to an agent under test.",
+ "muttrah-voice-note.txt": {
+  "shape": "quiet, a repeated daily encounter, no stated conflict: kishotenketsu or short-one-moment fit; a three-act/hero's journey choice should be justified",
+  "gaps": ["the turn (the writer says «ما أعرف شو يصير بعدين»)", "what the old man wants", "who the boy is / why he asks the time"],
+  "must": ["quote «ما أعرف شو يصير بعدين» or treat the middle/turn as a gap, not fill it", "keep the voice-note fillers in the story text as sent", "no invented event (e.g. the boy steals a watch, the shop closes, the man dies)", "ending wish «حزينة شوي وجميلة» kept as tone/ending, with a question"]
+ },
+ "rider-idea.txt": {
+  "shape": "one night, one turn (the order from his old neighbourhood): short-one-moment fits",
+  "gaps": ["what happens at the old neighbourhood (the turn's outcome)", "who ordered", "the ending beyond 'hopeful'"],
+  "must": ["English template (lang en)", "the order from the old neighbourhood placed at or before the turn as a question", "no invented answer to who ordered"]
+ }
+}

@@ -414,3 +414,40 @@ def test_first_pages_charts_only_show_read_scenes(sc):
     n["scope"] = {"kind": "first-pages", "pages": 3}
     st = C.in_scope(d, n)
     assert 0 < len(st["scene_rows"]) < 13 and all(int(k) <= max(r["n"] for r in st["scene_rows"]) for row in st["presence_grid"].values() for k in row)
+
+
+# ---- story idea → template ----
+import story_template as ST  # noqa: E402
+
+MAP = json.loads((ROOT / "tests" / "fixtures" / "story_map_al_mirsah.json").read_text(encoding="utf-8"))
+
+
+def test_story_map_checks_quotes_are_the_writers_words():
+    assert ST.check(MAP)[0] == []
+    bad = json.loads(json.dumps(MAP))
+    bad["beats"]["turn"]["fragments"] = ["العم يُصاب في عاصفة"]  # an invented event
+    bad["heard"][0]["open_question"] = "اكتب مشهداً عن البحر."  # not a question
+    errs, warns = ST.check(bad)
+    assert any("not the writer's words" in e for e in errs) and any("not a question" in w for w in warns)
+    full = json.loads(json.dumps(MAP))
+    full["beats"]["turn"]["fragments"] = ["عمها يرفض"]
+    assert any("no gaps" in w for w in ST.check(full)[1])
+
+
+def test_scene_counts_follow_running_time():
+    st = next(s for s in S.STRUCTURES["structures"] if s["id"] == "short-one-moment")
+    c = ST.scene_counts(st, 12, "short")
+    assert c["pressure"] > c["hook"] and 8 <= sum(c.values()) <= 12
+
+
+def test_story_template_docx_and_map(tmp_path):
+    doc = ST.build_docx(MAP)
+    out = tmp_path / "t.docx"
+    doc.save(out)
+    from docx import Document
+    texts = [p.text for p in Document(out).paragraphs]
+    assert MAP["story"] in texts  # the story, untouched
+    assert "قصتك لا تقول هذا بعد." in texts  # the turn is a gap
+    assert "«عمها يرفض»" in texts
+    page = ST.build_map(MAP)
+    assert 'class="gap"' in page and page.count('class="frag"') == 3 and 'dir="rtl"' in page

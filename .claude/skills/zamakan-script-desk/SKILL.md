@@ -1,8 +1,8 @@
 ---
 name: zamakan-script-desk
-description: "Help a screenwriter write a film or short film (never write it for them), Arabic first and English too: Word templates that scaffold a story structure with page targets (three acts, Save the Cat, hero's journey, story circle, eight sequences, kishōtenketsu, short-film shapes), a formatter that turns a rough draft (Word, Fountain or plain text) into a correctly laid-out screenplay (right-to-left Arabic, scene numbers, Word + PDF + Fountain), and a script reader that gives notes from ten viewpoints (premise, structure, character, dialogue and dialect, visual storytelling, pacing, theme, cultural truth, producibility, festival fit) with green/amber/red verdicts and colour-coded margin comments. Use this whenever someone wants to plan a screenplay, needs a script template or beat sheet, asks to format or clean up a script («نسّق السيناريو»), wants feedback, notes or coverage on a draft («قيّم السيناريو», «ملاحظات على النص»), or asks how their script is structured. For finding film references to watch, use zamakan-shot-scout instead."
+description: "Help a screenwriter write a film or short film (never write it for them), Arabic first and English too: from a story idea (a paragraph or voice note) to a template shaped around it, Word templates that scaffold a story structure with page targets (three acts, Save the Cat, hero's journey, story circle, eight sequences, kishōtenketsu, short-film shapes), a formatter that turns a rough draft (Word, Fountain or plain text) into a correctly laid-out screenplay (right-to-left Arabic, scene numbers, Word + PDF + Fountain), and a script reader that gives notes from ten viewpoints (premise, structure, character, dialogue and dialect, visual storytelling, pacing, theme, cultural truth, producibility, festival fit) with green/amber/red verdicts and colour-coded margin comments. Use this whenever someone shares a story idea and wants help shaping it («عندي فكرة فيلم»), wants to plan a screenplay, needs a script template or beat sheet, asks to format or clean up a script («نسّق السيناريو»), wants feedback, notes or coverage on a draft («قيّم السيناريو», «ملاحظات على النص»), or asks how their script is structured. For finding film references to watch, use zamakan-shot-scout instead."
 metadata:
-  version: 0.4.0
+  version: 0.5.0
 ---
 
 # ZAMAKAN Script Desk
@@ -22,7 +22,8 @@ git-ignored: unpublished scripts stay private). Call that folder `$JOB`.
 
 | Ask | Do |
 |---|---|
-| Plan / a template / a beat sheet | **Template** below |
+| A story idea (a paragraph, a voice note) → "help me shape it" | **From a story idea** below |
+| Plan / a blank template / a beat sheet | **Template** below |
 | Format / clean up / lay out a draft | **Format** below |
 | Notes / feedback / coverage / "is it working?" | **Read** below (formats first if needed) |
 | A new draft of a script you read before | **New draft** below (re-reads only what changed) |
@@ -41,7 +42,29 @@ Ask once, up front, only what changes the work: feature or short and the planned
 viewpoint, e.g. dialogue only) and where it should play (festival, platform, market). Defaults: Arabic, short of
 12 minutes, a full read.
 
-## Template
+## From a story idea
+
+The writer sends their general story (typed, or a voice-note transcript: treat it the same, keep it as sent). Give
+them a template shaped around **their** story, without writing any of it.
+1. Read the story once. Pick the structure that fits its shape (a single turn → `short-one-moment`; quiet, no conflict →
+   `kishotenketsu`; a quest → `heros-journey`; a feature with escalating conflict → `three-act`/`save-the-cat`) and one
+   alternative, each with one sentence why.
+2. Write `$JOB/story_map.json` (schema `schemas/story_map.schema.json`, about 1-2k tokens):
+   - `story`: exactly as sent; `heard`: hero, want, obstacle, turn, ending (plus world, tone, theme if present), each
+     with the writer's **exact words** as `quote`, or no quote when the story doesn't say it (that is a gap), and an
+     `open_question` about this story;
+   - `beats`: for each beat, the writer's fragments that seem to belong there (exact quotes; a fragment may appear once)
+     and 1-2 questions about this story ("the uncle refuses: once, or harder each time?", not "who opposes the hero?");
+     beats the story doesn't reach get questions only: they show as gaps;
+   - `characters` as the writer names them; `places` with a cost question when it matters (sea, night, crowds).
+   Never add an event, a name, a line or an answer. Everything you add is a question.
+3. `python3 $DESK/scripts/story_template.py $JOB/story_map.json --check`, then `--out $JOB`: the Word template (story
+   untouched in blue, what we heard and what's open, the structure with page targets and a rough scene count per beat,
+   beat by beat with their words, questions and an empty box, gaps in amber, characters, places, a styled draft section)
+   and a one-page story map (HTML + PDF).
+4. Reply: the structure and why, the gaps (the beats in amber) as two or three questions, and the files.
+
+## Template (blank)
 
 ```bash
 python3 $DESK/scripts/build_template.py --list
@@ -202,4 +225,4 @@ Reply briefly: what you made, the overall verdict and the 3 priorities (for a Re
 unsure lines you decided (for a new draft: how many old notes are resolved, partly, open). Files: `<title>-template.docx`,
 `<title>.docx/.pdf/.fountain`, `<title>-notes.docx` (the writer's copy with margin comments and charts),
 `<title>-side-notes.pdf/.html` (the script with side comments), `<title>-report.html`, and when made
-`<title>-intent.docx`, `<title>-cards.html/.pdf`, `<title>-cards.docx`.
+`<title>-intent.docx`, `<title>-cards.html/.pdf`, `<title>-cards.docx`, `<title>-story-template.docx`, `<title>-story-map.html/.pdf`.
