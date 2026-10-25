@@ -399,3 +399,18 @@ def test_tension_overlay(sc):
     n_new["tension"] = {str(i): 3 for i in range(1, 14)}
     html = C.tension_curve(d, n_new, None, "ar", (d, n_old))
     assert "المسودة السابقة" in html and "stroke-dasharray=\"6 5\"" in html
+
+
+def test_report_tables_do_not_clash_with_scene_strip(sc):
+    import report as R
+    page = R.build(sc, full_notes(), D.digest(sc, "short-one-moment"), "ar")
+    assert '<table class="strip"' not in page and page.count('class="vtable"') == 2  # voices + stripboard
+
+
+def test_first_pages_charts_only_show_read_scenes(sc):
+    d = D.digest(sc)
+    d["pages"] = 6
+    n = full_notes()
+    n["scope"] = {"kind": "first-pages", "pages": 3}
+    st = C.in_scope(d, n)
+    assert 0 < len(st["scene_rows"]) < 13 and all(int(k) <= max(r["n"] for r in st["scene_rows"]) for row in st["presence_grid"].values() for k in row)

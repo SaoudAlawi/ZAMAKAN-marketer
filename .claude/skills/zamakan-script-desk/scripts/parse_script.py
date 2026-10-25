@@ -105,7 +105,15 @@ def read_pdf(path):
     for pi, page in enumerate(pages, 1):
         W = float(page.get("width"))
         for ln in page.iter(XH + "line"):
-            words = [w.text or "" for w in ln.iter(XH + "word")]
+            words = []
+            last_x = None
+            for w in ln.iter(XH + "word"):  # pdftotext sometimes splits one Arabic word in two: join near-touching pieces
+                x0w, x1w = float(w.get("xMin")), float(w.get("xMax"))
+                if words and last_x is not None and x0w - last_x < 1.0 and ARABIC_LETTER.search(w.text or "") and ARABIC_LETTER.search(words[-1]):
+                    words[-1] += w.text or ""
+                else:
+                    words.append(w.text or "")
+                last_x = x1w
             arabic = S.is_arabic(" ".join(words))
             text = _logical(words) if arabic else " ".join(words)
             x0, x1 = float(ln.get("xMin")), float(ln.get("xMax"))

@@ -75,10 +75,11 @@ def voices(els, lang):
         ws = [norm_word(w) for ln in ls for w in words(ln)]
         own = Counter(w for w in ws if w not in STOP and len(w) > 2)
         distinct = sorted(own, key=lambda w: (-own[w] / all_words[w], -own[w]))[:4]
-        dial = Counter()
+        dial = Counter()  # each line votes for its main variety (shared words like «إن» don't outweigh dialect lines)
         for ln in ls:
-            for k, h in dialect_scores(ln).items():
-                dial[k] += len(h)
+            sc_ = dialect_scores(ln)
+            if sc_:
+                dial[max(sc_.items(), key=lambda kv: (len(kv[1]), kv[0] != "msa"))[0]] += 1
         out.append({"name": c, "lines": len(ls), "avg_words": round(len(ws) / len(ls), 1),
                     "questions": round(sum(("؟" in ln or "?" in ln) for ln in ls) / len(ls), 2),
                     "exclaims": round(sum("!" in ln for ln in ls) / len(ls), 2), "own_words": distinct,

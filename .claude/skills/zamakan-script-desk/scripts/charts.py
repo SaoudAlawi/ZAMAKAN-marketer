@@ -44,9 +44,9 @@ CSS = """
 .viz svg{width:100%;height:auto;display:block}.viz svg text{fill:var(--ink);font-family:inherit}.viz svg .m{fill:var(--muted)}
 .lg{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--muted);margin-top:8px}.lg i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-inline-end:5px;vertical-align:-1px;border:1px solid var(--line)}
 .lg b{display:inline-flex;width:16px;height:16px;border-radius:50%;align-items:center;justify-content:center;color:#fff;font:700 10px system-ui;margin-inline-end:5px}
-table.strip{width:100%;border-collapse:separate;border-spacing:0 3px;font-size:13.5px}table.strip td{padding:5px 8px;vertical-align:middle}
-table.strip td.c{width:14px;border-radius:4px;border:1px solid var(--line)}table.strip .bar{height:8px;border-radius:4px;background:var(--muted);opacity:.45}
-table.strip .fl{display:inline-block;font-size:11.5px;border:1px solid var(--line);border-radius:999px;padding:0 7px;margin-inline-end:4px;color:var(--muted)}
+.tw{overflow-x:auto;max-width:100%}table.vtable{width:100%;border-collapse:separate;border-spacing:0 3px;font-size:13.5px}table.vtable td{padding:5px 8px;vertical-align:middle}
+table.vtable td.c{width:14px;border-radius:4px;border:1px solid var(--line)}table.vtable .bar{height:8px;border-radius:4px;background:var(--muted);opacity:.45}
+table.vtable .fl{display:inline-block;font-size:11.5px;border:1px solid var(--line);border-radius:999px;padding:0 7px;margin-inline-end:4px;color:var(--muted)}
 """
 
 
@@ -221,7 +221,7 @@ def stripboard(stats, lang):
                     f'<td>{E(r.get("int_ext") or "")} · {E(r.get("time") or "")}</td><td>{E(r.get("place") or "")}</td><td>{fl}</td>'
                     f'<td style="width:22%"><div class="bar" style="width:{r["share"] / mx * 100:.0f}%" title="{t["len"]} {r["share"]}%"></div></td></tr>')
     legend = '<div class="lg">' + "".join(f'<span><i style="background:{c}"></i>{E(l[lang])}</span>' for c, l in STRIP.values()) + "</div>"
-    return _wrap(t["strip"], t["strip_sub"], '<table class="strip">' + "".join(rows) + "</table>", legend)
+    return _wrap(t["strip"], t["strip_sub"], '<div class="tw"><table class="vtable">' + "".join(rows) + "</table></div>", legend)
 
 
 def voices_table(stats, lang):
@@ -238,7 +238,7 @@ def voices_table(stats, lang):
         f'<td>{E("، ".join(v["own_words"]) if ar else ", ".join(v["own_words"]))}</td></tr>' for v in vs)
     alike = stats.get("similar_voices") or []
     note = (("قد تتشابه أصوات: " if ar else "May sound alike: ") + ", ".join(f"{a} / {b}" for a, b in alike)) if alike else ""
-    table = f'<table class="strip"><tr>{"".join(f"<td class=m><b>{h}</b></td>" for h in head)}</tr>{rows}</table>' + (f'<p class="sub">{E(note)}</p>' if note else "")
+    table = f'<div class="tw"><table class="vtable"><tr>{"".join(f"<td class=m><b>{h}</b></td>" for h in head)}</tr>{rows}</table></div>' + (f'<p class="sub">{E(note)}</p>' if note else "")
     return _wrap("أصوات الشخصيات" if ar else "Character voices",
                  "كيف تتكلم كل شخصية: طول السطر، الأسئلة، التعجب، اللهجة، والكلمات الخاصة بها." if ar else
                  "How each character talks: line length, questions, exclamations, dialect and their own words.", table)
@@ -285,7 +285,27 @@ def arc_chart(stats, notes, lang):
     return _wrap(title, sub, "".join(s), '<div class="lg" style="flex-direction:column;gap:4px">' + "".join(rows) + "</div>")
 
 
+def in_scope(stats, notes):
+    """For a first-pages pass, only the scenes that were read (so the charts don't show what the reader skipped)."""
+    sc = (notes or {}).get("scope") or {}
+    if sc.get("kind") != "first-pages" or not stats.get("pages"):
+        return stats
+    keep = {r["n"] for r in stats["scene_rows"] if r["pos"] / 100 * stats["pages"] < sc.get("pages", 10)}
+    st = dict(stats)
+    st["scene_rows"] = [r for r in stats["scene_rows"] if r["n"] in keep]
+    for g in ("presence_grid", "dialect_grid"):
+        st[g] = {c: {k: v for k, v in row.items() if int(k) in keep} for c, row in (stats.get(g) or {}).items()}
+        st[g] = {c: row for c, row in st[g].items() if row}
+    st["production"] = {k: [n for n in v if n in keep] for k, v in (stats.get("production") or {}).items()}
+    st["production"] = {k: v for k, v in st["production"].items() if v}
+    st["beats"] = []
+    return st
+
+
 def all_charts(stats, notes, structure, marks, lang, prev=None):
+    stats = in_scope(stats, notes)
+    if (notes or {}).get("scope", {}).get("kind") == "first-pages":
+        structure = None  # beats belong to the whole film
     return [c for c in (beat_map(stats, notes, structure, marks, lang), tension_curve(stats, notes, structure, lang, prev),
                         arc_chart(stats, notes, lang), presence(stats, lang), dialect_map(stats, lang), voices_table(stats, lang), stripboard(stats, lang)) if c]
 

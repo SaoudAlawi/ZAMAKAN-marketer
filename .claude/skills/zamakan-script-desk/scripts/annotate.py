@@ -121,9 +121,10 @@ def check(sc, notes, intent=None):
     bad = [k for k in tens if not k.isdigit() or not 1 <= int(k) <= nscenes]
     if bad:
         errs.append(f"tension: unknown scenes {bad}")
-    if tens and len(tens) < nscenes:
+    full = (notes.get("scope") or {"kind": "full"})["kind"] == "full"
+    if tens and len(tens) < nscenes and full:
         warns.append(f"tension covers {len(tens)} of {nscenes} scenes; give every scene a value for a true curve")
-    if not tens:
+    if not tens and full:
         warns.append("no tension values: the report has no tension curve")
     for name, arc in (notes.get("arcs") or {}).items():
         bad = [k for k in arc["points"] if not k.isdigit() or not 1 <= int(k) <= nscenes]
@@ -386,7 +387,7 @@ def main():
     if a.stats:
         import charts as C
         from side_notes import scene_marks
-        stats = json.loads(Path(a.stats).read_text(encoding="utf-8"))
+        stats = C.in_scope(json.loads(Path(a.stats).read_text(encoding="utf-8")), notes)
         st = next((x for x in S.STRUCTURES["structures"] if x["id"] == notes.get("structure")), None)
         frags = [C.beat_map(stats, notes, st, scene_marks(sc, notes), lang), C.tension_curve(stats, notes, st, lang), C.arc_chart(stats, notes, lang),
                  C.presence(stats, lang), C.dialect_map(stats, lang)]

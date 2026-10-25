@@ -117,8 +117,9 @@ Token rules first: **read the digest, then only the scenes you need.**
    notes saying the same thing). Look at the report screenshots before you send it.
 
 **Focused passes** (cheaper; say so in `scope`):
-- *First pages* ("read it like a festival reader"): `show.py $JOB/script.json --pages 10 --stats $JOB/stats.json`
-  shows only the scenes in the first 10 pages; `scope` = {"kind": "first-pages", "pages": 10}; verdicts are needed only
+- *First pages* ("read it like a festival reader"): `show.py $JOB/script.json --pages <n> --stats $JOB/stats.json`
+  shows only the scenes in the first n pages (10 for a feature; 3-5 for a short, or what the writer asks);
+  `scope` = {"kind": "first-pages", "pages": <n>}; tension and arcs only for the scenes you read; the charts show only those; verdicts are needed only
   for premise, character, dialogue, visual and pacing; say what made you want to keep reading, or not.
 - *One or more viewpoints* ("dialogue only"): `scope` = {"kind": "lenses", "lenses": ["dialogue"]}; read with the
   digest's voices and dialect lines; verdicts only for those viewpoints.

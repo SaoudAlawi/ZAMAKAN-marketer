@@ -283,6 +283,18 @@ flagged, now a strength; mother's MSA line still questioned; both "unsure" point
 partly because S8 is the uncle's choice; open ending respected, with the sharp note that S12 closes it too early).
 Fixed from its feedback: --intent on the build line, blank-field guidance, voices bar wrapping.
 
+**v0.4.0 (2026-10-25, user: "keep going").** Verdict anchors (one sentence per colour per viewpoint, shown in the
+report) and note quality warnings. PDF input (text rebuilt in reading order from pdftotext's positioned words, element
+type from the indent, title page, paragraph breaks from line pitch, split words re-joined) and Final Draft (.fdx) in;
+.fdx out for English. Arabic font switched to Amiri: Noto Naskh produced PDFs whose text could not be copied (13/29
+words intact vs 29/29). Focused passes (`scope`: first-pages, lenses) with scoped checks and charts; tension overlay of
+the previous draft. Blind test (~90k tokens, PDF in, a 3-page festival read then a dialogue pass): PDF read correctly
+(13 scenes); the first-pages pass found the telling line, the on-the-nose mother, the repeated refusal and the passive
+heroine in the first 6 scenes; the dialogue pass found both MSA slips, "her father's daughter" said five times and asked
+whether Salem's words sound Emirati rather than Sur. Fixed from its feedback: a real CSS clash that emptied the voices
+table and stripboard in reports, two PDF words split by pdftotext, the tension warning on focused passes, first-pages
+charts now show only the read scenes, per-line dialect voting, phone overflow of wide tables.
+
 ## 4. Build steps & test gates (Feature 1)
 
 | # | Step | Test gate | Status |
@@ -333,6 +345,7 @@ The no-skill baseline did several generic things worth building into the skill:
 - 2026-10-13: Re-scoped to the sub-skill architecture; built the Rawaq sample package and answer key.
 - 2026-10-13: Feature 2 (reference scout) defined; network limits of the cloud environment noted.
 - 2026-10-13: Step 2 done. Design: the agent writes only spec.json + brand.md; scripts generate the rest.
+- 2026-10-25: Script desk v0.4 (§3e): verdict anchors, quality warnings, PDF/FDX input, Amiri font, focused passes, tension overlay; blind PDF/first-pages test; plugin 1.4.0.
 - 2026-10-25: Script desk v0.3 (§3e): intent sheet, margin conversation, scene cards with reorder, arc chart; blind intent test met all five musts; plugin 1.3.0.
 - 2026-10-25: Script desk v0.2 (§3e): side comments (Word reviewers per viewpoint, side-notes PDF), six charts, voice profiles, draft comparison; blind new-draft test matched the answer key; plugin 1.2.0.
 - 2026-10-25: Script desk built (§3e): templates, Arabic RTL formatter (Word/PDF/Fountain), ten-viewpoint reader with coloured comments and report; blind test 8/9 planted flaws; plugin 1.1.0.
