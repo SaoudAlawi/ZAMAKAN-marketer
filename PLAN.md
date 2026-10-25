@@ -270,6 +270,19 @@ matched (incl. the compass note in an unchanged scene, correctly resolved via it
 open); it also found a real new issue (the engine setup no longer pays off). Fixed from its feedback: ids/strengths and
 status definitions in SKILL.md, real path in compare.py output. Open: compare tension between drafts.
 
+**v0.3.0 (2026-10-25, user picked "read to the writer's intent" and "scene cards + arcs").** `intent.py`: a bilingual
+Word intent form (about, question, feel, unsure, deliberate choices, audience, minutes, notes wanted, characters with
+dialect) read back to intent.json; digest shows the intent and checks dialects against what the writer declared
+(a declared switcher is not flagged); notes gain `intent_check`. `replies.py`: the writer's Word replies (threaded
+reply via commentsExtended, own comment on the same line, text typed into the note, Resolved) read back by note #n;
+`compare.py --replies`; SKILL.md rules (deliberate → dropped, fixed → verify, disagree → withdraw or one new argument,
+never repeat). `cards.py`: scene cards board by beat (HTML/PDF), Word cards table, reorder round trip (x drops a
+scene). `arc_chart`: up to 3 characters, the three validated colours, direct labels. Blind test with the filled
+intent sheet (~80k tokens, `al-mirsah-intent-answer-key.json`): all five musts met (grandmother's deliberate MSA not
+flagged, now a strength; mother's MSA line still questioned; both "unsure" points answered; grief-to-action judged
+partly because S8 is the uncle's choice; open ending respected, with the sharp note that S12 closes it too early).
+Fixed from its feedback: --intent on the build line, blank-field guidance, voices bar wrapping.
+
 ## 4. Build steps & test gates (Feature 1)
 
 | # | Step | Test gate | Status |
@@ -320,6 +333,7 @@ The no-skill baseline did several generic things worth building into the skill:
 - 2026-10-13: Re-scoped to the sub-skill architecture; built the Rawaq sample package and answer key.
 - 2026-10-13: Feature 2 (reference scout) defined; network limits of the cloud environment noted.
 - 2026-10-13: Step 2 done. Design: the agent writes only spec.json + brand.md; scripts generate the rest.
+- 2026-10-25: Script desk v0.3 (§3e): intent sheet, margin conversation, scene cards with reorder, arc chart; blind intent test met all five musts; plugin 1.3.0.
 - 2026-10-25: Script desk v0.2 (§3e): side comments (Word reviewers per viewpoint, side-notes PDF), six charts, voice profiles, draft comparison; blind new-draft test matched the answer key; plugin 1.2.0.
 - 2026-10-25: Script desk built (§3e): templates, Arabic RTL formatter (Word/PDF/Fountain), ten-viewpoint reader with coloured comments and report; blind test 8/9 planted flaws; plugin 1.1.0.
 - 2026-10-25: Installable plugin (user: "a skill that anyone can use"). The repo is now a Claude Code marketplace (`.claude-plugin/marketplace.json`) with one plugin, `plugins/zamakan` (v1.0.0, all four skills, since they share scripts). Skills stay real folders in `.claude/skills/` (cloud sessions load them); `plugins/zamakan/skills` is a link that Claude Code resolves into real files on install (tested in a clean home: install, then client/library/board/deck run from the cache). New `zamakan-core/scripts/workspace.py`: outputs go to the user's project folder (never the plugin cache or ~), and a project `zamakan-agency.json` overrides the home market for other agencies. New `doctor.py` checks Python, packages, Chromium, LibreOffice and web access. `claude plugin validate` passes; tests/test_plugin.py added. Open: no LICENSE yet (the user's choice); the shared library/ is not shipped in the plugin (each user's library starts empty).

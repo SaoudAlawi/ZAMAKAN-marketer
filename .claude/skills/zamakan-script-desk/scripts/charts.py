@@ -218,7 +218,7 @@ def voices_table(stats, lang):
         ("Character", "Lines", "Words/line", "Questions", "Exclaims", "Dialect", "Own words")
     mx = max(v["avg_words"] for v in vs) or 1
     rows = "".join(
-        f'<tr><td><b>{E(v["name"])}</b></td><td>{v["lines"]}</td><td><div class="bar" style="width:{v["avg_words"] / mx * 90:.0f}%;display:inline-block;vertical-align:middle"></div> {v["avg_words"]}</td>'
+        f'<tr><td><b>{E(v["name"])}</b></td><td>{v["lines"]}</td><td style="white-space:nowrap">{v["avg_words"]} <div class="bar" style="width:{v["avg_words"] / mx * 70:.0f}%;display:inline-block;vertical-align:middle"></div></td>'
         f'<td>{int(v["questions"] * 100)}%</td><td>{int(v["exclaims"] * 100)}%</td><td>{E(DIALECT_LABEL[lang].get(v["dialect"], ("", "-"))[1] if v["dialect"] else "-")}</td>'
         f'<td>{E("، ".join(v["own_words"]) if ar else ", ".join(v["own_words"]))}</td></tr>' for v in vs)
     alike = stats.get("similar_voices") or []

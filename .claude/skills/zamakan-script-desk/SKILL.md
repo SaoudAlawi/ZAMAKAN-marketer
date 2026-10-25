@@ -33,7 +33,8 @@ about, the question it asks, what they are unsure of, deliberate choices, each c
 play). `python3 $DESK/scripts/intent.py form --lang ar --title "<title>" --script $JOB/script.json --out $JOB/<title>-intent.docx`;
 read it back with `intent.py read <filled.docx> --out $JOB/intent.json`. If the writer answers in the chat instead,
 write `intent.json` yourself with the same keys. If they skip it, read anyway and say the notes are not judged against
-an intent.
+an intent. When the sheet leaves a field blank (often where it should play), judge that viewpoint generally and say
+which answer would sharpen it.
 
 Ask once, up front, only what changes the work: feature or short and the planned running time; Arabic or English
 (detect it from the draft when there is one); for Read, what kind of notes they want now (a full read, or one
@@ -102,7 +103,7 @@ Token rules first: **read the digest, then only the scenes you need.**
 6. Check and build:
    ```bash
    python3 $DESK/scripts/annotate.py $JOB/script.json $JOB/notes.json --check [--intent $JOB/intent.json]
-   python3 $DESK/scripts/annotate.py $JOB/script.json $JOB/notes.json --stats $JOB/stats.json --out $JOB   # Word: notes page with charts + margin comments
+   python3 $DESK/scripts/annotate.py $JOB/script.json $JOB/notes.json --stats $JOB/stats.json [--intent $JOB/intent.json] --out $JOB   # Word: notes page with charts + margin comments
    python3 $DESK/scripts/side_notes.py $JOB/script.json $JOB/notes.json --out $JOB        # the script with the notes as side comments (HTML + PDF)
    python3 $DESK/scripts/report.py $JOB/script.json $JOB/notes.json --stats $JOB/stats.json --out $JOB --check   # one-page report with charts
    ```
