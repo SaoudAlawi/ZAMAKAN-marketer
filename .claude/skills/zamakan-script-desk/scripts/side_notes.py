@@ -46,7 +46,7 @@ def scene_marks(sc, notes):
 
 def css(lang):
     rtl = lang == "ar"
-    faces = font_face("Naskh", "NotoNaskhArabic-Regular.ttf", 400) + font_face("Naskh", "NotoNaskhArabic-Bold.ttf", 700) + \
+    faces = font_face("Naskh", "Amiri-Regular.ttf", 400) + font_face("Naskh", "Amiri-Bold.ttf", 700) + \
         font_face("CourierP", "CourierPrime-Regular.ttf", 400) + font_face("CourierP", "CourierPrime-Bold.ttf", 700)
     script_font = "'CourierP','Naskh',monospace" if not rtl else "'Naskh','CourierP',serif"
     fam = "".join(f".f-{k}{{--c:{v['hex']}}}" for k, v in FAM.items())

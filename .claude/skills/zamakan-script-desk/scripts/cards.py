@@ -69,7 +69,7 @@ def board(sc, stats, notes, lang):
     title = (sc.get("title_page") or {}).get("title") or ""
     css = """:root{--bg:#f6f4ef;--ink:#1d1b18;--muted:#5e5a53;--card:#fff;--line:#e4dfd5}
 @media (prefers-color-scheme:dark){:root:where(:not([data-theme=light])){--bg:#15140f;--ink:#f2efe8;--muted:#b5afa4;--card:#201f19;--line:#38352c}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 "IBM Plex Sans Arabic","Noto Naskh Arabic",system-ui,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 "IBM Plex Sans Arabic","Amiri",system-ui,sans-serif}
 .wrap{max-width:1180px;margin:0 auto;padding:28px 16px 56px}h1{font-size:28px;margin:0 0 4px}.sub{color:var(--muted);margin:0 0 18px}
 .grp{margin:18px 0 6px;font-weight:700;font-size:15px;display:flex;align-items:center;gap:10px}.grp::after{content:"";flex:1;height:1px;background:var(--line)}
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}

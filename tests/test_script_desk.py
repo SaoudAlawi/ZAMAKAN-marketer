@@ -104,7 +104,7 @@ def test_pdf_embeds_fonts_and_mirrors(sc, tmp_path):
     assert pdf, err
     with pymupdf.open(pdf) as d:
         fonts = {f[3] for p in d for f in p.get_fonts()}
-        assert any("NotoNaskhArabic" in f for f in fonts)
+        assert any("Amiri" in f for f in fonts)
         page = d[1]
         x1 = max(l["bbox"][2] for b in page.get_text("dict")["blocks"] for l in b.get("lines", []))
         assert abs(page.rect.width - x1 - 1.5 * 72) < 12  # text ends at the 1.5" binding margin on the right

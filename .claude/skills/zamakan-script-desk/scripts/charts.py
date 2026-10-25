@@ -287,7 +287,7 @@ def to_pngs(fragments, out_dir, lang, stem="chart"):
     page_html = (f'<!doctype html><html lang="{lang}" dir="{"rtl" if lang == "ar" else "ltr"}"><head><meta charset="utf-8">'
                  '<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">'
                  '<style>:root{--ink:#1d1b18;--muted:#5e5a53;--line:#e4dfd5;--card:#ffffff}body{margin:0;background:#fff;color:var(--ink);'
-                 'font:15px/1.6 "IBM Plex Sans Arabic","Noto Naskh Arabic",sans-serif;width:900px;padding:8px}' + CSS + '</style></head><body>'
+                 'font:15px/1.6 "IBM Plex Sans Arabic","Amiri",sans-serif;width:900px;padding:8px}' + CSS + '</style></head><body>'
                  + "".join(fragments) + "</body></html>")
     tmp = out_dir / f".{stem}.html"
     tmp.write_text(page_html, encoding="utf-8")

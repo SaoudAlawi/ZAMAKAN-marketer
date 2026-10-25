@@ -4,10 +4,11 @@ as scene heading, action, character, parenthetical, dialogue, transition or sect
 of lines it could not type with confidence. Claude only looks at that list, never at the whole script, to fix typing.
 
 Usage:
-  python parse_script.py <draft.docx|.fountain|.txt> --out script.json [--lang ar|en]
+  python parse_script.py <draft.docx|.pdf|.fdx|.fountain|.txt> --out script.json [--lang ar|en]
   python parse_script.py <draft> --out script.json --fix fixes.json    # {"<line index>": "<type>"} for the unsure lines
 
-How lines are typed (most certain first): Word paragraph styles (the template's, or Final Draft's when exported to
+How lines are typed (most certain first): Final Draft paragraph types, PDF indents (character / parenthetical /
+dialogue by distance from the binding edge), Word paragraph styles (the template's, or Final Draft's when exported to
 Word) → Fountain/Hekaya marks (. heading, @ character, > transition, ! action, # section, = synopsis, [[notes]]) →
 the screenplay words in references/vocabulary.json (داخلي/خارجي، ليل/نهار، قطع إلى…) → layout (a short line followed by
 speech, names that come back as cues). In Arabic, a "name: speech" line is split into cue and dialogue when the name
@@ -24,6 +25,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _screenplay as S  # noqa: E402
 
 V = S.VOCAB
+ARABIC_LETTER = re.compile(r"[\u0621-\u064A\u0671-\u06D3]")  # letters only: Arabic-Indic digits keep their order
 END_PUNCT = re.compile(r"[.!?؟،,:;…]$")
 
 
@@ -44,9 +46,126 @@ EXT_RE = re.compile(rf"\s*\((?P<ext>{_alts(V['extensions']['ar'] + V['extensions
 TITLE_KEYS = {k.lower(): field for field, keys in V["title_keys"].items() for k in keys}
 
 
+BIDI_MARKS = dict.fromkeys(map(ord, "‪‫‬‭‮‎‏⁦⁧⁨⁩"))
+FDX_TYPES = {"scene heading": "scene_heading", "action": "action", "character": "character", "parenthetical": "parenthetical",
+             "dialogue": "dialogue", "transition": "transition", "shot": "scene_heading", "general": "action", "cast list": None}
+
+
+def read_fdx(path):
+    """Final Draft: each Paragraph already says what it is."""
+    import xml.etree.ElementTree as ET
+    root = ET.parse(path).getroot()
+    out = []
+    content = root.find("Content")
+    for p in (content if content is not None else []):
+        if p.tag != "Paragraph":
+            continue
+        typed = FDX_TYPES.get((p.get("Type") or "").lower(), "action")
+        text = "".join(t.text or "" for t in p.iter("Text")).strip()
+        if text and typed:
+            out += [(text, typed), ("", None)]
+    return out
+
+
+def _logical(words):
+    """pdftotext gives Arabic lines in visual order (left to right, letters reversed): put them back in reading order."""
+    out = []
+    for w in reversed(words):
+        # Arabic letters come reversed (brackets are stored as typed, so they come right once reversed);
+        # digits and Latin keep their order
+        out.append(w[::-1] if ARABIC_LETTER.search(w) else w)
+    return " ".join(out)
+
+
+def _tidy(t):
+    """pdftotext puts Arabic punctuation on the wrong side of the space (" .البحر"): move it back."""
+    t = t.translate(BIDI_MARKS)
+    t = re.sub(r"\s([.،,:؛!؟?)\]»])(?=[^\s.،,:؛!؟?)\]»])", r"\1 ", t)
+    t = re.sub(r"\s+([.،,:؛!؟?)\]»])$", r"\1", t)
+    t = re.sub(r"([(\[«])\s+", r"\1", t)
+    t = re.sub(r"^\.\s*([\d٠-٩]+)\s*", r"\1. ", t)  # ".١ خارجي" → "١. خارجي"
+    t = re.sub(r"^([\d٠-٩]+)\s*\.\s*", r"\1. ", t)  # "١ . خارجي" → "١. خارجي"
+    return re.sub(r"\s{2,}", " ", t).strip()
+
+
+def read_pdf(path):
+    """A screenplay PDF: text from pdftotext (logical order, right for Arabic), position from its bounding boxes; the
+    indent from the binding side says character / parenthetical / dialogue, paragraph gaps join wrapped lines."""
+    import shutil
+    import subprocess
+    from lxml import etree
+    if not shutil.which("pdftotext"):
+        raise SystemExit("reading PDFs needs pdftotext (poppler-utils): install it, or export the script to Word")
+    XH = "{http://www.w3.org/1999/xhtml}"
+    bb = subprocess.run(["pdftotext", "-bbox-layout", str(path), "-"], capture_output=True, text=True).stdout
+    doc = etree.fromstring(bb.encode())
+    pages = list(doc.iter(XH + "page"))
+    rows = []  # (page, text, start_off, end_off, top, bottom, width)
+    rtl_votes = 0
+    for pi, page in enumerate(pages, 1):
+        W = float(page.get("width"))
+        for ln in page.iter(XH + "line"):
+            words = [w.text or "" for w in ln.iter(XH + "word")]
+            arabic = S.is_arabic(" ".join(words))
+            text = _logical(words) if arabic else " ".join(words)
+            x0, x1 = float(ln.get("xMin")), float(ln.get("xMax"))
+            rows.append([pi, _tidy(text), x0, W - x1, float(ln.get("yMin")), float(ln.get("yMax")), W])
+            rtl_votes += 1 if arabic else -1
+    rows.sort(key=lambda r: (r[0], round(r[4] / 3)))  # reading order: page, then top to bottom
+    rtl = rtl_votes > 0
+    for r in rows:  # start offset = distance from the binding (reading-start) edge
+        r[2], r[3] = (r[3], r[2]) if rtl else (r[2], r[3])
+    body = [r for r in rows if not (re.fullmatch(r"[\d٠-٩]+\.?", r[1]) and r[4] < 72)]  # drop page numbers
+    if not body:
+        return []
+    base = sorted(r[2] for r in body)[len(body) // 10]  # the action margin (robust low percentile)
+    base_end = sorted(r[3] for r in body)[len(body) // 10]  # lines that run to the far margin
+    title_pages = set()
+    if not any(HEADING_RE.match(r[1]) or SCENE_WORD_RE.match(r[1]) for r in body if r[0] == 1):
+        title_pages.add(1)
+    steps = sorted(b[4] - a[4] for a, b in zip(body, body[1:]) if a[0] == b[0] and b[4] > a[4])
+    pitch = steps[len(steps) // 4] if steps else 14  # the usual line-to-line step inside a paragraph
+    out, prev = [], None
+    for r in body:
+        page, text, start, end, top, bottom, W = r
+        rel = (start - base) / 72
+        far = (end - base_end) / 72
+        if page in title_pages:
+            kind = "centered"
+        elif rel > 2.5 and far < 0.35:
+            kind = "transition"  # pushed to the far side
+        elif rel > 1.9 and abs(start - end) < 54:
+            kind = "centered" if len(text) > 40 else "character"
+        elif rel >= 1.9:
+            kind = "character" if len(text) <= 40 else "action"
+        elif rel >= 1.3:
+            kind = "parenthetical"
+        elif rel >= 0.6:
+            kind = "dialogue"
+        else:
+            kind = None  # action, heading or transition: let the vocabulary decide
+        gap = prev is not None and (page != prev[0] or top - prev[4] > 1.35 * pitch)
+        same = prev is not None and not gap and prev[7] == kind and kind in (None, "dialogue", "action") \
+            and not (out and (HEADING_RE.match(out[-1][0]) or SCENE_WORD_RE.match(out[-1][0]))) \
+            and not HEADING_RE.match(text) and not SCENE_WORD_RE.match(text) and not TRANS_RE.match(text)
+        if same and out and out[-1][0]:
+            out[-1] = (out[-1][0] + " " + text, out[-1][1])
+        else:
+            if out and out[-1][0] and (gap or kind in (None, "character", "centered", "transition") or prev[7] != kind) \
+                    and not (kind in ("dialogue", "parenthetical") and prev and prev[7] in ("character", "parenthetical", "dialogue")):
+                out.append(("", None))
+            out.append((text, kind))
+        prev = r + [kind]
+    return out
+
+
 def read_lines(path):
     """Lines plus any element type the source already states (Word styles)."""
     path = Path(path)
+    if path.suffix.lower() == ".pdf":
+        return read_pdf(path)
+    if path.suffix.lower() == ".fdx":
+        return read_fdx(path)
     if path.suffix.lower() == ".docx":
         from docx import Document
         out = []
@@ -225,14 +344,16 @@ def number_scenes(els, lang):
 def parse(path, lang=None, fixes=None):
     lines = read_lines(path)
     meta, skip = title_page(lines)
-    if not meta and Path(path).suffix.lower() == ".docx":  # our own formatted Word file: centered title page
+    if not meta and Path(path).suffix.lower() in (".docx", ".pdf"):  # a formatted file: centered title page
         cent = [(i, t) for i, (t, ty) in enumerate(lines) if ty == "centered" and t.strip()]
-        first_scene = next((i for i, (t, ty) in enumerate(lines) if ty == "scene_heading"), len(lines))
+        first_scene = next((i for i, (t, ty) in enumerate(lines) if ty == "scene_heading" or (ty is None and HEADING_RE.match(t))), len(lines))
         cent = [c for c in cent if c[0] < first_scene]
         if cent:
             meta["title"] = cent[0][1].strip()
             for _, t in cent[1:]:
                 k, _, v = t.partition(":")
+                if not v and re.match(r"^\D+[\d٠-٩]", k):  # "التاريخ٢٠٢٦/١٠/٢٥:" from a PDF
+                    k, v = re.match(r"^(\D+?)([\d٠-٩].*)$", k).groups()
                 key = TITLE_KEYS.get(k.strip().lower()) or {"written by": "author", "التاريخ": "draft_date", "المسودة": "draft", "based on": "credit"}.get(k.strip().lower())
                 if key:
                     meta[key] = v.strip()

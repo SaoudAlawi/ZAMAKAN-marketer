@@ -63,7 +63,7 @@ python3 $DESK/scripts/format_script.py $JOB/script.json --out $JOB           # W
 The parser prints a few **unsure lines** (usually a one-off speaker such as «صياد», or a short action line). Decide only
 those from the line and the line after it; write `{"<index>": "character"}` to `fixes.json`; never read the whole
 script to format it. Options: `--paper a4|letter`, `--font "Simplified Arabic"` (the font named in the Word file;
-the PDF always embeds Noto Naskh Arabic), `--latin-digits`, `--no-numbers`.
+the PDF always embeds Amiri, so its text can be copied and searched), `--latin-digits`, `--no-numbers`.
 
 Arabic layout: right to left, binding margin on the right, the standard screenplay indents mirrored (as in
 WriterDuet's right-to-left template); scene headings rebuilt as «داخلي - المكان - ليل» and numbered. Final Draft does
@@ -177,7 +177,7 @@ text typed into the note, or Resolve. `replies.py` collects them (each Word comm
 - **Facts you can't check stay out:** don't quote festival rules, durations or fund criteria unless you checked the
   current page; don't claim a film is similar to another unless you know both.
 - **Running time:** one page ≈ one minute is the English convention; the Arabic ratio is unverified (Arabic set in
-  14 pt Naskh runs differently). When pages and the planned minutes differ by more than about a quarter, raise it once
+  14 pt Naskh (Amiri) runs differently). When pages and the planned minutes differ by more than about a quarter, raise it once
   (under pacing) as a question, not a fault: suggest timing a read-through, and ask whether the story needs more room or
   the film is shorter than planned.
 

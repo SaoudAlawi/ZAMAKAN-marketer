@@ -8,7 +8,7 @@ Usage:
   python format_script.py script.json --out <dir> [--name my-film] [--paper a4|letter] [--font "Simplified Arabic"]
                           [--latin-digits] [--no-numbers] [--no-pdf]
 
-Writes <name>.docx, <name>.pdf, <name>.fountain and adds {"format": {pages, est_minutes}} to script.json.
+Writes <name>.docx, <name>.pdf, <name>.fountain (and <name>.fdx for English scripts) and adds {"format": {pages, est_minutes}} to script.json.
 """
 import argparse
 import json
@@ -126,13 +126,37 @@ def to_fountain(sc):
     return "\n".join(out).strip() + "\n"
 
 
+FDX_TYPE = {"scene_heading": "Scene Heading", "action": "Action", "character": "Character", "parenthetical": "Parenthetical",
+            "dialogue": "Dialogue", "transition": "Transition", "centered": "Action"}
+
+
+def to_fdx(sc):
+    """Final Draft file (English scripts; Final Draft does not support right-to-left text)."""
+    from xml.sax.saxutils import escape
+    scenes = {s["n"]: s for s in sc["scenes"]}
+    paras = []
+    for e in sc["elements"]:
+        t = FDX_TYPE.get(e["type"])
+        if not t:
+            continue
+        text = clean_heading(scenes[e["scene"]], sc["lang"]) if e["type"] == "scene_heading" else \
+            (e.get("name", e["text"]) + (f" ({e['ext']})" if e.get("ext") else "")) if e["type"] == "character" else e["text"]
+        num = f' Number="{e["scene"]}"' if e["type"] == "scene_heading" else ""
+        paras.append(f'    <Paragraph Type="{t}"{num}><Text>{escape(text)}</Text></Paragraph>')
+    meta = sc.get("title_page") or {}
+    title = "".join(f'      <Paragraph Type="Action" Alignment="Center"><Text>{escape(v)}</Text></Paragraph>\n' for v in
+                    [meta.get("title", ""), meta.get("author", "")] if v)
+    return ('<?xml version="1.0" encoding="UTF-8" standalone="no" ?>\n<FinalDraft DocumentType="Script" Template="No" Version="5">\n'
+            "  <Content>\n" + "\n".join(paras) + "\n  </Content>\n  <TitlePage>\n    <Content>\n" + title + "    </Content>\n  </TitlePage>\n</FinalDraft>\n")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("script")
     ap.add_argument("--out", required=True)
     ap.add_argument("--name")
     ap.add_argument("--paper", choices=["a4", "letter"])
-    ap.add_argument("--font", default=S.ARABIC_FONT, help="Arabic font named in the Word file (PDF always embeds Noto Naskh Arabic)")
+    ap.add_argument("--font", default=S.ARABIC_FONT, help="Arabic font named in the Word file (PDF always embeds Amiri)")
     ap.add_argument("--latin-digits", action="store_true", help="scene numbers 1 2 3 instead of ١ ٢ ٣ in Arabic")
     ap.add_argument("--no-numbers", action="store_true")
     ap.add_argument("--no-pdf", action="store_true")
@@ -145,6 +169,9 @@ def main():
     build_docx(sc, a.paper, a.font, not a.latin_digits, not a.no_numbers).save(docx)
     (out / f"{name}.fountain").write_text(to_fountain(sc), encoding="utf-8")
     msg = [f"Word → {docx}", f"Fountain → {out / (name + '.fountain')}"]
+    if sc["lang"] == "en":
+        (out / f"{name}.fdx").write_text(to_fdx(sc), encoding="utf-8")
+        msg.append(f"Final Draft → {out / (name + '.fdx')}")
     pages = None
     if not a.no_pdf:
         if a.font != S.ARABIC_FONT:  # PDF uses the bundled font so it always renders

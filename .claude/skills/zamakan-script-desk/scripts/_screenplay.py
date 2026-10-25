@@ -26,7 +26,7 @@ VOCAB = json.loads((SKILL / "references" / "vocabulary.json").read_text(encoding
 STRUCTURES = json.loads((SKILL / "references" / "structures.json").read_text(encoding="utf-8"))
 
 LATIN_FONT = "Courier Prime"
-ARABIC_FONT = "Noto Naskh Arabic"
+ARABIC_FONT = "Amiri"  # classic Naskh (OFL) whose PDF text layer extracts cleanly (Noto Naskh did not)
 PAPER = {"a4": (8.27, 11.69), "letter": (8.5, 11.0)}
 # element: (start indent, end indent, alignment, space before in lines) in inches from the text margins
 ELEMENTS = {
@@ -164,7 +164,7 @@ def page_break(doc):
 
 
 def to_pdf(docx_path, out_dir=None):
-    """Convert with LibreOffice, using the bundled fonts (Courier Prime, Noto Naskh Arabic) so the PDF embeds them."""
+    """Convert with LibreOffice, using the bundled fonts (Courier Prime, Amiri) so the PDF embeds them."""
     exe = shutil.which("soffice") or shutil.which("libreoffice")
     if not exe:
         return None, "LibreOffice not found: the Word file is ready; install LibreOffice for a PDF"

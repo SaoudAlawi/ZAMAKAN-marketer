@@ -22,16 +22,16 @@ E = html.escape
 T = {"ar": {"title": "قراءة النص", "story": "القصة كما فهمناها", "numbers": "بالأرقام", "pages": "صفحات", "scenes": "مشاهد",
             "locations": "مواقع", "roles": "أدوار متكلمة", "dialogue": "نسبة الحوار", "strip": "أين تقع الملاحظات",
             "by_scene": "الملاحظات مشهداً مشهداً", "next": "أولويات المسودة القادمة", "questions": "أسئلة للكاتب",
-            "works": "ما ينجح", "visuals": "النص بصرياً", "intent": "هل يحقق النص ما تريده؟", "side": "اقرأ النص مع الملاحظات على الجانب", "scene": "مشهد", "foot": "زمكان · مساعد الكتابة. ملاحظات وأسئلة، لا إعادة كتابة."},
+            "works": "ما ينجح", "visuals": "النص بصرياً", "intent": "هل يحقق النص ما تريده؟", "why": "معنى هذا اللون", "side": "اقرأ النص مع الملاحظات على الجانب", "scene": "مشهد", "foot": "زمكان · مساعد الكتابة. ملاحظات وأسئلة، لا إعادة كتابة."},
      "en": {"title": "Script reading", "story": "The story as we read it", "numbers": "By the numbers", "pages": "pages", "scenes": "scenes",
             "locations": "locations", "roles": "speaking roles", "dialogue": "dialogue share", "strip": "Where the notes fall",
             "by_scene": "Notes, scene by scene", "next": "Priorities for the next draft", "questions": "Questions for the writer",
-            "works": "What works", "visuals": "The script at a glance", "intent": "Does the script do what you are going for?", "side": "Read the script with the notes on the side", "scene": "Scene", "foot": "ZAMAKAN · script desk. Notes and questions, not rewrites."}}
+            "works": "What works", "visuals": "The script at a glance", "intent": "Does the script do what you are going for?", "why": "What this colour means", "side": "Read the script with the notes on the side", "scene": "Scene", "foot": "ZAMAKAN · script desk. Notes and questions, not rewrites."}}
 
 CSS = """
 :root{--bg:#F6F4EF;--ink:#1D1B18;--muted:#5E5A53;--card:#FFFFFF;--line:#E4DFD5}
 @media (prefers-color-scheme:dark){:root{--bg:#15140F;--ink:#F2EFE8;--muted:#B5AFA4;--card:#201F19;--line:#38352C}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 "IBM Plex Sans Arabic","Noto Naskh Arabic",system-ui,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 "IBM Plex Sans Arabic","Amiri",system-ui,sans-serif}
 .wrap{max-width:1080px;margin:0 auto;padding:40px 20px 64px}h1{font-size:34px;line-height:1.2;margin:4px 0 8px}h2{font-size:21px;margin:40px 0 14px}
 .kicker{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.muted{color:var(--muted)}
 .chip{display:inline-flex;align-items:center;gap:8px;padding:4px 14px 4px 6px;border-radius:999px;font-weight:600;font-size:15px;border:1px solid var(--line);background:var(--card)}
@@ -108,7 +108,8 @@ def build(sc, notes, stats, lang, side_link=None):
         works = "".join(f"<p>✓ {E(s)}</p>" for s in x.get("strengths", []))
         h.append(f'<div class="card" style="--c:{L["hex"]}"><h3>{E(name(L))}</h3><div class="v">'
                  f'<b class="mk" style="background:{VERDICT[x["verdict"]]["hex"]}">{VERDICT[x["verdict"]]["icon"]}</b>{E(VERDICT[x["verdict"]][lang])}</div>'
-                 f'<p>{E(x["summary"])}</p>{works}</div>')
+                 f'<p>{E(x["summary"])}</p>{works}'
+                 f'<p class="muted" style="font-size:12.5px">{t["why"]}: {E(L.get("anchors", {}).get(x["verdict"], {}).get(lang, ""))}</p></div>')
     h.append("</div>")
     h.append(f'<h2>{t["next"]}</h2><ol>' + "".join(f"<li>{E(s)}</li>" for s in notes["next_draft"]) + "</ol>")
     if notes.get("questions_for_writer"):

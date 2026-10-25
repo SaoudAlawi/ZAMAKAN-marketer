@@ -38,6 +38,33 @@ def norm(t):
     return re.sub(r"[ً-ْـ\s«»\"'“”.,،:!?؟…-]+", "", t or "")
 
 
+GENERIC = re.compile(r"يحتاج (إلى )?(مزيد من )?(عمق|تطوير|تحسين|عمل)|غير مقنع\s*[.؟]?$|ممل|needs? (more )?(depth|work|development|polish)|"
+                     r"could be (better|stronger)|not (very )?(engaging|compelling)|feels? flat", re.I)
+
+
+def quality(notes):
+    """Warnings that keep notes sharp: short summaries, concrete notes that end in a question, no generic phrases,
+    no repeats."""
+    from difflib import SequenceMatcher
+    warns = []
+    for x in notes["lenses"]:
+        sents = [t for t in re.split(r"(?<=[.!؟?])\s+", x["summary"].strip()) if t]
+        if len(x["summary"]) > 300 or len(sents) > 3:
+            warns.append(f"lens '{x['id']}': summary is {len(sents)} sentences / {len(x['summary'])} chars; keep it to two or three short sentences")
+    for i, n in enumerate(notes["notes"]):
+        if n["kind"] in ("issue", "question") and not re.search(r"[؟?]", n["text"]):
+            warns.append(f"note {i}: an {n['kind']} should ask the writer something (end with a question)")
+        if GENERIC.search(n["text"]):
+            warns.append(f"note {i}: generic phrase ({GENERIC.search(n['text']).group(0)!r}); say what you saw and where")
+        if len(n["text"]) > 400:
+            warns.append(f"note {i}: {len(n['text'])} chars; a margin note reads best under 300")
+        for j in range(i):
+            m = notes["notes"][j]
+            if m["scene"] == n["scene"] and m["lens"] == n["lens"] and SequenceMatcher(None, m["text"], n["text"]).ratio() > 0.75:
+                warns.append(f"notes {j} and {i} say nearly the same thing in scene {n['scene']}; keep one")
+    return warns
+
+
 def check(sc, notes, intent=None):
     import jsonschema
     errs, warns = [], []
@@ -97,6 +124,7 @@ def check(sc, notes, intent=None):
     for i, it in enumerate(notes.get("intent_check") or []):
         if it.get("scene") and not 1 <= it["scene"] <= nscenes:
             errs.append(f"intent_check {i}: scene {it['scene']} does not exist")
+    warns += quality(notes)
     if not any(n["kind"] == "strength" for n in notes["notes"]) and not any(x.get("strengths") for x in notes["lenses"]):
         warns.append("no strengths noted: say what works, too")
     return errs, warns
