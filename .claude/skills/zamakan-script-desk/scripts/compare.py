@@ -75,13 +75,13 @@ def compare(old, old_notes, new):
             "old_scenes": len(old["scenes"]), "new_scenes": len(new["scenes"])}
 
 
-def show(c, lang="ar"):
+def show(c, new_path="new/script.json"):
     out = [f"# draft comparison: {c['old_scenes']} → {c['new_scenes']} scenes · cut {c['cut'] or '-'}",
            "scene map (new ← old, similarity): " + " · ".join(
                f"S{k}←{('S' + str(v['old'])) if v['old'] else 'new'}" + (f" {v['similarity']}" if v["old"] else "") + ("" if v["status"] == "same" else f" [{v['status']}]")
                for k, v in c["scene_map"].items()),
-           f"re-read only: {', '.join('S' + str(s) for s in c['reread']) or 'nothing changed'}  (python3 show.py new/script.json {' '.join(map(str, c['reread']))})",
-           "", "## previous notes (id · old scene → new scene · starting status)"]
+           f"re-read only: {', '.join('S' + str(s) for s in c['reread']) or 'nothing changed'}  (python3 show.py {new_path} {' '.join(map(str, c['reread']))})",
+           "", "## previous notes (id · old scene → new scene · starting status); strengths are left out, so ids skip them"]
     for it in c["previous_notes"]:
         out.append(f"[{it['id']}] S{it['old_scene']} → {('S' + str(it['new_scene'])) if it['new_scene'] else 'cut'} · {it['lens']} · {it['start']} · {it['text'][:90]}")
     return "\n".join(out)
@@ -98,7 +98,7 @@ def main():
     c = compare(load(a.old_script), load(a.old_notes), load(a.new_script))
     if a.out:
         Path(a.out).write_text(json.dumps(c, ensure_ascii=False, indent=1), encoding="utf-8")
-    print(show(c))
+    print(show(c, a.new_script))
 
 
 if __name__ == "__main__":

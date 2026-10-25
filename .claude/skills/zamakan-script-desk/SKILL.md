@@ -121,8 +121,12 @@ python3 $DESK/scripts/show.py $JOB2/script.json <the scenes compare.py lists to 
 `compare.py` matches scenes (same / changed / new / cut) and gives each old note a starting status from its scene's fate.
 Confirm each one from what you read, then write the new notes.json with `previous` = {"draft": "1", "items": [{"id",
 "status": resolved | partly | open | dropped, "text" (the old note in a few words), "scene" (where it stands now),
-"comment"}]} plus fresh verdicts, notes on what is new, turns and tension. An unchanged scene keeps its old note open
-unless something elsewhere fixed it. The report and the Word notes page open with "since the last draft".
+"comment"}]} plus fresh verdicts, notes on what is new, turns and tension. Ids are the old note numbers (strength notes
+are not listed, so ids skip them). Status: **resolved** = the problem is gone (also when cutting its scene removed it);
+**partly** = better but not there; **open** = still there; **dropped** = the note no longer applies because the story
+changed direction. An unchanged scene keeps its old note open unless something elsewhere fixed it (a setup that now
+pays off later, a character now answered in a new scene): check the scenes an old note depends on, not only the
+changed ones. The report and the Word notes page open with "since the last draft".
 
 ### How to write notes
 - **Point, then ask.** "In scene 8 the decision to send Maryam to sea is her uncle's. What does she choose?" beats

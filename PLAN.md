@@ -257,6 +257,19 @@ Fixed from its feedback: SKILL.md now says every amber/red viewpoint needs a sce
 gap; show.py headings cleaned. Open: Arabic page-per-minute ratio and font norms unverified (calibrate with real
 Arabic scripts); two-column (documentary/TV) layout not built; FDX import not built.
 
+**v0.2.0 (2026-10-25, user: "visuals and colour codes; notes as comments on the side").** Notes now sit beside their
+lines everywhere: Word margin comments with one reviewer per viewpoint (own colour, show/hide in Word), and
+`side_notes.py` (script + comment cards in the margin, HTML + A4 PDF; LibreOffice's own margin-comment PDF clips RTL,
+so we print through Chromium). `charts.py`: beat map with scene health, tension curve, presence grid, dialect map,
+character voices, production stripboard (industry colours), in the report and as pictures on the Word notes page.
+Colours follow the dataviz method: ten viewpoints in three validated colour families (only three categorical colours
+pass all-pairs CVD checks), always labelled; verdicts use status colours with icons. New: voice profiles (digest),
+`compare.py` for draft 2 (scene matching, old-note starting status), notes `turns`, `tension`, `previous`.
+Blind test of the new-draft workflow (~90k tokens) against `al-mirsah-draft2-answer-key.json`: every checkable item
+matched (incl. the compass note in an unchanged scene, correctly resolved via its new payoff; the telling line kept
+open); it also found a real new issue (the engine setup no longer pays off). Fixed from its feedback: ids/strengths and
+status definitions in SKILL.md, real path in compare.py output. Open: compare tension between drafts.
+
 ## 4. Build steps & test gates (Feature 1)
 
 | # | Step | Test gate | Status |
@@ -307,6 +320,7 @@ The no-skill baseline did several generic things worth building into the skill:
 - 2026-10-13: Re-scoped to the sub-skill architecture; built the Rawaq sample package and answer key.
 - 2026-10-13: Feature 2 (reference scout) defined; network limits of the cloud environment noted.
 - 2026-10-13: Step 2 done. Design: the agent writes only spec.json + brand.md; scripts generate the rest.
+- 2026-10-25: Script desk v0.2 (§3e): side comments (Word reviewers per viewpoint, side-notes PDF), six charts, voice profiles, draft comparison; blind new-draft test matched the answer key; plugin 1.2.0.
 - 2026-10-25: Script desk built (§3e): templates, Arabic RTL formatter (Word/PDF/Fountain), ten-viewpoint reader with coloured comments and report; blind test 8/9 planted flaws; plugin 1.1.0.
 - 2026-10-25: Installable plugin (user: "a skill that anyone can use"). The repo is now a Claude Code marketplace (`.claude-plugin/marketplace.json`) with one plugin, `plugins/zamakan` (v1.0.0, all four skills, since they share scripts). Skills stay real folders in `.claude/skills/` (cloud sessions load them); `plugins/zamakan/skills` is a link that Claude Code resolves into real files on install (tested in a clean home: install, then client/library/board/deck run from the cache). New `zamakan-core/scripts/workspace.py`: outputs go to the user's project folder (never the plugin cache or ~), and a project `zamakan-agency.json` overrides the home market for other agencies. New `doctor.py` checks Python, packages, Chromium, LibreOffice and web access. `claude plugin validate` passes; tests/test_plugin.py added. Open: no LICENSE yet (the user's choice); the shared library/ is not shipped in the plugin (each user's library starts empty).
 - 2026-10-21: Shot scout documentaries (user request): `docs` search (Short of the Week documentary genre + YouTube channels Guardian Documentaries, NYT Op-Docs, Al Jazeera Documentary (Arabic), Al Jazeera English, BBC Stories, POV + YouTube), `channel-search`, `--genre`; 8 documentary techniques (interview, direct address, observational, archival, reenactment, animated doc, diary film, essay film); documentary + mental-health moods; kind documentary/docuseries; ethics rules (consent, trigger warnings, documentaries vs explainers). BPD board now 27 references with a Documentaries part. 221 tests.
