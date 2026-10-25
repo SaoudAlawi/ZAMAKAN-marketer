@@ -24,7 +24,9 @@ from render_board import data_uri, embedded_fonts, root_css  # noqa: E402
 from theme import contrast, font_links, mix  # noqa: E402
 
 E = html.escape
-HOME = json.loads((Path(__file__).resolve().parents[2] / "zamakan-core" / "agency.json").read_text(encoding="utf-8"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "zamakan-core" / "scripts"))
+from workspace import agency  # noqa: E402
+HOME = agency()
 EVID = {"content": ("page read", "ok"), "title": ("page exists", "thin"), "video": ("video · not watched", "vid")}
 KIND = {"film": "Film", "commercial": "Commercial", "music-video": "Music video", "short": "Short film", "title-sequence": "Title sequence",
         "series": "Series", "clip": "Clip", "stills": "Film stills", "breakdown": "Breakdown", "motion-design": "Motion design",

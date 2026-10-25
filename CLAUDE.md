@@ -8,6 +8,9 @@ They are built as **sub-skills that share file contracts**, with scripts doing t
 **Read `PLAN.md` first.** It has the architecture, every decision made with the user, status per step, and the progress log.
 
 ## Where things are
+- `.claude-plugin/marketplace.json` + `plugins/zamakan/`: the installable plugin (`/plugin marketplace add SaoudAlawi/ZAMAKAN-marketer`).
+  `plugins/zamakan/skills` links to `.claude/skills` (keep the skills as real folders there; bump `plugin.json` version to ship).
+  Scripts write to the user's project via `zamakan-core/scripts/workspace.py`, never next to themselves.
 - `.claude/skills/zamakan-core/`: shared conventions (client folders, contracts, quality bar) and `scripts/client.py`
 - `.claude/skills/zamakan-design-system/`: feature 1, brand files → design system. **Paused after iteration 1**; see PLAN §3 and §5b to resume.
 - `.claude/skills/zamakan-reference-scout/`: feature 2, campaign references + analysis. **Active.**
@@ -20,7 +23,8 @@ They are built as **sub-skills that share file contracts**, with scripts doing t
 
 ## Setup & checks
 ```bash
-pip install -r requirements.txt uharfbuzz   # uharfbuzz only for tools/sample-builders
+pip install -r requirements.txt uharfbuzz   # uharfbuzz only for tools/sample-builders (requirements.txt → plugins/zamakan/)
+python3 .claude/skills/zamakan-core/scripts/doctor.py   # checks packages, Chromium, LibreOffice, web access
 python3 -m pytest -q tests                  # all pass; DESIGN.md linter test skips unless ZAMAKAN_DESIGNMD is set,
                                             # live scout tests skip when offline
 curl -sS -o /dev/null -w '%{http_code}\n' https://www.example.org/   # 200 = web access works (Ads of the World itself 403s plain curl; the scripts handle it)

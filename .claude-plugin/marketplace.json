@@ -1,0 +1,12 @@
+{
+  "name": "zamakan-marketer",
+  "owner": { "name": "Saoud Alawi", "url": "https://github.com/SaoudAlawi" },
+  "description": "ZAMAKAN's marketing and creative skills for Claude Code",
+  "plugins": [
+    {
+      "name": "zamakan",
+      "source": "./plugins/zamakan",
+      "description": "Campaign references and creative territories, cinematic shot references, and client design systems, in Arabic and English"
+    }
+  ]
+}

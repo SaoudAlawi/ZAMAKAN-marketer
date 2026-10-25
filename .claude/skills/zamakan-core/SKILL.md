@@ -1,6 +1,6 @@
 ---
 name: zamakan-core
-description: "Shared conventions for ZAMAKAN agency work: where each client's files live, how to load a client's design system before making anything visual or on-brand, and the bilingual Arabic/English quality bar. Use this at the start of any client task in this repo, whenever a client or brand is named (\"for Rawaq\", \"our client X\") and you are about to produce a social post, ad, campaign, mock-up, deck or copy, or when asked which clients exist and what state their brand assets are in. If the client has no design system yet, this tells you to run zamakan-design-system first."
+description: "Shared conventions for ZAMAKAN agency work: where each client's files live, how to load a client's design system before making anything visual or on-brand, and the bilingual Arabic/English quality bar. Use this at the start of any client task, whenever a client or brand is named (\"for Rawaq\", \"our client X\") and you are about to produce a social post, ad, campaign, mock-up, deck or copy, or when asked which clients exist and what state their brand assets are in. If the client has no design system yet, this tells you to run zamakan-design-system first."
 metadata:
   version: 0.1.0
 ---
@@ -14,6 +14,20 @@ Arabic and English. These conventions keep every sub-skill working from the same
 
 `agency.json` (next to this file) holds the agency's home market: **Oman** (`OM`). Skills use it as the default market,
 for local references and for production notes. A job that names its own market (brief.market / markets) uses that instead.
+Another agency or market sets its own home without editing the skills: a `zamakan-agency.json` in the project folder
+(same keys, e.g. `{"name": "…", "home_country": "SA", "home_name": "Saudi Arabia", "default_markets": ["SA"],
+"aotw_country_slug": "saudi-arabia"}`) overrides it. `python3 $CORE/scripts/workspace.py` shows what is in use.
+
+## Where files go
+
+Everything a run makes (`clients/`, `library/`, `jobs/`) goes in the **user's project folder**: the nearest folder
+holding `clients/`, `library/` or `.git`, else the folder Claude is working in (`workspace.py` decides; `$ZAMAKAN_ROOT`
+overrides). Never write into the skill folders: when the skills are installed as a plugin, they are replaced on update.
+
+## First run on a computer
+
+If a script fails on a missing package or browser, run `python3 $CORE/scripts/doctor.py`: it checks Python, the packages,
+Chromium and LibreOffice and prints the exact install command for anything missing. Tell the user what to run.
 
 ## Client folders
 

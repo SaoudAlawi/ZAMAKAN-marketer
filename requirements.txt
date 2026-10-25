@@ -1,9 +1,1 @@
-jsonschema>=4.20
-pymupdf>=1.24
-fonttools>=4.50
-pillow>=10
-playwright>=1.45  # uses a system/bundled Chromium; set ZAMAKAN_CHROMIUM to override
-beautifulsoup4>=4.12
-lxml>=5
-pycountry>=23  # optional: country names → ISO codes (fallback map built in)
-pytest>=8
+-r plugins/zamakan/requirements.txt

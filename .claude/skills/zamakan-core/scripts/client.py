@@ -6,7 +6,7 @@ Usage:
   client.py status <slug>
   client.py init <slug> [--from <dir>]
   client.py job <slug> <job-name>
-Options: --root <repo dir> (default: nearest parent containing .claude/ or the CWD)
+Options: --root <project dir> (default: workspace.project_root(): the nearest folder holding clients/, library/ or .git, else the CWD)
 """
 import argparse
 import datetime as dt
@@ -16,16 +16,15 @@ import shutil
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from workspace import project_root  # noqa: E402
+
 SLUG = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 DS_FILES = ["spec.json", "brand.md", "tokens.json", "tokens.css", "manifest.json", "sources.md", "DESIGN.md", "preview.png"]
 
 
 def repo_root(start=None):
-    p = Path(start or Path.cwd()).resolve()
-    for d in [p, *p.parents]:
-        if (d / ".claude").is_dir() or (d / "clients").is_dir():
-            return d
-    return p
+    return project_root(start)
 
 
 def status(root, slug):

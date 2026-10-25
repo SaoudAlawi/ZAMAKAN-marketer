@@ -39,11 +39,10 @@ REGION_NAME = {"gcc": "GCC", "mena": "Wider MENA", "europe": "Europe", "americas
 
 
 def repo_root():
-    p = Path(__file__).resolve()
-    for d in p.parents:
-        if (d / ".claude").is_dir():
-            return d
-    return Path.cwd()
+    """The user's project folder (see zamakan-core/scripts/workspace.py), never the folder the skill is installed in."""
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "zamakan-core" / "scripts"))
+    from workspace import project_root
+    return project_root()
 
 
 def default_library():
@@ -312,7 +311,7 @@ def readme_md(lib):
          f"{len(recs)} campaigns ({ver} checked live), collected by the reference scout across client jobs. One page per campaign in "
          "`campaigns/<name>/REFERENCE.md` (facts, links, idea, insight, execution, results); `references.jsonl` is the same data for agents.",
          "Client-specific judgement (why a campaign mattered for a client, what to borrow) is kept in that client's private folder.", "",
-         "Search from the command line: `python3 .claude/skills/zamakan-reference-scout/scripts/library.py search ramadan --country SA`", "",
+         "Search from the command line: `python3 <zamakan-reference-scout>/scripts/library.py search ramadan --country SA` (or ask Claude)", "",
          "**Browse:** [by moment](#by-moment) · [by category](#by-category) · [by market](#by-market) · [all campaigns](#all-campaigns)", ""]
 
     def group(title, keyfn, order=None):

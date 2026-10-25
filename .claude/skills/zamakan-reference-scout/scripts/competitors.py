@@ -24,7 +24,9 @@ import _web  # noqa: E402
 import sources as S  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
-HOME = json.loads((HERE.parents[1] / "zamakan-core" / "agency.json").read_text(encoding="utf-8"))["home_country"]  # OM
+sys.path.insert(0, str(HERE.parents[1] / "zamakan-core" / "scripts"))
+from workspace import agency  # noqa: E402
+HOME = agency()["home_country"]  # OM unless the project sets its own (zamakan-agency.json)
 
 
 MARKET_WORDS = [("OM", r"oman|muscat|salalah|عمان|عُمان|مسقط"), ("SA", r"saudi|ksa|riyadh|jeddah|dammam|السعودية|الرياض"),

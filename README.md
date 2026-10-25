@@ -29,35 +29,23 @@ then to build its design system.
 
 ## Installing it
 
-**In this project (works now).** Clone the repo and open the folder in Claude Code. The skills in `.claude/skills/`
-load automatically. They only work inside this folder.
-
-**On your computer, for every project (works now).** Copy the four skill folders into your personal skills folder and
-install the Python packages once:
-```bash
-cp -r .claude/skills/zamakan-* ~/.claude/skills/
-pip install -r requirements.txt
-```
-Copy all four together, because they use each other (the shot scout uses the reference scout's scripts and core's
-Oman settings). When the skills are improved, copy them again.
-
-**As a plugin (planned, not built yet).** The repo can become a small plugin store, so a teammate installs it with:
+**For anyone, in any project (the plugin).** In Claude Code:
 ```
 /plugin marketplace add SaoudAlawi/ZAMAKAN-marketer
 /plugin install zamakan@zamakan-marketer
 ```
-Plan:
-- **Layout:** the four skills move into one plugin folder (`plugins/zamakan/`), together because they depend on each
-  other. Two small settings files are added: `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json`.
-- **Python packages:** each person still runs `pip install -r requirements.txt` once. Plugins don't install Python
-  packages by themselves.
-- **Private repo:** each teammate sets up GitHub access once (`gh auth login`, then `gh auth setup-git`).
-- **Updates:** they arrive when the plugin's version number goes up. Auto-update can be switched on in `/plugin`.
-- **Client files:** `clients/` stays in each person's own working folder, as now.
-- **Cloud sessions:** they don't load plugins and use the repo copy instead.
+Then once per computer: `pip install -r plugins/zamakan/requirements.txt` (or the package list in
+[plugins/zamakan/README.md](plugins/zamakan/README.md)) and `python3 -m playwright install chromium`. Ask Claude to "check
+the ZAMAKAN setup" if something is missing; it runs a checker that prints the exact commands. The skills then appear as
+`/zamakan:zamakan-reference-scout` and so on, and work in any folder: results land in that folder's `clients/` and `library/`.
 
-The skills then appear as `/zamakan:zamakan-shot-scout` and so on.
-([Claude Code plugin docs](https://code.claude.com/docs/en/plugins/overview.md))
+Another agency or market? Put a `zamakan-agency.json` in your project folder to set your own home market
+(example in the plugin README). Updates arrive when the plugin's version number goes up (`/plugin marketplace update zamakan-marketer`).
+
+**In this repository.** Open the folder in Claude Code (or a claude.ai cloud session, where plugins from your computer
+don't load): the skills in `.claude/skills/` load automatically. They are the same files the plugin installs
+(`plugins/zamakan/skills` links to them). If you also installed the plugin, disable it while working here, so the skills
+don't load twice.
 
 ## What to know
 
@@ -75,6 +63,7 @@ The skills then appear as `/zamakan:zamakan-shot-scout` and so on.
 
 ```
 .claude/skills/          the skills (instructions, scripts, schemas, references)
+.claude-plugin/          plugin marketplace listing; plugins/zamakan/ is the installable plugin
 library/                 shared campaign library: README index + one REFERENCE.md per campaign
 clients/                 your clients (private, git-ignored): input/, design-system/, jobs/, library/
 samples/rawaq/           a fictional test client (guideline PDF, logos, fonts) used for development
