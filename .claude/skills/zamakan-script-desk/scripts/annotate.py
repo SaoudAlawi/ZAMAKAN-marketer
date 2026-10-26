@@ -340,9 +340,14 @@ def anchor_index(sc, note):
     """The element a note belongs to: the line holding its quote, else the scene heading."""
     head = next(s["start"] for s in sc["scenes"] if s["n"] == note["scene"])
     q = norm(note.get("quote"))
+    row = note.get("row")
     if q:
         for i, e in enumerate(sc["elements"]):
-            if e.get("scene") == note["scene"] and q in norm(e["text"]):
+            if e.get("scene") == note["scene"] and q in norm(e["text"]) and (not row or e.get("row") == row):
+                return i
+    if row:  # a documentary row: its first line
+        for i, e in enumerate(sc["elements"]):
+            if e.get("row") == row and e["type"] != "scene_heading":
                 return i
     return head
 

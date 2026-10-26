@@ -306,6 +306,36 @@ reasons, the unknown middle and endings left as amber gaps, nothing invented; th
 stretch (an ending wish placed on a beat). Fixed from its feedback: story map wraps onto one page, working title from
 the writer's first words (no more file clashes), rule on reusing a quote.
 
+**v0.6.0 (2026-10-26, user: "what about documentary work? templates and helpers"; "1. everything 2. skip" = build all of
+it, no consent/release checklist).** Documentaries, with the same rule (help, never write; quotes from real people are
+never typed):
+- 7 `doc-` structures (after Bernard, *Documentary Storytelling*) and a 13-section proposal/treatment
+  (`references/doc_proposal.json`); blank template = proposal sections, real-people table, beats in minutes, a picture |
+  sound draft table; story maps take `kind: documentary` with `sections` and an access check.
+- `transcripts.py`: SRT/VTT/timestamped text/Word (incl. tables) → `bites.json` (id, speaker, timecodes; short cues
+  joined into sentences; directions like «(يضحك)» kept apart; interviewer marked); `index`/`show` for cheap reading.
+- `paper_edit.py` (+ `schemas/selects.schema.json`): selects name bite ids only, so every quote is verbatim; Word
+  paper edit (picture | sound, theme tints, ✂ on joins of one speaker's words from different moments, gap rows, time
+  per section and per speaker) + CSV cut list; warns on interviewer lines, reuse, joins, running time over or far under.
+- `av_script.py`: two-column scripts from Word tables or «صورة:/صوت:» lines → laid-out RTL Word/PDF, numbered through.
+- Documentary reader: `references/lenses_doc.json` (story, point of view, evidence, real people, ethics, access,
+  visual, sound, archive, fit; same families, verdicts, anchors), chosen by `"lens_set": "documentary"`;
+  `doc_to_script.py` (treatment, A/V, paper edit → script.json); margin comments inside the A/V table; notes take a
+  `row`; digest flags narration, on-screen claims, reconstructions, archive, superlatives in what the film states,
+  unnamed people, and with `--bites` lines no recording holds; the report shows sections, rows, spoken time, voices.
+- `doc_helpers.py`: archive log (Word + CSV, merges what the team filled in, marks items no longer used) and shoot
+  list (pending access first; skeleton from the A/V script).
+- Samples: `samples/script-desk/story-ideas/sur-dhow-doc-idea.txt`, `samples/script-desk/doc/` (an SRT interview, a
+  workshop transcript, an A/V draft with 8 planted problems); key `evals/fixtures/script-desk/sur-doc-answer-key.json`.
+Blind runs (~78k, ~76k, ~101k tokens): idea → template met every must (access, approach, archive, the question kept
+verbatim, nothing invented, crisis/ending left as gaps); paper edit met every must (no interviewer lines except one it
+argued for, Rahim given a voice, a gap row for the son, it repaired two ✂ joins the checker caught); the reader found
+all 8 planted problems with the right viewpoints plus the sound strength, and one unplanted (the son's line is in no
+transcript). Fixed from feedback: story-map proposal panel kept on one page, `--list` shows beat ids, selects schema,
+under-target warning, silences not counted as speech, ambience no longer a "speaker", intent fields accept text,
+transcript check (`--bites`), row anchors, clearer SKILL steps. Open: real transcription-service exports untested;
+the "seen but not heard" hint only catches generic words (it missed the merchant on a video call).
+
 ## 4. Build steps & test gates (Feature 1)
 
 | # | Step | Test gate | Status |
@@ -352,6 +382,7 @@ The no-skill baseline did several generic things worth building into the skill:
 
 ## 6. Progress log
 
+- 2026-10-26: Script desk v0.6 (§3e): documentaries (doc structures + proposal, transcripts → bites → paper edit, A/V script, documentary reader, archive log, shoot list); 3 blind runs passed; plugin 1.6.0.
 - 2026-10-13: Requirements captured; plan drafted.
 - 2026-10-13: Re-scoped to the sub-skill architecture; built the Rawaq sample package and answer key.
 - 2026-10-13: Feature 2 (reference scout) defined; network limits of the cloud environment noted.

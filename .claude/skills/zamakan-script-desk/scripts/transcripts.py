@@ -226,7 +226,8 @@ def main():
             if a.grep and a.grep not in b["text"]:
                 continue
             q = " (Q)" if b.get("interviewer") else ""
-            text = b["text"] if len(b["text"]) <= a.width else b["text"][:a.width - 1] + "…"
+            text = b["text"] or f"({'; '.join(b.get('direction', []))})"  # a silence shows its direction
+            text = text if len(text) <= a.width else text[:a.width - 1] + "…"
             print(f"{b['id']} {b['tc_in']} {b['speaker']}{q}: {text}")
         return
     by = {b["id"]: b for b in bites}

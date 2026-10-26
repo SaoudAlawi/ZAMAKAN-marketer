@@ -167,9 +167,11 @@ def to_script(av):
                 els.append({"type": "action", "text": ln.strip(), "scene": k, "row": r["n"]})
             for ln in [x for x in r["sound"].split("\n") if x.strip()]:
                 m = SPEAKER_RE.match(ln.strip())
-                who, said = (m.group(1).strip(), m.group(2).strip()) if m else (T[lang]["sound"], ln.strip())
-                els.append({"type": "character", "text": who, "name": who, "scene": k, "row": r["n"]})
-                els.append({"type": "dialogue", "text": said, "scene": k, "row": r["n"]})
+                if m:
+                    els.append({"type": "character", "text": m.group(1).strip(), "name": m.group(1).strip(), "scene": k, "row": r["n"]})
+                    els.append({"type": "dialogue", "text": m.group(2).strip(), "scene": k, "row": r["n"]})
+                else:  # ambience, music, silence: in the sound column, but nobody speaks
+                    els.append({"type": "action", "text": ln.strip(), "scene": k, "row": r["n"], "col": "sound"})
         scenes.append({"n": k, "heading": heading, "int_ext": "", "location": heading, "time": "", "start": start, "end": len(els) - 1})
     return {"schema": "zamakan-script/1", "source": av.get("source", ""), "lang": lang, "kind": "documentary", "form": "av",
             "title_page": {"title": av["title"]}, "scenes": scenes, "elements": els, "unsure": []}
@@ -199,9 +201,9 @@ def script_docx(sc, pmap=None):
             if r not in rows:
                 rows[r] = {"pic": [], "snd": []}
                 order.append(r)
-            if els[i]["type"] == "action":
+            if els[i]["type"] == "action" and els[i].get("col") != "sound":
                 rows[r]["pic"].append(i)
-            elif els[i]["type"] == "dialogue":
+            elif els[i]["type"] == "dialogue" or els[i].get("col") == "sound":
                 rows[r]["snd"].append(i)
         if not order:
             continue
@@ -214,7 +216,7 @@ def script_docx(sc, pmap=None):
                     p = cell.paragraphs[0] if j == 0 else cell.add_paragraph()
                     if j and ar:
                         p._p.get_or_add_pPr().append(S._el("w:bidi"))
-                    who = els[i - 1]["name"] if key == "snd" and els[i - 1]["type"] == "character" else None
+                    who = els[i - 1]["name"] if key == "snd" and els[i]["type"] == "dialogue" and els[i - 1]["type"] == "character" else None
                     if who and who not in (T["ar"]["sound"], T["en"]["sound"]):
                         D._run(p, who + ": ", lang, bold=True, color="5E5A53")
                         pmap[i - 1] = p

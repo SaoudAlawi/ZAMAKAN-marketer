@@ -614,7 +614,8 @@ def test_av_script_text_docx_and_reader(tmp_path):
     sc = AV.to_script(av)
     assert sc["schema"] == "zamakan-script/1" and len(sc["scenes"]) == 5
     names = {e["name"] for e in sc["elements"] if e["type"] == "character"}
-    assert {"سالم", "تعليق صوتي", "الابن", "الصوت"} <= names
+    assert {"سالم", "تعليق صوتي", "الابن"} <= names and "الصوت" not in names  # ambience is not a speaker
+    assert any(e.get("col") == "sound" and "موج" in e["text"] for e in sc["elements"])
     txt = tmp_path / "en.txt"
     txt.write_text("SEQUENCE 1: Dawn\nVIDEO: Harbour at night.\nAUDIO: Waves.\nVIDEO: Salem's hands.\nAUDIO: SALEM: The wood tells you.\n", encoding="utf-8")
     en = AV.read(txt)
@@ -728,3 +729,14 @@ def test_shoot_list(tmp_path):
     from docx import Document
     assert "! بانتظار الموافقة" in [c.text for c in Document(out).tables[0].rows[1].cells]
     assert DH.check_plan({"items": [{"what": "", "access": "maybe"}]})
+
+
+def test_doc_reader_transcript_check_and_row_anchor():
+    sc = AV.to_script(AV.read(DOCS / "sur-av-draft.txt", "آخر صانعي السفن"))
+    misses = D.not_in_bites(sc, _bites()["bites"])
+    assert len(misses) == 1 and "الابن" in misses[0]  # the son's line exists in no recording
+    assert "lines not found" in D.show(D.digest(sc, None, None, _bites()["bites"]))
+    i = A.anchor_index(sc, {"scene": 2, "row": 6, "lens": "doc_ethics", "kind": "question", "text": "x"})
+    assert sc["elements"][i]["row"] == 6 and "عامل" in sc["elements"][i]["text"]
+    intent = {"about": "x", "intentional": "لا تعليق صوتي"}  # a sentence where a list is expected
+    assert "intentional: لا تعليق صوتي" in D.show(D.digest(sc, None, intent))

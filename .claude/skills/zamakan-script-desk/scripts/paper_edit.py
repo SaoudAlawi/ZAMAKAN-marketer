@@ -214,9 +214,7 @@ def to_script(sel, bites):
             elif "gap" in it:
                 els.append({"type": "action", "text": f"[{T[lang]['gap']}: {it['gap']}]", "scene": k, "row": row})
             elif it.get("sound"):
-                snd = "الصوت" if lang == "ar" else "SOUND"
-                els.append({"type": "character", "text": snd, "name": snd, "scene": k, "row": row})
-                els.append({"type": "dialogue", "text": f"({it['sound']})", "scene": k, "row": row})
+                els.append({"type": "action", "text": f"({it['sound']})", "scene": k, "row": row, "col": "sound"})
         scenes.append({"n": k, "heading": s["name"], "int_ext": "", "location": s["name"], "time": "", "start": start, "end": len(els) - 1})
     return {"schema": "zamakan-script/1", "source": "paper edit", "lang": lang, "kind": "documentary", "form": "paper-edit",
             "title_page": {"title": sel.get("title", "")}, "scenes": scenes, "elements": els, "unsure": []}

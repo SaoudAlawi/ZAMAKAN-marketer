@@ -93,7 +93,7 @@ def voices(els, lang):
     return out, alike
 
 
-def digest(sc, structure=None, intent=None):
+def digest(sc, structure=None, intent=None, bites=None):
     els, lang = sc["elements"], sc["lang"]
     scenes = sc["scenes"]
     by_scene = defaultdict(list)
@@ -220,7 +220,7 @@ def digest(sc, structure=None, intent=None):
         "silent_scenes": [r["n"] for r in rows if not r["dialogue_lines"]],
         "telling_lines": telling, "production": dict(prod), "dialect_mix": mixed, "presence_grid": presence_grid, "voices": voice_rows, "similar_voices": alike, "dialect_grid": dialect_grid, "same_place_same_people": repeats,
         "beats": beats, "sections": sections, "scene_rows": rows, "intent": intent or None,
-        "doc": doc_digest(sc) if sc.get("kind") == "documentary" else None,
+        "doc": ({**doc_digest(sc), "not_in_transcripts": not_in_bites(sc, bites) if bites else None} if sc.get("kind") == "documentary" else None),
     }
 
 
@@ -232,6 +232,22 @@ DOC_HINTS = {  # documentary flags for the doc viewpoints: hints to check, never
     "superlative": r"(?:\bآخر\b|أول من|أكبر|أقدم|الوحيد|لم يبق إلا|\blast\b|\bfirst\b|\bonly\b|biggest|oldest|largest)",
     "unnamed_people": r"(?:\bعامل\b|\bعمال\b|رجل ما|امرأة ما|\bworkers?\b|a man\b|a woman\b|locals?\b)",
 }
+
+
+def not_in_bites(sc, bites):
+    """Lines a real person says in the script that no transcript holds: they must come from a recording."""
+    texts = [re.sub(r"[ً-ْـ\W]+", "", b["text"]) for b in bites if b.get("text")]
+    misses = []
+    for i, e in enumerate(sc["elements"]):
+        if e["type"] != "dialogue" or i == 0 or sc["elements"][i - 1]["type"] != "character":
+            continue
+        who = sc["elements"][i - 1].get("name", "")
+        if re.search(DOC_HINTS["narration"], who, re.I) or who in ("الصوت", "SOUND"):
+            continue
+        said = re.sub(r"[ً-ْـ\W]+", "", re.sub(r"[\(\[][^\)\]]*[\)\]]", "", e["text"]))
+        if said and not any(said in t for t in texts):
+            misses.append(f"S{e.get('scene')}" + (f"/r{e['row']}" if e.get("row") else "") + f" {who}: {e['text'][:60]}")
+    return misses
 
 
 def doc_digest(sc):
@@ -292,7 +308,7 @@ def show(d):
                 out.append(f"{k}: {it[k]}")
         for k in ("unsure", "intentional"):
             if it.get(k):
-                out.append(f"{k}: " + " | ".join(it[k]))
+                out.append(f"{k}: " + (it[k] if isinstance(it[k], str) else " | ".join(it[k])))  # a list, or one sentence
         for c in it.get("characters", []):
             if c.get("dialect") or c.get("deliberate"):
                 out.append(f"character {c['name']}: dialect {c.get('dialect_text') or c.get('dialect') or '?'}" + (f"; deliberate: {c['deliberate']}" if c.get("deliberate") else ""))
@@ -308,6 +324,8 @@ def show(d):
         for k, lab in labels.items():
             if dd[k]:
                 out.append(f"{lab}: " + " · ".join(dd[k][:6]))
+        if dd.get("not_in_transcripts") is not None:
+            out.append("lines not found in any transcript (must come from a recording): " + (" · ".join(dd["not_in_transcripts"][:8]) or "none"))
     if d["telling_lines"]:
         out.append("action lines that narrate thoughts/feelings: " + " · ".join(f"S{t['scene']}: {t['text'][:60]}" for t in d["telling_lines"][:8]))
     if d["dialect_mix"]:
@@ -338,10 +356,12 @@ def main():
     ap.add_argument("--structure")
     ap.add_argument("--out")
     ap.add_argument("--intent", help="intent.json from intent.py (or written from the conversation)")
+    ap.add_argument("--bites", help="documentary: bites.json from transcripts.py, to find lines no recording holds")
     a = ap.parse_args()
     sc = json.loads(Path(a.script).read_text(encoding="utf-8"))
     intent = json.loads(Path(a.intent).read_text(encoding="utf-8")) if a.intent else None
-    d = digest(sc, a.structure, intent)
+    bites = json.loads(Path(a.bites).read_text(encoding="utf-8"))["bites"] if a.bites else None
+    d = digest(sc, a.structure, intent, bites)
     if a.out:
         Path(a.out).write_text(json.dumps(d, ensure_ascii=False, indent=1, default=list), encoding="utf-8")
     print(show(d))

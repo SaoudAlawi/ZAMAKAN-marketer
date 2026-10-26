@@ -126,6 +126,11 @@
      "quote": {
       "type": "string",
       "description": "exact words from that scene to anchor the comment (optional)"
+     },
+     "row": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "documentary: the picture | sound row the note is about (anchors the comment there when no quote is given)"
      }
     }
    }
