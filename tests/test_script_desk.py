@@ -740,3 +740,10 @@ def test_doc_reader_transcript_check_and_row_anchor():
     assert sc["elements"][i]["row"] == 6 and "عامل" in sc["elements"][i]["text"]
     intent = {"about": "x", "intentional": "لا تعليق صوتي"}  # a sentence where a list is expected
     assert "intentional: لا تعليق صوتي" in D.show(D.digest(sc, None, intent))
+
+
+def test_structure_list_for_offering_a_choice():
+    out = subprocess.run([sys.executable, str(S.SKILL / "scripts" / "build_template.py"), "--list", "--fits", "short", "--lang", "ar"],
+                         capture_output=True, text=True, check=True).stdout
+    assert "short-one-moment" in out and "kishotenketsu" in out and "save-the-cat" not in out and "doc-" not in out
+    assert "انعطافة واحدة" in out  # the plain Arabic summary to show the writer

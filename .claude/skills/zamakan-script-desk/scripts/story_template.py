@@ -265,7 +265,7 @@ def build_map(sm):
 @media (prefers-color-scheme:dark){:root:where(:not([data-theme=light])){--bg:#1a1a19;--ink:#f0efec;--muted:#c3c2b7;--card:#222220;--line:#3a3935;--blue:#1f3550;--amber:#4a3a12}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.6 "IBM Plex Sans Arabic","Amiri",system-ui,sans-serif}
 .wrap{max-width:1200px;margin:0 auto;padding:24px 16px 40px}h1{font-size:26px;margin:0}.sub{color:var(--muted);margin:2px 0 14px}
-.story{background:var(--blue);border-radius:10px;padding:10px 14px;margin-bottom:14px}.legend{font-size:12.5px;color:var(--muted);margin-bottom:10px}
+.story{background:var(--blue);border-radius:10px;padding:10px 14px;margin-bottom:14px;white-space:pre-line}.legend{font-size:12.5px;color:var(--muted);margin-bottom:10px}
 .lane{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}.beat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-width:150px;break-inside:avoid}
 .bh{display:flex;flex-direction:column;margin-bottom:6px}.bh span{font-size:11.5px;color:var(--muted)}
 .frag{background:var(--blue);border-radius:6px;padding:4px 7px;margin:4px 0;font-size:13px}.gap{background:var(--amber);border-radius:6px;padding:4px 7px;margin:4px 0;font-size:13px;font-weight:700}

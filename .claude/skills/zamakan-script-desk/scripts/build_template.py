@@ -212,10 +212,14 @@ def main():
     ap.add_argument("--out")
     ap.add_argument("--pdf", action="store_true", help="also save a PDF preview")
     ap.add_argument("--list", action="store_true")
+    ap.add_argument("--fits", choices=["short", "feature", "documentary"], help="with --list: only the structures for this kind of film")
     a = ap.parse_args()
     if a.list:
         for s in S.STRUCTURES["structures"]:
-            print(f"{s['id']:18s} {s['name']} / {s['name_ar']} · fits {', '.join(s['fits'])} · beats: {', '.join(b['id'] for b in s['beats'])}")
+            if a.fits and a.fits not in s["fits"]:
+                continue
+            summary = s["summary_ar"] if a.lang == "ar" else s["summary"]  # one plain line to offer the writer
+            print(f"{s['id']:18s} {s['name']} / {s['name_ar']} · fits {', '.join(s['fits'])} · beats: {', '.join(b['id'] for b in s['beats'])}\n{'':18s} {summary}")
         return
     st = next((s for s in S.STRUCTURES["structures"] if s["id"] == a.structure), None)
     minutes = a.minutes or (12 if st and st["fits"] == ["short"] else 25 if st and st["fits"] == ["documentary"] else 90)

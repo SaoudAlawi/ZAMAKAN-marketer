@@ -38,7 +38,8 @@ write `intent.json` yourself with the same keys (`about`, `question`, `feel`, `a
 an intent. When the sheet leaves a field blank (often where it should play), judge that viewpoint generally and say
 which answer would sharpen it.
 
-Ask once, up front, only what changes the work: feature or short and the planned running time; Arabic or English
+Ask once, up front, only what changes the work: feature or short and the planned running time; for a story idea or a
+template, the story structure (offer your recommendation first, see **From a story idea**); Arabic or English
 (detect it from the draft when there is one); for Read, what kind of notes they want now (a full read, or one
 viewpoint, e.g. dialogue only) and where it should play (festival, platform, market). Defaults: Arabic, short of
 12 minutes, a full read.
@@ -47,9 +48,16 @@ viewpoint, e.g. dialogue only) and where it should play (festival, platform, mar
 
 The writer sends their general story (typed, or a voice-note transcript: treat it the same, keep it as sent). Give
 them a template shaped around **their** story, without writing any of it.
-1. Read the story once. Pick the structure that fits its shape (a single turn → `short-one-moment`; quiet, no conflict →
-   `kishotenketsu`; a quest → `heros-journey`; a feature with escalating conflict → `three-act`/`save-the-cat`) and one
-   alternative, each with one sentence why.
+1. Read the story once. If the writer named a structure, use it. Otherwise pick the one that fits its shape (a single
+   turn → `short-one-moment`; quiet, no conflict → `kishotenketsu`; a quest → `heros-journey`; a feature with escalating
+   conflict → `three-act`/`save-the-cat`) and one alternative, each with one sentence why, and **offer the choice before
+   building**, in the same single round of questions as length (short/feature, minutes) when that is missing: your pick
+   first, marked recommended, with its one-sentence why; your alternative; one more that fits the kind; and "you choose
+   for me". Use the AskUserQuestion tool when it is available (the writer can always type another structure), else a
+   short numbered list. `build_template.py --list --fits short|feature|documentary --lang ar` gives each structure's
+   name and a plain one-line summary to show. If the writer has said not to ask, or doesn't answer, go with your pick
+   and say they can switch: the map is rebuilt in seconds with another `structure` (beats change, so re-place the
+   fragments).
 2. Write `$JOB/story_map.json` (schema `schemas/story_map.schema.json`, about 1-2k tokens):
    - `story`: exactly as sent; `heard`: hero, want, obstacle, turn, ending (plus world, tone, theme if present), each
      with the writer's **exact words** as `quote`, or no quote when the story doesn't say it (that is a gap), and an
