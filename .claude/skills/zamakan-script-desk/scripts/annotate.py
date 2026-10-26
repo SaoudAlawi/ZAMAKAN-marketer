@@ -120,7 +120,7 @@ def check(sc, notes, intent=None):
         if n.get("quote") and norm(n["quote"]) not in norm(scene_text.get(n["scene"], "")):
             errs.append(f"note {i}: quote not found in scene {n['scene']}: {n['quote'][:50]!r}")
         for q in re.findall(r"[«\"“]([^»\"”]{40,})[»\"”]", n["text"]):
-            if norm(q) not in norm(" ".join(scene_text.values())):
+            if norm(q) not in norm(" ".join(e["text"] for e in sc["elements"])):  # anywhere in the file, the writer's outline included
                 warns.append(f"note {i}: quotes a long line that is not in the script; ask a question instead of rewriting: {q[:50]!r}")
     for lid, x in have.items():
         if x["verdict"] in ("amber", "red") and not any(n["lens"] == lid and n["kind"] != "strength" for n in notes["notes"]):

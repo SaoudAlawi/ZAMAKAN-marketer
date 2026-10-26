@@ -36,8 +36,9 @@ def _alts(words):
 IE_AR = _alts(V["int_ext"]["ar"])
 IE_EN = _alts(V["int_ext"]["en"])
 HEADING_RE = re.compile(
-    rf"^\s*(?:(?:مشهد|م)\s*[\d٠-٩]+\s*[:.\-–)]?\s*)?(?:[\d٠-٩]+\s*[.\-–)]\s*)?(?:(?P<ar>{IE_AR})(?![؀-ۿ])|(?P<en>{IE_EN})(?=[\s.]))",
+    rf"^\s*(?:(?:مشهد|م)\s*[\d٠-٩]+\s*[:.\-–)]?\s*)?(?:[\d٠-٩]+\s*[.\-–)]\s*)?(?:(?P<ar>{IE_AR})(?![ء-يٱ-ۓ])|(?P<en>{IE_EN})(?=[\s.]))",
     re.I)
+ACT_RE = re.compile(r"^\s*(?:act|part|sequence|الفصل|الجزء)\s*(?:[\d٠-٩]+|[ivx]+|الأول|الثاني|الثالث|الرابع|الخامس)\b\s*[:.\-–]?\s*[^.!?؟]{0,40}$", re.I)
 SCENE_WORD_RE = re.compile(r"^\s*(?:مشهد|م)\s*[\d٠-٩]+\s*[:.\-–]?\s*", re.I)
 TIME_WORDS = sorted(V["time"]["ar"] + V["time"]["en"], key=len, reverse=True)
 TRANS = [t.strip(":.").strip() for t in V["transitions"]["ar"] + V["transitions"]["en"]]
@@ -212,14 +213,14 @@ def heading_parts(text):
         rest = [x.strip() for x in re.split(r"\s+[-–—]\s+", t[m.end():].strip(" .")) if x.strip()]
         tm = rest.pop() if len(rest) > 1 and any(re.fullmatch(re.escape(w), rest[-1], re.I) for w in TIME_WORDS) else None
         return {"int_ext": m.group("en").strip(), "place": " - ".join(rest) or None, "time": tm}
-    parts = [p.strip() for p in re.split(r"\s+[-–—]\s+|\s*[-–—]\s*(?=\S)|\s{2,}|\s*\.\s+", t) if p.strip()]
+    parts = [p.strip() for p in re.split(r"\s+[-–—]\s+|\s*[-–—]\s*(?=\S)|\s{2,}|\s*\.\s+|\s*[،,]\s*", t) if p.strip()]  # also «داخلي ، غرفة ، صباح»
     ie = tm = None
     rest = []
     for p in parts:
         m = HEADING_RE.match(p)
         if not ie and m:
             ie = m.group(0).strip()
-            after = p[m.end():].strip(" .-–")
+            after = p[m.end():].strip(" .-–،,")
             if after:
                 rest.append(after)
             continue
@@ -272,6 +273,9 @@ def classify(lines, lang):
             continue
         if s.startswith("#"):
             els.append({"type": "section", "text": s.lstrip("#").strip(), "level": len(s) - len(s.lstrip("#")), "src": i})
+            continue
+        if ACT_RE.match(s):  # the writer's own act markers («Act 1: set up», «الفصل الثاني») are sections, not speakers
+            els.append({"type": "section", "text": s, "level": 1, "src": i})
             continue
         if s.startswith("="):
             els.append({"type": "synopsis", "text": s.lstrip("=").strip(), "src": i})

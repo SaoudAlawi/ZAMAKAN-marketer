@@ -202,7 +202,7 @@ def digest(sc, structure=None, intent=None, bites=None):
                 inside = [r["n"] for r in rows if b["at"] <= r["pos"] + r["share"] / 2 <= b["end"]] or \
                          [min(rows, key=lambda r: abs(r["pos"] - b["at"]))["n"]]
                 beats.append({"beat": b["id"], "name": b["name_ar"] if lang == "ar" else b["name"], "at": b["at"], "end": b["end"], "scenes": inside})
-    sections = [{"text": e["text"], "scene_after": next((x.get("scene") for x in els[i:] if x.get("scene")), None)}
+    sections = [{"text": e["text"], "scene_after": next((x.get("scene") for x in els[i:] if x["type"] == "scene_heading"), None)}  # the scene the act opens
                 for i, e in enumerate(els) if e["type"] == "section"]
     locs = Counter(r["place"] for r in rows if r["place"])
     return {

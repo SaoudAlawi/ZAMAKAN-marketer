@@ -789,3 +789,10 @@ def test_archive_merge_reads_the_word_log(tmp_path):
     log = tmp_path / "log.docx"
     DH.archive_docx(items, "ar", "x").save(log)
     assert DH.archive(sc, log)[1]["owner"] == "قناة"
+
+
+def test_real_draft_habits_act_markers_and_arabic_comma_headings():
+    """From a writer's real file: «Act 1: set up» lines and «داخلي ، غرفة نوم ، صباح» / «خارجي، سيارة» headings."""
+    assert P.heading_parts("داخلي ، غرفة نوم ، صباح") == {"int_ext": "داخلي", "place": "غرفة نوم", "time": "صباح"}
+    assert P.HEADING_RE.match("خارجي، سيارة ، صباح") and not P.HEADING_RE.match("خارجية جدا")
+    assert P.ACT_RE.match("Act 1: set up") and P.ACT_RE.match("الفصل الثاني: المواجهة") and not P.ACT_RE.match("Actually I went home.")
