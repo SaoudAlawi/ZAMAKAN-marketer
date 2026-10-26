@@ -36,7 +36,7 @@ T = {  # interface text
            "write": "Write here…", "draft_title": "Draft", "draft_hint": "Delete these sample lines and write your script in these styles.",
            "samples": [("scene_heading", "INT. PLACE - DAY"), ("action", "What we see and hear, in the present tense."),
                        ("character", "NAME"), ("parenthetical", "(how it is said, only if needed)"), ("dialogue", "What the character says."),
-                       ("transition", "CUT TO:")], "source": "Source", "fits": "Suits", "kinds": {"feature": "feature films", "short": "short films", "documentary": "documentaries"},
+                       ("transition", "CUT TO:")], "source": "Source", "fits": "Suits", "when": "Choose it when", "watch": "Watch for", "kinds": {"feature": "feature films", "short": "short films", "documentary": "documentaries"},
            "proposal": "Proposal / treatment", "subjects": "Subjects", "subject_cols": ["Person", "Their part in the film", "Access", "What we film with them"],
            "av_title": "Two-column script (picture | sound)", "av_hint": "One row per moment: what we see, and what we hear beside it. Add rows as you go."},
     "ar": {"written_by": "تأليف", "draft": "المسودة", "date": "التاريخ", "contact": "للتواصل", "how": "كيف تستخدم هذا القالب",
@@ -53,7 +53,7 @@ T = {  # interface text
            "write": "اكتب هنا…", "draft_title": "المسودة", "draft_hint": "احذف هذه الأسطر النموذجية واكتب نصك بهذه الأنماط.",
            "samples": [("scene_heading", "داخلي - المكان - نهار"), ("action", "ما نراه ونسمعه، بصيغة المضارع."),
                        ("character", "الاسم"), ("parenthetical", "(طريقة القول، عند الحاجة فقط)"), ("dialogue", "ما تقوله الشخصية."),
-                       ("transition", "قطع إلى:")], "source": "المصدر", "fits": "يناسب", "kinds": {"feature": "الأفلام الطويلة", "short": "الأفلام القصيرة", "documentary": "الأفلام الوثائقية"},
+                       ("transition", "قطع إلى:")], "source": "المصدر", "fits": "يناسب", "when": "متى تختاره", "watch": "انتبه", "kinds": {"feature": "الأفلام الطويلة", "short": "الأفلام القصيرة", "documentary": "الأفلام الوثائقية"},
            "proposal": "المقترح / المعالجة", "subjects": "الشخصيات (أشخاص حقيقيون)", "subject_cols": ["الشخص", "دوره في الفيلم", "الوصول إليه", "ما نصوّره معه"],
            "av_title": "سيناريو بعمودين (الصورة | الصوت)", "av_hint": "صف لكل لحظة: ما نراه وما نسمعه بجانبه. أضف صفوفاً كلما تقدمت."},
 }
@@ -151,6 +151,9 @@ def build(structure_id, minutes, lang, title=None, paper=None):
         para(doc, item, lang, style="List Bullet")
     para(doc, name, lang, style="Heading 2")
     para(doc, st["summary_ar"] if ar else st["summary"], lang)
+    if st.get("when"):  # what the structure is for, in plain words
+        para(doc, f"{t['when']}: {st['when_ar'] if ar else st['when']}", lang)
+        para(doc, f"{t['watch']}: {st['tradeoff_ar'] if ar else st['tradeoff']}", lang, grey=True)
     para(doc, f"{t['source']}: {st['source']} · {t['fits']}: {', '.join(t['kinds'][k] for k in st['fits'])} · {S.digits(minutes, lang)} {t['min']}", lang, grey=True, size=10)
     if documentary:  # the proposal / treatment sections funders ask for
         para(doc, t["proposal"], lang, style="Heading 1")

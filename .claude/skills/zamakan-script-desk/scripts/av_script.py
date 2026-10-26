@@ -12,7 +12,7 @@ comparison work on it (each section becomes a scene; picture lines are action; s
 speaker when written «سالم: …», else under SOUND / «الصوت»).
 
 Usage:
-  python av_script.py draft.docx|draft.txt [--out <dir>] [--title T] [--no-pdf]
+  python av_script.py draft.docx|draft.txt [--out <dir>] [--title T] [--pdf]
 """
 import argparse
 import json
@@ -230,7 +230,8 @@ def main():
     ap.add_argument("draft")
     ap.add_argument("--out", default=".")
     ap.add_argument("--title")
-    ap.add_argument("--no-pdf", action="store_true")
+    ap.add_argument("--pdf", action="store_true", help="also a PDF")
+    ap.add_argument("--no-pdf", action="store_true", help=argparse.SUPPRESS)  # old flag; PDF is now opt-in
     a = ap.parse_args()
     av = read(a.draft, a.title)
     if not av["rows"]:
@@ -245,7 +246,7 @@ def main():
     words, sec = spoken(av)
     print(f"OK: {len(av['rows'])} rows · {len(sections(av))} sections · {words} spoken words ≈ {int(sec // 60)}:{int(sec % 60):02d}")
     print(f"av → {out / (stem + '-av.json')}\nscript.json (for the reader) → {out / (stem + '-script.json')}\nWord → {docx}")
-    if not a.no_pdf:
+    if a.pdf:
         print(f"PDF → {S.to_pdf(docx)[0]}")
 
 

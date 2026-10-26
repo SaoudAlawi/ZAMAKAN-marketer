@@ -40,11 +40,13 @@ VERDICT = LENSES["verdicts"]
 UI = {"ar": {"notes": "ملاحظات القراءة", "story": "القصة كما فهمناها", "overall": "الحكم العام", "lens": "زاوية القراءة", "verdict": "الحكم",
              "summary": "الخلاصة", "next": "أولويات المسودة القادمة", "questions": "أسئلة للكاتب", "legend": "ألوان الملاحظات في الهامش", "since": "منذ المسودة السابقة", "intent": "هل يحقق النص ما تريده؟", "scene": "مشهد",
              "author": "قارئ زمكان", "kinds": {"issue": "ملاحظة", "question": "سؤال", "strength": "نقطة قوة"},
-             "promise": "هذه ملاحظات وأسئلة لمساعدتك على الكتابة، لا إعادة كتابة لنصك."},
+             "promise": "هذه ملاحظات وأسئلة لمساعدتك على الكتابة، لا إعادة كتابة لنصك.",
+             "howto": "التعليقات على الهامش («مراجعة ← إظهار التعليقات»)؛ كل زاوية قراءة مراجِع مستقل يمكنك إظهاره وحده. للرد انقر التعليق ← «رد» واكتب «مقصود» أو «تم» أو «لا أوافق لأن…»، ثم أرسل الملف مع مسودتك التالية."},
       "en": {"notes": "Reader's notes", "story": "The story as we read it", "overall": "Overall", "lens": "Viewpoint", "verdict": "Verdict",
              "summary": "Summary", "next": "Priorities for the next draft", "questions": "Questions for the writer", "legend": "Margin comment colours", "since": "Since the last draft", "intent": "Does the script do what you are going for?", "scene": "scene",
              "author": "ZAMAKAN reader", "kinds": {"issue": "Note", "question": "Question", "strength": "Strength"},
-             "promise": "These are notes and questions to help you write, not a rewrite of your script."}}
+             "promise": "These are notes and questions to help you write, not a rewrite of your script.",
+             "howto": "Comments are in the margin (Review → Show Comments); each viewpoint is its own reviewer you can show alone. To reply, click a comment → Reply and write \"deliberate\", \"fixed\" or \"I disagree because…\", then send the file back with your next draft."}}
 
 
 def norm(t):
@@ -225,6 +227,7 @@ def notes_page(doc, sc, notes, lang, images=()):
     start = len(body) - (1 if body[-1].tag == S.qn("w:sectPr") else 0)  # new paragraphs go in before sectPr
     para(doc, u["notes"], lang, style="Heading 1")
     para(doc, u["promise"], lang, color="#777777", size=10)
+    para(doc, u["howto"], lang, color="#777777", size=10)  # how to use this file
     if scope_label(notes, lang):
         para(doc, scope_label(notes, lang), lang, bold=True)
     para(doc, u["story"], lang, style="Heading 3")

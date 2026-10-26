@@ -159,7 +159,8 @@ def main():
     ap.add_argument("--font", default=S.ARABIC_FONT, help="Arabic font named in the Word file (PDF always embeds Amiri)")
     ap.add_argument("--latin-digits", action="store_true", help="scene numbers 1 2 3 instead of ١ ٢ ٣ in Arabic")
     ap.add_argument("--no-numbers", action="store_true")
-    ap.add_argument("--no-pdf", action="store_true")
+    ap.add_argument("--no-pdf", action="store_true", help="skip the page count too (it needs a PDF rendering)")
+    ap.add_argument("--also", default="", help="extra formats on request, comma-separated: pdf,fountain,fdx (Word is always made)")
     a = ap.parse_args()
     sc = json.loads(Path(a.script).read_text(encoding="utf-8"))
     out = Path(a.out)
@@ -167,11 +168,17 @@ def main():
     name = a.name or re.sub(r"[^\w؀-ۿ-]+", "-", (sc.get("title_page") or {}).get("title") or Path(sc["source"]).stem).strip("-") or "script"
     docx = out / f"{name}.docx"
     build_docx(sc, a.paper, a.font, not a.latin_digits, not a.no_numbers).save(docx)
-    (out / f"{name}.fountain").write_text(to_fountain(sc), encoding="utf-8")
-    msg = [f"Word → {docx}", f"Fountain → {out / (name + '.fountain')}"]
-    if sc["lang"] == "en":
-        (out / f"{name}.fdx").write_text(to_fdx(sc), encoding="utf-8")
-        msg.append(f"Final Draft → {out / (name + '.fdx')}")
+    also = {x.strip() for x in a.also.split(",") if x.strip()}
+    msg = [f"Word → {docx}"]
+    if "fountain" in also:
+        (out / f"{name}.fountain").write_text(to_fountain(sc), encoding="utf-8")
+        msg.append(f"Fountain → {out / (name + '.fountain')}")
+    if "fdx" in also:
+        if sc["lang"] == "en":
+            (out / f"{name}.fdx").write_text(to_fdx(sc), encoding="utf-8")
+            msg.append(f"Final Draft → {out / (name + '.fdx')}")
+        else:
+            msg.append("Final Draft: English scripts only (Final Draft's right-to-left support is unreliable)")
     pages = None
     if not a.no_pdf:
         if a.font != S.ARABIC_FONT:  # PDF uses the bundled font so it always renders
@@ -186,10 +193,12 @@ def main():
         if pdf:
             pages = S.pdf_pages(pdf)
             body = pages - (1 if sc.get("title_page") else 0) if pages else None
-            msg.append(f"PDF → {pdf} · {body} script pages ≈ {body} min at one page a minute")
+            msg.append((f"PDF → {pdf} · " if "pdf" in also else "") + f"{body} script pages ≈ {body} min at one page a minute")
             sc["format"] = {"pages": body, "est_minutes": body, "paper": a.paper or ("a4" if sc["lang"] == "ar" else "letter"),
                             "note": "one page ≈ one minute is the English convention; for Arabic it is unverified, so time a read-through"}
             Path(a.script).write_text(json.dumps(sc, ensure_ascii=False, indent=1), encoding="utf-8")
+            if "pdf" not in also:  # rendered only to count pages; Word is the deliverable
+                pdf.unlink(missing_ok=True)
         else:
             msg.append(err)
     print("\n".join(msg))

@@ -34,11 +34,11 @@ TINTS = ["DBE8FB", "FBE3D6", "D3F1E5", "E6DDF5", "F8EEC9", "F6DCE8", "E2EEF0", "
 AMBER = "FDECC8"
 T = {"ar": {"paper": "المونتاج الورقي", "legend": "المحاور", "silence": "دون كلام", "gap": "ينقصنا", "summary": "الزمن",
             "cols": ["القسم", "المقاطع", "المدة (د:ث)"], "speakers": "من يتكلم وكم", "scols": ["المتحدث", "المقاطع", "المدة (د:ث)", "النسبة"],
-            "total": "المجموع", "target": "المدة المستهدفة", "min": "دقيقة", "promise": "كل ما بين «» كلام قيل فعلاً، كما هو، بتوقيته في الملف.",
+            "total": "المجموع", "target": "المدة المستهدفة", "min": "دقيقة", "promise": "كل ما بين «» كلام قيل فعلاً، كما هو، بتوقيته في الملف.", "howto": "اكتب ما تريد تغييره كتعليق أو مباشرة في عمود الصورة، وأرسل الملف: لا تكتب كلاماً جديداً في عمود الصوت، فالاقتباسات تأتي من التفريغ. الصفوف الصفراء ما ينقص.",
             "joined": "قطع يجمع كلاماً لم يُقل متتالياً: تأكّد أن المعنى بقي صادقاً"},
      "en": {"paper": "Paper edit", "legend": "Themes", "silence": "no words", "gap": "Still missing", "summary": "Running time",
             "cols": ["Section", "Bites", "Time (m:ss)"], "speakers": "Who speaks, and how much", "scols": ["Speaker", "Bites", "Time (m:ss)", "Share"],
-            "total": "Total", "target": "Target", "min": "min", "promise": "Everything in quotes was really said, word for word, with its timecode.",
+            "total": "Total", "target": "Target", "min": "min", "promise": "Everything in quotes was really said, word for word, with its timecode.", "howto": "Write changes as comments or straight into the picture column, and send the file back; don't type new words in the sound column, quotes come from the transcripts. Amber rows are what's missing.",
             "joined": "This cut joins words not said one after the other: make sure the meaning stays true"}}
 
 
@@ -123,6 +123,7 @@ def build_docx(sel, bites):
     S.add_page_numbers(doc, lang)
     B.para(doc, f"{sel.get('title', '')} · {t['paper']}", lang, style="Title")
     B.para(doc, t["promise"], lang, grey=True, italic=True, size=10)
+    B.para(doc, t["howto"], lang, grey=True, size=10)
     if sel.get("themes"):
         B.para(doc, t["legend"], lang, style="Heading 3")
         for k, th in sel["themes"].items():
@@ -227,6 +228,7 @@ def main():
     ap.add_argument("--out", default=".")
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--pdf", action="store_true")
+    ap.add_argument("--csv", action="store_true", help="also the cut list for the editor (CSV)")
     a = ap.parse_args()
     sel, bites = load(a.selects, a.bites)
     errs, warns = check(sel, bites)
@@ -245,8 +247,10 @@ def main():
     stem = re.sub(r"[^\w؀-ۿ-]+", "-", sel.get("title") or "film").strip("-") or "film"
     docx = out / f"{stem}-paper-edit.docx"
     build_docx(sel, bites).save(docx)
-    write_csv(sel, bites, out / f"{stem}-paper-edit.csv")
-    print(f"paper edit → {docx}\ncut list → {out / (stem + '-paper-edit.csv')}")
+    print(f"paper edit → {docx}")
+    if a.csv:
+        write_csv(sel, bites, out / f"{stem}-paper-edit.csv")
+        print(f"cut list → {out / (stem + '-paper-edit.csv')}")
     if a.pdf:
         print(f"PDF → {S.to_pdf(docx)[0]}")
 

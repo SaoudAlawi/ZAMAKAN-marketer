@@ -2,7 +2,7 @@
 name: zamakan-script-desk
 description: "Help a screenwriter or documentary maker write (never write it for them), Arabic first and English too: a story idea (paragraph or voice note) → a template shaped around it; Word templates for story structures with page targets (three acts, Save the Cat, hero's journey, story circle, kishōtenketsu, short-film shapes); a formatter (right-to-left Arabic screenplay, Word + PDF + Fountain); a script reader with notes from ten viewpoints, green/amber/red, as colour-coded margin comments. Documentaries: proposal/treatment templates, transcripts → bites index → paper edit (Word + CSV), two-column picture | sound scripts, a documentary reader (access, ethics, evidence, archive…), archive log, shoot list. Use whenever someone shares a story or doc idea («عندي فكرة فيلم»), plans a screenplay or treatment, needs a template or beat sheet, asks to format a script («نسّق السيناريو»), wants notes on a draft, treatment or paper edit («ملاحظات على النص»), has interview transcripts or SRTs to cut, an A/V script («صورة / صوت»), or archive or shoot planning. For film references to watch, use zamakan-shot-scout."
 metadata:
-  version: 0.6.0
+  version: 0.7.0
 ---
 
 # ZAMAKAN Script Desk
@@ -17,6 +17,29 @@ Scripts live in `scripts/` next to this file (`$DESK`). They do the mechanical w
 tokens go to judgement. Files go in the user's project folder (zamakan-core `workspace.py`): for a client,
 `python3 $CORE/scripts/client.py job <slug> script-<title>`; otherwise `jobs/<yyyy-mm-dd>-script-<title>/` (both are
 git-ignored: unpublished scripts stay private). Call that folder `$JOB`.
+
+**Word by default.** Every deliverable is a Word file (.docx) the writer opens and writes in. Make anything else only
+when they ask for it: a PDF (`--pdf` / `--also pdf`), the one-page story map (`--map`), the side-notes PDF and the
+HTML report (`side_notes.py`, `report.py`), scene-card board, Fountain or Final Draft (`--also fountain,fdx`), CSV
+(`--csv`). Mention once, in a short line, that these exist.
+
+**Talk with the writer.** You are a script editor in conversation, not a vending machine:
+- At the start, one round of the questions that change the work (below), each with your recommendation first. Use the
+  AskUserQuestion tool for choices (structure, length, kind of notes) when it is available; ask open questions about
+  the story in plain words.
+- When the story or draft leaves something you need unclear (whose point of view, is the betrayal real, which ending),
+  ask rather than guess, then build; if the writer wants to go on without answering, leave it as a question in the file.
+- End every reply with one or two specific questions about **their** story or the next step ("do you want the
+  midpoint to change what we believe about the betrayal?", "shall I read the dialogue only next?"), never generic ones,
+  and never more than three questions in a turn.
+- If the writer says not to ask, stop asking and go with your recommendations.
+
+**The writer's guide.** On first use, or when they ask how to use the files or what the structures mean, give them
+the guide (Word): `python3 $DESK/scripts/guide.py --lang ar --out $JOB` (how to talk to the desk, the colours, how to
+use every file: replying in the margin, the styles, the cards; and every story structure explained: what it is, when
+to choose it, what to watch for, its beats). `--only structures` for the structures alone, `--only files` for the files.
+When the writer is choosing a structure and unsure, explain the two or three that fit in a sentence each (`when` and
+`tradeoff` in `references/structures.json`) before asking.
 
 ## What the writer can ask for
 
@@ -68,17 +91,17 @@ them a template shaped around **their** story, without writing any of it.
    - `title` only if the writer gave one (else the files use their first words, skipping fillers like «أبغى أسوي فيلم عن», as a working label);
    - `characters` as the writer names them; `places` with a cost question when it matters (sea, night, crowds).
    Never add an event, a name, a line or an answer. Everything you add is a question.
-3. `python3 $DESK/scripts/story_template.py $JOB/story_map.json --check`, then `--out $JOB`: the Word template (story
-   untouched in blue, what we heard and what's open, the structure with page targets and a rough scene count per beat,
-   beat by beat with their words, questions and an empty box, gaps in amber, characters, places, a styled draft section)
-   and a one-page story map (HTML + PDF).
-4. Reply: the structure and why, the gaps (the beats in amber) as two or three questions, and the files.
+3. `python3 $DESK/scripts/story_template.py $JOB/story_map.json --check`, then `--out $JOB`: the Word template (how to
+   use it, story untouched in blue, what we heard and what's open, the structure with when to choose it, page targets
+   and a rough scene count per beat, beat by beat with their words, questions and an empty box, gaps in amber,
+   characters, places, a styled draft section). Add `--map` only when asked for the one-page story map (HTML + PDF).
+4. Reply: the structure and why, the gaps (the beats in amber) as two or three questions, and the file.
 
 ## Template (blank)
 
 ```bash
-python3 $DESK/scripts/build_template.py --list
-python3 $DESK/scripts/build_template.py --structure <id> --minutes <n> --lang ar|en --title "<title>" --out $JOB/<title>-template.docx --pdf
+python3 $DESK/scripts/build_template.py --list [--fits short|feature|documentary] --lang ar
+python3 $DESK/scripts/build_template.py --structure <id> --minutes <n> --lang ar|en --title "<title>" --out $JOB/<title>-template.docx   # --pdf on request
 ```
 Choose with the writer. Short films: `short-one-moment` (most shorts are one turn), `kishotenketsu` (quiet, poetic,
 no conflict needed), `story-circle`. Features: `three-act` (the common ground), `save-the-cat` (pace), `sequences`
@@ -91,7 +114,7 @@ screenplay styles. Tell the writer: drafting in those styles makes formatting an
 ```bash
 python3 $DESK/scripts/parse_script.py <draft> --out $JOB/script.json         # Word, PDF, Final Draft (.fdx), .fountain or .txt; Arabic or English
 python3 $DESK/scripts/parse_script.py <draft> --out $JOB/script.json --fix $JOB/fixes.json   # only if it listed unsure lines
-python3 $DESK/scripts/format_script.py $JOB/script.json --out $JOB           # Word + PDF + Fountain; page count ≈ minutes
+python3 $DESK/scripts/format_script.py $JOB/script.json --out $JOB           # Word; page count ≈ minutes; --also pdf,fountain,fdx on request
 ```
 The parser prints a few **unsure lines** (usually a one-off speaker such as «صياد», or a short action line). Decide only
 those from the line and the line after it; write `{"<index>": "character"}` to `fixes.json`; never read the whole
@@ -100,7 +123,7 @@ the PDF always embeds Amiri, so its text can be copied and searched), `--latin-d
 
 PDFs are read from their layout (indents tell character, parenthetical and dialogue apart; Arabic text is put back
 in reading order); a PDF whose text layer is broken (some fonts, scanned pages) reads badly: then ask for the Word or
-Final Draft file. English scripts also get a `.fdx` for Final Draft.
+Final Draft file. On request, English scripts can also get a `.fdx` for Final Draft (`--also fdx`).
 
 Arabic layout: right to left, binding margin on the right, the standard screenplay indents mirrored (as in
 WriterDuet's right-to-left template); scene headings rebuilt as «داخلي - المكان - ليل» and numbered. Final Draft does
@@ -142,12 +165,13 @@ Token rules first: **read the digest, then only the scenes you need.**
    ```bash
    python3 $DESK/scripts/annotate.py $JOB/script.json $JOB/notes.json --check [--intent $JOB/intent.json]
    python3 $DESK/scripts/annotate.py $JOB/script.json $JOB/notes.json --stats $JOB/stats.json [--intent $JOB/intent.json] --out $JOB   # Word: notes page with charts + margin comments
-   python3 $DESK/scripts/side_notes.py $JOB/script.json $JOB/notes.json --out $JOB        # the script with the notes as side comments (HTML + PDF)
-   python3 $DESK/scripts/report.py $JOB/script.json $JOB/notes.json --stats $JOB/stats.json --out $JOB --check   # one-page report with charts
+   # on request only:
+   python3 $DESK/scripts/side_notes.py $JOB/script.json $JOB/notes.json --out $JOB        # the script with side comment cards (HTML + PDF)
+   python3 $DESK/scripts/report.py $JOB/script.json $JOB/notes.json --stats $JOB/stats.json --out $JOB --check   # one-page report with charts (HTML)
    ```
    Fix every error, and every quality warning unless you have a reason (summaries of two or three short sentences;
    each issue or question ends by asking the writer something; no generic phrases like "needs more depth"; no two
-   notes saying the same thing). Look at the report screenshots before you send it.
+   notes saying the same thing). If you built the report, look at its screenshots before you send it.
 
 **Focused passes** (cheaper; say so in `scope`):
 - *First pages* ("read it like a festival reader"): `show.py $JOB/script.json --pages <n> --stats $JOB/stats.json`
@@ -160,9 +184,9 @@ Token rules first: **read the digest, then only the scenes you need.**
 **What the writer gets.** Every note sits **beside the line it is about**, as a side comment:
 - in Word, a margin comment per note; each viewpoint is its own reviewer, so Word colours them apart and the writer can
   show or hide one viewpoint (Review → Show markup → reviewers);
-- in `<title>-side-notes.pdf/.html`, the script with coloured comment cards in the margin, level with their lines, and
+- on request, in `<title>-side-notes.pdf/.html`, the script with coloured comment cards in the margin, level with their lines, and
   a mark on each scene heading (✕ holds it back, ! note, ? question, ✓ strength); readable on a phone;
-- the report and the Word notes page add the pictures: beat map (where the turns should fall vs where they do, scenes
+- the Word notes page (and the report, on request) adds the pictures: beat map (where the turns should fall vs where they do, scenes
   coloured by their most serious note), tension curve, character presence grid, dialect map, character voices and a
   production stripboard (the usual board colours: white day interior, yellow day exterior, blue night interior,
   green night exterior, orange dawn/dusk).
@@ -241,11 +265,11 @@ come from transcripts by id. Ask once: running time (default 52 min for TV, 15 f
 | A doc idea → a template | **From a story idea** with `kind: "documentary"`, a `doc-` structure (`doc-character`, `doc-observational`, `doc-investigative`, `doc-journey`, `doc-portrait`, `doc-essay`, `doc-historical`), `heard` adding `subject`, `question`, `access`, `approach`, and `sections` placing their words on the proposal sections (`references/doc_proposal.json`: logline … access, approach, archive, schedule, budget). Choosing: one person through events with an end (a build, a race, a season) → `doc-character`; the filmmaker wants no interviews or narration and to find the story in the edit → `doc-observational`; a question to answer → `doc-investigative`; a trip → `doc-journey`; a person more than events → `doc-portrait`; an argument or the filmmaker's voice → `doc-essay`; the past → `doc-historical`. Beat ids: `build_template.py --list`. `story` is the idea itself, not the request around it ("help me shape this, 52 minutes"). A fragment may sit in `heard`, on one beat and in one section. Always ask about access: who has said yes, and what the film is if someone says no (the checker warns when there's no `access` element). |
 | A blank proposal / treatment | `build_template.py --structure doc-character --minutes 52 --lang ar` (proposal sections, real people table, beats in minutes, a picture \| sound draft table) |
 | Transcripts → what did they say? | `transcripts.py ingest a.srt b.txt c.docx --interviewer "<name>" --out $JOB/bites.json` (SRT, VTT, timestamped text, Word incl. tables; `--map "Speaker 1=Salem"`). Then `transcripts.py index bites.json [--speaker X] [--grep word]` (one line per bite, cheap) and `show bites.json A004 A010-A014` for the full text. Read the index, not the raw files. When the user says they asked the questions, take their label from the transcript (`index` shows every speaker) and pass it as `--interviewer`. |
-| A paper edit | Write `$JOB/selects.json` (bite ids only; `themes`; sections with a `purpose`; `{"picture","sound"}` rows for moments without words; `{"gap": "…?"}` for what's missing), `paper_edit.py selects.json bites.json --check`, then `--out $JOB --pdf`. Read every warning: interviewer lines, bites used twice, ✂ joins of one speaker's words from different moments (make sure the meaning stays theirs), running time against the target. Look at the "who speaks" table: is someone seen but never heard? A person who hasn't agreed to be filmed gets a gap row (a question), never a picture or a line that stands in for them. The CSV keeps gap rows (marked GAP:) so the editor sees what's missing. |
-| A two-column script (A/V) | `av_script.py draft.docx\|draft.txt --title "<t>" --out $JOB` (Word table with a picture/sound header, or «صورة:»/«صوت:» lines, also VIDEO:/AUDIO:); writes av.json, a laid-out Word/PDF numbered through, and `<title>-script.json` (that is the script.json for **Read**; `doc_to_script.py --av` gives the same file). «name: words» in the sound column is that person speaking; «تعليق صوتي:» is narration. |
+| A paper edit | Write `$JOB/selects.json` (bite ids only; `themes`; sections with a `purpose`; `{"picture","sound"}` rows for moments without words; `{"gap": "…?"}` for what's missing), `paper_edit.py selects.json bites.json --check`, then `--out $JOB` (Word; `--csv` for the editor's cut list, `--pdf` on request). Read every warning: interviewer lines, bites used twice, ✂ joins of one speaker's words from different moments (make sure the meaning stays theirs), running time against the target. Look at the "who speaks" table: is someone seen but never heard? A person who hasn't agreed to be filmed gets a gap row (a question), never a picture or a line that stands in for them. The CSV keeps gap rows (marked GAP:) so the editor sees what's missing. |
+| A two-column script (A/V) | `av_script.py draft.docx\|draft.txt --title "<t>" --out $JOB` (`--pdf` on request) (Word table with a picture/sound header, or «صورة:»/«صوت:» lines, also VIDEO:/AUDIO:); writes av.json, a laid-out Word/PDF numbered through, and `<title>-script.json` (that is the script.json for **Read**; `doc_to_script.py --av` gives the same file). «name: words» in the sound column is that person speaking; «تعليق صوتي:» is narration. |
 | Notes on a treatment, A/V script or paper edit | `doc_to_script.py treatment.docx` / `draft.txt --av` / `selects.json --bites bites.json` → script.json, then **Read** as usual with two changes: notes.json gets `"lens_set": "documentary"` and `"kind": "documentary"`, and the viewpoints are `references/lenses_doc.json` (story, point of view, evidence, real people, ethics, access, visual, sound, archive, fit; same colours and verdict anchors). The digest lists narration lines, on-screen text, reconstructions, archive, superlatives to verify and people seen without a name: hints, not verdicts. Pass `--bites bites.json` to digest when transcripts exist: it lists lines a real person says that no recording holds. Margin comments land in the picture \| sound table; give each note its `row` (anchors the comment there) and cite it ("section 3, row 10"). Set `turns` from the filmmaker's own section names when they name the beats. |
-| Archive log | `doc_helpers.py archive script.json [--merge archive-log.csv] --out $JOB` (Word + CSV; the team fills owner, rights, cost, credit; merging keeps what they filled and marks items no longer in the draft). |
-| Shoot list | `doc_helpers.py shoots --skeleton av.json` writes a plan.json to fill (where, who, when, access, needs); `doc_helpers.py shoots plan.json --out $JOB` (pending access first). |
+| Archive log | `doc_helpers.py archive script.json [--merge archive-log.docx] --out $JOB` (Word, `--csv` on request; the team fills owner, rights, cost, credit in Word or CSV; merging keeps what they filled and marks items no longer in the draft). |
+| Shoot list | `doc_helpers.py shoots --skeleton av.json` writes a plan.json to fill (where, who, when, access, needs); `doc_helpers.py shoots plan.json --out $JOB` (Word, `--csv` on request; pending access first). |
 
 Documentary notes, beyond **How to write notes**: separate what the film **states** (narration, titles: must be
 sourced) from what a person **says** (their view, fine as theirs); ask how a reconstruction will be marked; ask who is
@@ -255,8 +279,10 @@ question under access or ethics.
 
 ## Deliver
 Reply briefly: what you made, the overall verdict and the 3 priorities (for a Read), where the files are, and any
-unsure lines you decided (for a new draft: how many old notes are resolved, partly, open). Files: `<title>-template.docx`,
-`<title>.docx/.pdf/.fountain`, `<title>-notes.docx` (the writer's copy with margin comments and charts),
-`<title>-side-notes.pdf/.html` (the script with side comments), `<title>-report.html`, and when made
-`<title>-intent.docx`, `<title>-cards.html/.pdf`, `<title>-cards.docx`, `<title>-story-template.docx`, `<title>-story-map.html/.pdf`;
-for documentaries `bites.json`, `<title>-paper-edit.docx/.csv`, `<title>-av.docx/.pdf`, `<title>-archive-log.docx/.csv`, `<title>-shoot-list.docx/.csv`.
+unsure lines you decided (for a new draft: how many old notes are resolved, partly, open). Then one or two questions
+about their story or the next step (see **Talk with the writer**).
+Word files by default: `<title>-template.docx` or `<title>-story-template.docx`, `<title>.docx`, `<title>-notes.docx`
+(margin comments, notes page with charts), `<title>-intent.docx`, `<title>-cards.docx`, the guide; for documentaries
+`<title>-paper-edit.docx`, `<title>-av.docx`, `<title>-archive-log.docx`, `<title>-shoot-list.docx`. On request:
+PDFs, `<title>-story-map.html/.pdf`, `<title>-side-notes.pdf/.html`, `<title>-report.html`, `<title>-cards.html/.pdf`,
+`.fountain`, `.fdx`, CSVs.

@@ -15,7 +15,7 @@ They are built as **sub-skills that share file contracts**, with scripts doing t
 - `.claude/skills/zamakan-design-system/`: feature 1, brand files → design system. **Paused after iteration 1**; see PLAN §3 and §5b to resume.
 - `.claude/skills/zamakan-reference-scout/`: feature 2, campaign references + analysis. **Active.**
 - `.claude/skills/zamakan-shot-scout/`: feature 3, cinematic references (subject, effect, frame-match, who, inspire me) → shot board / viewing programme. **Built v0.2.0.**
-- `.claude/skills/zamakan-script-desk/`: feature 4, helps screenwriters (templates, Arabic RTL formatter, ten-viewpoint reader, side comments, charts, draft comparison, intent sheet, margin replies, scene cards, arcs, PDF/FDX input, focused passes, verdict anchors, story idea → template; documentaries: proposal, transcripts → paper edit, A/V script, doc reader, archive log, shoot list). **Built v0.6.0.**
+- `.claude/skills/zamakan-script-desk/`: feature 4, helps screenwriters (templates, Arabic RTL formatter, ten-viewpoint reader, side comments, charts, draft comparison, intent sheet, margin replies, scene cards, arcs, PDF/FDX input, focused passes, verdict anchors, story idea → template; documentaries: proposal, transcripts → paper edit, A/V script, doc reader, archive log, shoot list). **Built v0.7.0** (Word by default, asks questions, writer's guide).
   Never writes the script for the writer. Test script: `samples/script-desk/` (documentary samples in `samples/script-desk/doc/`); its answer key is in `evals/fixtures/script-desk/`.
 - `samples/rawaq/input/`: fictional test client (brand PDF, logos, fonts). All development runs on it.
 - `evals/fixtures/`: answer keys, gold outputs, and the scout test brief. **Never show these to an agent under test.**

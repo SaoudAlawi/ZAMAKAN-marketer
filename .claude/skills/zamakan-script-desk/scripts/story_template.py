@@ -7,7 +7,7 @@ open as questions, the gaps); this builds:
 
 Usage:
   python story_template.py story_map.json --check                 # validate (quotes must be the writer's exact words)
-  python story_template.py story_map.json --out <dir> [--no-pdf]
+  python story_template.py story_map.json --out <dir> [--map] [--no-pdf]   # Word; --map adds the one-page map (HTML + PDF)
 
 Colour code (also printed in the files): blue = the writer's words, grey = our questions, amber = not in the story yet.
 """
@@ -38,14 +38,14 @@ T = {"ar": {"built": "مبني على فكرة قصتك", "yours": "قصتك ب�
             "empty": "قصتك لا تقول هذا بعد.", "scenes": "مشاهد تقريباً", "chars": "الشخصيات التي ذكرتها", "char_cols": ["الشخصية", "تريد", "تخاف", "العيب", "كيف تتغيّر"],
             "places": "الأماكن وما يرفع الكلفة", "legend": "الألوان: الأزرق = كلماتك · الرمادي = أسئلتنا · الأصفر = ما لم تقله قصتك بعد",
             "promise": "لم نكتب شيئاً من قصتك: كل ما بالأزرق كلماتك، وكل ما أضفناه أسئلة.", "pages": "صفحات", "min": "دقيقة",
-            "map": "خريطة القصة", "proposal": "المقترح: ما تقوله قصتك لكل قسم", "subjects": "الأشخاص الذين ذكرتهم", "seq": "مقاطع تقريباً", "not_yet": "لم تذكرها قصتك بعد:", "map_sub": "محطات البناء، وكلماتك في المكان الذي يبدو أنها تنتمي إليه، والفراغات بالأصفر."},
+            "howto": ["اكتب في المربعات تحت كل محطة؛ ابدأ بالمحطات الصفراء.", "إن لم تكن كلماتك في المحطة الصحيحة فانقلها.", "اكتب المسودة في آخر الملف بالأنماط الجاهزة (الصفحة الرئيسية ← الأنماط)، ثم أرسلها للتنسيق أو الملاحظات."], "map": "خريطة القصة", "proposal": "المقترح: ما تقوله قصتك لكل قسم", "subjects": "الأشخاص الذين ذكرتهم", "seq": "مقاطع تقريباً", "not_yet": "لم تذكرها قصتك بعد:", "map_sub": "محطات البناء، وكلماتك في المكان الذي يبدو أنها تنتمي إليه، والفراغات بالأصفر."},
      "en": {"built": "Built on your story idea", "yours": "Your story, in your words", "yours_hint": "As you sent it, unchanged.",
             "heard": "What we heard, and what's still open", "cols": ["", "What you said", "Still open"], "gap": "— (not in your story yet)",
             "fits": "The structure that fits your story", "alt": "Alternative", "beats": "Beat by beat", "from_you": "From your story?", "belongs": "Does it belong here?",
             "empty": "Your story doesn't say this yet.", "scenes": "scenes, roughly", "chars": "The characters you mentioned", "char_cols": ["Character", "Wants", "Fears", "Flaw", "How they change"],
             "places": "Places and what drives cost", "legend": "Colours: blue = your words · grey = our questions · amber = not in your story yet",
             "promise": "We wrote nothing of your story: everything in blue is yours, everything we added is a question.", "pages": "pages", "min": "min",
-            "map": "Story map", "proposal": "The proposal: what your story says for each section", "subjects": "The people you mentioned", "seq": "sequences, roughly", "not_yet": "Not in your story yet:", "map_sub": "The structure's beats, your words where they seem to belong, the gaps in amber."}}
+            "howto": ["Write in the boxes under each beat; start with the amber beats.", "If your words sit on the wrong beat, move them.", "Write the draft at the end in the built-in styles (Home → Styles), then send it for formatting or notes."], "map": "Story map", "proposal": "The proposal: what your story says for each section", "subjects": "The people you mentioned", "seq": "sequences, roughly", "not_yet": "Not in your story yet:", "map_sub": "The structure's beats, your words where they seem to belong, the gaps in amber."}}
 
 
 def working_title(sm):
@@ -138,6 +138,8 @@ def build_docx(sm):
     S.add_page_numbers(doc, lang)
     B.para(doc, t["promise"], lang, grey=True, italic=True, size=10)
     B.para(doc, t["legend"], lang, grey=True, size=10)
+    for x in t["howto"]:  # how to use this file
+        B.para(doc, x, lang, style="List Bullet", size=10)
     # 1. the story, untouched
     B.para(doc, t["yours"], lang, style="Heading 1")
     B.para(doc, t["yours_hint"], lang, grey=True, size=10)
@@ -160,6 +162,8 @@ def build_docx(sm):
     B.para(doc, t["fits"], lang, style="Heading 1")
     B.para(doc, st["name_ar"] if ar else st["name"], lang, bold=True, size=13)
     B.para(doc, sm["why_structure"], lang)
+    if st.get("when"):
+        B.para(doc, f"{B.T[lang]['when']}: {st['when_ar'] if ar else st['when']} · {B.T[lang]['watch']}: {st['tradeoff_ar'] if ar else st['tradeoff']}", lang, grey=True, size=10)
     if sm.get("alt_structure"):
         alt = next(x for x in S.STRUCTURES["structures"] if x["id"] == sm["alt_structure"]["id"])
         B.para(doc, f"{t['alt']}: {alt['name_ar'] if ar else alt['name']}: {sm['alt_structure']['why']}", lang, grey=True)
@@ -284,6 +288,7 @@ def main():
     ap.add_argument("story_map")
     ap.add_argument("--out", default=".")
     ap.add_argument("--check", action="store_true")
+    ap.add_argument("--map", action="store_true", help="also the one-page story map (HTML, + PDF unless --no-pdf)")
     ap.add_argument("--no-pdf", action="store_true")
     a = ap.parse_args()
     sm = json.loads(Path(a.story_map).read_text(encoding="utf-8"))
@@ -304,9 +309,12 @@ def main():
     stem = re.sub(r"[^\w\u0600-\u06FF-]+", "-", working_title(sm)).strip("-") or "story"
     docx = out / f"{stem}-story-template.docx"
     build_docx(sm).save(docx)
+    print(f"template → {docx}")
+    if not a.map:
+        return
     page = out / f"{stem}-story-map.html"
     page.write_text(build_map(sm), encoding="utf-8")
-    print(f"template → {docx}\nstory map → {page}")
+    print(f"story map → {page}")
     if not a.no_pdf:
         from side_notes import to_pdf
         print(f"PDF → {to_pdf(page)}")

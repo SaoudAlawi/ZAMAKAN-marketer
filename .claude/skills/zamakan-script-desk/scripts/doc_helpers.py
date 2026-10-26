@@ -3,15 +3,15 @@
 
 archive   An archive log: every archive item the film uses (photos, footage, music), where it is used, and columns
           for owner, rights status, cost and credit line. Items are found in a documentary script.json (from
-          av_script.py, paper_edit.py or doc_to_script.py); a filled-in log (CSV) is merged back, so statuses survive
+          av_script.py, paper_edit.py or doc_to_script.py); a filled-in log (Word or CSV) is merged back, so statuses survive
           the next draft.
 shoots    A shoot list from a plan.json: what to film, where, with whom, and whether access is confirmed. Items whose
           access is pending come first, so nobody travels to film a yes that hasn't been given.
           --skeleton av.json writes a plan.json to fill in, one item per picture line.
 
 Usage:
-  python doc_helpers.py archive script.json [--merge archive-log.csv] [--out <dir>]
-  python doc_helpers.py shoots plan.json [--out <dir>]
+  python doc_helpers.py archive script.json [--merge archive-log.docx|.csv] [--out <dir>] [--csv]
+  python doc_helpers.py shoots plan.json [--out <dir>] [--csv]
   python doc_helpers.py shoots --skeleton av.json [--out <dir>]
 
 plan.json: {"title": "...", "lang": "ar", "items": [{"what": "...", "where": "...", "who": "...", "when": "...",
@@ -62,7 +62,12 @@ def norm(s):
 def merge(items, path):
     """Keep what the team already filled in (owner, rights, cost…) for items still in the film; keep removed ones
     at the end, marked, so nothing silently disappears from the log."""
-    old = list(csv.DictReader(open(path, encoding="utf-8-sig")))
+    if str(path).lower().endswith(".docx"):  # the Word log the team filled in (same columns as the CSV)
+        from docx import Document
+        rows = [[c.text.strip() for c in r.cells] for r in Document(path).tables[0].rows[1:]]
+        old = [dict(zip(ARCHIVE_COLS, r)) for r in rows if len(r) >= len(ARCHIVE_COLS)]
+    else:
+        old = list(csv.DictReader(open(path, encoding="utf-8-sig")))
     by = {norm(r.get("item")): r for r in old}
     out, seen = [], set()
     for it in items:
@@ -155,10 +160,12 @@ def main():
     a1.add_argument("script")
     a1.add_argument("--merge")
     a1.add_argument("--out", default=".")
+    a1.add_argument("--csv", action="store_true", help="also a CSV for spreadsheets")
     a2 = sub.add_parser("shoots")
     a2.add_argument("plan", nargs="?")
     a2.add_argument("--skeleton")
     a2.add_argument("--out", default=".")
+    a2.add_argument("--csv", action="store_true", help="also a CSV for spreadsheets")
     a = ap.parse_args()
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -168,8 +175,9 @@ def main():
         title = (sc.get("title_page") or {}).get("title", "")
         stem = stem_of(title)
         archive_docx(items, sc["lang"], title).save(out / f"{stem}-archive-log.docx")
-        write_csv(items, ARCHIVE_COLS, out / f"{stem}-archive-log.csv")
-        print(f"OK: {len(items)} archive items → {out / (stem + '-archive-log.docx')} + .csv")
+        if a.csv:
+            write_csv(items, ARCHIVE_COLS, out / f"{stem}-archive-log.csv")
+        print(f"OK: {len(items)} archive items → {out / (stem + '-archive-log.docx')}" + (" + .csv" if a.csv else ""))
         return
     if a.skeleton:
         import av_script as AV
@@ -189,9 +197,10 @@ def main():
     doc, items = shoots_docx(plan)
     stem = stem_of(plan.get("title"))
     doc.save(out / f"{stem}-shoot-list.docx")
-    write_csv(items, ["what", "where", "who", "when", "access", "needs"], out / f"{stem}-shoot-list.csv")
+    if a.csv:
+        write_csv(items, ["what", "where", "who", "when", "access", "needs"], out / f"{stem}-shoot-list.csv")
     pend = sum(1 for x in items if x["access"] == "pending")
-    print(f"OK: {len(items)} items · {pend} waiting on access → {out / (stem + '-shoot-list.docx')} + .csv")
+    print(f"OK: {len(items)} items · {pend} waiting on access → {out / (stem + '-shoot-list.docx')}" + (" + .csv" if a.csv else ""))
 
 
 if __name__ == "__main__":

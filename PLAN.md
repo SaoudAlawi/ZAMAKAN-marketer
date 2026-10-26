@@ -336,6 +336,18 @@ under-target warning, silences not counted as speech, ambience no longer a "spea
 transcript check (`--bites`), row anchors, clearer SKILL steps. Open: real transcription-service exports untested;
 the "seen but not heard" hint only catches generic words (it missed the merchant on a video call).
 
+**v0.7.0 (2026-10-26, user: "keep the default to docx unless asked; the skill should interact with questions; explain
+how to use the files; explain the story structures").** Word is the only default deliverable: `format_script.py
+--also pdf,fountain,fdx`, `story_template.py --map`, `paper_edit.py --csv/--pdf`, `av_script.py --pdf`,
+`doc_helpers.py --csv` are opt-in; side notes and the report are built on request; the archive log merges a filled-in
+Word log. SKILL "Talk with the writer": one round of choices up front (AskUserQuestion, recommendation first), ask
+instead of guessing when the story leaves something needed unclear, end each reply with one or two questions about
+their story or the next step (max three), stop asking when told. Structure choice is offered before building (with
+`build_template.py --list --fits`). `guide.py` builds the writer's guide (Word, ar/en): how to talk to the desk, colours,
+how to use every file (styles, margin replies, cards, paper edit, A/V, archive), and all 14 structures explained;
+structures.json gained `when`/`tradeoff` (ar/en), also shown in both templates. Each Word file opens with a short
+"how to use this file". Story map: line breaks kept, always one printed page.
+
 ## 4. Build steps & test gates (Feature 1)
 
 | # | Step | Test gate | Status |
@@ -382,6 +394,7 @@ The no-skill baseline did several generic things worth building into the skill:
 
 ## 6. Progress log
 
+- 2026-10-26: Script desk v0.7 (§3e): Word by default, asks the writer questions (structure choice first), writer's guide with every file and structure explained; plugin 1.7.0.
 - 2026-10-26: Script desk v0.6 (§3e): documentaries (doc structures + proposal, transcripts → bites → paper edit, A/V script, documentary reader, archive log, shoot list); 3 blind runs passed; plugin 1.6.0.
 - 2026-10-13: Requirements captured; plan drafted.
 - 2026-10-13: Re-scoped to the sub-skill architecture; built the Rawaq sample package and answer key.

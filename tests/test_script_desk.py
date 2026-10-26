@@ -747,3 +747,45 @@ def test_structure_list_for_offering_a_choice():
                          capture_output=True, text=True, check=True).stdout
     assert "short-one-moment" in out and "kishotenketsu" in out and "save-the-cat" not in out and "doc-" not in out
     assert "انعطافة واحدة" in out  # the plain Arabic summary to show the writer
+
+
+# --- Word by default; the writer's guide ---
+import guide as G  # noqa: E402
+
+DESKS = S.SKILL / "scripts"
+
+
+def test_word_is_the_default_output(tmp_path):
+    run = lambda *a: subprocess.run([sys.executable, *map(str, a)], capture_output=True, text=True, check=True).stdout
+    sj = tmp_path / "s.json"
+    run(DESKS / "parse_script.py", ROOT / "samples" / "script-desk" / "al-mirsah-draft.txt", "--out", sj)
+    run(DESKS / "format_script.py", sj, "--out", tmp_path / "f", "--no-pdf")
+    assert sorted(p.suffix for p in (tmp_path / "f").iterdir()) == [".docx"]
+    run(DESKS / "format_script.py", sj, "--out", tmp_path / "g", "--no-pdf", "--also", "fountain")
+    assert sorted(p.suffix for p in (tmp_path / "g").iterdir()) == [".docx", ".fountain"]
+    run(DESKS / "story_template.py", ROOT / "tests" / "fixtures" / "story_map_al_mirsah.json", "--out", tmp_path / "t")
+    assert [p.suffix for p in (tmp_path / "t").iterdir()] == [".docx"]  # the map only with --map
+
+
+def test_guide_explains_every_structure_and_file(tmp_path):
+    from docx import Document
+    for lang in ("ar", "en"):
+        out = tmp_path / f"{lang}.docx"
+        G.build(lang).save(out)
+        text = "\n".join(p.text for p in Document(out).paragraphs)
+        for st in S.STRUCTURES["structures"]:
+            assert (st["name_ar"] if lang == "ar" else st["name"]) in text
+            assert (st["when_ar"] if lang == "ar" else st["when"]) in text
+        assert ("«رد»" in text) if lang == "ar" else ("Reply" in text)  # how to answer a margin comment
+    assert all(s.get("when") and s.get("tradeoff_ar") for s in S.STRUCTURES["structures"])
+    only = G.build("ar", "structures")
+    assert not any("ملفاتك" in p.text for p in only.paragraphs)
+
+
+def test_archive_merge_reads_the_word_log(tmp_path):
+    sc = AV.to_script(AV.read(DOCS / "sur-av-draft.txt", "آخر صانعي السفن"))
+    items = DH.archive(sc)
+    items[1]["owner"] = "قناة"
+    log = tmp_path / "log.docx"
+    DH.archive_docx(items, "ar", "x").save(log)
+    assert DH.archive(sc, log)[1]["owner"] == "قناة"

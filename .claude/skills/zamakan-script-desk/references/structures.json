@@ -133,7 +133,11 @@
       "ما الصورة الأخيرة التي تجيب على صورة البداية؟"
      ]
     }
-   ]
+   ],
+   "when": "Your story has a clear goal and rising conflict, and you want the classic, widely understood shape. Works for features and longer shorts.",
+   "when_ar": "قصتك فيها هدف واضح وصراع يتصاعد، وتريد الشكل الكلاسيكي الأوسع انتشاراً. يصلح للأفلام الطويلة والقصيرة الأطول.",
+   "tradeoff": "Easy to explain to producers; can feel mechanical if every beat lands exactly on its page.",
+   "tradeoff_ar": "سهل الشرح للمنتجين؛ قد يبدو آلياً إذا وقعت كل محطة على صفحتها بالضبط."
   },
   {
    "id": "save-the-cat",
@@ -373,7 +377,11 @@
       "كيف تثبت الصورة الأخيرة التغيّر؟"
      ]
     }
-   ]
+   ],
+   "when": "A commercial feature where pacing matters: you want to know what should happen around each page.",
+   "when_ar": "فيلم طويل تجاري يهمّك فيه الإيقاع: تريد أن تعرف ماذا يحدث تقريباً عند كل صفحة.",
+   "tradeoff": "Very precise and practical; can push every film toward the same rhythm.",
+   "tradeoff_ar": "دقيق وعملي جداً؛ قد يدفع كل الأفلام نحو الإيقاع نفسه."
   },
   {
    "id": "heros-journey",
@@ -566,7 +574,11 @@
       "بماذا يعود بطلك للآخرين؟"
      ]
     }
-   ]
+   ],
+   "when": "A hero leaves the familiar world, is tested and comes back changed: quests, adventure, coming of age.",
+   "when_ar": "بطل يغادر عالمه المألوف، ويُختبر، ويعود متغيّراً: رحلات، مغامرة، نضوج.",
+   "tradeoff": "Gives a deep emotional arc; heavy for small, intimate stories.",
+   "tradeoff_ar": "يعطي قوساً عاطفياً عميقاً؛ ثقيل على القصص الصغيرة الحميمة."
   },
   {
    "id": "story-circle",
@@ -700,7 +712,11 @@
       "كيف اختلفت شخصيتك عن الخطوة الأولى؟"
      ]
     }
-   ]
+   ],
+   "when": "You want a simple loop (want, go, find, pay, return, change) that works for a scene, a short or a feature.",
+   "when_ar": "تريد دائرة بسيطة (رغبة، ذهاب، إيجاد، ثمن، عودة، تغيّر) تصلح لمشهد أو فيلم قصير أو طويل.",
+   "tradeoff": "Simple to remember; less help with page-by-page pacing.",
+   "tradeoff_ar": "سهلة التذكّر؛ تساعد أقل في ضبط الإيقاع صفحة بصفحة."
   },
   {
    "id": "sequences",
@@ -833,7 +849,11 @@
       "كيف يغلق التسلسل الأخير كل الأسئلة المفتوحة؟"
      ]
     }
-   ]
+   ],
+   "when": "A long feature that sags in the middle: you think in eight blocks of 10–15 minutes, each with its own goal.",
+   "when_ar": "فيلم طويل يترهّل في منتصفه: تفكّر في ثماني كتل من ١٠-١٥ دقيقة، لكل منها هدفها.",
+   "tradeoff": "Keeps the middle alive; more units to plan.",
+   "tradeoff_ar": "يبقي المنتصف حياً؛ وحدات أكثر للتخطيط."
   },
   {
    "id": "kishotenketsu",
@@ -907,7 +927,11 @@
       "ما المعنى الجديد الذي يجمع النصف الأول بالانعطاف؟"
      ]
     }
-   ]
+   ],
+   "when": "A quiet, poetic story with no villain: meaning comes from a surprising turn, not from a fight.",
+   "when_ar": "قصة هادئة وشاعرية بلا خصم: المعنى يأتي من انعطافة مفاجئة، لا من صراع.",
+   "tradeoff": "Fresh and gentle; needs a strong, surprising turn or it feels flat.",
+   "tradeoff_ar": "جديد ولطيف؛ يحتاج انعطافة قوية ومفاجئة وإلا بدا مسطحاً."
   },
   {
    "id": "short-one-moment",
@@ -982,7 +1006,11 @@
       "ما الصورة التي يجب أن تبقى مع الجمهور بعد القطع إلى الأسود؟"
      ]
     }
-   ]
+   ],
+   "when": "A short film under about 15 minutes: one person, one situation, one change.",
+   "when_ar": "فيلم قصير أقل من ١٥ دقيقة تقريباً: شخص واحد، موقف واحد، تحوّل واحد.",
+   "tradeoff": "The most reliable shape for shorts; resist squeezing a feature story into it.",
+   "tradeoff_ar": "أكثر الأشكال ثقة للأفلام القصيرة؛ لا تضغط فيه قصة فيلم طويل."
   },
   {
    "id": "doc-character",
@@ -1070,7 +1098,11 @@
       "كيف ستنهي إن بقي المآل مفتوحاً؟"
      ]
     }
-   ]
+   ],
+   "when": "A real person wants something, and the film follows whether they get it (a build, a race, a season).",
+   "when_ar": "شخص حقيقي يريد شيئاً، والفيلم يتابع هل يصل إليه (بناء، سباق، موسم).",
+   "tradeoff": "Gives a documentary drive and an ending; depends on events you don't control.",
+   "tradeoff_ar": "يعطي الوثائقي دافعاً ونهاية؛ يعتمد على أحداث لا تتحكم بها."
   },
   {
    "id": "doc-observational",
@@ -1143,7 +1175,11 @@
       "أي صورة يمكن أن تُظهر أن شيئاً تغيّر؟"
      ]
     }
-   ]
+   ],
+   "when": "You want no narration and no interviews: you film situations and find the story in the edit.",
+   "when_ar": "لا تريد تعليقاً ولا مقابلات: تصوّر المواقف وتكتشف القصة في المونتاج.",
+   "tradeoff": "Intimate and truthful; needs long access and a lot of footage.",
+   "tradeoff_ar": "حميم وصادق؛ يحتاج وصولاً طويلاً ومادة كثيرة."
   },
   {
    "id": "doc-investigative",
@@ -1216,7 +1252,11 @@
       "ماذا ستقول إنك تعرفه، وماذا ستقول إنك لا تعرفه؟"
      ]
     }
-   ]
+   ],
+   "when": "There is a question the audience wants answered, and evidence that builds or turns.",
+   "when_ar": "هناك سؤال يريد الجمهور جوابه، وأدلة تتراكم أو تنقلب.",
+   "tradeoff": "Strong pull; every claim must be sourced and defensible.",
+   "tradeoff_ar": "شدّ قوي؛ كل معلومة يجب أن يكون لها مصدر ويمكن الدفاع عنها."
   },
   {
    "id": "doc-journey",
@@ -1289,7 +1329,11 @@
       "كيف نرى التغيّر، لا أن نسمعه فقط؟"
      ]
     }
-   ]
+   ],
+   "when": "A trip (a place or a search) gives the film its spine.",
+   "when_ar": "رحلة (مكان أو بحث) تعطي الفيلم عموده الفقري.",
+   "tradeoff": "Easy to follow; the trip must change someone, or it's a travelogue.",
+   "tradeoff_ar": "سهل المتابعة؛ يجب أن تغيّر الرحلة أحداً وإلا صارت فيلم سفر."
   },
   {
    "id": "doc-portrait",
@@ -1347,7 +1391,11 @@
       "ماذا نفهم في النهاية ولم نفهمه في البداية؟"
      ]
     }
-   ]
+   ],
+   "when": "A person, a craft or a place matters more than events: you reveal it layer by layer.",
+   "when_ar": "شخص أو حرفة أو مكان أهم من الأحداث: تكشفه طبقة بعد طبقة.",
+   "tradeoff": "Rich and personal; needs a reason to keep watching (a question, a contradiction).",
+   "tradeoff_ar": "غني وشخصي؛ يحتاج سبباً لمواصلة المشاهدة (سؤال، تناقض)."
   },
   {
    "id": "doc-essay",
@@ -1405,7 +1453,11 @@
       "هل يصل الفيلم إلى مكان، أم يبقى مفتوحاً عمداً؟"
      ]
     }
-   ]
+   ],
+   "when": "The filmmaker's own thinking leads: an argument or a reflection moving between images and ideas.",
+   "when_ar": "تفكير صانع الفيلم هو القائد: حجة أو تأمل يتنقل بين الصور والأفكار.",
+   "tradeoff": "Very free; depends on a strong voice and a clear line of thought.",
+   "tradeoff_ar": "حر جداً؛ يعتمد على صوت قوي وخيط فكري واضح."
   },
   {
    "id": "doc-historical",
@@ -1493,7 +1545,11 @@
       "كيف يبدو الحاضر مختلفاً بعد الفيلم؟"
      ]
     }
-   ]
+   ],
+   "when": "Events in the past, held together by a question or a thread from today.",
+   "when_ar": "أحداث من الماضي، يجمعها سؤال أو خيط من الحاضر.",
+   "tradeoff": "Clear and educational; can become a lecture without a present-day thread.",
+   "tradeoff_ar": "واضح وتعليمي؛ قد يصبح محاضرة دون خيط من الحاضر."
   }
  ]
 }
