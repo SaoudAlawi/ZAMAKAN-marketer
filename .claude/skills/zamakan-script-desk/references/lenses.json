@@ -1,0 +1,322 @@
+{
+ "note": "The reader's viewpoints. Each has a colour (margin comments and report) and questions to ask the draft. Verdicts: green = working, amber = needs work, red = a problem that holds the script back (like a reader's Recommend / Consider / Pass, but per viewpoint and for the writer). Built from common coverage criteria (premise, structure, character, dialogue, pacing, theme, marketability) plus Arabic and production concerns. Colours: the ten viewpoints share three colour families (only three categorical colours stay distinguishable in every pairing, colour-blind readers included: validated with the dataviz validator, all pairs, light and dark); every coloured mark also carries the viewpoint's name. Verdicts use status colours with an icon (✓ ! ✕), never colour alone. Each viewpoint has anchors: one sentence per verdict saying what green, amber and red mean, so verdicts stay consistent.",
+ "verdicts": {
+  "green": {
+   "en": "Working",
+   "ar": "يعمل",
+   "hex": "#0ca30c",
+   "icon": "✓"
+  },
+  "amber": {
+   "en": "Needs work",
+   "ar": "يحتاج عملاً",
+   "hex": "#fab219",
+   "icon": "!"
+  },
+  "red": {
+   "en": "Holds it back",
+   "ar": "يعيق النص",
+   "hex": "#d03b3b",
+   "icon": "✕"
+  }
+ },
+ "lenses": [
+  {
+   "id": "premise",
+   "name": "Premise and originality",
+   "name_ar": "الفكرة والأصالة",
+   "hex": "#2a78d6",
+   "ask": [
+    "Can the story be told in one clear line (who wants what, against what)?",
+    "What is fresh here, and what have we seen many times?",
+    "Is the premise big enough for the running time, or too big for a short?"
+   ],
+   "evidence": "logline you can write from the draft; similar films only if you know them for certain",
+   "family": "story",
+   "anchors": {
+    "green": {
+     "en": "The story fits in one clear line and has something we haven't seen this way.",
+     "ar": "القصة تُقال في سطر واضح، وفيها ما لم نره بهذه الطريقة."
+    },
+    "amber": {
+     "en": "The line is clear but familiar, or fresh but hard to state.",
+     "ar": "السطر واضح لكنه مألوف، أو جديد لكن يصعب قوله."
+    },
+    "red": {
+     "en": "No clear line can be written from the draft: who wants what is unclear.",
+     "ar": "لا يمكن كتابة سطر واضح من المسودة: من يريد ماذا غير واضح."
+    }
+   }
+  },
+  {
+   "id": "structure",
+   "name": "Structure",
+   "name_ar": "البناء",
+   "hex": "#2a78d6",
+   "ask": [
+    "Where are the inciting incident, turns and climax (scene numbers)? Do they fall near the chosen structure's beats (digest)?",
+    "Does every setup pay off, and every payoff have a setup?",
+    "Do any scenes repeat what we already know?",
+    "Are the stakes resolved by the hero's action, or too easily?"
+   ],
+   "evidence": "beat positions from digest.py; scene numbers",
+   "family": "story",
+   "anchors": {
+    "green": {
+     "en": "Turns fall near their beats, every setup pays off, nothing repeats.",
+     "ar": "المحطات قريبة من مواضعها، وكل زرع يُحصد، ولا تكرار."
+    },
+    "amber": {
+     "en": "One or two problems: a repeated scene, a setup with no payoff, a late or early turn.",
+     "ar": "مشكلة أو اثنتان: مشهد مكرر، زرع بلا حصاد، انعطافة متأخرة أو مبكرة."
+    },
+    "red": {
+     "en": "The main turn is missing or not caused by the story; the ending isn't earned.",
+     "ar": "الانعطافة الرئيسية غائبة أو لا تنبع من القصة؛ النهاية غير مستحقة."
+    }
+   }
+  },
+  {
+   "id": "character",
+   "name": "Character",
+   "name_ar": "الشخصيات",
+   "hex": "#eb6834",
+   "ask": [
+    "What does the protagonist want, need and fear? Do they drive the story with choices, or react to it?",
+    "Does anyone change? Is the change earned by events on screen?",
+    "Do supporting characters want something of their own?"
+   ],
+   "evidence": "the scenes where the protagonist decides (or doesn't)",
+   "family": "people",
+   "anchors": {
+    "green": {
+     "en": "The protagonist wants, chooses and pays; others want things of their own.",
+     "ar": "البطل يريد ويختار ويدفع الثمن؛ وللآخرين رغبات خاصة بهم."
+    },
+    "amber": {
+     "en": "The protagonist is clear but reacts more than acts, or a key character is thin.",
+     "ar": "البطل واضح لكنه يتفاعل أكثر مما يفعل، أو شخصية مهمة ضعيفة."
+    },
+    "red": {
+     "en": "The decisive choice belongs to someone else, or we don't know what the protagonist wants.",
+     "ar": "القرار الحاسم لغيره، أو لا نعرف ماذا يريد البطل."
+    }
+   }
+  },
+  {
+   "id": "dialogue",
+   "name": "Dialogue and dialect",
+   "name_ar": "الحوار واللهجة",
+   "hex": "#eb6834",
+   "ask": [
+    "Do characters say exactly what they feel (on the nose), or is there subtext?",
+    "Does each character sound like themselves, and keep one dialect or register unless a switch means something?",
+    "Are speeches too long for the screen?"
+   ],
+   "evidence": "quotes; digest dialect changes and longest speech",
+   "family": "people",
+   "anchors": {
+    "green": {
+     "en": "Characters sound like themselves, subtext works, dialect is consistent or motivated.",
+     "ar": "كل شخصية بصوتها، والمعنى تحت الكلام، واللهجة ثابتة أو لسبب."
+    },
+    "amber": {
+     "en": "Some lines state feelings outright, or a voice drifts.",
+     "ar": "بعض الأسطر تقول المشاعر صراحة، أو صوت شخصية يتذبذب."
+    },
+    "red": {
+     "en": "Most scenes explain themselves in dialogue; voices are interchangeable.",
+     "ar": "أغلب المشاهد تشرح نفسها بالحوار؛ والأصوات متشابهة."
+    }
+   }
+  },
+  {
+   "id": "visual",
+   "name": "Visual storytelling",
+   "name_ar": "السرد البصري",
+   "hex": "#1baf7a",
+   "ask": [
+    "Does the action show what we will see and hear, or narrate thoughts the camera can't film?",
+    "Which moments are told in words that could be shown in images?",
+    "Are there images that carry meaning (motifs, mirrors, bookends)?"
+   ],
+   "evidence": "digest telling lines; quotes from action",
+   "family": "screen",
+   "anchors": {
+    "green": {
+     "en": "Action shows what we see and hear; images carry meaning.",
+     "ar": "الوصف يُرينا ما نرى ونسمع؛ والصور تحمل المعنى."
+    },
+    "amber": {
+     "en": "A few lines narrate thoughts, or key moments are told in words.",
+     "ar": "بضعة أسطر تروي الأفكار، أو لحظات مهمة تُقال بالكلام."
+    },
+    "red": {
+     "en": "The story lives in dialogue and inner narration; the images add little.",
+     "ar": "القصة تعيش في الحوار والسرد الداخلي؛ والصور لا تضيف كثيراً."
+    }
+   }
+  },
+  {
+   "id": "pacing",
+   "name": "Pacing",
+   "name_ar": "الإيقاع",
+   "hex": "#2a78d6",
+   "ask": [
+    "Does each scene change something (a value turns)? Which scenes could be cut?",
+    "Do scenes enter late and leave early?",
+    "Is the length right for the story (pages vs minutes)?"
+   ],
+   "evidence": "scene shares and silent scenes from digest",
+   "family": "story",
+   "anchors": {
+    "green": {
+     "en": "Every scene turns something; length suits the story.",
+     "ar": "كل مشهد يغيّر شيئاً؛ والطول يناسب القصة."
+    },
+    "amber": {
+     "en": "One or two scenes could go or tighten; length and plan differ.",
+     "ar": "مشهد أو اثنان يمكن حذفهما أو شدّهما؛ أو الطول يختلف عن المخطط."
+    },
+    "red": {
+     "en": "Long stretches where nothing changes.",
+     "ar": "مقاطع طويلة لا يتغير فيها شيء."
+    }
+   }
+  },
+  {
+   "id": "theme",
+   "name": "Theme and meaning",
+   "name_ar": "الموضوع والمعنى",
+   "hex": "#2a78d6",
+   "ask": [
+    "What is the film about underneath the plot? Is it shown through choices, or stated?",
+    "Does the ending answer the question the film asks?"
+   ],
+   "evidence": "the ending and the protagonist's last choice",
+   "family": "story",
+   "anchors": {
+    "green": {
+     "en": "The meaning comes through choices and images, not statements.",
+     "ar": "المعنى يأتي من الاختيارات والصور، لا من التصريح."
+    },
+    "amber": {
+     "en": "The theme is there but stated, or the ending answers a different question.",
+     "ar": "الموضوع حاضر لكنه مُصرّح به، أو النهاية تجيب عن سؤال آخر."
+    },
+    "red": {
+     "en": "No clear question under the plot, or it is preached.",
+     "ar": "لا سؤال واضح تحت الحكاية، أو يُلقى كموعظة."
+    }
+   }
+  },
+  {
+   "id": "culture",
+   "name": "Cultural truth and sensitivity",
+   "name_ar": "الصدق الثقافي والحساسية",
+   "hex": "#eb6834",
+   "ask": [
+    "Do places, customs, family roles and speech ring true for where the story is set?",
+    "Is anything likely to meet resistance from audiences, broadcasters or censors in the intended markets (GCC, MENA)? Say what and why, without self-censoring the writer's intent.",
+    "Are women, workers and minorities written as people, not types?"
+   ],
+   "evidence": "specific lines or details; name the market",
+   "family": "people",
+   "anchors": {
+    "green": {
+     "en": "Places, speech and customs ring true; no avoidable resistance in the target markets.",
+     "ar": "الأماكن والكلام والعادات صادقة؛ ولا مقاومة يمكن تجنبها في الأسواق المستهدفة."
+    },
+    "amber": {
+     "en": "Details to check, or something may meet resistance and should be a conscious choice.",
+     "ar": "تفاصيل تحتاج تحققاً، أو شيء قد يواجه مقاومة ويجب أن يكون اختياراً واعياً."
+    },
+    "red": {
+     "en": "It misrepresents the place or people, or will clearly be blocked where the writer wants it to play.",
+     "ar": "يسيء تمثيل المكان أو الناس، أو سيُمنع حتماً حيث يريد الكاتب عرضه."
+    }
+   }
+  },
+  {
+   "id": "production",
+   "name": "Producibility",
+   "name_ar": "قابلية التنفيذ",
+   "hex": "#1baf7a",
+   "ask": [
+    "What will be expensive or hard (night exteriors, sea, weather, crowds, stunts, animals, children, many locations)?",
+    "Is the cost where the story needs it, or could a cheaper choice say the same?",
+    "Is it shootable in the planned market and budget?"
+   ],
+   "evidence": "digest production flags and location count",
+   "family": "screen",
+   "anchors": {
+    "green": {
+     "en": "Shootable on a modest budget; cost sits where the story needs it.",
+     "ar": "قابل للتصوير بميزانية متواضعة؛ والكلفة حيث تحتاجها القصة."
+    },
+    "amber": {
+     "en": "One costly element that a cheaper choice could replace.",
+     "ar": "عنصر مكلف واحد يمكن أن يحل محله خيار أرخص."
+    },
+    "red": {
+     "en": "Several costly elements (night sea, storm, crowds, stunts) beyond a short's means.",
+     "ar": "عناصر مكلفة عدة (بحر ليلي، عاصفة، مجاميع، حركات خطرة) تفوق إمكانات فيلم قصير."
+    }
+   }
+  },
+  {
+   "id": "festival",
+   "name": "Audience and festival fit",
+   "name_ar": "الجمهور والمهرجانات",
+   "hex": "#1baf7a",
+   "ask": [
+    "Who is this for, and where would it play (festivals, platforms, TV)?",
+    "For a short: is the running time within the usual limits of the festivals or funds the writer targets (check their current rules before quoting them)?",
+    "What would make it stand out in a programme?"
+   ],
+   "evidence": "running time; named festivals only with their current rules checked",
+   "family": "screen",
+   "anchors": {
+    "green": {
+     "en": "A clear audience, the right length, something that stands out in a programme.",
+     "ar": "جمهور واضح، وطول مناسب، وما يميّزه في برنامج المهرجان."
+    },
+    "amber": {
+     "en": "Fits but doesn't stand out yet, or the length is off for the target.",
+     "ar": "يناسب لكنه لا يتميز بعد، أو الطول لا يناسب الهدف."
+    },
+    "red": {
+     "en": "No clear audience or venue for it as written.",
+     "ar": "لا جمهور أو منصة واضحة له كما هو مكتوب."
+    }
+   }
+  }
+ ],
+ "families": {
+  "story": {
+   "en": "Story",
+   "ar": "الحكاية",
+   "hex": "#2a78d6",
+   "hex_dark": "#3987e5"
+  },
+  "people": {
+   "en": "People and voice",
+   "ar": "الشخصيات والصوت",
+   "hex": "#eb6834",
+   "hex_dark": "#d95926"
+  },
+  "screen": {
+   "en": "Screen and making",
+   "ar": "الشاشة والتنفيذ",
+   "hex": "#1baf7a",
+   "hex_dark": "#199e70"
+  }
+ },
+ "first_pages": [
+  "premise",
+  "character",
+  "dialogue",
+  "visual",
+  "pacing"
+ ]
+}

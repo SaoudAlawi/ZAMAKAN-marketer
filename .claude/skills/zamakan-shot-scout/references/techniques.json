@@ -1,0 +1,2348 @@
+{
+ "version": "1.0",
+ "notes": "Budget: 1 = any crew, 2 = some extra kit, 3 = specialist crew or rig, 4 = high-end (robot arm, VFX studio). kit: standard (any production house), specialist (specialist operator/rental; may need booking early or flying in), rare (few operators regionally; plan early). Local notes are general (home market Oman; Saudi drones need GACA permits); drones and public filming need permits in every GCC country; check every kit claim with the production house.",
+ "techniques": [
+  {
+   "id": "dolly-in",
+   "name": "Dolly in / slow push",
+   "name_ar": "دفع بطيء للكاميرا",
+   "category": "movement",
+   "synonyms": [
+    "push in",
+    "slow push",
+    "creep in",
+    "push-in",
+    "dolly push",
+    "تقدم الكاميرا",
+    "اقتراب بطيء"
+   ],
+   "feeling": "Growing focus or realisation; draws the viewer into a character's head.",
+   "how": "Camera moves toward the subject on a dolly, slider or gimbal.",
+   "method": "practical",
+   "gear": "Dolly + track, slider or gimbal",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "partly: AI video can push in, but subtle parallax and focus breathing look synthetic",
+   "eyecannndy": [
+    "dolly-shot"
+   ],
+   "examples": [
+    "The Shining (1980)",
+    "Jaws (1975)"
+   ],
+   "search_terms": [
+    "slow push in shot",
+    "dolly in cinematography"
+   ]
+  },
+  {
+   "id": "dolly-zoom",
+   "name": "Dolly zoom (vertigo effect)",
+   "name_ar": "زووم دولي (تأثير فيرتيغو)",
+   "category": "movement",
+   "synonyms": [
+    "vertigo effect",
+    "zolly",
+    "trombone shot",
+    "contra-zoom",
+    "hitchcock zoom",
+    "تأثير فيرتيغو",
+    "زووم عكسي"
+   ],
+   "feeling": "Shock, realisation, the world warping around someone.",
+   "how": "Dolly toward the subject while zooming out (or the reverse) so the subject stays the same size and the background stretches.",
+   "method": "practical",
+   "gear": "Zoom lens + dolly/slider, focus puller; or a motorised slider with lens control",
+   "budget": "2",
+   "kit": "standard",
+   "ai": "partly: possible in AI/VFX, hard to keep the subject stable",
+   "eyecannndy": [
+    "dolly-zoom"
+   ],
+   "examples": [
+    "Vertigo (1958)",
+    "Jaws (1975)",
+    "Goodfellas (1990)"
+   ],
+   "search_terms": [
+    "dolly zoom scene",
+    "vertigo effect shot"
+   ]
+  },
+  {
+   "id": "tracking",
+   "name": "Tracking shot",
+   "name_ar": "لقطة تتبع",
+   "category": "movement",
+   "synonyms": [
+    "follow shot",
+    "walk and talk",
+    "tracking",
+    "lateral track",
+    "لقطة مرافقة",
+    "تتبع"
+   ],
+   "feeling": "Momentum, being with the character, a journey.",
+   "how": "Camera moves alongside, behind or ahead of a moving subject.",
+   "method": "practical",
+   "gear": "Gimbal, Steadicam, dolly track or car rig",
+   "budget": "2",
+   "kit": "standard",
+   "ai": "partly",
+   "eyecannndy": [
+    "tracking",
+    "trucking"
+   ],
+   "examples": [
+    "Children of Men (2006)",
+    "1917 (2019)"
+   ],
+   "search_terms": [
+    "tracking shot",
+    "follow shot cinematography"
+   ]
+  },
+  {
+   "id": "oner",
+   "name": "One-take (oner)",
+   "name_ar": "لقطة واحدة متصلة",
+   "category": "movement",
+   "synonyms": [
+    "oner",
+    "long take",
+    "single take",
+    "continuous shot",
+    "one shot",
+    "لقطة متواصلة",
+    "ون تيك",
+    "one take",
+    "one-take",
+    "single shot",
+    "unbroken shot",
+    "بدون قطع"
+   ],
+   "feeling": "Immersion and tension; the viewer can't look away.",
+   "how": "A whole scene in one unbroken shot, or several stitched to look like one.",
+   "method": "practical",
+   "gear": "Steadicam/gimbal, heavy rehearsal; hidden stitches in post",
+   "budget": "3",
+   "kit": "specialist",
+   "ai": "no: choreography and real time are the point",
+   "eyecannndy": [
+    "tracking"
+   ],
+   "examples": [
+    "1917 (2019)",
+    "Birdman (2014)",
+    "Children of Men (2006)"
+   ],
+   "search_terms": [
+    "one take commercial",
+    "long take oner"
+   ]
+  },
+  {
+   "id": "orbit",
+   "name": "Orbit / 360 around subject",
+   "name_ar": "دوران حول الشخصية",
+   "category": "movement",
+   "synonyms": [
+    "arc shot",
+    "orbit",
+    "circle around",
+    "360 shot",
+    "dolly arc",
+    "دوران",
+    "لقطة دائرية"
+   ],
+   "feeling": "Heroism, a moment of significance, the world revolving around someone.",
+   "how": "Camera circles the subject on a circular track, gimbal or drone.",
+   "method": "practical",
+   "gear": "Circular track, gimbal or drone",
+   "budget": "2",
+   "kit": "standard",
+   "ai": "partly",
+   "eyecannndy": [
+    "arc-movement",
+    "lazy-susan"
+   ],
+   "examples": [
+    "The Matrix (1999)",
+    "Bad Boys II (2003)"
+   ],
+   "search_terms": [
+    "arc shot 360 around actor"
+   ]
+  },
+  {
+   "id": "crane",
+   "name": "Crane / jib reveal",
+   "name_ar": "رافعة كاميرا (كرين)",
+   "category": "movement",
+   "synonyms": [
+    "jib",
+    "crane up",
+    "crane down",
+    "boom shot",
+    "rise reveal",
+    "رافعة",
+    "كرين",
+    "لقطة رافعة"
+   ],
+   "feeling": "A reveal, scale, an ending.",
+   "how": "Camera rises or descends on a crane, jib or telescopic arm.",
+   "method": "practical",
+   "gear": "Jib/crane or Technocrane, operator",
+   "budget": "3",
+   "kit": "specialist",
+   "ai": "partly",
+   "eyecannndy": [
+    "pedestal",
+    "high-angle"
+   ],
+   "examples": [
+    "Touch of Evil (1958)"
+   ],
+   "search_terms": [
+    "crane shot reveal"
+   ]
+  },
+  {
+   "id": "aerial",
+   "name": "Aerial / drone",
+   "name_ar": "لقطة جوية (درون)",
+   "category": "movement",
+   "synonyms": [
+    "drone",
+    "aerial",
+    "bird's eye",
+    "helicopter shot",
+    "top down drone",
+    "درون",
+    "تصوير جوي",
+    "لقطة علوية"
+   ],
+   "feeling": "Scale, freedom, epic landscapes, a place introduced.",
+   "how": "Drone or helicopter footage.",
+   "method": "practical",
+   "gear": "Drone (or helicopter for heavy cameras); licensed pilot",
+   "budget": "2",
+   "kit": "standard (permits)",
+   "ai": "yes for landscapes; AI aerials are close to real",
+   "eyecannndy": [
+    "aerial",
+    "overhead"
+   ],
+   "examples": [
+    "Lawrence of Arabia (1962, helicopter era)"
+   ],
+   "search_terms": [
+    "drone cinematography desert",
+    "aerial shot film"
+   ]
+  },
+  {
+   "id": "fpv",
+   "name": "FPV drone dive",
+   "name_ar": "درون FPV",
+   "category": "movement",
+   "synonyms": [
+    "fpv",
+    "fpv drone",
+    "drone dive",
+    "one-take drone",
+    "racing drone",
+    "درون سباق",
+    "إف بي في"
+   ],
+   "feeling": "Rush, speed, a single sweeping journey through spaces.",
+   "how": "A small first-person-view drone flown manually, often through gaps and interiors.",
+   "method": "practical",
+   "gear": "FPV drone, specialist pilot",
+   "budget": "2",
+   "kit": "specialist",
+   "ai": "partly",
+   "eyecannndy": [
+    "fpv-drone"
+   ],
+   "examples": [],
+   "search_terms": [
+    "fpv drone commercial",
+    "fpv one take"
+   ]
+  },
+  {
+   "id": "handheld",
+   "name": "Handheld",
+   "name_ar": "تصوير محمول باليد",
+   "category": "movement",
+   "synonyms": [
+    "shaky cam",
+    "handheld",
+    "documentary style",
+    "verite",
+    "observational",
+    "كاميرا محمولة",
+    "أسلوب وثائقي"
+   ],
+   "feeling": "Realness, urgency, intimacy, documentary truth.",
+   "how": "Operator holds the camera; movement is kept or exaggerated.",
+   "method": "practical",
+   "gear": "Any camera, shoulder rig",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "partly: AI handheld often feels floaty",
+   "eyecannndy": [
+    "shaky-cam"
+   ],
+   "examples": [
+    "The Bourne Supremacy (2004)",
+    "Uncut Gems (2019)"
+   ],
+   "search_terms": [
+    "handheld cinematography"
+   ]
+  },
+  {
+   "id": "snorricam",
+   "name": "Snorricam (body-mounted)",
+   "name_ar": "كاميرا مثبتة على الجسم",
+   "category": "movement",
+   "synonyms": [
+    "body cam",
+    "chest rig",
+    "snorricam",
+    "face cam",
+    "كاميرا على الجسد"
+   ],
+   "feeling": "Disorientation, intoxication, the world moving around a fixed face.",
+   "how": "Camera rigged to the actor's body, facing them.",
+   "method": "practical",
+   "gear": "Body rig, small camera",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "partly",
+   "eyecannndy": [
+    "snorricam"
+   ],
+   "examples": [
+    "Requiem for a Dream (2000)",
+    "Mean Streets (1973)"
+   ],
+   "search_terms": [
+    "snorricam shot"
+   ]
+  },
+  {
+   "id": "whip-pan",
+   "name": "Whip pan",
+   "name_ar": "التفاف سريع (ويب بان)",
+   "category": "movement",
+   "synonyms": [
+    "swish pan",
+    "whip",
+    "flash pan",
+    "ويب بان",
+    "التفاتة سريعة"
+   ],
+   "feeling": "Energy, comedy, a fast hidden transition.",
+   "how": "A pan so fast the image blurs, often used to cut between shots.",
+   "method": "practical",
+   "gear": "Fluid head or gimbal; edit",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "partly",
+   "eyecannndy": [
+    "whip-pan"
+   ],
+   "examples": [
+    "La La Land (2016)",
+    "Whiplash (2014)"
+   ],
+   "search_terms": [
+    "whip pan transition"
+   ]
+  },
+  {
+   "id": "bolt-cam",
+   "name": "Robotic arm (bolt / motion control)",
+   "name_ar": "ذراع آلية (موشن كنترول)",
+   "category": "movement",
+   "synonyms": [
+    "motion control",
+    "robotic arm",
+    "bolt",
+    "mark roberts",
+    "high speed robot",
+    "موشن كنترول",
+    "ذراع روبوت"
+   ],
+   "feeling": "Precise, punchy, product-hero energy; impossible camera moves.",
+   "how": "A programmable robot arm repeats or performs ultra-fast exact moves, often paired with high-speed cameras.",
+   "method": "rig",
+   "gear": "Motion-control robot (e.g. Bolt) + operator, often a high-speed camera",
+   "budget": "4",
+   "kit": "rare",
+   "ai": "partly: AI can fake simple moves; exact repeatable passes need the rig",
+   "eyecannndy": [
+    "bolt-cam"
+   ],
+   "examples": [],
+   "search_terms": [
+    "bolt cinebot commercial",
+    "motion control product shot"
+   ]
+  },
+  {
+   "id": "parallax",
+   "name": "Parallax slide",
+   "name_ar": "انزلاق بارالاكس",
+   "category": "movement",
+   "synonyms": [
+    "slider",
+    "lateral slide",
+    "parallax",
+    "depth slide",
+    "انزلاق جانبي",
+    "بارالاكس"
+   ],
+   "feeling": "Depth and texture; a calm premium feel.",
+   "how": "Short lateral camera move with foreground and background layers moving at different speeds.",
+   "method": "practical",
+   "gear": "Slider or gimbal",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "parallax"
+   ],
+   "examples": [],
+   "search_terms": [
+    "parallax slider shot"
+   ]
+  },
+  {
+   "id": "static-frame",
+   "name": "Static frame (locked-off)",
+   "name_ar": "كادر ثابت",
+   "category": "movement",
+   "synonyms": [
+    "locked off",
+    "static shot",
+    "fixed camera",
+    "tripod shot",
+    "still frame",
+    "no camera movement",
+    "كاميرا ثابتة",
+    "لقطة ثابتة"
+   ],
+   "feeling": "Stillness, observation, patience; lets the people and light do the moving.",
+   "how": "Camera on a tripod, no movement; the composition carries the shot.",
+   "method": "practical",
+   "gear": "Tripod",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "fixed-camera"
+   ],
+   "examples": [
+    "Tokyo Story (1953)",
+    "Roy Andersson's films"
+   ],
+   "search_terms": [
+    "static shot cinematography",
+    "locked off shot"
+   ]
+  },
+  {
+   "id": "locked-on",
+   "name": "Locked-on / object mount",
+   "name_ar": "كاميرا مثبتة على شيء متحرك",
+   "category": "movement",
+   "synonyms": [
+    "object mount",
+    "locked on",
+    "rigged to car",
+    "hood mount",
+    "fixed to object",
+    "كاميرا مثبتة على السيارة"
+   ],
+   "feeling": "The world spins while the subject stays still; dynamic product or vehicle energy.",
+   "how": "Camera fixed to the moving object (car, bottle, bike).",
+   "method": "rig",
+   "gear": "Rigging kit, small camera",
+   "budget": "2",
+   "kit": "standard",
+   "ai": "partly",
+   "eyecannndy": [
+    "locked-on",
+    "as-object"
+   ],
+   "examples": [],
+   "search_terms": [
+    "camera rigged to car shot"
+   ]
+  },
+  {
+   "id": "shallow-focus",
+   "name": "Shallow focus (bokeh)",
+   "name_ar": "عمق ميدان ضحل",
+   "category": "lens",
+   "synonyms": [
+    "bokeh",
+    "shallow depth of field",
+    "wide open",
+    "soft background",
+    "عزل الخلفية",
+    "بوكيه",
+    "عمق ميدان"
+   ],
+   "feeling": "Intimacy, isolation, a premium portrait feel.",
+   "how": "Wide aperture or long lens so only a thin slice is sharp.",
+   "method": "practical",
+   "gear": "Fast lenses (f/1.4 to f/2), focus puller",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "focal-focus"
+   ],
+   "examples": [],
+   "search_terms": [
+    "shallow depth of field cinematic"
+   ]
+  },
+  {
+   "id": "rack-focus",
+   "name": "Rack focus",
+   "name_ar": "نقل البؤرة",
+   "category": "lens",
+   "synonyms": [
+    "focus pull",
+    "pull focus",
+    "focus shift",
+    "rack",
+    "نقل التركيز",
+    "تغيير البؤرة"
+   ],
+   "feeling": "Shifts attention; links two things in one shot.",
+   "how": "Focus moves from one plane to another during the shot.",
+   "method": "practical",
+   "gear": "Follow focus, focus puller",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "partly",
+   "eyecannndy": [
+    "focal-shift"
+   ],
+   "examples": [
+    "The Graduate (1967)"
+   ],
+   "search_terms": [
+    "rack focus shot"
+   ]
+  },
+  {
+   "id": "split-diopter",
+   "name": "Split diopter",
+   "name_ar": "عدسة سبليت ديوبتر",
+   "category": "lens",
+   "synonyms": [
+    "split diopter",
+    "split focus",
+    "two planes sharp",
+    "ديوبتر"
+   ],
+   "feeling": "Tension between two people or things; uncanny clarity.",
+   "how": "A half-lens makes near and far both sharp, with a soft seam.",
+   "method": "practical",
+   "gear": "Split diopter filter",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "partly",
+   "eyecannndy": [
+    "split-diopter"
+   ],
+   "examples": [
+    "Blow Out (1981)",
+    "Reservoir Dogs (1992)"
+   ],
+   "search_terms": [
+    "split diopter shot"
+   ]
+  },
+  {
+   "id": "anamorphic",
+   "name": "Anamorphic widescreen",
+   "name_ar": "عدسات أنامورفيك",
+   "category": "lens",
+   "synonyms": [
+    "anamorphic",
+    "widescreen",
+    "2.39",
+    "oval bokeh",
+    "blue flare",
+    "scope",
+    "أنامورفيك",
+    "سينما سكوب"
+   ],
+   "feeling": "Big-screen cinema; epic or nostalgic feel; horizontal flares.",
+   "how": "Anamorphic lenses squeeze a wide image; they give oval bokeh and streak flares.",
+   "method": "practical",
+   "gear": "Anamorphic lens set",
+   "budget": "2",
+   "kit": "specialist",
+   "ai": "partly: AI imitates the flares, not the optics",
+   "eyecannndy": [
+    "aspect-ratio-switch"
+   ],
+   "examples": [
+    "Blade Runner 2049 (2017)"
+   ],
+   "search_terms": [
+    "anamorphic lens look"
+   ]
+  },
+  {
+   "id": "macro",
+   "name": "Macro / extreme close-up",
+   "name_ar": "تصوير ماكرو",
+   "category": "lens",
+   "synonyms": [
+    "macro",
+    "extreme close up",
+    "ecu",
+    "detail shot",
+    "texture",
+    "تفاصيل",
+    "لقطة مكبرة جدا",
+    "ماكرو"
+   ],
+   "feeling": "Sensory detail; makes small things epic (coffee, fabric, skin, food).",
+   "how": "Macro lenses or probes very close to the subject.",
+   "method": "practical",
+   "gear": "Macro lens or probe lens, strong light",
+   "budget": "2",
+   "kit": "standard",
+   "ai": "yes for stills; motion detail is harder",
+   "eyecannndy": [
+    "close-up",
+    "magnification",
+    "probe-lens"
+   ],
+   "examples": [
+    "Requiem for a Dream (2000)"
+   ],
+   "search_terms": [
+    "macro cinematography commercial"
+   ]
+  },
+  {
+   "id": "probe-lens",
+   "name": "Probe lens",
+   "name_ar": "عدسة بروب",
+   "category": "lens",
+   "synonyms": [
+    "probe lens",
+    "laowa probe",
+    "bug's eye",
+    "periscope lens",
+    "عدسة منظار"
+   ],
+   "feeling": "Tiny-world point of view; surprising, playful product journeys.",
+   "how": "A long thin periscope lens goes inside objects and spaces.",
+   "method": "rig",
+   "gear": "Probe lens (e.g. Laowa 24mm probe)",
+   "budget": "2",
+   "kit": "specialist",
+   "ai": "partly",
+   "eyecannndy": [
+    "probe-lens"
+   ],
+   "examples": [],
+   "search_terms": [
+    "probe lens commercial"
+   ]
+  },
+  {
+   "id": "fisheye",
+   "name": "Fisheye / ultra wide",
+   "name_ar": "عين السمكة",
+   "category": "lens",
+   "synonyms": [
+    "fisheye",
+    "ultra wide",
+    "distorted wide",
+    "skate lens",
+    "عين سمكة",
+    "زاوية واسعة جدا"
+   ],
+   "feeling": "Energy, comedy, youth and street culture; distortion.",
+   "how": "Very wide or fisheye lens close to the subject.",
+   "method": "practical",
+   "gear": "Fisheye lens",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "fisheye",
+    "ultra-wide-zero-d"
+   ],
+   "examples": [],
+   "search_terms": [
+    "fisheye lens music video"
+   ]
+  },
+  {
+   "id": "tilt-shift",
+   "name": "Tilt-shift miniature",
+   "name_ar": "تأثير المجسم المصغر",
+   "category": "lens",
+   "synonyms": [
+    "tilt shift",
+    "miniature effect",
+    "diorama look",
+    "toy town",
+    "تيلت شيفت",
+    "مجسم مصغر"
+   ],
+   "feeling": "Toy-like, playful; real cities look like models.",
+   "how": "Tilt lens (or blur in post) narrows focus, often with time-lapse.",
+   "method": "practical",
+   "gear": "Tilt-shift lens or post blur",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "tilt-shift",
+    "model"
+   ],
+   "examples": [],
+   "search_terms": [
+    "tilt shift timelapse"
+   ]
+  },
+  {
+   "id": "long-lens",
+   "name": "Long lens compression",
+   "name_ar": "ضغط العدسة الطويلة",
+   "category": "lens",
+   "synonyms": [
+    "telephoto",
+    "long lens",
+    "compression",
+    "heat haze",
+    "tele",
+    "عدسة طويلة",
+    "تقريب بعيد"
+   ],
+   "feeling": "Compressed space: crowds packed, sun huge, heat shimmering.",
+   "how": "Very long focal length from far away.",
+   "method": "practical",
+   "gear": "Long telephoto lens, stable support",
+   "budget": "2",
+   "kit": "standard",
+   "ai": "partly",
+   "eyecannndy": [
+    "haze"
+   ],
+   "examples": [
+    "Lawrence of Arabia (1962)",
+    "Heat (1995)"
+   ],
+   "search_terms": [
+    "long lens compression shot"
+   ]
+  },
+  {
+   "id": "slow-motion",
+   "name": "Slow motion (high frame rate)",
+   "name_ar": "تصوير بطيء",
+   "category": "speed",
+   "synonyms": [
+    "slow mo",
+    "slow-mo",
+    "slowmo",
+    "high frame rate",
+    "hfr",
+    "super slow motion",
+    "phantom",
+    "تصوير بطيء",
+    "حركة بطيئة"
+   ],
+   "feeling": "Beauty, weight, a moment stretched; sensuality for food and liquids.",
+   "how": "Shoot at a high frame rate (60 to 1000+ fps) and play back at normal speed.",
+   "method": "practical",
+   "gear": "High-speed camera (to 240 fps standard; Phantom for 1000+), lots of light",
+   "budget": "2",
+   "kit": "standard; Phantom = specialist",
+   "ai": "partly: AI slow motion of liquids is improving but physics often breaks",
+   "eyecannndy": [
+    "slow-motion"
+   ],
+   "examples": [],
+   "search_terms": [
+    "phantom slow motion commercial",
+    "super slow motion liquid"
+   ]
+  },
+  {
+   "id": "speed-ramp",
+   "name": "Speed ramp",
+   "name_ar": "تغيير السرعة (سبيد رامب)",
+   "category": "speed",
+   "synonyms": [
+    "speed ramp",
+    "ramping",
+    "time ramp",
+    "slow then fast",
+    "سبيد رامب",
+    "تسريع وتبطيء"
+   ],
+   "feeling": "Punch and rhythm; action emphasis; time slowing down at the key moment.",
+   "how": "Playback speed changes within a shot, from normal to slow and back.",
+   "method": "edit",
+   "gear": "High-frame-rate footage + edit (or in-camera ramp)",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "partly",
+   "eyecannndy": [
+    "speed-ramping"
+   ],
+   "examples": [
+    "300 (2006)",
+    "Sherlock Holmes (2009)"
+   ],
+   "search_terms": [
+    "speed ramp transition",
+    "speed ramping commercial"
+   ]
+  },
+  {
+   "id": "time-lapse",
+   "name": "Time-lapse",
+   "name_ar": "تسريع زمني (تايم لابس)",
+   "category": "speed",
+   "synonyms": [
+    "timelapse",
+    "time lapse",
+    "hyperlapse",
+    "day to night",
+    "تايم لابس",
+    "تصوير متسارع"
+   ],
+   "feeling": "Time passing; cities breathing; transformation; sky and light changes.",
+   "how": "Frames shot at intervals and played back fast; hyperlapse adds camera travel.",
+   "method": "practical",
+   "gear": "Camera + intervalometer, motion-control slider for moving lapses",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes for skies; less for people",
+   "eyecannndy": [
+    "undercranking"
+   ],
+   "examples": [
+    "Koyaanisqatsi (1982)"
+   ],
+   "search_terms": [
+    "day to night timelapse",
+    "hyperlapse city"
+   ]
+  },
+  {
+   "id": "bullet-time",
+   "name": "Bullet time / frozen moment",
+   "name_ar": "تجميد الزمن (بوليت تايم)",
+   "category": "speed",
+   "synonyms": [
+    "bullet time",
+    "frozen moment",
+    "time slice",
+    "matrix effect",
+    "tableau vivant",
+    "frozen crowd",
+    "تجميد اللحظة",
+    "ماتريكس"
+   ],
+   "feeling": "Time stops; the viewer walks around a frozen moment.",
+   "how": "A camera array fires together; or actors freeze while the camera moves; or VFX.",
+   "method": "rig",
+   "gear": "Camera array (rare) or performers holding still + gimbal; VFX",
+   "budget": "3",
+   "kit": "specialist (array = rare)",
+   "ai": "partly: AI can freeze-and-orbit, details drift",
+   "eyecannndy": [
+    "bullet-time",
+    "freeze-frame",
+    "tableau-shots"
+   ],
+   "examples": [
+    "The Matrix (1999)"
+   ],
+   "search_terms": [
+    "bullet time commercial",
+    "frozen moment shot crowd"
+   ]
+  },
+  {
+   "id": "reverse",
+   "name": "Reverse motion",
+   "name_ar": "حركة معكوسة",
+   "category": "speed",
+   "synonyms": [
+    "reverse",
+    "rewind",
+    "played backwards",
+    "مقطع معكوس",
+    "ترجيع"
+   ],
+   "feeling": "Magic, memory, undoing; surreal motion.",
+   "how": "Shot played backwards, sometimes performed backwards for natural motion.",
+   "method": "edit",
+   "gear": "Edit only",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "boomerang"
+   ],
+   "examples": [
+    "Tenet (2020)"
+   ],
+   "search_terms": [
+    "reverse motion music video"
+   ]
+  },
+  {
+   "id": "stop-motion",
+   "name": "Stop motion",
+   "name_ar": "تحريك بالإيقاف (ستوب موشن)",
+   "category": "speed",
+   "synonyms": [
+    "stop motion",
+    "stopmotion",
+    "pixilation",
+    "claymation",
+    "ستوب موشن"
+   ],
+   "feeling": "Handmade charm, playfulness, craft.",
+   "how": "Objects moved frame by frame and photographed.",
+   "method": "practical",
+   "gear": "Stills camera, animation software, patience",
+   "budget": "2",
+   "kit": "specialist",
+   "ai": "partly: AI imitations look smooth, not handmade",
+   "eyecannndy": [
+    "stop-motion",
+    "step-printing"
+   ],
+   "examples": [],
+   "search_terms": [
+    "stop motion commercial product"
+   ]
+  },
+  {
+   "id": "step-print",
+   "name": "Step-printing / stutter",
+   "name_ar": "حركة متقطعة (ستب برنت)",
+   "category": "speed",
+   "synonyms": [
+    "step printing",
+    "stutter",
+    "smear",
+    "wong kar wai",
+    "ستب برنت",
+    "حركة متقطعة"
+   ],
+   "feeling": "Dreamy, druggy, memory-like motion smears.",
+   "how": "Low shutter + repeated frames create a smeared stutter.",
+   "method": "edit",
+   "gear": "Slow shutter in camera, frame doubling in post",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "partly",
+   "eyecannndy": [
+    "step-printing",
+    "stutter",
+    "echo-printing"
+   ],
+   "examples": [
+    "Chungking Express (1994)"
+   ],
+   "search_terms": [
+    "step printing effect"
+   ]
+  },
+  {
+   "id": "silhouette",
+   "name": "Silhouette / backlight",
+   "name_ar": "سيلويت (ظل أسود)",
+   "category": "light",
+   "synonyms": [
+    "silhouette",
+    "backlit",
+    "contre-jour",
+    "rim light",
+    "sunset silhouette",
+    "ظل",
+    "إضاءة خلفية",
+    "غروب"
+   ],
+   "feeling": "Mystery, anonymity, iconic shapes, epic dusk.",
+   "how": "Expose for a bright background so the subject goes dark.",
+   "method": "practical",
+   "gear": "Natural backlight or strong back source",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "silhouette"
+   ],
+   "examples": [
+    "Apocalypse Now (1979)"
+   ],
+   "search_terms": [
+    "silhouette cinematography"
+   ]
+  },
+  {
+   "id": "golden-hour",
+   "name": "Golden hour / magic hour",
+   "name_ar": "الساعة الذهبية",
+   "category": "light",
+   "synonyms": [
+    "golden hour",
+    "magic hour",
+    "sunset light",
+    "dusk",
+    "warm low sun",
+    "maghrib light",
+    "الساعة الذهبية",
+    "وقت الغروب",
+    "ضوء المغرب",
+    "sunrise",
+    "dawn light",
+    "شروق",
+    "الشروق"
+   ],
+   "feeling": "Nostalgia, warmth, romance, hope.",
+   "how": "Shoot in the low warm sun just after sunrise or before sunset.",
+   "method": "practical",
+   "gear": "Scheduling; reflectors; a fast crew",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "hard-light",
+    "halation"
+   ],
+   "examples": [
+    "Days of Heaven (1978)"
+   ],
+   "search_terms": [
+    "golden hour cinematography"
+   ]
+  },
+  {
+   "id": "blue-hour",
+   "name": "Blue hour",
+   "name_ar": "الساعة الزرقاء",
+   "category": "light",
+   "synonyms": [
+    "blue hour",
+    "twilight",
+    "after sunset",
+    "dusk blue",
+    "الشفق",
+    "الساعة الزرقاء",
+    "dawn",
+    "before sunrise",
+    "فجر",
+    "الفجر"
+   ],
+   "feeling": "Melancholy, calm, cities waking or sleeping.",
+   "how": "Shoot in the cool twilight after sunset or before sunrise.",
+   "method": "practical",
+   "gear": "Fast lenses, scheduling",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [],
+   "examples": [],
+   "search_terms": [
+    "blue hour cinematography"
+   ]
+  },
+  {
+   "id": "chiaroscuro",
+   "name": "Chiaroscuro / low key",
+   "name_ar": "إضاءة منخفضة (كياروسكورو)",
+   "category": "light",
+   "synonyms": [
+    "low key",
+    "chiaroscuro",
+    "noir lighting",
+    "hard shadows",
+    "dramatic shadows",
+    "كياروسكورو",
+    "ظلال قوية"
+   ],
+   "feeling": "Drama, secrecy, power; painterly richness.",
+   "how": "Strong single source, deep shadows, little fill.",
+   "method": "practical",
+   "gear": "Lighting kit, flags",
+   "budget": "2",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "hard-light",
+    "spotlight",
+    "shadow-box"
+   ],
+   "examples": [
+    "The Godfather (1972)"
+   ],
+   "search_terms": [
+    "low key lighting film"
+   ]
+  },
+  {
+   "id": "practical-light",
+   "name": "Practical lights / neon",
+   "name_ar": "إضاءة من مصادر في الكادر",
+   "category": "light",
+   "synonyms": [
+    "practicals",
+    "neon",
+    "lamps in frame",
+    "neon noir",
+    "nightlife",
+    "نيون",
+    "إضاءة الشوارع"
+   ],
+   "feeling": "Atmosphere, nightlife, intimacy; colour from the location.",
+   "how": "Light comes from sources visible in frame (lamps, neon, screens, car lights).",
+   "method": "practical",
+   "gear": "Practical lamps, RGB tubes",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "spotlight"
+   ],
+   "examples": [
+    "Drive (2011)",
+    "Blade Runner 2049 (2017)"
+   ],
+   "search_terms": [
+    "neon practical lighting cinematography"
+   ]
+  },
+  {
+   "id": "haze",
+   "name": "Haze / atmosphere",
+   "name_ar": "ضباب / غبار في الجو",
+   "category": "light",
+   "synonyms": [
+    "haze",
+    "smoke",
+    "atmosphere",
+    "god rays",
+    "volumetric light",
+    "dust",
+    "fog",
+    "ضباب",
+    "غبار",
+    "أشعة ضوء"
+   ],
+   "feeling": "Mood, depth, sacred or mysterious light (god rays).",
+   "how": "Haze machine, smoke or natural dust makes light beams visible.",
+   "method": "practical",
+   "gear": "Hazer, backlight",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "haze"
+   ],
+   "examples": [
+    "Blade Runner (1982)"
+   ],
+   "search_terms": [
+    "volumetric light god rays shot"
+   ]
+  },
+  {
+   "id": "halation",
+   "name": "Halation / film glow",
+   "name_ar": "توهج الفيلم (هاليشن)",
+   "category": "look",
+   "synonyms": [
+    "halation",
+    "film glow",
+    "bloom",
+    "pro-mist",
+    "dreamy glow",
+    "توهج",
+    "شاشة ضبابية"
+   ],
+   "feeling": "Nostalgia, softness, warmth; an analogue feel.",
+   "how": "Diffusion filters or film emulation make highlights glow red-orange.",
+   "method": "practical",
+   "gear": "Diffusion filter (Pro-Mist) or grade",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "halation"
+   ],
+   "examples": [],
+   "search_terms": [
+    "halation film look"
+   ]
+  },
+  {
+   "id": "hard-light",
+   "name": "Hard sunlight / high contrast",
+   "name_ar": "ضوء شمس قاسٍ",
+   "category": "light",
+   "synonyms": [
+    "hard light",
+    "harsh sun",
+    "midday",
+    "high contrast",
+    "sharp shadows",
+    "ضوء قاسٍ",
+    "شمس الظهيرة"
+   ],
+   "feeling": "Heat, honesty, graphic shapes; Gulf summer.",
+   "how": "Direct unsoftened sun or hard source; sharp shadows embraced.",
+   "method": "practical",
+   "gear": "None, or a hard source",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "hard-light"
+   ],
+   "examples": [],
+   "search_terms": [
+    "harsh sunlight cinematography"
+   ]
+  },
+  {
+   "id": "symmetry",
+   "name": "Central framing / symmetry",
+   "name_ar": "تكوين متماثل في المنتصف",
+   "category": "framing",
+   "synonyms": [
+    "symmetry",
+    "centered",
+    "central framing",
+    "one point perspective",
+    "wes anderson",
+    "تماثل",
+    "منتصف الكادر"
+   ],
+   "feeling": "Order, wit, control; a storybook or uncanny feel.",
+   "how": "Subject dead centre, symmetrical sets, one-point perspective.",
+   "method": "practical",
+   "gear": "Production design, careful blocking",
+   "budget": "2",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "central-framing",
+    "tableau-shots"
+   ],
+   "examples": [
+    "The Grand Budapest Hotel (2014)",
+    "The Shining (1980)"
+   ],
+   "search_terms": [
+    "symmetrical shots film"
+   ]
+  },
+  {
+   "id": "wide-lonely",
+   "name": "Wide shot, small figure (negative space)",
+   "name_ar": "لقطة واسعة لشخص صغير",
+   "category": "framing",
+   "synonyms": [
+    "negative space",
+    "small figure",
+    "lonely wide",
+    "establishing",
+    "vast landscape",
+    "tiny person",
+    "فراغ",
+    "شخص صغير في مكان واسع",
+    "لقطة واسعة"
+   ],
+   "feeling": "Loneliness, awe, scale of nature versus a person.",
+   "how": "Very wide framing with the person tiny in the frame.",
+   "method": "practical",
+   "gear": "Wide or long lens, location",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "wide-shot",
+    "void"
+   ],
+   "examples": [
+    "Lawrence of Arabia (1962)",
+    "Paris, Texas (1984)"
+   ],
+   "search_terms": [
+    "wide shot small figure landscape"
+   ]
+  },
+  {
+   "id": "low-angle",
+   "name": "Low angle / worm's eye",
+   "name_ar": "زاوية منخفضة",
+   "category": "framing",
+   "synonyms": [
+    "low angle",
+    "worm's eye",
+    "hero angle",
+    "looking up",
+    "زاوية منخفضة",
+    "من الأسفل"
+   ],
+   "feeling": "Power, heroism, monumentality.",
+   "how": "Camera below the subject looking up.",
+   "method": "practical",
+   "gear": "Low mount",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "low-angle",
+    "worms-eye",
+    "ground-shot"
+   ],
+   "examples": [
+    "Citizen Kane (1941)"
+   ],
+   "search_terms": [
+    "low angle hero shot"
+   ]
+  },
+  {
+   "id": "top-down",
+   "name": "Top-down / overhead",
+   "name_ar": "لقطة علوية عمودية",
+   "category": "framing",
+   "synonyms": [
+    "top down",
+    "overhead",
+    "god's eye",
+    "flat lay",
+    "bird's eye",
+    "لقطة عمودية",
+    "من الأعلى"
+   ],
+   "feeling": "Pattern, design, a god's-eye view; food and table scenes.",
+   "how": "Camera points straight down.",
+   "method": "practical",
+   "gear": "Overhead rig or drone",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "overhead",
+    "high-angle"
+   ],
+   "examples": [],
+   "search_terms": [
+    "top down overhead shot"
+   ]
+  },
+  {
+   "id": "dutch-angle",
+   "name": "Dutch angle",
+   "name_ar": "زاوية مائلة",
+   "category": "framing",
+   "synonyms": [
+    "dutch",
+    "canted angle",
+    "tilted frame",
+    "زاوية مائلة"
+   ],
+   "feeling": "Unease, madness, disorientation.",
+   "how": "Camera rolled off level.",
+   "method": "practical",
+   "gear": "None",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "dutch-angle"
+   ],
+   "examples": [
+    "The Third Man (1949)"
+   ],
+   "search_terms": [
+    "dutch angle shot"
+   ]
+  },
+  {
+   "id": "pov",
+   "name": "First-person POV",
+   "name_ar": "منظور الشخص الأول",
+   "category": "framing",
+   "synonyms": [
+    "pov",
+    "first person",
+    "point of view",
+    "through the eyes",
+    "منظور الشخصية",
+    "من عين"
+   ],
+   "feeling": "Empathy, immersion; the viewer becomes the character.",
+   "how": "Camera sees what the character sees, often head-mounted.",
+   "method": "practical",
+   "gear": "Head rig or handheld",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "partly",
+   "eyecannndy": [
+    "first-person-pov",
+    "as-object"
+   ],
+   "examples": [
+    "Hardcore Henry (2015)"
+   ],
+   "search_terms": [
+    "first person pov commercial"
+   ]
+  },
+  {
+   "id": "frame-in-frame",
+   "name": "Frame within a frame",
+   "name_ar": "كادر داخل كادر",
+   "category": "framing",
+   "synonyms": [
+    "frame in frame",
+    "doorway framing",
+    "window framing",
+    "mirror framing",
+    "إطار داخل الإطار",
+    "من خلال نافذة"
+   ],
+   "feeling": "Voyeurism, confinement, focus; an elegant composition.",
+   "how": "Doors, windows, mirrors or arches frame the subject inside the shot.",
+   "method": "practical",
+   "gear": "Location choice",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "reflections",
+    "voyeur"
+   ],
+   "examples": [
+    "The Searchers (1956)"
+   ],
+   "search_terms": [
+    "frame within a frame cinematography"
+   ]
+  },
+  {
+   "id": "reflection",
+   "name": "Reflections",
+   "name_ar": "انعكاسات",
+   "category": "framing",
+   "synonyms": [
+    "reflection",
+    "mirror",
+    "puddle reflection",
+    "glass reflection",
+    "انعكاس",
+    "مرآة"
+   ],
+   "feeling": "Duality, introspection, layered worlds.",
+   "how": "Shooting via mirrors, water, glass or chrome.",
+   "method": "practical",
+   "gear": "Location, mirrors",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "reflections"
+   ],
+   "examples": [],
+   "search_terms": [
+    "reflection shots cinematography"
+   ]
+  },
+  {
+   "id": "match-cut",
+   "name": "Match cut",
+   "name_ar": "قطع مطابق",
+   "category": "edit",
+   "synonyms": [
+    "match cut",
+    "graphic match",
+    "shape match",
+    "transition by shape",
+    "قطع متطابق",
+    "مطابقة شكل"
+   ],
+   "feeling": "Wit and connection; jumps across time or place in one beat.",
+   "how": "Cut between two shots that share a shape, movement or sound.",
+   "method": "edit",
+   "gear": "Planning in the storyboard; edit",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "partly",
+   "eyecannndy": [
+    "match-cut",
+    "match-motion",
+    "match-split"
+   ],
+   "examples": [
+    "2001: A Space Odyssey (1968)",
+    "Lawrence of Arabia (1962)"
+   ],
+   "search_terms": [
+    "match cut examples",
+    "graphic match cut commercial"
+   ]
+  },
+  {
+   "id": "seamless-transition",
+   "name": "Seamless / hidden transitions",
+   "name_ar": "انتقالات سلسة مخفية",
+   "category": "edit",
+   "synonyms": [
+    "seamless transition",
+    "hidden cut",
+    "invisible cut",
+    "object wipe",
+    "pass through",
+    "انتقال سلس",
+    "قطع مخفي"
+   ],
+   "feeling": "Flow, magic, one continuous journey through places.",
+   "how": "Cuts hidden in whip pans, objects passing camera, or matching moves.",
+   "method": "edit",
+   "gear": "Planned camera moves, edit, light VFX",
+   "budget": "2",
+   "kit": "standard",
+   "ai": "partly",
+   "eyecannndy": [
+    "transition",
+    "set-transition",
+    "pass-through",
+    "object-portal"
+   ],
+   "examples": [],
+   "search_terms": [
+    "seamless transitions commercial"
+   ]
+  },
+  {
+   "id": "split-screen",
+   "name": "Split screen",
+   "name_ar": "شاشة مقسومة",
+   "category": "edit",
+   "synonyms": [
+    "split screen",
+    "multiscreen",
+    "triptych",
+    "شاشة مقسمة"
+   ],
+   "feeling": "Comparison, simultaneity, rhythm.",
+   "how": "Two or more images side by side.",
+   "method": "edit",
+   "gear": "Edit only (plan the shots)",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "split-screen",
+    "screen-in-screen"
+   ],
+   "examples": [
+    "(500) Days of Summer (2009)"
+   ],
+   "search_terms": [
+    "split screen commercial"
+   ]
+  },
+  {
+   "id": "montage",
+   "name": "Rhythmic montage / quick cuts",
+   "name_ar": "مونتاج سريع إيقاعي",
+   "category": "edit",
+   "synonyms": [
+    "montage",
+    "quick cuts",
+    "cut to the beat",
+    "rapid editing",
+    "hip hop montage",
+    "مونتاج سريع",
+    "قطع على الإيقاع"
+   ],
+   "feeling": "Energy, time compressed, youth and rhythm.",
+   "how": "Short shots cut to music or sound design.",
+   "method": "edit",
+   "gear": "Edit, sound design",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "quick-cuts",
+    "jump-cut",
+    "flash-cut"
+   ],
+   "examples": [
+    "Requiem for a Dream (2000)"
+   ],
+   "search_terms": [
+    "hip hop montage editing"
+   ]
+  },
+  {
+   "id": "freeze-frame",
+   "name": "Freeze frame",
+   "name_ar": "تجميد الصورة",
+   "category": "edit",
+   "synonyms": [
+    "freeze frame",
+    "still frame",
+    "paused moment",
+    "تجميد الكادر",
+    "وقفة"
+   ],
+   "feeling": "Emphasis, humour, a character introduction.",
+   "how": "A single frame held, often with titles.",
+   "method": "edit",
+   "gear": "Edit only",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "freeze-frame"
+   ],
+   "examples": [
+    "The 400 Blows (1959)",
+    "Goodfellas (1990)"
+   ],
+   "search_terms": [
+    "freeze frame introduction"
+   ]
+  },
+  {
+   "id": "liquid-macro",
+   "name": "Liquid splash / pour",
+   "name_ar": "رذاذ وسوائل بالحركة البطيئة",
+   "category": "vfx",
+   "synonyms": [
+    "liquid",
+    "splash",
+    "pour",
+    "milk crown",
+    "drink splash",
+    "liquid simulation",
+    "سوائل",
+    "رشة",
+    "انسكاب"
+   ],
+   "feeling": "Freshness, indulgence, appetite (drinks, coffee, food, cosmetics).",
+   "how": "High-speed camera and rigs catch real splashes, or CG fluid simulation.",
+   "method": "rig",
+   "gear": "High-speed camera, motion control, liquid rigs, tabletop crew; or CG simulation",
+   "budget": "3",
+   "kit": "specialist",
+   "ai": "partly: AI liquids are close but breaking physics shows",
+   "eyecannndy": [
+    "slow-motion",
+    "product"
+   ],
+   "examples": [],
+   "search_terms": [
+    "liquid splash commercial phantom",
+    "tabletop pour shot"
+   ]
+  },
+  {
+   "id": "practical-fx",
+   "name": "Practical effects / in-camera",
+   "name_ar": "مؤثرات عملية داخل الكاميرا",
+   "category": "vfx",
+   "synonyms": [
+    "in camera",
+    "practical effects",
+    "forced perspective",
+    "real stunts",
+    "no cgi",
+    "مؤثرات عملية",
+    "خدعة بصرية"
+   ],
+   "feeling": "Tangible wonder; audiences feel it's real.",
+   "how": "Effects done for real on set: forced perspective, rigs, sets, stunts.",
+   "method": "practical",
+   "gear": "Art department, rigging, SFX crew",
+   "budget": "3",
+   "kit": "specialist",
+   "ai": "no: the point is that it's real",
+   "eyecannndy": [
+    "surrealism",
+    "scale-shift"
+   ],
+   "examples": [
+    "Inception (2010) rotating hallway"
+   ],
+   "search_terms": [
+    "in camera effects commercial forced perspective"
+   ]
+  },
+  {
+   "id": "morph",
+   "name": "Morph / transformation",
+   "name_ar": "تحول شكل",
+   "category": "vfx",
+   "synonyms": [
+    "morph",
+    "transformation",
+    "morphing",
+    "shape shift",
+    "تحول",
+    "مورف"
+   ],
+   "feeling": "Change and possibility; playful magic.",
+   "how": "One object or person turns into another (VFX, or AI-assisted).",
+   "method": "vfx",
+   "gear": "VFX studio, or AI tools",
+   "budget": "2",
+   "kit": "standard",
+   "ai": "yes: one of the things AI does well",
+   "eyecannndy": [
+    "morphing",
+    "transformation"
+   ],
+   "examples": [
+    "Black or White (Michael Jackson, 1991)"
+   ],
+   "search_terms": [
+    "morph transition commercial"
+   ]
+  },
+  {
+   "id": "double-exposure",
+   "name": "Double exposure",
+   "name_ar": "تعريض مزدوج",
+   "category": "vfx",
+   "synonyms": [
+    "double exposure",
+    "superimposition",
+    "overlay",
+    "dissolve portrait",
+    "تعريض مزدوج",
+    "تراكب"
+   ],
+   "feeling": "Memory, inner world, poetic connection between person and place.",
+   "how": "Two images layered, in camera or in post.",
+   "method": "edit",
+   "gear": "Edit/compositing",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "double-exposure"
+   ],
+   "examples": [
+    "True Detective titles (2014)"
+   ],
+   "search_terms": [
+    "double exposure title sequence"
+   ]
+  },
+  {
+   "id": "projection",
+   "name": "Projection mapping on people/places",
+   "name_ar": "إسقاط ضوئي على الأشخاص والأماكن",
+   "category": "vfx",
+   "synonyms": [
+    "projection",
+    "projection mapping",
+    "projected light",
+    "light on face",
+    "إسقاط ضوئي",
+    "بروجكشن"
+   ],
+   "feeling": "Dreamlike, memory, culture painted onto bodies and buildings.",
+   "how": "Images projected onto faces, walls or objects and filmed.",
+   "method": "practical",
+   "gear": "Projector(s), dark location",
+   "budget": "2",
+   "kit": "standard",
+   "ai": "partly",
+   "eyecannndy": [
+    "projections"
+   ],
+   "examples": [],
+   "search_terms": [
+    "projection on face music video"
+   ]
+  },
+  {
+   "id": "cg-hybrid",
+   "name": "CG / live-action hybrid",
+   "name_ar": "دمج الجرافيك مع التصوير",
+   "category": "vfx",
+   "synonyms": [
+    "cgi",
+    "cg",
+    "3d",
+    "vfx",
+    "compositing",
+    "visual effects",
+    "مؤثرات بصرية",
+    "جرافيك ثلاثي الأبعاد"
+   ],
+   "feeling": "The impossible made believable: giant products, fantasy worlds.",
+   "how": "Computer graphics composited into filmed plates.",
+   "method": "vfx",
+   "gear": "VFX studio, plates shot for VFX",
+   "budget": "4",
+   "kit": "specialist",
+   "ai": "partly: AI speeds concepting and some shots",
+   "eyecannndy": [
+    "mixed-media"
+   ],
+   "examples": [],
+   "search_terms": [
+    "cgi commercial breakdown"
+   ]
+  },
+  {
+   "id": "fake-ooh",
+   "name": "Fake out-of-home (FOOH)",
+   "name_ar": "إعلانات خارجية وهمية بالجرافيك",
+   "category": "vfx",
+   "synonyms": [
+    "fooh",
+    "fake ooh",
+    "cgi billboard",
+    "3d billboard",
+    "faux ooh",
+    "إعلان خارجي ثلاثي الأبعاد"
+   ],
+   "feeling": "Social-first spectacle: products doing impossible things in real cities.",
+   "how": "CG objects composited into real street footage, shared as if real.",
+   "method": "vfx",
+   "gear": "3D artist + location footage",
+   "budget": "2",
+   "kit": "standard",
+   "ai": "partly",
+   "eyecannndy": [
+    "mixed-media"
+   ],
+   "examples": [],
+   "search_terms": [
+    "fake out of home cgi",
+    "fooh campaign"
+   ]
+  },
+  {
+   "id": "film-grain",
+   "name": "16mm / film look",
+   "name_ar": "مظهر فيلم 16 مم",
+   "category": "look",
+   "synonyms": [
+    "16mm",
+    "35mm",
+    "film look",
+    "grain",
+    "kodak",
+    "analog",
+    "super 8",
+    "فيلم",
+    "حبيبات الفيلم",
+    "أنالوج"
+   ],
+   "feeling": "Nostalgia, authenticity, warmth; memory.",
+   "how": "Shoot on film, or emulate grain, halation and gate weave in the grade.",
+   "method": "practical",
+   "gear": "Film camera + lab, or a grade",
+   "budget": "2",
+   "kit": "specialist (film) / standard (emulation)",
+   "ai": "yes as emulation",
+   "eyecannndy": [
+    "vhs",
+    "halation"
+   ],
+   "examples": [],
+   "search_terms": [
+    "16mm film commercial look"
+   ]
+  },
+  {
+   "id": "monochrome",
+   "name": "Black and white",
+   "name_ar": "أبيض وأسود",
+   "category": "look",
+   "synonyms": [
+    "black and white",
+    "monochrome",
+    "b&w",
+    "greyscale",
+    "أبيض وأسود"
+   ],
+   "feeling": "Timelessness, memory, seriousness, graphic beauty.",
+   "how": "Shot or graded in black and white.",
+   "method": "edit",
+   "gear": "Grade",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [],
+   "examples": [
+    "Roma (2018)",
+    "Schindler's List (1993)"
+   ],
+   "search_terms": [
+    "black and white cinematography"
+   ]
+  },
+  {
+   "id": "colour-palette",
+   "name": "Strong colour palette / colour blocking",
+   "name_ar": "ألوان قوية مدروسة",
+   "category": "look",
+   "synonyms": [
+    "color palette",
+    "colour blocking",
+    "monochromatic color",
+    "teal and orange",
+    "pastel",
+    "color story",
+    "لوحة ألوان",
+    "ألوان قوية"
+   ],
+   "feeling": "Identity and mood carried by colour; ownable brand worlds.",
+   "how": "Production design, wardrobe and grade restricted to a deliberate palette.",
+   "method": "practical",
+   "gear": "Art direction, wardrobe, grade",
+   "budget": "2",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "color-shift",
+    "maximalism"
+   ],
+   "examples": [
+    "Amélie (2001)",
+    "Her (2013)"
+   ],
+   "search_terms": [
+    "colour palette in film"
+   ]
+  },
+  {
+   "id": "vintage-vhs",
+   "name": "VHS / archival texture",
+   "name_ar": "مظهر شرائط الفيديو القديمة",
+   "category": "look",
+   "synonyms": [
+    "vhs",
+    "retro video",
+    "archival",
+    "camcorder",
+    "home video",
+    "90s",
+    "فيديو قديم",
+    "أرشيف",
+    "كاميرا منزلية"
+   ],
+   "feeling": "Home-video nostalgia; family memory; Gulf 80s–90s.",
+   "how": "Shoot on old camcorders or emulate in post.",
+   "method": "practical",
+   "gear": "Camcorder or emulation",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "vhs"
+   ],
+   "examples": [],
+   "search_terms": [
+    "vhs aesthetic commercial"
+   ]
+  },
+  {
+   "id": "underwater",
+   "name": "Underwater",
+   "name_ar": "تصوير تحت الماء",
+   "category": "specialty",
+   "synonyms": [
+    "underwater",
+    "submerged",
+    "pool shoot",
+    "تحت الماء",
+    "غوص"
+   ],
+   "feeling": "Weightlessness, dream, silence.",
+   "how": "Camera in a housing; tank or open water.",
+   "method": "rig",
+   "gear": "Underwater housing, safety divers, tank",
+   "budget": "3",
+   "kit": "specialist",
+   "ai": "partly",
+   "eyecannndy": [
+    "underwater"
+   ],
+   "examples": [],
+   "search_terms": [
+    "underwater cinematography commercial"
+   ]
+  },
+  {
+   "id": "thermal",
+   "name": "Thermal / infrared",
+   "name_ar": "تصوير حراري / تحت الحمراء",
+   "category": "specialty",
+   "synonyms": [
+    "thermal",
+    "infrared",
+    "heat vision",
+    "IR",
+    "حراري",
+    "أشعة تحت الحمراء"
+   ],
+   "feeling": "Surveillance, otherworldliness, heat made visible (useful for Gulf summer stories).",
+   "how": "Thermal or infrared-converted cameras.",
+   "method": "rig",
+   "gear": "Thermal camera or IR-converted camera",
+   "budget": "2",
+   "kit": "specialist",
+   "ai": "partly",
+   "eyecannndy": [
+    "thermal",
+    "night-vision"
+   ],
+   "examples": [],
+   "search_terms": [
+    "infrared cinematography"
+   ]
+  },
+  {
+   "id": "cinemagraph",
+   "name": "Cinemagraph",
+   "name_ar": "سينماجراف (صورة متحركة جزئيا)",
+   "category": "specialty",
+   "synonyms": [
+    "cinemagraph",
+    "living photo",
+    "partial motion",
+    "سينماغراف"
+   ],
+   "feeling": "A frozen world with one living detail; elegant for digital and outdoor screens.",
+   "how": "A still image with one looping moving element.",
+   "method": "edit",
+   "gear": "Locked camera, edit",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "cinemagraph",
+    "infinite"
+   ],
+   "examples": [],
+   "search_terms": [
+    "cinemagraph advertising"
+   ]
+  },
+  {
+   "id": "light-painting",
+   "name": "Light painting / long exposure",
+   "name_ar": "الرسم بالضوء",
+   "category": "specialty",
+   "synonyms": [
+    "light painting",
+    "long exposure",
+    "light trails",
+    "star trails",
+    "رسم بالضوء",
+    "تعريض طويل",
+    "مسارات الضوء"
+   ],
+   "feeling": "Energy, movement traced, the night made magical (traffic trails).",
+   "how": "Long exposures record moving lights as trails.",
+   "method": "practical",
+   "gear": "Stills camera, tripod (timelapse for motion)",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "yes",
+   "eyecannndy": [
+    "light-flash",
+    "motion-blur"
+   ],
+   "examples": [],
+   "search_terms": [
+    "light trails timelapse"
+   ]
+  },
+  {
+   "id": "talking-head",
+   "name": "Talking-head interview",
+   "name_ar": "مقابلة مباشرة (رأس متحدث)",
+   "category": "documentary",
+   "synonyms": [
+    "interview",
+    "talking head",
+    "sit-down interview",
+    "testimony",
+    "مقابلة",
+    "شهادة"
+   ],
+   "feeling": "Trust and testimony: a person telling their own truth.",
+   "how": "Subject framed (often off-centre) speaking to an interviewer beside the camera; B-roll cut over it.",
+   "method": "practical",
+   "gear": "Camera, lav/boom mic, soft key light",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "no: real testimony is the point",
+   "eyecannndy": [
+    "interview"
+   ],
+   "examples": [
+    "The Thin Blue Line (1988)"
+   ],
+   "search_terms": [
+    "documentary interview lighting",
+    "talking head interview setup"
+   ]
+  },
+  {
+   "id": "direct-address",
+   "name": "Direct address (Interrotron)",
+   "name_ar": "مخاطبة الكاميرا مباشرة",
+   "category": "documentary",
+   "synonyms": [
+    "interrotron",
+    "eye contact interview",
+    "looking into the lens",
+    "to camera",
+    "fourth wall",
+    "مخاطبة الكاميرا"
+   ],
+   "feeling": "Intimacy and confrontation: the subject looks straight at you.",
+   "how": "The interviewer's face is projected over the lens (Errol Morris's Interrotron) or the subject is asked to look into the lens.",
+   "method": "rig",
+   "gear": "Teleprompter-style interview rig",
+   "budget": "2",
+   "kit": "specialist",
+   "ai": "no",
+   "eyecannndy": [
+    "fourth-wall"
+   ],
+   "examples": [
+    "The Fog of War (2003)"
+   ],
+   "search_terms": [
+    "interrotron interview",
+    "direct to camera documentary"
+   ]
+  },
+  {
+   "id": "observational",
+   "name": "Observational / fly-on-the-wall",
+   "name_ar": "تصوير رصدي (ذبابة على الحائط)",
+   "category": "documentary",
+   "synonyms": [
+    "observational",
+    "fly on the wall",
+    "verite",
+    "cinema verite",
+    "direct cinema",
+    "vérité",
+    "رصدي",
+    "سينما الحقيقة"
+   ],
+   "feeling": "Being there: life unfolding without being explained.",
+   "how": "A small crew films events as they happen, without interviews or narration, over long periods.",
+   "method": "practical",
+   "gear": "Small camera, on-camera mic, long access",
+   "budget": "2",
+   "kit": "standard (needs time and trust)",
+   "ai": "no",
+   "eyecannndy": [
+    "shaky-cam"
+   ],
+   "examples": [
+    "Salesman (1969)",
+    "Honeyland (2019)"
+   ],
+   "search_terms": [
+    "observational documentary",
+    "cinema verite documentary"
+   ]
+  },
+  {
+   "id": "archival",
+   "name": "Archival footage / found footage",
+   "name_ar": "مواد أرشيفية",
+   "category": "documentary",
+   "synonyms": [
+    "archival",
+    "archive footage",
+    "found footage",
+    "news footage",
+    "home movies",
+    "أرشيف",
+    "مواد أرشيفية",
+    "لقطات أرشيفية"
+   ],
+   "feeling": "The weight of the past; history in its own images.",
+   "how": "Existing footage (news, home video, film archives) licensed and edited into the story.",
+   "method": "edit",
+   "gear": "Archive research, licences, edit",
+   "budget": "2",
+   "kit": "standard (licensing costs vary)",
+   "ai": "partly: AI must never fake archive",
+   "eyecannndy": [
+    "vhs"
+   ],
+   "examples": [
+    "Senna (2010)",
+    "Amy (2015)"
+   ],
+   "search_terms": [
+    "archival documentary editing",
+    "found footage documentary"
+   ]
+  },
+  {
+   "id": "reenactment",
+   "name": "Reenactment / dramatised reconstruction",
+   "name_ar": "إعادة تمثيل",
+   "category": "documentary",
+   "synonyms": [
+    "reenactment",
+    "re-enactment",
+    "reconstruction",
+    "dramatisation",
+    "إعادة تمثيل",
+    "مشاهد ممثلة"
+   ],
+   "feeling": "Showing what no camera saw, openly staged.",
+   "how": "Key moments restaged with actors or the real people, stylised so the audience knows it's reconstructed.",
+   "method": "practical",
+   "gear": "Small drama crew, art department",
+   "budget": "3",
+   "kit": "standard",
+   "ai": "partly: AI reconstructions must be labelled",
+   "eyecannndy": [
+    "tableau-shots"
+   ],
+   "examples": [
+    "The Thin Blue Line (1988)",
+    "The Act of Killing (2012)"
+   ],
+   "search_terms": [
+    "documentary reenactment",
+    "dramatised reconstruction"
+   ]
+  },
+  {
+   "id": "animated-doc",
+   "name": "Animated documentary",
+   "name_ar": "وثائقي بالرسوم المتحركة",
+   "category": "documentary",
+   "synonyms": [
+    "animated documentary",
+    "animadoc",
+    "animation over interview",
+    "وثائقي متحرك"
+   ],
+   "feeling": "Protection and imagination: real voices, images that can show inner worlds or protect identities.",
+   "how": "Real interviews or recordings set to animation.",
+   "method": "vfx",
+   "gear": "Animation studio, recorded interviews",
+   "budget": "3",
+   "kit": "specialist",
+   "ai": "partly: AI can help animate, voices stay real",
+   "eyecannndy": [
+    "traditional"
+   ],
+   "examples": [
+    "Waltz with Bashir (2008)",
+    "Flee (2021)"
+   ],
+   "search_terms": [
+    "animated documentary"
+   ]
+  },
+  {
+   "id": "diary-film",
+   "name": "Self-documentation / diary film",
+   "name_ar": "فيلم يوميات (توثيق ذاتي)",
+   "category": "documentary",
+   "synonyms": [
+    "diary",
+    "self-shot",
+    "video diary",
+    "first person documentary",
+    "vlog",
+    "personal documentary",
+    "يوميات",
+    "توثيق ذاتي"
+   ],
+   "feeling": "First-person honesty: the maker's own life and voice.",
+   "how": "The filmmaker or subject films themselves (phone, camcorder) and narrates in the first person.",
+   "method": "practical",
+   "gear": "Phone or small camera, a mic",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "no",
+   "eyecannndy": [
+    "first-person-pov",
+    "vhs"
+   ],
+   "examples": [
+    "Tarnation (2003)"
+   ],
+   "search_terms": [
+    "video diary documentary",
+    "first person documentary"
+   ]
+  },
+  {
+   "id": "essay-film",
+   "name": "Essay film / voiceover",
+   "name_ar": "فيلم مقالي (تعليق صوتي)",
+   "category": "documentary",
+   "synonyms": [
+    "essay film",
+    "voiceover",
+    "narration",
+    "poetic documentary",
+    "فيلم مقالي",
+    "تعليق صوتي"
+   ],
+   "feeling": "A mind thinking aloud over images; reflective, poetic.",
+   "how": "Images (shot or found) cut to a personal written narration.",
+   "method": "edit",
+   "gear": "Writing, voice recording, edit",
+   "budget": "1",
+   "kit": "standard",
+   "ai": "partly: AI voices are a poor fit for a personal essay",
+   "eyecannndy": [
+    "collage"
+   ],
+   "examples": [
+    "Sans Soleil (1983)"
+   ],
+   "search_terms": [
+    "essay film voiceover"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,124 @@
+{
+ "note": "Answer keys for the documentary tools. Never show this file to an agent under test.",
+ "story_idea": {
+  "file": "samples/script-desk/story-ideas/sur-dhow-doc-idea.txt",
+  "shape": "one man, one boat with a start and an end, a year: doc-character fits; doc-observational is a fair alternative (the filmmaker wants no narration)",
+  "must": [
+   "kind documentary, a doc- structure",
+   "access element quotes «سالم وافق إني أصوره، بس ولده ما رد علي للحين» (or part) and asks what happens if the son says no",
+   "approach keeps «ما أبغى تعليق صوتي»",
+   "archive section quotes the grandfather's photos and asks about rights or ownership",
+   "the central question «إذا مات سالم، وين تروح الصنعة؟» kept verbatim",
+   "no invented events (the son agreeing, Salem falling ill, the ship sinking, an apprentice)",
+   "crisis / trials left as gaps (the idea doesn't say what goes wrong)"
+  ]
+ },
+ "paper_edit": {
+  "files": [
+   "samples/script-desk/doc/salem-interview.srt",
+   "samples/script-desk/doc/workshop-day.txt"
+  ],
+  "must": [
+   "no interviewer lines (A001, A004, A007, A011, A017) used as bites unless argued",
+   "only bite ids, no typed quotes (paper_edit --check passes)",
+   "includes the central-question bites (A010 and/or A016)",
+   "gives Rahim (B004–B008) a voice, not only Salem: he is the unexpected possible heir",
+   "a gap row for the son (no material, access not given)",
+   "notices the 'joined quote' flags and keeps meaning true (e.g. does not cut A008 «ولدي... الله يوفقه» against something that changes its sense)"
+  ],
+  "good_to_have": [
+   "ends on A018 «يمكن أنت» or explains a different ending",
+   "a silence / sound row (B009 or ambience)"
+  ]
+ },
+ "reader": {
+  "file": "samples/script-desk/doc/sur-av-draft.txt",
+  "context": "give the agent the story idea (samples/script-desk/story-ideas/sur-dhow-doc-idea.txt) as the filmmaker's intent: no voice-over; son has not agreed; grandfather photo from a family archive",
+  "flaws": [
+   {
+    "id": "D1",
+    "lens": "doc_pov",
+    "rows": [
+     6,
+     10
+    ],
+    "flaw": "Voice-over narration although the filmmaker wants none."
+   },
+   {
+    "id": "D2",
+    "lens": "doc_evidence",
+    "rows": [
+     3,
+     6,
+     10
+    ],
+    "flaw": "Unverified superlatives stated as fact: «آخر صانع سفن خشبية في عُمان», «لم يبق إلا رجل واحد», «أكبر مرفأ في الخليج»."
+   },
+   {
+    "id": "D3",
+    "lens": "doc_ethics",
+    "rows": [
+     6
+    ],
+    "flaw": "The worker (Rahim in the transcripts) is shown unnamed and voiceless, though he speaks and matters to the question."
+   },
+   {
+    "id": "D4",
+    "lens": "doc_ethics",
+    "rows": [
+     8
+    ],
+    "flaw": "Reconstruction of Salem as a child, not marked for the audience."
+   },
+   {
+    "id": "D5",
+    "lens": "doc_access",
+    "rows": [
+     11
+    ],
+    "flaw": "A scene with the son, whose agreement hasn't been given; no fallback."
+   },
+   {
+    "id": "D6",
+    "lens": "doc_archive",
+    "rows": [
+     9,
+     10
+    ],
+    "flaw": "TV archive (1985 documentary) with no owner, rights or cost; family photo rights unwritten."
+   },
+   {
+    "id": "D7",
+    "lens": "doc_story",
+    "rows": [
+     14,
+     15
+    ],
+    "flaw": "The ending depends on the launch within the year; no fallback if it slips. Trials/crisis thin."
+   },
+   {
+    "id": "D8",
+    "lens": "doc_visual",
+    "rows": [
+     2,
+     4,
+     5,
+     7,
+     12
+    ],
+    "flaw": "Close-up of Salem's hand repeated in every section."
+   },
+   {
+    "id": "S1",
+    "lens": "doc_sound",
+    "rows": [
+     1,
+     2,
+     14
+    ],
+    "flaw": "STRENGTH: ambience-led sound (dawn, hammer, the sea, the nahma songs)."
+   }
+  ],
+  "pass": "at least 6 of D1–D8 found with the right viewpoint or a close one; S1 noted as a strength; no rewritten lines"
+ }
+}

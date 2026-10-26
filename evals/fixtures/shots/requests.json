@@ -1,0 +1,12 @@
+{
+ "note": "Test requests for the shot scout's language step, with the techniques a good translation must include. Answer key: never show to an agent under test.",
+ "requests": [
+  {"text": "dolly zoom", "must": ["dolly-zoom"], "subject_empty": true},
+  {"text": "the feeling of time slowing down in a crowd", "must": ["slow-motion", "speed-ramp"], "subject_has": "crowd"},
+  {"text": "صحراء عند الفجر، وحدة وملحمية", "must": ["blue-hour", "wide-lonely", "aerial"], "subject_has": "صحراء"},
+  {"text": "Maghrib light on the road, taxi drivers, warm and spiritual", "must": ["golden-hour", "haze"], "subject_has": "taxi"},
+  {"text": "coffee pour in super slow mo, premium", "must": ["slow-motion", "liquid-macro"], "subject_has": "coffee"},
+  {"text": "one take through a busy souq", "must": ["oner"], "subject_has": "souq"},
+  {"text": "لقطات تصوير بطيء لسوائل", "must": ["slow-motion"]}
+ ]
+}

@@ -1,0 +1,92 @@
+{
+  "client": "Rawaq Coffee Roasters (رواق) — fictional Riyadh specialty coffee brand",
+  "input_dir": "samples/rawaq/input",
+  "note": "Ground truth for grading the design-system skill. NEVER give this file to the agent under test.",
+  "colors": {
+    "primary": [
+      {"name": "Date Brown", "name_ar": "بني التمر", "hex": "#4A2C21", "rgb": [74, 44, 33], "cmyk": [35, 75, 80, 65], "pantone": "4625 C", "page": 9},
+      {"name": "Cardamom Green", "name_ar": "أخضر الهيل", "hex": "#2F5D50", "rgb": [47, 93, 80], "cmyk": [80, 35, 60, 30], "pantone": "5545 C", "page": 9},
+      {"name": "Saffron", "name_ar": "زعفران", "hex": "#E3A33B", "rgb": [227, 163, 59], "cmyk": [8, 38, 88, 0], "pantone": "7409 C", "page": 9},
+      {"name": "Sand", "name_ar": "رمل", "hex": "#F3E7D3", "rgb": [243, 231, 211], "cmyk": [3, 8, 17, 0], "pantone": "7527 C", "page": 9}
+    ],
+    "secondary": [
+      {"name": "Najd Clay", "name_ar": "طين نجد", "hex": "#B5573A", "page": 10},
+      {"name": "Palm Frond", "name_ar": "سعف النخيل", "hex": "#7A8B5C", "page": 10},
+      {"name": "Charcoal", "name_ar": "فحمي", "hex": "#1F1B18", "page": 10, "hex_page": 13, "trap": "HEX only stated on Typography page 13"},
+      {"name": "Off-White", "name_ar": "أبيض دافئ", "hex": "#FBF8F3", "page": 10}
+    ],
+    "tints": {"applies_to": ["Date Brown", "Cardamom Green"], "steps_pct": [100, 80, 60, 40, 20], "rule": "backgrounds, charts, illustration only; never logo"},
+    "proportions_pct": {"Sand": 60, "Date Brown": 25, "Cardamom Green": 10, "Saffron": 5},
+    "rules": [
+      "Body text Charcoal or Date Brown on Sand/Off-White",
+      "Reversed text Sand on Date Brown or Cardamom Green",
+      "Never Saffron text on Sand/Off-White (low contrast)",
+      "Saffron is accent only: highlights, prices, dividers, coffee bean"
+    ]
+  },
+  "traps": [
+    {"id": "saffron_conflict", "page": 18, "detail": "Applications page states Saffron as #E4A23C; palette page 9 says #E3A33B. Expected: keep #E3A33B (palette page is authoritative) and flag the conflict."},
+    {"id": "charcoal_hex_elsewhere", "page": 13, "detail": "Charcoal swatch on p10 has no HEX; HEX #1F1B18 is on p13."},
+    {"id": "flattened_misuse_page", "page": 7, "detail": "Logo misuse page is an image; text extraction returns nothing. Expected: rules recovered via page image."},
+    {"id": "garbled_arabic_text", "detail": "Arabic extracted from PDF is broken (e.g. 'يف' instead of 'في'). Expected: Arabic names verified visually / not copied garbled."},
+    {"id": "pdf_font_names", "detail": "Embedded fonts appear as e.g. 'PlayfairDisplay-Regular' even for SemiBold (variable fonts). Weights must come from the document text, not PDF font names."},
+    {"id": "voice_content", "page": 3, "detail": "Brand essence page has verbal content; scope is visual only. Visual personality keywords are fine to keep."}
+  ],
+  "typography": {
+    "families": [
+      {"family": "Reem Kufi", "role": "Arabic Display", "weights": [600, 700], "file": "Fonts/ReemKufi[wght].ttf"},
+      {"family": "IBM Plex Sans Arabic", "role": "Arabic Text", "weights": [400, 500, 700]},
+      {"family": "Playfair Display", "role": "Latin Display", "weights": [600, 700]},
+      {"family": "IBM Plex Sans", "role": "Latin Text", "weights": [400, 500, 600]}
+    ],
+    "scale_px": {
+      "display":  {"latin": [64, 72], "arabic": [70, 84], "latin_font": "Playfair Display 600", "arabic_font": "Reem Kufi 700"},
+      "h1":       {"latin": [48, 56], "arabic": [53, 64], "latin_font": "Playfair Display 600", "arabic_font": "Reem Kufi 700"},
+      "h2":       {"latin": [36, 44], "arabic": [40, 52], "latin_font": "Playfair Display 600", "arabic_font": "Reem Kufi 600"},
+      "h3":       {"latin": [28, 36], "arabic": [31, 44], "latin_font": "IBM Plex Sans 600", "arabic_font": "IBM Plex Sans Arabic 700"},
+      "body":     {"latin": [18, 28], "arabic": [20, 34], "latin_font": "IBM Plex Sans 400", "arabic_font": "IBM Plex Sans Arabic 400"},
+      "small":    {"latin": [14, 20], "arabic": [15, 26], "latin_font": "IBM Plex Sans 400", "arabic_font": "IBM Plex Sans Arabic 400"},
+      "label":    {"latin": [12, 16], "arabic": [13, 20], "latin_font": "IBM Plex Sans 600 uppercase +120 tracking", "arabic_font": "IBM Plex Sans Arabic 500"}
+    },
+    "rules": [
+      "Arabic ~10% larger than Latin at same level",
+      "Arabic body leading ~1.7",
+      "Arabic right-aligned, Latin left-aligned; Arabic leads (top or right)",
+      "Never letter-space Arabic",
+      "Body text colour Charcoal #1F1B18; headlines may be Date Brown; reversed type Sand",
+      "Fallbacks: Arial (Latin), Tahoma (Arabic)"
+    ]
+  },
+  "logo": {
+    "variants": ["Primary stacked", "Horizontal", "Symbol", "Reversed", "Mono"],
+    "element_order": ["Arch symbol", "Arabic wordmark رواق", "English wordmark RAWAQ"],
+    "clear_space": "x on all sides, x = width of the coffee bean in the symbol",
+    "min_size": {"primary_stacked": {"print_mm": 32, "digital_px": 120}, "horizontal": {"print_mm": 12, "digital_px": 48}, "symbol": {"print_mm": 10, "digital_px": 32}},
+    "approved_backgrounds": ["Sand", "Off-White", "Date Brown (reversed)", "Cardamom Green (reversed)"],
+    "forbidden_backgrounds": ["Saffron", "Najd Clay"],
+    "on_photo": "calm area, or Date Brown overlay at 40% behind logo; never over busy detail or faces",
+    "misuse": ["stretch/squash", "rotate", "recolour", "drop shadow/effects", "Saffron or low-contrast background", "swap Arabic/English order", "outline", "crop or separate symbol from wordmark"]
+  },
+  "graphic_elements": {
+    "arch_frame": "rectangle with semicircular top, radius = 50% width, square bottom corners, one per layout",
+    "pattern": "Mashrabiya 8-point star lattice; Date Brown on Sand at 10-15%, or Sand on Date Brown at 8%; never behind body text",
+    "divider": "1px Saffron rule with centred diamond"
+  },
+  "iconography": {"style": "line", "grid": 24, "stroke_px": 2, "caps": "round", "joins": "round", "colors": ["Date Brown", "Cardamom Green", "Sand (reversed)"], "no_fill": true},
+  "photography": {
+    "do": ["warm natural daylight", "amber-leaning grade", "shallow depth of field", "pouring coffee, hands, palm wood/clay textures", "candid modest everyday Saudi moments"],
+    "avoid": ["cold/blue light", "heavy filters", "clutter", "staged stock smiles", "clichéd Arabian imagery (camels at sunset, generic lanterns)"]
+  },
+  "layout": {
+    "print_grid": "12 columns, outer margins 8% of page width",
+    "social_margin_px": 64,
+    "formats": [{"name": "feed portrait", "size": [1080, 1350], "primary": true}, {"name": "feed square", "size": [1080, 1080]}, {"name": "story/reel", "size": [1080, 1920], "safe_top_bottom_px": 250}],
+    "logo_placement": "symbol bottom-right, min 64px tall on social",
+    "rules": ["one message per post", "headline + max one supporting line", "Arabic-first; English may mirror"]
+  },
+  "gaps_skill_should_propose": ["spacing scale", "corner radii for UI (other than arch)", "button/UI component styles", "shadows/elevation", "dark-mode or digital UI colour roles"],
+  "provided_assets": {
+    "logos": ["Rawaq_Logo_Primary_Stacked.svg/.png", "Rawaq_Logo_Primary_Stacked_Reversed.svg (+ PNG on Date Brown)", "Rawaq_Logo_Horizontal.svg/.png", "Rawaq_Logo_Mono_Black.svg", "Rawaq_Symbol.svg/.png", "Rawaq_Symbol_Reversed.svg"],
+    "fonts": ["ReemKufi[wght].ttf", "IBMPlexSansArabic-Regular/Medium/Bold.ttf", "PlayfairDisplay[wght].ttf", "IBMPlexSans[wdth,wght].ttf", "OFL.txt"]
+  }
+}

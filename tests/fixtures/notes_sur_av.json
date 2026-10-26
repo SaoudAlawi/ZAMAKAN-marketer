@@ -1,0 +1,147 @@
+{
+ "schema": "zamakan-script-notes/1",
+ "lang": "ar",
+ "kind": "documentary",
+ "lens_set": "documentary",
+ "structure": "doc-character",
+ "logline_read": "صانع سفن سبعيني في صور يبني آخر سفينة له، والسؤال: هل تموت الصنعة معه؟",
+ "overall": {
+  "verdict": "amber",
+  "summary": "سؤال قوي وصوت بيئي جميل، لكن التعليق الصوتي والعناوين تقول ما لم يُتحقق منه."
+ },
+ "lenses": [
+  {
+   "id": "doc_story",
+   "verdict": "amber",
+   "summary": "x"
+  },
+  {
+   "id": "doc_pov",
+   "verdict": "red",
+   "summary": "x"
+  },
+  {
+   "id": "doc_evidence",
+   "verdict": "red",
+   "summary": "x"
+  },
+  {
+   "id": "doc_people",
+   "verdict": "amber",
+   "summary": "x"
+  },
+  {
+   "id": "doc_ethics",
+   "verdict": "amber",
+   "summary": "x"
+  },
+  {
+   "id": "doc_access",
+   "verdict": "amber",
+   "summary": "x"
+  },
+  {
+   "id": "doc_visual",
+   "verdict": "amber",
+   "summary": "x"
+  },
+  {
+   "id": "doc_sound",
+   "verdict": "green",
+   "summary": "x"
+  },
+  {
+   "id": "doc_archive",
+   "verdict": "amber",
+   "summary": "x"
+  },
+  {
+   "id": "doc_fit",
+   "verdict": "green",
+   "summary": "x"
+  }
+ ],
+ "notes": [
+  {
+   "scene": 1,
+   "lens": "doc_evidence",
+   "kind": "issue",
+   "quote": "آخر صانع سفن خشبية في عُمان",
+   "text": "العنوان يقدّم «آخر صانع في عُمان» حقيقةً: ما مصدره؟ هل تستطيع إثباته، أم تصوغه كقول سالم؟"
+  },
+  {
+   "scene": 2,
+   "lens": "doc_pov",
+   "kind": "issue",
+   "quote": "في صور، كانت تُبنى",
+   "text": "هنا تعليق صوتي، وأنت أردت ألا يكون هناك تعليق: هل تغيّر الأسلوب، أم يمكن أن يقول سالم هذا بنفسه؟"
+  },
+  {
+   "scene": 2,
+   "lens": "doc_ethics",
+   "kind": "question",
+   "quote": "عامل في الخلفية",
+   "text": "العامل بلا اسم ولا صوت: من هو، وهل له حكاية في الفيلم؟"
+  },
+  {
+   "scene": 3,
+   "lens": "doc_ethics",
+   "kind": "issue",
+   "quote": "إعادة تمثيل",
+   "text": "إعادة التمثيل هل ستُعلن للمشاهد؟"
+  },
+  {
+   "scene": 3,
+   "lens": "doc_access",
+   "kind": "issue",
+   "quote": "ولد سالم يزور الورشة",
+   "text": "مشهد الابن يعتمد على موافقة لم تُعطَ بعد: ما البديل إن رفض؟"
+  },
+  {
+   "scene": 3,
+   "lens": "doc_archive",
+   "kind": "question",
+   "quote": "لقطة من وثائقي تلفزيوني",
+   "text": "من يملك هذه اللقطة، وكم تكلّف؟"
+  },
+  {
+   "scene": 4,
+   "lens": "doc_visual",
+   "kind": "issue",
+   "quote": "لقطة قريبة ليد سالم",
+   "text": "اللقطة القريبة لليد تتكرر في كل قسم: ما الذي تضيفه هذه المرة؟"
+  },
+  {
+   "scene": 5,
+   "lens": "doc_story",
+   "kind": "question",
+   "quote": "السفينة تُدفع إلى الماء",
+   "text": "النهاية معلّقة على نزول السفينة خلال السنة: ماذا لو تأخرت؟"
+  },
+  {
+   "scene": 1,
+   "lens": "doc_sound",
+   "kind": "strength",
+   "quote": "أذان الفجر",
+   "text": "البداية بالصوت وحده تضعنا في المكان قبل أي كلام."
+  },
+  {
+   "scene": 4,
+   "lens": "doc_people",
+   "kind": "question",
+   "text": "سالم يتكلم كثيراً عن الماضي: متى نراه يختار شيئاً الآن؟"
+  },
+  {
+   "scene": 3,
+   "lens": "doc_evidence",
+   "kind": "issue",
+   "quote": "أكبر مرفأ",
+   "text": "«أكبر مرفأ في الخليج»: ما المصدر؟"
+  }
+ ],
+ "next_draft": [
+  "حسم مسألة التعليق الصوتي",
+  "مصدر لكل معلومة في العناوين",
+  "بديل لمشهد الابن والنهاية"
+ ]
+}

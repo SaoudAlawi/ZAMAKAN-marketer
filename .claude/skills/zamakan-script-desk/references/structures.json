@@ -1,0 +1,1555 @@
+{
+ "version": "1.0",
+ "note": "Beats are placed by share of running time (at/end, 0-100). Page targets = share x pages (about 1 page per minute; the Arabic ratio is unverified, see SKILL.md). Questions prompt the writer; they never contain story text. Sources: Syd Field (three acts), Blake Snyder (Save the Cat), Christopher Vogler (The Writer's Journey), Dan Harmon (Story Circle), Paul Gulino (sequence approach), kishotenketsu (classical East Asian form). Short-film shapes are ZAMAKAN guidance, not a published method. Documentary structures (doc-*) fit 'documentary'; their beats plan situations and evidence, since much of a documentary is found in the shoot and the edit.",
+ "structures": [
+  {
+   "id": "three-act",
+   "name": "Three acts",
+   "name_ar": "البناء الثلاثي",
+   "fits": [
+    "feature",
+    "short"
+   ],
+   "source": "Syd Field, Screenplay (1979; Arabic: «السيناريو»)",
+   "summary": "Setup, confrontation, resolution, turned by two plot points.",
+   "summary_ar": "تمهيد ثم مواجهة ثم حل، تفصل بينها نقطتا تحوّل.",
+   "beats": [
+    {
+     "id": "setup",
+     "name": "Setup",
+     "name_ar": "التمهيد",
+     "at": 0,
+     "end": 25,
+     "purpose": "Show the hero's world, want and flaw before anything changes.",
+     "purpose_ar": "اعرض عالم البطل ورغبته وعيبه قبل أن يتغيّر شيء.",
+     "questions": [
+      "What does your hero want on page one, and what do they actually need?",
+      "What do we see them do (not say) that shows who they are?"
+     ],
+     "questions_ar": [
+      "ماذا يريد بطلك في الصفحة الأولى، وما الذي يحتاجه فعلاً؟",
+      "ما الفعل (لا الكلام) الذي يكشف لنا من هو؟"
+     ]
+    },
+    {
+     "id": "inciting",
+     "name": "Inciting incident",
+     "name_ar": "الحدث المحرّك",
+     "at": 10,
+     "end": 12,
+     "purpose": "The event that breaks normal life.",
+     "purpose_ar": "الحدث الذي يكسر الحياة المعتادة.",
+     "questions": [
+      "What happens that your hero cannot ignore?",
+      "Is it visible on screen, or only reported?"
+     ],
+     "questions_ar": [
+      "ما الذي يحدث ولا يستطيع بطلك تجاهله؟",
+      "هل نراه على الشاشة أم يُروى لنا فقط؟"
+     ]
+    },
+    {
+     "id": "plot-point-1",
+     "name": "Plot point 1",
+     "name_ar": "نقطة التحوّل الأولى",
+     "at": 23,
+     "end": 27,
+     "purpose": "The hero commits; the story turns into a new direction.",
+     "purpose_ar": "يلتزم البطل بقرار؛ وتتجه القصة اتجاهاً جديداً.",
+     "questions": [
+      "What decision does your hero make here, and could they still turn back?",
+      "What is now at stake?"
+     ],
+     "questions_ar": [
+      "ما القرار الذي يتخذه بطلك هنا، وهل ما زال بإمكانه التراجع؟",
+      "ما الذي أصبح على المحك الآن؟"
+     ]
+    },
+    {
+     "id": "confrontation",
+     "name": "Confrontation",
+     "name_ar": "المواجهة",
+     "at": 25,
+     "end": 75,
+     "purpose": "Obstacles rise; each try costs more.",
+     "purpose_ar": "تتصاعد العقبات؛ وكل محاولة أغلى من سابقتها.",
+     "questions": [
+      "List three obstacles: does each one get harder?",
+      "Who or what opposes your hero, and what do they want?"
+     ],
+     "questions_ar": [
+      "اذكر ثلاث عقبات: هل كل واحدة أصعب من التي قبلها؟",
+      "من أو ما الذي يعارض بطلك، وماذا يريد؟"
+     ]
+    },
+    {
+     "id": "midpoint",
+     "name": "Midpoint",
+     "name_ar": "منتصف القصة",
+     "at": 48,
+     "end": 52,
+     "purpose": "A reversal or revelation that raises the stakes.",
+     "purpose_ar": "انقلاب أو كشف يرفع الرهان.",
+     "questions": [
+      "What does your hero learn or lose at the middle?",
+      "How does the goal change after it?"
+     ],
+     "questions_ar": [
+      "ماذا يكتشف بطلك أو يخسر في المنتصف؟",
+      "كيف يتغيّر الهدف بعده؟"
+     ]
+    },
+    {
+     "id": "plot-point-2",
+     "name": "Plot point 2",
+     "name_ar": "نقطة التحوّل الثانية",
+     "at": 73,
+     "end": 77,
+     "purpose": "The lowest point, or the clue that leads to the ending.",
+     "purpose_ar": "أدنى نقطة، أو المفتاح الذي يقود إلى النهاية.",
+     "questions": [
+      "What seems lost here?",
+      "What new understanding pushes your hero into the final act?"
+     ],
+     "questions_ar": [
+      "ما الذي يبدو ضائعاً هنا؟",
+      "ما الفهم الجديد الذي يدفع بطلك إلى الفصل الأخير؟"
+     ]
+    },
+    {
+     "id": "resolution",
+     "name": "Resolution",
+     "name_ar": "الحل",
+     "at": 75,
+     "end": 100,
+     "purpose": "The final confrontation and the new normal.",
+     "purpose_ar": "المواجهة الأخيرة والحياة الجديدة.",
+     "questions": [
+      "Does your hero win, lose, or change, and is it earned by their own choice?",
+      "What final image answers your opening image?"
+     ],
+     "questions_ar": [
+      "هل ينتصر بطلك أم يخسر أم يتغيّر، وهل جاء ذلك نتيجة اختياره هو؟",
+      "ما الصورة الأخيرة التي تجيب على صورة البداية؟"
+     ]
+    }
+   ],
+   "when": "Your story has a clear goal and rising conflict, and you want the classic, widely understood shape. Works for features and longer shorts.",
+   "when_ar": "قصتك فيها هدف واضح وصراع يتصاعد، وتريد الشكل الكلاسيكي الأوسع انتشاراً. يصلح للأفلام الطويلة والقصيرة الأطول.",
+   "tradeoff": "Easy to explain to producers; can feel mechanical if every beat lands exactly on its page.",
+   "tradeoff_ar": "سهل الشرح للمنتجين؛ قد يبدو آلياً إذا وقعت كل محطة على صفحتها بالضبط."
+  },
+  {
+   "id": "save-the-cat",
+   "name": "Save the Cat beat sheet",
+   "name_ar": "جدول إيقاع «أنقذ القطة»",
+   "fits": [
+    "feature"
+   ],
+   "source": "Blake Snyder, Save the Cat! (2005)",
+   "summary": "Fifteen beats with set positions; good for checking pace.",
+   "summary_ar": "خمس عشرة محطة بمواضع محددة؛ مفيد لضبط الإيقاع.",
+   "beats": [
+    {
+     "id": "opening-image",
+     "name": "Opening image",
+     "name_ar": "الصورة الافتتاحية",
+     "at": 0,
+     "end": 1,
+     "purpose": "A snapshot of the 'before'.",
+     "purpose_ar": "لقطة لحال البطل «قبل».",
+     "questions": [
+      "What single image sums up your hero's life before the story?"
+     ],
+     "questions_ar": [
+      "ما الصورة الواحدة التي تلخّص حياة بطلك قبل القصة؟"
+     ]
+    },
+    {
+     "id": "theme-stated",
+     "name": "Theme stated",
+     "name_ar": "طرح الموضوع",
+     "at": 4,
+     "end": 6,
+     "purpose": "Someone hints at the lesson the hero must learn.",
+     "purpose_ar": "يلمّح أحدهم إلى الدرس الذي على البطل أن يتعلمه.",
+     "questions": [
+      "Who says, almost in passing, what this story is about?"
+     ],
+     "questions_ar": [
+      "من يقول، كأنه عابر، ما الذي تدور حوله القصة؟"
+     ]
+    },
+    {
+     "id": "set-up",
+     "name": "Set-up",
+     "name_ar": "التمهيد",
+     "at": 1,
+     "end": 10,
+     "purpose": "The hero's world and what is missing in it.",
+     "purpose_ar": "عالم البطل وما ينقصه.",
+     "questions": [
+      "What needs fixing in your hero's life?",
+      "Which characters must we meet now?"
+     ],
+     "questions_ar": [
+      "ما الذي يحتاج إصلاحاً في حياة بطلك؟",
+      "من الشخصيات التي يجب أن نتعرف عليها الآن؟"
+     ]
+    },
+    {
+     "id": "catalyst",
+     "name": "Catalyst",
+     "name_ar": "الحافز",
+     "at": 10,
+     "end": 12,
+     "purpose": "The life-changing event.",
+     "purpose_ar": "الحدث الذي يغيّر الحياة.",
+     "questions": [
+      "What arrives (news, meeting, loss) that changes everything?"
+     ],
+     "questions_ar": [
+      "ما الذي يصل (خبر، لقاء، خسارة) فيغيّر كل شيء؟"
+     ]
+    },
+    {
+     "id": "debate",
+     "name": "Debate",
+     "name_ar": "التردد",
+     "at": 12,
+     "end": 23,
+     "purpose": "The hero doubts; should they go?",
+     "purpose_ar": "يتردد البطل؛ هل يمضي؟",
+     "questions": [
+      "What is your hero afraid of losing if they act?"
+     ],
+     "questions_ar": [
+      "ما الذي يخاف بطلك أن يخسره إن تحرك؟"
+     ]
+    },
+    {
+     "id": "break-into-two",
+     "name": "Break into two",
+     "name_ar": "الانطلاق إلى الفصل الثاني",
+     "at": 23,
+     "end": 25,
+     "purpose": "The hero chooses to enter a new world.",
+     "purpose_ar": "يختار البطل دخول عالم جديد.",
+     "questions": [
+      "What does your hero choose, actively, here?"
+     ],
+     "questions_ar": [
+      "ماذا يختار بطلك هنا بإرادته؟"
+     ]
+    },
+    {
+     "id": "b-story",
+     "name": "B story",
+     "name_ar": "القصة الثانوية",
+     "at": 25,
+     "end": 30,
+     "purpose": "A relationship that carries the theme.",
+     "purpose_ar": "علاقة تحمل موضوع القصة.",
+     "questions": [
+      "Who helps your hero learn the theme?"
+     ],
+     "questions_ar": [
+      "من يساعد بطلك على فهم الموضوع؟"
+     ]
+    },
+    {
+     "id": "fun-and-games",
+     "name": "Fun and games",
+     "name_ar": "وعد الفكرة",
+     "at": 25,
+     "end": 50,
+     "purpose": "The promise of the premise: the scenes the poster sells.",
+     "purpose_ar": "وعد الفكرة: المشاهد التي يبيعها الملصق.",
+     "questions": [
+      "Which scenes would an audience come to see from your logline?"
+     ],
+     "questions_ar": [
+      "أي مشاهد سيأتي الجمهور ليراها بناءً على فكرة فيلمك؟"
+     ]
+    },
+    {
+     "id": "midpoint",
+     "name": "Midpoint",
+     "name_ar": "المنتصف",
+     "at": 48,
+     "end": 52,
+     "purpose": "False victory or false defeat; stakes rise.",
+     "purpose_ar": "نصر زائف أو هزيمة زائفة؛ يرتفع الرهان.",
+     "questions": [
+      "Is the midpoint a false win or a false loss?"
+     ],
+     "questions_ar": [
+      "هل المنتصف نصر زائف أم هزيمة زائفة؟"
+     ]
+    },
+    {
+     "id": "bad-guys-close-in",
+     "name": "Bad guys close in",
+     "name_ar": "اقتراب الخطر",
+     "at": 50,
+     "end": 73,
+     "purpose": "Pressure from outside and doubt from inside.",
+     "purpose_ar": "ضغط من الخارج وشك من الداخل.",
+     "questions": [
+      "What falls apart, outside and inside your hero?"
+     ],
+     "questions_ar": [
+      "ما الذي ينهار، حول بطلك وفي داخله؟"
+     ]
+    },
+    {
+     "id": "all-is-lost",
+     "name": "All is lost",
+     "name_ar": "ضياع كل شيء",
+     "at": 73,
+     "end": 75,
+     "purpose": "The lowest point; often a 'death' of something.",
+     "purpose_ar": "أدنى نقطة؛ غالباً «موت» شيء ما.",
+     "questions": [
+      "What dies here, literally or not?"
+     ],
+     "questions_ar": [
+      "ما الذي يموت هنا، حرفياً أو مجازاً؟"
+     ]
+    },
+    {
+     "id": "dark-night",
+     "name": "Dark night of the soul",
+     "name_ar": "ليلة الروح المظلمة",
+     "at": 75,
+     "end": 80,
+     "purpose": "The hero faces the truth.",
+     "purpose_ar": "يواجه البطل الحقيقة.",
+     "questions": [
+      "What does your hero finally admit?"
+     ],
+     "questions_ar": [
+      "ما الذي يعترف به بطلك أخيراً؟"
+     ]
+    },
+    {
+     "id": "break-into-three",
+     "name": "Break into three",
+     "name_ar": "الانطلاق إلى الفصل الثالث",
+     "at": 80,
+     "end": 82,
+     "purpose": "A and B stories meet; the solution appears.",
+     "purpose_ar": "تلتقي القصتان؛ ويظهر الحل.",
+     "questions": [
+      "How does the B story give your hero the answer?"
+     ],
+     "questions_ar": [
+      "كيف تمنح القصة الثانوية بطلك الجواب؟"
+     ]
+    },
+    {
+     "id": "finale",
+     "name": "Finale",
+     "name_ar": "الخاتمة",
+     "at": 80,
+     "end": 99,
+     "purpose": "The hero applies the lesson and changes the world.",
+     "purpose_ar": "يطبّق البطل الدرس ويغيّر عالمه.",
+     "questions": [
+      "What does your hero do now that they could not do at the start?"
+     ],
+     "questions_ar": [
+      "ماذا يفعل بطلك الآن ولم يكن يقدر عليه في البداية؟"
+     ]
+    },
+    {
+     "id": "final-image",
+     "name": "Final image",
+     "name_ar": "الصورة الختامية",
+     "at": 99,
+     "end": 100,
+     "purpose": "The mirror of the opening image.",
+     "purpose_ar": "مرآة الصورة الافتتاحية.",
+     "questions": [
+      "How does the last image prove the change?"
+     ],
+     "questions_ar": [
+      "كيف تثبت الصورة الأخيرة التغيّر؟"
+     ]
+    }
+   ],
+   "when": "A commercial feature where pacing matters: you want to know what should happen around each page.",
+   "when_ar": "فيلم طويل تجاري يهمّك فيه الإيقاع: تريد أن تعرف ماذا يحدث تقريباً عند كل صفحة.",
+   "tradeoff": "Very precise and practical; can push every film toward the same rhythm.",
+   "tradeoff_ar": "دقيق وعملي جداً؛ قد يدفع كل الأفلام نحو الإيقاع نفسه."
+  },
+  {
+   "id": "heros-journey",
+   "name": "Hero's journey",
+   "name_ar": "رحلة البطل",
+   "fits": [
+    "feature"
+   ],
+   "source": "Christopher Vogler, The Writer's Journey (after Joseph Campbell)",
+   "summary": "Twelve stages from the ordinary world to the return.",
+   "summary_ar": "اثنتا عشرة مرحلة من العالم المألوف إلى العودة.",
+   "beats": [
+    {
+     "id": "ordinary-world",
+     "name": "Ordinary world",
+     "name_ar": "العالم المألوف",
+     "at": 0,
+     "end": 10,
+     "purpose": "Life before the adventure.",
+     "purpose_ar": "الحياة قبل المغامرة.",
+     "questions": [
+      "What is comfortable, and what is missing?"
+     ],
+     "questions_ar": [
+      "ما المريح في حياة البطل، وما الناقص؟"
+     ]
+    },
+    {
+     "id": "call",
+     "name": "Call to adventure",
+     "name_ar": "النداء",
+     "at": 10,
+     "end": 12,
+     "purpose": "A challenge appears.",
+     "purpose_ar": "يظهر تحدٍّ.",
+     "questions": [
+      "What calls your hero out of their world?"
+     ],
+     "questions_ar": [
+      "ما الذي يدعو بطلك إلى الخروج من عالمه؟"
+     ]
+    },
+    {
+     "id": "refusal",
+     "name": "Refusal of the call",
+     "name_ar": "رفض النداء",
+     "at": 12,
+     "end": 17,
+     "purpose": "Fear holds the hero back.",
+     "purpose_ar": "يتردد البطل خوفاً.",
+     "questions": [
+      "Why does your hero say no at first?"
+     ],
+     "questions_ar": [
+      "لماذا يرفض بطلك في البداية؟"
+     ]
+    },
+    {
+     "id": "mentor",
+     "name": "Meeting the mentor",
+     "name_ar": "لقاء المرشد",
+     "at": 17,
+     "end": 22,
+     "purpose": "Advice, a gift or training.",
+     "purpose_ar": "نصيحة أو هدية أو تدريب.",
+     "questions": [
+      "Who or what prepares your hero?"
+     ],
+     "questions_ar": [
+      "من أو ما الذي يهيّئ بطلك؟"
+     ]
+    },
+    {
+     "id": "threshold",
+     "name": "Crossing the threshold",
+     "name_ar": "عبور العتبة",
+     "at": 22,
+     "end": 25,
+     "purpose": "Commitment to the new world.",
+     "purpose_ar": "الالتزام بالعالم الجديد.",
+     "questions": [
+      "What line does your hero cross, and can they go back?"
+     ],
+     "questions_ar": [
+      "ما الحدّ الذي يعبره بطلك، وهل يمكنه العودة؟"
+     ]
+    },
+    {
+     "id": "tests",
+     "name": "Tests, allies, enemies",
+     "name_ar": "الاختبارات والحلفاء والأعداء",
+     "at": 25,
+     "end": 45,
+     "purpose": "Learning the rules of the new world.",
+     "purpose_ar": "تعلّم قواعد العالم الجديد.",
+     "questions": [
+      "Who becomes an ally, and who an enemy?"
+     ],
+     "questions_ar": [
+      "من يصبح حليفاً، ومن يصبح عدواً؟"
+     ]
+    },
+    {
+     "id": "approach",
+     "name": "Approach",
+     "name_ar": "الاقتراب",
+     "at": 45,
+     "end": 50,
+     "purpose": "Preparing for the central ordeal.",
+     "purpose_ar": "الاستعداد للمحنة الكبرى.",
+     "questions": [
+      "What plan does your hero make?"
+     ],
+     "questions_ar": [
+      "ما الخطة التي يضعها بطلك؟"
+     ]
+    },
+    {
+     "id": "ordeal",
+     "name": "Ordeal",
+     "name_ar": "المحنة",
+     "at": 50,
+     "end": 55,
+     "purpose": "Facing the greatest fear.",
+     "purpose_ar": "مواجهة أكبر المخاوف.",
+     "questions": [
+      "What is your hero's greatest fear, and how do they face it?"
+     ],
+     "questions_ar": [
+      "ما أكبر مخاوف بطلك، وكيف يواجهه؟"
+     ]
+    },
+    {
+     "id": "reward",
+     "name": "Reward",
+     "name_ar": "المكافأة",
+     "at": 55,
+     "end": 65,
+     "purpose": "Something gained from surviving.",
+     "purpose_ar": "مكسب من النجاة.",
+     "questions": [
+      "What does your hero gain, and what does it cost?"
+     ],
+     "questions_ar": [
+      "ماذا يكسب بطلك، وما ثمن ذلك؟"
+     ]
+    },
+    {
+     "id": "road-back",
+     "name": "The road back",
+     "name_ar": "طريق العودة",
+     "at": 65,
+     "end": 80,
+     "purpose": "Consequences chase the hero.",
+     "purpose_ar": "تلاحق العواقبُ البطل.",
+     "questions": [
+      "What follows your hero home?"
+     ],
+     "questions_ar": [
+      "ما الذي يلاحق بطلك في طريق العودة؟"
+     ]
+    },
+    {
+     "id": "resurrection",
+     "name": "Resurrection",
+     "name_ar": "الانبعاث",
+     "at": 80,
+     "end": 95,
+     "purpose": "A final test proving the change.",
+     "purpose_ar": "اختبار أخير يثبت التغيّر.",
+     "questions": [
+      "How is the final test harder than the ordeal?"
+     ],
+     "questions_ar": [
+      "كيف يكون الاختبار الأخير أصعب من المحنة؟"
+     ]
+    },
+    {
+     "id": "elixir",
+     "name": "Return with the elixir",
+     "name_ar": "العودة بالإكسير",
+     "at": 95,
+     "end": 100,
+     "purpose": "The hero brings something back.",
+     "purpose_ar": "يعود البطل بشيء لعالمه.",
+     "questions": [
+      "What does your hero bring back for others?"
+     ],
+     "questions_ar": [
+      "بماذا يعود بطلك للآخرين؟"
+     ]
+    }
+   ],
+   "when": "A hero leaves the familiar world, is tested and comes back changed: quests, adventure, coming of age.",
+   "when_ar": "بطل يغادر عالمه المألوف، ويُختبر، ويعود متغيّراً: رحلات، مغامرة، نضوج.",
+   "tradeoff": "Gives a deep emotional arc; heavy for small, intimate stories.",
+   "tradeoff_ar": "يعطي قوساً عاطفياً عميقاً؛ ثقيل على القصص الصغيرة الحميمة."
+  },
+  {
+   "id": "story-circle",
+   "name": "Story circle",
+   "name_ar": "دائرة القصة",
+   "fits": [
+    "feature",
+    "short"
+   ],
+   "source": "Dan Harmon (after Joseph Campbell)",
+   "summary": "Eight steps: want, go, change, return. Scales from a scene to a feature.",
+   "summary_ar": "ثماني خطوات: رغبة، رحلة، تغيّر، عودة. تصلح لمشهد أو لفيلم كامل.",
+   "beats": [
+    {
+     "id": "you",
+     "name": "1. You (comfort)",
+     "name_ar": "١. أنت (الراحة)",
+     "at": 0,
+     "end": 12,
+     "purpose": "A character in a zone of comfort.",
+     "purpose_ar": "شخصية في منطقة راحتها.",
+     "questions": [
+      "Where is your character comfortable?"
+     ],
+     "questions_ar": [
+      "أين تشعر شخصيتك بالراحة؟"
+     ]
+    },
+    {
+     "id": "need",
+     "name": "2. Need",
+     "name_ar": "٢. الحاجة",
+     "at": 12,
+     "end": 25,
+     "purpose": "But they want something.",
+     "purpose_ar": "لكنها تريد شيئاً.",
+     "questions": [
+      "What does your character want badly enough to move?"
+     ],
+     "questions_ar": [
+      "ما الذي تريده شخصيتك بقوة تدفعها للتحرك؟"
+     ]
+    },
+    {
+     "id": "go",
+     "name": "3. Go",
+     "name_ar": "٣. الذهاب",
+     "at": 25,
+     "end": 37,
+     "purpose": "They enter an unfamiliar situation.",
+     "purpose_ar": "تدخل موقفاً غير مألوف.",
+     "questions": [
+      "What unfamiliar place or situation do they enter?"
+     ],
+     "questions_ar": [
+      "أي مكان أو موقف غير مألوف تدخله؟"
+     ]
+    },
+    {
+     "id": "search",
+     "name": "4. Search",
+     "name_ar": "٤. البحث",
+     "at": 37,
+     "end": 50,
+     "purpose": "They adapt to it.",
+     "purpose_ar": "تتأقلم معه.",
+     "questions": [
+      "What do they try, and what do they learn?"
+     ],
+     "questions_ar": [
+      "ماذا تجرّب، وماذا تتعلم؟"
+     ]
+    },
+    {
+     "id": "find",
+     "name": "5. Find",
+     "name_ar": "٥. الإيجاد",
+     "at": 50,
+     "end": 62,
+     "purpose": "They get what they wanted.",
+     "purpose_ar": "تحصل على ما أرادت.",
+     "questions": [
+      "What do they find, and is it what they expected?"
+     ],
+     "questions_ar": [
+      "ماذا تجد، وهل هو ما توقعته؟"
+     ]
+    },
+    {
+     "id": "take",
+     "name": "6. Take",
+     "name_ar": "٦. الثمن",
+     "at": 62,
+     "end": 75,
+     "purpose": "They pay a heavy price.",
+     "purpose_ar": "تدفع ثمناً باهظاً.",
+     "questions": [
+      "What does it cost them?"
+     ],
+     "questions_ar": [
+      "ماذا يكلّفها ذلك؟"
+     ]
+    },
+    {
+     "id": "return",
+     "name": "7. Return",
+     "name_ar": "٧. العودة",
+     "at": 75,
+     "end": 88,
+     "purpose": "They return to the familiar.",
+     "purpose_ar": "تعود إلى المألوف.",
+     "questions": [
+      "What does home look like now?"
+     ],
+     "questions_ar": [
+      "كيف يبدو المكان المألوف الآن؟"
+     ]
+    },
+    {
+     "id": "change",
+     "name": "8. Change",
+     "name_ar": "٨. التغيّر",
+     "at": 88,
+     "end": 100,
+     "purpose": "Having changed.",
+     "purpose_ar": "وقد تغيّرت.",
+     "questions": [
+      "How is your character different from step 1?"
+     ],
+     "questions_ar": [
+      "كيف اختلفت شخصيتك عن الخطوة الأولى؟"
+     ]
+    }
+   ],
+   "when": "You want a simple loop (want, go, find, pay, return, change) that works for a scene, a short or a feature.",
+   "when_ar": "تريد دائرة بسيطة (رغبة، ذهاب، إيجاد، ثمن، عودة، تغيّر) تصلح لمشهد أو فيلم قصير أو طويل.",
+   "tradeoff": "Simple to remember; less help with page-by-page pacing.",
+   "tradeoff_ar": "سهلة التذكّر؛ تساعد أقل في ضبط الإيقاع صفحة بصفحة."
+  },
+  {
+   "id": "sequences",
+   "name": "Eight sequences",
+   "name_ar": "التسلسلات الثمانية",
+   "fits": [
+    "feature"
+   ],
+   "source": "Paul Gulino, Screenwriting: The Sequence Approach (2004)",
+   "summary": "Eight mini-movies of about 10-15 minutes, each with its own goal.",
+   "summary_ar": "ثمانية أفلام قصيرة داخل الفيلم، مدة كل منها نحو ١٠-١٥ دقيقة، ولكل منها هدف.",
+   "beats": [
+    {
+     "id": "seq-a",
+     "name": "A: Status quo and inciting incident",
+     "name_ar": "أ: الوضع القائم والحدث المحرّك",
+     "at": 0,
+     "end": 12,
+     "purpose": "The world and the disturbance.",
+     "purpose_ar": "العالم والاضطراب.",
+     "questions": [
+      "What is the tension of this sequence?"
+     ],
+     "questions_ar": [
+      "ما التوتر الذي يحكم هذا التسلسل؟"
+     ]
+    },
+    {
+     "id": "seq-b",
+     "name": "B: Predicament and lock-in",
+     "name_ar": "ب: المأزق والالتزام",
+     "at": 12,
+     "end": 25,
+     "purpose": "The hero gets locked into the problem.",
+     "purpose_ar": "يعلق البطل في المشكلة.",
+     "questions": [
+      "What locks your hero in at the end of act one?"
+     ],
+     "questions_ar": [
+      "ما الذي يُلزم بطلك في نهاية الفصل الأول؟"
+     ]
+    },
+    {
+     "id": "seq-c",
+     "name": "C: First obstacle",
+     "name_ar": "ج: العقبة الأولى",
+     "at": 25,
+     "end": 37,
+     "purpose": "The first, easiest attempt.",
+     "purpose_ar": "المحاولة الأولى والأسهل.",
+     "questions": [
+      "What is the first attempt, and why does it fail?"
+     ],
+     "questions_ar": [
+      "ما المحاولة الأولى، ولماذا تفشل؟"
+     ]
+    },
+    {
+     "id": "seq-d",
+     "name": "D: Midpoint",
+     "name_ar": "د: المنتصف",
+     "at": 37,
+     "end": 50,
+     "purpose": "Building to the first culmination.",
+     "purpose_ar": "التصاعد نحو الذروة الأولى.",
+     "questions": [
+      "What culminates at the midpoint?"
+     ],
+     "questions_ar": [
+      "ما الذي يبلغ ذروته في المنتصف؟"
+     ]
+    },
+    {
+     "id": "seq-e",
+     "name": "E: Subplot and rising action",
+     "name_ar": "هـ: الخط الفرعي وتصاعد الأحداث",
+     "at": 50,
+     "end": 62,
+     "purpose": "A subplot carries new pressure.",
+     "purpose_ar": "خط فرعي يحمل ضغطاً جديداً.",
+     "questions": [
+      "Which subplot moves forward here?"
+     ],
+     "questions_ar": [
+      "أي خط فرعي يتقدم هنا؟"
+     ]
+    },
+    {
+     "id": "seq-f",
+     "name": "F: Main culmination",
+     "name_ar": "و: الذروة الرئيسية",
+     "at": 62,
+     "end": 75,
+     "purpose": "The end of act two: highest or lowest point.",
+     "purpose_ar": "نهاية الفصل الثاني: أعلى نقطة أو أدناها.",
+     "questions": [
+      "What is the main culmination of act two?"
+     ],
+     "questions_ar": [
+      "ما الذروة الرئيسية للفصل الثاني؟"
+     ]
+    },
+    {
+     "id": "seq-g",
+     "name": "G: New tension",
+     "name_ar": "ز: توتر جديد",
+     "at": 75,
+     "end": 88,
+     "purpose": "A new, final tension begins.",
+     "purpose_ar": "يبدأ توتر أخير جديد.",
+     "questions": [
+      "What new problem opens act three?"
+     ],
+     "questions_ar": [
+      "ما المشكلة الجديدة التي تفتح الفصل الثالث؟"
+     ]
+    },
+    {
+     "id": "seq-h",
+     "name": "H: Resolution",
+     "name_ar": "ح: الحل",
+     "at": 88,
+     "end": 100,
+     "purpose": "The final resolution.",
+     "purpose_ar": "الحل النهائي.",
+     "questions": [
+      "How does the last sequence close every open question?"
+     ],
+     "questions_ar": [
+      "كيف يغلق التسلسل الأخير كل الأسئلة المفتوحة؟"
+     ]
+    }
+   ],
+   "when": "A long feature that sags in the middle: you think in eight blocks of 10–15 minutes, each with its own goal.",
+   "when_ar": "فيلم طويل يترهّل في منتصفه: تفكّر في ثماني كتل من ١٠-١٥ دقيقة، لكل منها هدفها.",
+   "tradeoff": "Keeps the middle alive; more units to plan.",
+   "tradeoff_ar": "يبقي المنتصف حياً؛ وحدات أكثر للتخطيط."
+  },
+  {
+   "id": "kishotenketsu",
+   "name": "Kishōtenketsu",
+   "name_ar": "كيشوتنكتسو (البناء الرباعي)",
+   "fits": [
+    "short",
+    "feature"
+   ],
+   "source": "Classical East Asian four-part form",
+   "summary": "Four parts and no conflict needed: introduction, development, twist, reconciliation. Suits quiet and poetic shorts.",
+   "summary_ar": "أربعة أجزاء دون حاجة إلى صراع: تقديم، تطوير، انعطاف، توفيق. يناسب الأفلام القصيرة الهادئة والشاعرية.",
+   "beats": [
+    {
+     "id": "ki",
+     "name": "Ki: introduction",
+     "name_ar": "التقديم",
+     "at": 0,
+     "end": 25,
+     "purpose": "Characters and setting.",
+     "purpose_ar": "الشخصيات والمكان.",
+     "questions": [
+      "What ordinary moment do we begin in?"
+     ],
+     "questions_ar": [
+      "في أي لحظة عادية نبدأ؟"
+     ]
+    },
+    {
+     "id": "sho",
+     "name": "Shō: development",
+     "name_ar": "التطوير",
+     "at": 25,
+     "end": 50,
+     "purpose": "The situation deepens, without a reversal.",
+     "purpose_ar": "يتعمق الموقف دون انقلاب.",
+     "questions": [
+      "How does the moment grow richer?"
+     ],
+     "questions_ar": [
+      "كيف تزداد اللحظة ثراءً؟"
+     ]
+    },
+    {
+     "id": "ten",
+     "name": "Ten: twist",
+     "name_ar": "الانعطاف",
+     "at": 50,
+     "end": 75,
+     "purpose": "Something unexpected, often unrelated, enters.",
+     "purpose_ar": "يدخل شيء غير متوقع، وأحياناً لا صلة ظاهرة له.",
+     "questions": [
+      "What unexpected element changes how we see everything?"
+     ],
+     "questions_ar": [
+      "ما العنصر غير المتوقع الذي يغيّر نظرتنا لكل شيء؟"
+     ]
+    },
+    {
+     "id": "ketsu",
+     "name": "Ketsu: reconciliation",
+     "name_ar": "التوفيق",
+     "at": 75,
+     "end": 100,
+     "purpose": "The parts come together in a new meaning.",
+     "purpose_ar": "تلتقي الأجزاء في معنى جديد.",
+     "questions": [
+      "What new meaning joins the first half and the twist?"
+     ],
+     "questions_ar": [
+      "ما المعنى الجديد الذي يجمع النصف الأول بالانعطاف؟"
+     ]
+    }
+   ],
+   "when": "A quiet, poetic story with no villain: meaning comes from a surprising turn, not from a fight.",
+   "when_ar": "قصة هادئة وشاعرية بلا خصم: المعنى يأتي من انعطافة مفاجئة، لا من صراع.",
+   "tradeoff": "Fresh and gentle; needs a strong, surprising turn or it feels flat.",
+   "tradeoff_ar": "جديد ولطيف؛ يحتاج انعطافة قوية ومفاجئة وإلا بدا مسطحاً."
+  },
+  {
+   "id": "short-one-moment",
+   "name": "Short film: one moment",
+   "name_ar": "فيلم قصير: لحظة واحدة",
+   "fits": [
+    "short"
+   ],
+   "source": "ZAMAKAN guidance",
+   "summary": "One character, one situation, one change. Most strong shorts (under 15 minutes) are a single turn, not a compressed feature.",
+   "summary_ar": "شخصية واحدة، موقف واحد، تحوّل واحد. أغلب الأفلام القصيرة القوية (أقل من ١٥ دقيقة) تقوم على انعطافة واحدة، لا على فيلم طويل مضغوط.",
+   "beats": [
+    {
+     "id": "hook",
+     "name": "Hook",
+     "name_ar": "الخطّاف",
+     "at": 0,
+     "end": 10,
+     "purpose": "Drop us into the situation; no backstory.",
+     "purpose_ar": "أدخلنا في الموقف مباشرة؛ دون خلفيات.",
+     "questions": [
+      "What is the first image, and what question does it raise?"
+     ],
+     "questions_ar": [
+      "ما الصورة الأولى، وما السؤال الذي تطرحه؟"
+     ]
+    },
+    {
+     "id": "pressure",
+     "name": "Pressure",
+     "name_ar": "الضغط",
+     "at": 10,
+     "end": 70,
+     "purpose": "One want meets one obstacle, and tightens.",
+     "purpose_ar": "رغبة واحدة تواجه عقبة واحدة، ويشتد الخناق.",
+     "questions": [
+      "What does your character want in this one situation?",
+      "How does each scene tighten it?"
+     ],
+     "questions_ar": [
+      "ماذا تريد شخصيتك في هذا الموقف بالذات؟",
+      "كيف يزيد كل مشهد من الضغط؟"
+     ]
+    },
+    {
+     "id": "turn",
+     "name": "Turn",
+     "name_ar": "الانعطافة",
+     "at": 70,
+     "end": 90,
+     "purpose": "A choice or revelation that changes the meaning.",
+     "purpose_ar": "اختيار أو كشف يغيّر المعنى.",
+     "questions": [
+      "What does your character choose, and what does it reveal?"
+     ],
+     "questions_ar": [
+      "ماذا تختار شخصيتك، وماذا يكشف ذلك؟"
+     ]
+    },
+    {
+     "id": "after",
+     "name": "After-image",
+     "name_ar": "الصورة الباقية",
+     "at": 90,
+     "end": 100,
+     "purpose": "End early; leave an image that stays.",
+     "purpose_ar": "انتهِ مبكراً؛ واترك صورة تبقى.",
+     "questions": [
+      "What image should stay with the audience after the cut to black?"
+     ],
+     "questions_ar": [
+      "ما الصورة التي يجب أن تبقى مع الجمهور بعد القطع إلى الأسود؟"
+     ]
+    }
+   ],
+   "when": "A short film under about 15 minutes: one person, one situation, one change.",
+   "when_ar": "فيلم قصير أقل من ١٥ دقيقة تقريباً: شخص واحد، موقف واحد، تحوّل واحد.",
+   "tradeoff": "The most reliable shape for shorts; resist squeezing a feature story into it.",
+   "tradeoff_ar": "أكثر الأشكال ثقة للأفلام القصيرة؛ لا تضغط فيه قصة فيلم طويل."
+  },
+  {
+   "id": "doc-character",
+   "name": "Documentary: character-driven three acts",
+   "name_ar": "وثائقي: ثلاثة فصول حول شخصية",
+   "fits": [
+    "documentary"
+   ],
+   "source": "Sheila Curran Bernard, Documentary Storytelling",
+   "summary": "A real person wants something and the film follows whether they get it.",
+   "summary_ar": "شخص حقيقي يريد شيئاً، والفيلم يتابع هل يصل إليه.",
+   "beats": [
+    {
+     "id": "world",
+     "name": "Their world",
+     "name_ar": "عالمهم",
+     "at": 0,
+     "end": 20,
+     "purpose": "Meet the person and what they do every day.",
+     "purpose_ar": "نتعرف على الشخص وما يفعله كل يوم.",
+     "questions": [
+      "What do we see them do before anyone explains who they are?"
+     ],
+     "questions_ar": [
+      "ماذا نراه يفعل قبل أن يشرح أحد من هو؟"
+     ]
+    },
+    {
+     "id": "stakes",
+     "name": "What is at stake",
+     "name_ar": "ما على المحك",
+     "at": 15,
+     "end": 30,
+     "purpose": "The goal, deadline or threat that drives the film.",
+     "purpose_ar": "الهدف أو الموعد أو الخطر الذي يحرّك الفيلم.",
+     "questions": [
+      "What could they lose, and by when?"
+     ],
+     "questions_ar": [
+      "ماذا قد يخسرون، ومتى؟"
+     ]
+    },
+    {
+     "id": "trials",
+     "name": "Trials",
+     "name_ar": "التجارب",
+     "at": 30,
+     "end": 70,
+     "purpose": "Attempts, setbacks and help along the way.",
+     "purpose_ar": "المحاولات والانتكاسات ومن يساعد في الطريق.",
+     "questions": [
+      "Which moments will you film as they happen, not tell afterwards?"
+     ],
+     "questions_ar": [
+      "أي لحظات ستصوّرها وهي تحدث، لا تُروى بعدها؟"
+     ]
+    },
+    {
+     "id": "crisis",
+     "name": "Crisis",
+     "name_ar": "الأزمة",
+     "at": 70,
+     "end": 85,
+     "purpose": "The hardest moment, if it comes.",
+     "purpose_ar": "أصعب لحظة، إن جاءت.",
+     "questions": [
+      "What happens if the crisis doesn't come during the shoot?"
+     ],
+     "questions_ar": [
+      "ماذا لو لم تأتِ الأزمة أثناء التصوير؟"
+     ]
+    },
+    {
+     "id": "outcome",
+     "name": "Outcome",
+     "name_ar": "المآل",
+     "at": 85,
+     "end": 100,
+     "purpose": "Where they end, and what it means.",
+     "purpose_ar": "أين ينتهون، وماذا يعني ذلك.",
+     "questions": [
+      "How will you end if the outcome is still open?"
+     ],
+     "questions_ar": [
+      "كيف ستنهي إن بقي المآل مفتوحاً؟"
+     ]
+    }
+   ],
+   "when": "A real person wants something, and the film follows whether they get it (a build, a race, a season).",
+   "when_ar": "شخص حقيقي يريد شيئاً، والفيلم يتابع هل يصل إليه (بناء، سباق، موسم).",
+   "tradeoff": "Gives a documentary drive and an ending; depends on events you don't control.",
+   "tradeoff_ar": "يعطي الوثائقي دافعاً ونهاية؛ يعتمد على أحداث لا تتحكم بها."
+  },
+  {
+   "id": "doc-observational",
+   "name": "Documentary: observational (shaped in the edit)",
+   "name_ar": "وثائقي: رصدي (يتشكّل في المونتاج)",
+   "fits": [
+    "documentary"
+   ],
+   "source": "Observational / direct cinema practice",
+   "summary": "No narration or interviews; the structure is found in the footage. Plan for situations, not scenes.",
+   "summary_ar": "بلا تعليق أو مقابلات؛ البناء يُكتشف في المادة المصوّرة. خطّط للمواقف لا للمشاهد.",
+   "beats": [
+    {
+     "id": "place",
+     "name": "The place and its rhythm",
+     "name_ar": "المكان وإيقاعه",
+     "at": 0,
+     "end": 20,
+     "purpose": "Establish where we are and how life moves there.",
+     "purpose_ar": "أين نحن، وكيف تتحرك الحياة هنا.",
+     "questions": [
+      "What daily rhythm will you film again and again?"
+     ],
+     "questions_ar": [
+      "أي إيقاع يومي ستصوّره مراراً؟"
+     ]
+    },
+    {
+     "id": "situations",
+     "name": "Situations to watch",
+     "name_ar": "مواقف للرصد",
+     "at": 20,
+     "end": 60,
+     "purpose": "Recurring situations where something can change.",
+     "purpose_ar": "مواقف متكررة يمكن أن يتغير فيها شيء.",
+     "questions": [
+      "Which situations are likely to reveal something without you asking?"
+     ],
+     "questions_ar": [
+      "أي مواقف ستكشف شيئاً دون أن تسأل؟"
+     ]
+    },
+    {
+     "id": "shift",
+     "name": "A shift",
+     "name_ar": "تحوّل",
+     "at": 60,
+     "end": 80,
+     "purpose": "Something in the routine changes.",
+     "purpose_ar": "شيء في الروتين يتغير.",
+     "questions": [
+      "What would count as a shift, and how will you be there when it happens?"
+     ],
+     "questions_ar": [
+      "ما الذي يُعدّ تحوّلاً، وكيف ستكون هناك حين يحدث؟"
+     ]
+    },
+    {
+     "id": "after",
+     "name": "After",
+     "name_ar": "ما بعد",
+     "at": 80,
+     "end": 100,
+     "purpose": "The routine again, seen differently.",
+     "purpose_ar": "الروتين من جديد، لكن بعين أخرى.",
+     "questions": [
+      "What image could show that something has changed?"
+     ],
+     "questions_ar": [
+      "أي صورة يمكن أن تُظهر أن شيئاً تغيّر؟"
+     ]
+    }
+   ],
+   "when": "You want no narration and no interviews: you film situations and find the story in the edit.",
+   "when_ar": "لا تريد تعليقاً ولا مقابلات: تصوّر المواقف وتكتشف القصة في المونتاج.",
+   "tradeoff": "Intimate and truthful; needs long access and a lot of footage.",
+   "tradeoff_ar": "حميم وصادق؛ يحتاج وصولاً طويلاً ومادة كثيرة."
+  },
+  {
+   "id": "doc-investigative",
+   "name": "Documentary: investigative (question, evidence, answer)",
+   "name_ar": "وثائقي: استقصائي (سؤال، أدلة، جواب)",
+   "fits": [
+    "documentary"
+   ],
+   "source": "Investigative documentary practice",
+   "summary": "A question the audience wants answered, evidence that builds or overturns, and a conclusion you can stand behind.",
+   "summary_ar": "سؤال يريد الجمهور جوابه، وأدلة تتراكم أو تنقلب، وخلاصة يمكنك الدفاع عنها.",
+   "beats": [
+    {
+     "id": "question",
+     "name": "The question",
+     "name_ar": "السؤال",
+     "at": 0,
+     "end": 15,
+     "purpose": "Pose the question sharply and why it matters.",
+     "purpose_ar": "اطرح السؤال بحدة، ولماذا يهم.",
+     "questions": [
+      "Can the question be answered with what you can film and document?"
+     ],
+     "questions_ar": [
+      "هل يمكن الإجابة عن السؤال بما ستصوّره وتوثّقه؟"
+     ]
+    },
+    {
+     "id": "evidence",
+     "name": "Evidence",
+     "name_ar": "الأدلة",
+     "at": 15,
+     "end": 55,
+     "purpose": "Documents, witnesses, data, places.",
+     "purpose_ar": "وثائق، شهود، بيانات، أماكن.",
+     "questions": [
+      "Which claims need a second source before they go on screen?"
+     ],
+     "questions_ar": [
+      "أي ادعاءات تحتاج مصدراً ثانياً قبل عرضها؟"
+     ]
+    },
+    {
+     "id": "complication",
+     "name": "Complication",
+     "name_ar": "التعقيد",
+     "at": 55,
+     "end": 75,
+     "purpose": "The other side, or evidence that cuts the other way.",
+     "purpose_ar": "الطرف الآخر، أو دليل يعاكس الاتجاه.",
+     "questions": [
+      "Who will you ask for the other side, and what if they refuse?"
+     ],
+     "questions_ar": [
+      "من ستسأل عن الطرف الآخر، وماذا لو رفض؟"
+     ]
+    },
+    {
+     "id": "conclusion",
+     "name": "Conclusion",
+     "name_ar": "الخلاصة",
+     "at": 75,
+     "end": 100,
+     "purpose": "What the evidence supports, and what stays open.",
+     "purpose_ar": "ما تدعمه الأدلة، وما يبقى مفتوحاً.",
+     "questions": [
+      "What will you say you know, and what will you say you don't?"
+     ],
+     "questions_ar": [
+      "ماذا ستقول إنك تعرفه، وماذا ستقول إنك لا تعرفه؟"
+     ]
+    }
+   ],
+   "when": "There is a question the audience wants answered, and evidence that builds or turns.",
+   "when_ar": "هناك سؤال يريد الجمهور جوابه، وأدلة تتراكم أو تنقلب.",
+   "tradeoff": "Strong pull; every claim must be sourced and defensible.",
+   "tradeoff_ar": "شدّ قوي؛ كل معلومة يجب أن يكون لها مصدر ويمكن الدفاع عنها."
+  },
+  {
+   "id": "doc-journey",
+   "name": "Documentary: journey or quest",
+   "name_ar": "وثائقي: رحلة أو بحث",
+   "fits": [
+    "documentary"
+   ],
+   "source": "Documentary practice (after the quest structure)",
+   "summary": "A physical or personal journey gives the film its spine.",
+   "summary_ar": "رحلة مكانية أو شخصية تمنح الفيلم عموده الفقري.",
+   "beats": [
+    {
+     "id": "departure",
+     "name": "Departure",
+     "name_ar": "الانطلاق",
+     "at": 0,
+     "end": 15,
+     "purpose": "Why the journey, and why now.",
+     "purpose_ar": "لماذا الرحلة، ولماذا الآن.",
+     "questions": [
+      "What sets the journey off, on camera?"
+     ],
+     "questions_ar": [
+      "ما الذي يطلق الرحلة أمام الكاميرا؟"
+     ]
+    },
+    {
+     "id": "road",
+     "name": "The road",
+     "name_ar": "الطريق",
+     "at": 15,
+     "end": 70,
+     "purpose": "Stations, encounters, surprises.",
+     "purpose_ar": "محطات، لقاءات، مفاجآت.",
+     "questions": [
+      "Which stops are planned, and how will you leave room for the unplanned?"
+     ],
+     "questions_ar": [
+      "أي محطات مخططة، وكيف ستترك مكاناً لغير المخطط؟"
+     ]
+    },
+    {
+     "id": "arrival",
+     "name": "Arrival",
+     "name_ar": "الوصول",
+     "at": 70,
+     "end": 90,
+     "purpose": "What is found, or not found.",
+     "purpose_ar": "ما يُعثر عليه، أو لا.",
+     "questions": [
+      "What if what you're looking for isn't there?"
+     ],
+     "questions_ar": [
+      "ماذا لو لم يكن ما تبحث عنه هناك؟"
+     ]
+    },
+    {
+     "id": "return",
+     "name": "Return",
+     "name_ar": "العودة",
+     "at": 90,
+     "end": 100,
+     "purpose": "What the journey changed.",
+     "purpose_ar": "ما الذي غيّرته الرحلة.",
+     "questions": [
+      "How do we see the change, not just hear it?"
+     ],
+     "questions_ar": [
+      "كيف نرى التغيّر، لا أن نسمعه فقط؟"
+     ]
+    }
+   ],
+   "when": "A trip (a place or a search) gives the film its spine.",
+   "when_ar": "رحلة (مكان أو بحث) تعطي الفيلم عموده الفقري.",
+   "tradeoff": "Easy to follow; the trip must change someone, or it's a travelogue.",
+   "tradeoff_ar": "سهل المتابعة؛ يجب أن تغيّر الرحلة أحداً وإلا صارت فيلم سفر."
+  },
+  {
+   "id": "doc-portrait",
+   "name": "Documentary: portrait",
+   "name_ar": "وثائقي: بورتريه",
+   "fits": [
+    "documentary"
+   ],
+   "source": "Documentary practice",
+   "summary": "A person, a craft or a place, revealed layer by layer.",
+   "summary_ar": "شخص أو حرفة أو مكان، يُكشف طبقة بعد طبقة.",
+   "beats": [
+    {
+     "id": "surface",
+     "name": "The surface",
+     "name_ar": "السطح",
+     "at": 0,
+     "end": 25,
+     "purpose": "How others see them.",
+     "purpose_ar": "كيف يراهم الآخرون.",
+     "questions": [
+      "What is the first impression you want to complicate?"
+     ],
+     "questions_ar": [
+      "ما الانطباع الأول الذي تريد أن تعقّده؟"
+     ]
+    },
+    {
+     "id": "layers",
+     "name": "Layers",
+     "name_ar": "الطبقات",
+     "at": 25,
+     "end": 75,
+     "purpose": "Work, history, relationships, contradictions.",
+     "purpose_ar": "العمل، التاريخ، العلاقات، التناقضات.",
+     "questions": [
+      "Which contradiction makes this person more than a profile?"
+     ],
+     "questions_ar": [
+      "أي تناقض يجعل هذا الشخص أكثر من ملف تعريفي؟"
+     ]
+    },
+    {
+     "id": "core",
+     "name": "The core",
+     "name_ar": "الجوهر",
+     "at": 75,
+     "end": 100,
+     "purpose": "What we finally understand.",
+     "purpose_ar": "ما نفهمه أخيراً.",
+     "questions": [
+      "What do we understand at the end that we didn't at the start?"
+     ],
+     "questions_ar": [
+      "ماذا نفهم في النهاية ولم نفهمه في البداية؟"
+     ]
+    }
+   ],
+   "when": "A person, a craft or a place matters more than events: you reveal it layer by layer.",
+   "when_ar": "شخص أو حرفة أو مكان أهم من الأحداث: تكشفه طبقة بعد طبقة.",
+   "tradeoff": "Rich and personal; needs a reason to keep watching (a question, a contradiction).",
+   "tradeoff_ar": "غني وشخصي؛ يحتاج سبباً لمواصلة المشاهدة (سؤال، تناقض)."
+  },
+  {
+   "id": "doc-essay",
+   "name": "Documentary: essay film",
+   "name_ar": "وثائقي: فيلم مقالة",
+   "fits": [
+    "documentary"
+   ],
+   "source": "Essay film tradition",
+   "summary": "A thinking voice moves through images and ideas; the argument is the structure.",
+   "summary_ar": "صوت يفكّر يتنقل بين الصور والأفكار؛ الحجة هي البناء.",
+   "beats": [
+    {
+     "id": "provocation",
+     "name": "Provocation",
+     "name_ar": "الإثارة",
+     "at": 0,
+     "end": 20,
+     "purpose": "An image or question that starts the thinking.",
+     "purpose_ar": "صورة أو سؤال يبدأ التفكير.",
+     "questions": [
+      "What image starts the film's question?"
+     ],
+     "questions_ar": [
+      "أي صورة تبدأ سؤال الفيلم؟"
+     ]
+    },
+    {
+     "id": "movements",
+     "name": "Movements",
+     "name_ar": "الحركات",
+     "at": 20,
+     "end": 80,
+     "purpose": "Linked reflections, each with its images.",
+     "purpose_ar": "تأملات مترابطة، لكل منها صورها.",
+     "questions": [
+      "How does each part move the thinking forward, not sideways?"
+     ],
+     "questions_ar": [
+      "كيف يدفع كل جزء التفكير إلى الأمام لا إلى الجانب؟"
+     ]
+    },
+    {
+     "id": "arrival",
+     "name": "Arrival",
+     "name_ar": "الوصول",
+     "at": 80,
+     "end": 100,
+     "purpose": "Where the thinking lands.",
+     "purpose_ar": "أين يستقر التفكير.",
+     "questions": [
+      "Does the film arrive somewhere, or deliberately stay open?"
+     ],
+     "questions_ar": [
+      "هل يصل الفيلم إلى مكان، أم يبقى مفتوحاً عمداً؟"
+     ]
+    }
+   ],
+   "when": "The filmmaker's own thinking leads: an argument or a reflection moving between images and ideas.",
+   "when_ar": "تفكير صانع الفيلم هو القائد: حجة أو تأمل يتنقل بين الصور والأفكار.",
+   "tradeoff": "Very free; depends on a strong voice and a clear line of thought.",
+   "tradeoff_ar": "حر جداً؛ يعتمد على صوت قوي وخيط فكري واضح."
+  },
+  {
+   "id": "doc-historical",
+   "name": "Documentary: historical / chronological",
+   "name_ar": "وثائقي: تاريخي / زمني",
+   "fits": [
+    "documentary"
+   ],
+   "source": "Documentary practice",
+   "summary": "Events in time, held by a question or a present-day thread.",
+   "summary_ar": "أحداث في الزمن، يجمعها سؤال أو خيط من الحاضر.",
+   "beats": [
+    {
+     "id": "present",
+     "name": "A present-day thread",
+     "name_ar": "خيط من الحاضر",
+     "at": 0,
+     "end": 15,
+     "purpose": "Why this history matters now.",
+     "purpose_ar": "لماذا يهم هذا التاريخ الآن.",
+     "questions": [
+      "What present-day scene opens the past?"
+     ],
+     "questions_ar": [
+      "أي مشهد من الحاضر يفتح الماضي؟"
+     ]
+    },
+    {
+     "id": "then",
+     "name": "Then",
+     "name_ar": "حينها",
+     "at": 15,
+     "end": 45,
+     "purpose": "The world before.",
+     "purpose_ar": "العالم قبل.",
+     "questions": [
+      "Which archive or witness brings this period to life?"
+     ],
+     "questions_ar": [
+      "أي أرشيف أو شاهد يعيد هذه الحقبة إلى الحياة؟"
+     ]
+    },
+    {
+     "id": "turning",
+     "name": "The turning point",
+     "name_ar": "المنعطف",
+     "at": 45,
+     "end": 70,
+     "purpose": "What changed, and why.",
+     "purpose_ar": "ما الذي تغيّر، ولماذا.",
+     "questions": [
+      "What is the single event the film turns on?"
+     ],
+     "questions_ar": [
+      "ما الحدث الواحد الذي يدور حوله الفيلم؟"
+     ]
+    },
+    {
+     "id": "consequence",
+     "name": "Consequences",
+     "name_ar": "العواقب",
+     "at": 70,
+     "end": 90,
+     "purpose": "What followed.",
+     "purpose_ar": "ما الذي تلاه.",
+     "questions": [
+      "Whose lives show the consequences?"
+     ],
+     "questions_ar": [
+      "حياة من تُظهر العواقب؟"
+     ]
+    },
+    {
+     "id": "now",
+     "name": "Now",
+     "name_ar": "الآن",
+     "at": 90,
+     "end": 100,
+     "purpose": "Back to the present, changed by what we know.",
+     "purpose_ar": "العودة إلى الحاضر، وقد غيّرنا ما عرفناه.",
+     "questions": [
+      "How does the present look different after the film?"
+     ],
+     "questions_ar": [
+      "كيف يبدو الحاضر مختلفاً بعد الفيلم؟"
+     ]
+    }
+   ],
+   "when": "Events in the past, held together by a question or a thread from today.",
+   "when_ar": "أحداث من الماضي، يجمعها سؤال أو خيط من الحاضر.",
+   "tradeoff": "Clear and educational; can become a lecture without a present-day thread.",
+   "tradeoff_ar": "واضح وتعليمي؛ قد يصبح محاضرة دون خيط من الحاضر."
+  }
+ ]
+}

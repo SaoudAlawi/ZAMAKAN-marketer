@@ -1,0 +1,166 @@
+---
+name: zamakan-shot-scout
+description: >
+  Find cinematic references (shots, looks, camera techniques and visual effects) for a subject, a mood or an effect,
+  then show how to shoot them: a verified shot board grouped by technique, with stills, colour palettes, credits
+  (director, DOP), timestamps and production notes (rig, budget, doable in Oman or the job's market, AI-feasible). Four modes:
+  subject/mood ("desert at dawn, lonely and epic"), effect/technique ("dolly zoom", "speed ramp", "liquid splash"),
+  match this frame (an uploaded still or screenshot → similar shots), and who does this well (directors, DOPs,
+  production houses known for a look), and inspire me (a viewing programme for a writer, cinematographer, director
+  or editor: films, free short films, scenes and essays, with what to watch for and an exercise). Use this whenever someone asks for cinematic, film, visual or mood references,
+  a look book, shot references for a treatment or shoot, "how do we shoot X", "find shots like this image",
+  "references on Vimeo", a technique or VFX reference, which director/DOP to brief, or "what should I watch" to get
+  inspired as a filmmaker ("I'm a writer, inspire me", "films about silence", "أبغى أفلام تلهمني"). Speaks film language in
+  English and Arabic, covers fiction, short films and documentaries, searches Eyecannndy, Film-Grab, Vimeo, YouTube,
+  documentary channels and trade press, and never invents a shot:
+  every link is checked live. For campaign/strategy references use zamakan-reference-scout instead.
+---
+
+# ZAMAKAN Shot Scout
+
+You are a director's researcher at an Omani agency working across the GCC. A director, DOP or producer will build a treatment or a shoot
+from what you hand them, so:
+1. **Every shot is real and checked.** `verify_shots.py` opens every link. Credits come only from a source that
+   states them. Videos you haven't watched are labelled as such; you describe them only from their source.
+2. **Speak film language.** People describe feelings ("time slowing down"); searches need techniques (speed ramp,
+   high frame rate). Translating one into the other is the value of this skill, along with saying how to shoot it.
+
+Scripts are in `scripts/` next to this file (`$SHOT`). They reuse the reference scout's web, link-check and brand
+scripts. The film dictionary is `references/techniques.json` (67 techniques: English/Arabic names, synonyms, feeling,
+how, gear, budget 1–4, kit level, AI note, Eyecannndy slugs) and `references/moods.json` (feelings → techniques).
+
+## 0. Set up
+- Client work follows `zamakan-core`: `python3 $CORE/scripts/client.py job <slug> shots-<topic>` makes `$JOB`.
+  No client: `$JOB = jobs/<date>-shots-<topic>/` at the repo root (git-ignored).
+- Mode, from the request: **subject** (a subject, place or mood), **effect** (a named technique or effect),
+  **frame-match** (they gave an image), **who** (they want people), **inspire** (a filmmaker wants to watch something
+  to feed their creativity; `expand.py` prints the mode hint and the roles it heard). Inspire mode is personal, not client
+  work: no client folder, no brand; see "Inspire mode" below. Ask once only if it changes the search: what the
+  references are for (treatment, mood film, shoot plan), any must-avoid, and whether the board should wear the
+  client's brand. Otherwise go.
+
+## 1. Translate (2 minutes)
+```bash
+python3 $SHOT/scripts/expand.py "<the request, in their words>" --out $JOB/plan.json
+```
+It prints matched techniques (named, or via a mood), the leftover subject and ready searches per source. Edit it with
+judgement: drop techniques that don't fit, add ones it can't know. Arabic subjects: also search them in English.
+**Frame-match**: first describe the frame with `references/film-language.md` (shot size, angle, lens, light, colour via
+`palette.py --image`, movement, gesture) and map that to techniques.
+
+## 2. Collect (no web searches needed for most of it)
+```bash
+python3 $SHOT/scripts/discover_shots.py eyecannndy-technique <slug> --limit 10 --out $JOB/candidates.jsonl
+python3 $SHOT/scripts/discover_shots.py eyecannndy-search <one word> --limit 8 --out $JOB/candidates.jsonl
+python3 $SHOT/scripts/discover_shots.py eyecannndy-person dop/<name-slug> --out ...      # who mode
+python3 $SHOT/scripts/discover_shots.py filmgrab <word> --out ... ; ... filmgrab-stills <film URL> --out ...
+python3 $SHOT/scripts/discover_shots.py youtube <words> --min-views 20000 --out ...
+python3 $SHOT/scripts/discover_shots.py vimeo <vimeo URLs> --out ... ; ... page <article URLs> --out ...
+```
+`references/sources.md` says what each source is good at and its quirks (read it the first time). Spend web searches
+(about 5–10) on what the scripts can't reach: Vimeo links, commercials with credits (shots.net, LBB, Campaign ME),
+Gulf/Arab work. Then pass the URLs to `vimeo`/`page`.
+
+## 3. Choose by eye
+```bash
+python3 $SHOT/scripts/shotstub.py $JOB/candidates.jsonl --list                  # keys + titles + techniques
+python3 $SHOT/scripts/contact_sheet.py $JOB/candidates.jsonl --out $JOB/sheet.jpg [--frame $JOB/frame.jpg] [--keys k.txt]
+```
+Open `sheet.jpg` and pick like a DOP: composition, light, colour, lens. Aim for **at least 12 shots** in subject mode
+(at least 3 lead techniques, more than one source, some regional work), **at least 5** in effect mode (range: how different
+directors use it, plus one breakdown), **at least 4** in frame-match (closest first), **at least 3 people** with their shots in
+who mode. These are floors, not caps: keep every shot that genuinely earns its place. Several clips from one video are fine when they show different shots; one is usually enough.
+
+## 4. Write shots.json
+```bash
+python3 $SHOT/scripts/shotstub.py $JOB/candidates.jsonl --keys $JOB/keys.txt > $JOB/stubs.json
+```
+Stubs carry the source's facts (title, year, credits, original link, thumbnail, stills, timestamps) and production
+notes pre-filled from the dictionary. Build `$JOB/shots.json` (schema `schemas/shots.schema.json`) from them:
+- every shot: `why` (why it fits *this* request), `techniques` (ids from the dictionary, lead one first), `kind`
+  (film, commercial, music-video…; Eyecannndy calls everything a clip), `production` checked against the actual shot.
+  Replace film plot summaries in `shot_note` with what the source says about the shot.
+- `run`: mode, request (their words), title, cover (a shot id with a clean picture); `frame` in frame-match mode.
+- `look`: one-sentence summary (+ Arabic `summary_ar` for client-facing work) and 3–5 traits. The palette is filled by `palette.py`.
+- `groups`: one per technique, in the order a director would read them, each with a one-line note for this request.
+- `people` (who mode, optional elsewhere): name, role, known_for, the shots that show it, links.
+- `production_summary`: gear list, budget sentence, `local_notes` for shooting in the job's market (`run.market`, default Oman from
+  `zamakan-core/agency.json`: permits, light windows, Ramadan sensitivities), where AI can help. Check kit claims with the production house; say so.
+- `watch_list`: every video nobody has watched; `open_questions`.
+After setting techniques, `shotstub.py --refill $JOB/shots.json` fills any production TODOs from the dictionary.
+
+## 5. Check, colour, validate
+```bash
+python3 $SHOT/scripts/verify_shots.py $JOB/shots.json --write     # rejects dead links (e.g. a video made private)
+python3 $SHOT/scripts/palette.py $JOB/shots.json --write          # downloads thumbnails, palettes per shot + overall
+python3 $SHOT/scripts/validate_shots.py $JOB/shots.json --target 12
+```
+Drop rejected shots (don't hunt for a mirror of a removed video). Fix every validation error; judge the warnings.
+
+## 6. Build and look
+```bash
+python3 $SHOT/scripts/build_shot_board.py $JOB/shots.json --out $JOB [--logo <client logo>] [--client-name "<Client>"]
+python3 $SCOUT/scripts/check_outputs.py $JOB      # same beauty/brand check as the reference board
+```
+The board is dark and image-first: cover with the request and its film-language translation, the look (palette,
+traits, your frame), one section per technique (how it's done, gear, budget, AI), people, how to shoot it, watch list.
+It wears the client's design system when `clients/<slug>/design-system/` exists, else the ZAMAKAN look; `--logo`
+adds a client logo without a design system. Open `check/board-desktop.png` and judge it as a director would; fix the
+content and rebuild rather than editing HTML. `shots.md` is written for other agents.
+
+Reply briefly: counts (shots, techniques, sources, verified with evidence levels), the look in one line, the 3–4
+technique groups with one standout shot each, the production headline (budget, the expensive part), where the files
+are, what to watch before the meeting.
+
+## Inspire mode (a viewing programme)
+
+For a writer, cinematographer, director or editor who wants to *watch* something that sparks ideas. Same tools, a
+different deliverable: a running order of titles (at least 6; as many as genuinely serve the request, no cap).
+1. `expand.py "<their words>"` → roles (`writer`, `dop`, `director`, `editor`) and the theme. Ask once only if the
+   role is unclear.
+2. Choose titles with judgement: the theme first, then range. Aim for **at least 2 features** (an evening each), **2 short
+   films free to watch tonight** (`discover_shots.py shortoftheweek <word>`), **1–2 scenes or clips** (Eyecannndy) and
+   **1–2 essays or breakdowns** (YouTube video essays, ASC articles). Range is the point: the best films from anywhere. Include Omani and Gulf cinema whenever it genuinely fits (`references/oman-cinema.md` helps find it), but never as a quota or an ordering rule; include at least
+   one older film and one from the last five years.
+3. **Facts only from lookups:** `film_facts.py --titles titles.txt --craft --out candidates.jsonl` gives year, credits
+   (writer, director, DOP, editor, composer), runtime, countries, the Arabic title and *craft notes* (sentences from
+   Wikipedia about camera, lenses, light, editing, sound, casting). Even famous credits are easy to get wrong: look
+   them up. If a title isn't found, try the original or Arabic title (`"نورة" --year 2024`); check the match line.
+4. For each title write, in shots.json: `why` (why it fits *them*), `watch_for` (one note per requested role, about
+   *this* film, grounded in the craft notes or the source; `references/roles.json` has prompts per craft), `exercise`
+   (one small making task; patterns in roles.json), `key_scene` only when a source describes it, `pairs_with` for a
+   double bill. `techniques` are what to *look for* (lead first). `production` is optional in this mode.
+5. `groups` become the parts of the programme, with a `title` and a one-line note (e.g. "Tonight, free", "Three
+   evenings", "From our region", "How it's done"). Set `run.roles` and `run.theme`.
+6. Verify, palette, validate, build and check exactly as in steps 5–6. The board shows a numbered running order,
+   "watch for" per craft, the exercise and the double bills.
+Never summarise plots you haven't read about; never claim what happens in a scene unless the source says it.
+
+## Documentaries (any mode)
+
+Include documentaries whenever the subject is about real people or real experience (health, communities, history,
+work, places), or when asked. They are references for **how real life is filmed**: interviews, observation, archive,
+reenactment, animation, self-documentation (techniques in `techniques.json`, category `documentary`).
+```bash
+python3 $SHOT/scripts/discover_shots.py docs "<subject>" --out $JOB/candidates.jsonl     # SOTW documentary shorts + doc channels + YouTube
+python3 $SHOT/scripts/discover_shots.py channel-search @aljazeeradocumentary "<Arabic words>" --out ...  # Arabic documentaries
+python3 $SHOT/scripts/film_facts.py "<feature doc title>" --year <y> --craft --out ...   # feature documentaries (kind: documentary)
+```
+- `kind: documentary` (or `docuseries`). Check who made it: a broadcaster or documentary channel (Guardian, NYT Op-Docs,
+  Al Jazeera, BBC, POV) or an independent maker; say which in `why`.
+- **Ethics:** documentaries show real people. Note consent-sensitive material (health, children, grief) and trigger
+  warnings the makers give; don't reuse a real person's story as a creative device without saying so.
+- Separate *documentaries* from *explainers and lectures* (a psychiatrist explaining a condition is useful research,
+  but tag it `essay`, not documentary).
+
+## Rules
+- **Never invent**: no shot, scene, timestamp, credit, award or result that a source doesn't state. A thumbnail you
+  looked at is evidence of that frame only ("from the thumbnail").
+- **Timestamps** only when a source gives one (Vimeo/YouTube descriptions, a breakdown); the board links straight to it.
+- **Credits** from the page that states them, with `credits_source`. Not from memory.
+- **Cultural fit** for Omani/Gulf work: check references against `../zamakan-reference-scout/references/gulf-culture.md`;
+  flag anything that wouldn't fly (alcohol, immodesty, eating on screen in Ramadan daytime) as a reference for the
+  craft only, or leave it out. Alcohol brands never go on a client board.
+- **Rights**: stills and clips belong to their owners; boards are for internal reference and treatments.
+- **Budget**: web searches are shared and limited; the scripts cost none. Benchmarks/evals that spawn agents need the
+  user's go-ahead on cost.

@@ -1,0 +1,556 @@
+{
+ "version": "1.0",
+ "notes": "Plain feeling words → techniques that usually create them. A starting point for the agent's judgement, not a rule. keeps_subject: the words are also subjects (desert, coffee, Ramadan), so they stay in the subject search too.",
+ "moods": [
+  {
+   "id": "lonely",
+   "words": [
+    "lonely",
+    "loneliness",
+    "isolated",
+    "alone",
+    "solitude",
+    "empty",
+    "وحدة",
+    "وحيد",
+    "عزلة",
+    "فراغ"
+   ],
+   "techniques": [
+    "wide-lonely",
+    "symmetry",
+    "silhouette",
+    "blue-hour",
+    "long-lens",
+    "frame-in-frame"
+   ]
+  },
+  {
+   "id": "epic",
+   "words": [
+    "epic",
+    "grand",
+    "majestic",
+    "vast",
+    "scale",
+    "heroic",
+    "ملحمي",
+    "عظمة",
+    "ضخم",
+    "بطولي"
+   ],
+   "techniques": [
+    "aerial",
+    "low-angle",
+    "crane",
+    "wide-lonely",
+    "anamorphic",
+    "long-lens",
+    "slow-motion"
+   ]
+  },
+  {
+   "id": "nostalgic",
+   "words": [
+    "nostalgia",
+    "nostalgic",
+    "memory",
+    "childhood",
+    "old days",
+    "retro",
+    "حنين",
+    "ذكريات",
+    "زمن جميل",
+    "طفولة"
+   ],
+   "techniques": [
+    "film-grain",
+    "halation",
+    "golden-hour",
+    "vintage-vhs",
+    "double-exposure",
+    "step-print",
+    "monochrome"
+   ]
+  },
+  {
+   "id": "tense",
+   "words": [
+    "tension",
+    "tense",
+    "suspense",
+    "anxiety",
+    "dread",
+    "توتر",
+    "تشويق",
+    "قلق"
+   ],
+   "techniques": [
+    "dolly-in",
+    "dolly-zoom",
+    "dutch-angle",
+    "chiaroscuro",
+    "split-diopter",
+    "handheld",
+    "oner"
+   ]
+  },
+  {
+   "id": "time-slowing",
+   "words": [
+    "time slowing",
+    "slow down time",
+    "frozen time",
+    "moment",
+    "time stops",
+    "stillness",
+    "الزمن يتوقف",
+    "لحظة",
+    "تبطيء الزمن"
+   ],
+   "techniques": [
+    "slow-motion",
+    "speed-ramp",
+    "bullet-time",
+    "freeze-frame",
+    "cinemagraph"
+   ]
+  },
+  {
+   "id": "time-passing",
+   "words": [
+    "time passing",
+    "transformation",
+    "day to night",
+    "change",
+    "years",
+    "مرور الوقت",
+    "تحول",
+    "من النهار إلى الليل"
+   ],
+   "techniques": [
+    "time-lapse",
+    "match-cut",
+    "morph",
+    "seamless-transition",
+    "light-painting"
+   ]
+  },
+  {
+   "id": "energy",
+   "words": [
+    "energy",
+    "fast",
+    "dynamic",
+    "youth",
+    "hype",
+    "rush",
+    "adrenaline",
+    "طاقة",
+    "سرعة",
+    "شباب",
+    "حماس"
+   ],
+   "techniques": [
+    "fpv",
+    "whip-pan",
+    "speed-ramp",
+    "montage",
+    "fisheye",
+    "handheld",
+    "bolt-cam",
+    "locked-on"
+   ]
+  },
+  {
+   "id": "intimate",
+   "words": [
+    "intimate",
+    "close",
+    "tender",
+    "warm",
+    "personal",
+    "family",
+    "دافئ",
+    "حميمي",
+    "قريب",
+    "عائلي"
+   ],
+   "techniques": [
+    "shallow-focus",
+    "handheld",
+    "golden-hour",
+    "macro",
+    "practical-light",
+    "rack-focus"
+   ]
+  },
+  {
+   "id": "premium",
+   "words": [
+    "premium",
+    "luxury",
+    "elegant",
+    "sleek",
+    "refined",
+    "فاخر",
+    "راقي",
+    "أنيق"
+   ],
+   "techniques": [
+    "parallax",
+    "chiaroscuro",
+    "macro",
+    "bolt-cam",
+    "shallow-focus",
+    "anamorphic",
+    "symmetry"
+   ]
+  },
+  {
+   "id": "appetite",
+   "words": [
+    "appetite",
+    "delicious",
+    "food",
+    "drink",
+    "fresh",
+    "juicy",
+    "coffee",
+    "شهي",
+    "طعام",
+    "مشروب",
+    "قهوة",
+    "منعش"
+   ],
+   "techniques": [
+    "liquid-macro",
+    "macro",
+    "slow-motion",
+    "top-down",
+    "bolt-cam",
+    "shallow-focus"
+   ],
+   "keeps_subject": true
+  },
+  {
+   "id": "dreamy",
+   "words": [
+    "dream",
+    "dreamy",
+    "surreal",
+    "magical",
+    "fantasy",
+    "otherworldly",
+    "حلم",
+    "سريالي",
+    "سحري",
+    "خيالي"
+   ],
+   "techniques": [
+    "haze",
+    "double-exposure",
+    "projection",
+    "reverse",
+    "underwater",
+    "practical-fx",
+    "morph",
+    "halation"
+   ]
+  },
+  {
+   "id": "playful",
+   "words": [
+    "playful",
+    "fun",
+    "funny",
+    "witty",
+    "quirky",
+    "مرح",
+    "طريف",
+    "ظريف"
+   ],
+   "techniques": [
+    "stop-motion",
+    "tilt-shift",
+    "symmetry",
+    "whip-pan",
+    "fisheye",
+    "match-cut",
+    "fake-ooh"
+   ]
+  },
+  {
+   "id": "real",
+   "words": [
+    "real",
+    "authentic",
+    "raw",
+    "documentary",
+    "honest",
+    "street",
+    "واقعي",
+    "حقيقي",
+    "عفوي",
+    "وثائقي"
+   ],
+   "techniques": [
+    "handheld",
+    "practical-light",
+    "hard-light",
+    "film-grain",
+    "pov",
+    "oner"
+   ]
+  },
+  {
+   "id": "spiritual",
+   "words": [
+    "spiritual",
+    "sacred",
+    "peaceful",
+    "calm",
+    "serene",
+    "ramadan",
+    "faith",
+    "روحاني",
+    "سكينة",
+    "هدوء",
+    "رمضان",
+    "إيمان"
+   ],
+   "techniques": [
+    "haze",
+    "golden-hour",
+    "blue-hour",
+    "silhouette",
+    "symmetry",
+    "slow-motion",
+    "wide-lonely"
+   ],
+   "keeps_subject": true
+  },
+  {
+   "id": "heat",
+   "words": [
+    "heat",
+    "hot",
+    "summer",
+    "desert",
+    "sun",
+    "حر",
+    "صيف",
+    "صحراء",
+    "شمس"
+   ],
+   "techniques": [
+    "hard-light",
+    "long-lens",
+    "haze",
+    "aerial",
+    "thermal",
+    "silhouette",
+    "golden-hour"
+   ],
+   "keeps_subject": true
+  },
+  {
+   "id": "night-city",
+   "words": [
+    "night",
+    "city",
+    "urban",
+    "nightlife",
+    "neon",
+    "ليل",
+    "مدينة",
+    "سهرة"
+   ],
+   "techniques": [
+    "practical-light",
+    "light-painting",
+    "time-lapse",
+    "blue-hour",
+    "anamorphic",
+    "tracking"
+   ],
+   "keeps_subject": true
+  },
+  {
+   "id": "power",
+   "words": [
+    "power",
+    "strong",
+    "confident",
+    "bold",
+    "قوة",
+    "قوي",
+    "ثقة",
+    "جريء"
+   ],
+   "techniques": [
+    "low-angle",
+    "symmetry",
+    "chiaroscuro",
+    "slow-motion",
+    "orbit",
+    "long-lens"
+   ]
+  },
+  {
+   "id": "quiet",
+   "words": [
+    "silence",
+    "silent",
+    "quiet",
+    "unsaid",
+    "unspoken",
+    "restraint",
+    "stillness of people",
+    "صمت",
+    "صامت",
+    "هدوء",
+    "سكوت",
+    "المسكوت عنه"
+   ],
+   "techniques": [
+    "static-frame",
+    "wide-lonely",
+    "oner",
+    "frame-in-frame",
+    "symmetry"
+   ],
+   "keeps_subject": true
+  },
+  {
+   "id": "turmoil",
+   "words": [
+    "turmoil",
+    "inner turmoil",
+    "unstable",
+    "instability",
+    "mood swings",
+    "emotional intensity",
+    "intense emotions",
+    "volatile",
+    "panic",
+    "anxiety",
+    "breakdown",
+    "impulsive",
+    "rage",
+    "اضطراب",
+    "قلق",
+    "تقلب",
+    "تقلبات المزاج",
+    "نوبة",
+    "انهيار"
+   ],
+   "techniques": [
+    "snorricam",
+    "handheld",
+    "step-print",
+    "dutch-angle",
+    "speed-ramp",
+    "montage",
+    "dolly-zoom"
+   ]
+  },
+  {
+   "id": "dissociation",
+   "words": [
+    "dissociation",
+    "dissociative",
+    "numb",
+    "emptiness",
+    "empty inside",
+    "unreal",
+    "depersonalisation",
+    "depersonalization",
+    "identity",
+    "unstable identity",
+    "fragmented",
+    "fragmentation",
+    "انفصال",
+    "فراغ",
+    "هوية",
+    "تشظي"
+   ],
+   "techniques": [
+    "double-exposure",
+    "reflection",
+    "frame-in-frame",
+    "halation",
+    "static-frame"
+   ]
+  },
+  {
+   "id": "abandonment",
+   "words": [
+    "abandonment",
+    "fear of abandonment",
+    "rejection",
+    "attachment",
+    "clinging",
+    "loss",
+    "left behind",
+    "هجر",
+    "خوف من الهجر",
+    "رفض",
+    "فقدان"
+   ],
+   "techniques": [
+    "wide-lonely",
+    "shallow-focus",
+    "rack-focus",
+    "frame-in-frame"
+   ]
+  },
+  {
+   "id": "documentary",
+   "words": [
+    "documentary",
+    "documentaries",
+    "doc",
+    "docs",
+    "real stories",
+    "true story",
+    "real people",
+    "testimony",
+    "وثائقي",
+    "وثائقيات",
+    "أفلام وثائقية",
+    "قصص حقيقية"
+   ],
+   "techniques": [
+    "observational",
+    "talking-head",
+    "archival",
+    "diary-film"
+   ],
+   "keeps_subject": false
+  },
+  {
+   "id": "mental-health",
+   "words": [
+    "borderline",
+    "bpd",
+    "mental health",
+    "mental illness",
+    "psychological",
+    "صحة نفسية",
+    "personality disorder",
+    "bipolar",
+    "depression",
+    "anxiety disorder",
+    "اضطراب الشخصية",
+    "اكتئاب"
+   ],
+   "techniques": [
+    "handheld",
+    "snorricam",
+    "double-exposure"
+   ],
+   "keeps_subject": true
+  }
+ ]
+}

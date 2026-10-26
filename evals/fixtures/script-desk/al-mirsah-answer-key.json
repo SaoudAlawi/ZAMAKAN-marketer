@@ -1,0 +1,93 @@
+{
+ "script": "samples/script-desk/al-mirsah-draft.txt",
+ "note": "Planted flaws for testing the script reader. Never show this file to an agent under test.",
+ "scene_numbering": "13 scenes in order (the draft numbers only some headings: 1, 3, 5, 7, 9).",
+ "flaws": [
+  {
+   "id": "F1",
+   "lens": "character",
+   "scenes": [
+    3,
+    5,
+    8
+   ],
+   "flaw": "Passive protagonist: Maryam only asks; the decision that sends her to sea is made by her uncle after an accident (scene 8)."
+  },
+  {
+   "id": "F2",
+   "lens": "dialogue",
+   "scenes": [
+    2
+   ],
+   "flaw": "On-the-nose dialogue: the mother states Maryam's subtext outright."
+  },
+  {
+   "id": "F3",
+   "lens": "structure",
+   "scenes": [
+    3,
+    5
+   ],
+   "flaw": "Redundant scenes: the uncle refuses twice in the same way; nothing new is learned."
+  },
+  {
+   "id": "F4",
+   "lens": "dialogue",
+   "scenes": [
+    4,
+    9
+   ],
+   "flaw": "Dialect switch: the grandmother speaks Gulf/Omani in scene 4 and formal MSA in scene 9."
+  },
+  {
+   "id": "F5",
+   "lens": "structure",
+   "scenes": [
+    4
+   ],
+   "flaw": "Setup with no payoff: the father's compass is given and never used."
+  },
+  {
+   "id": "F6",
+   "lens": "visual",
+   "scenes": [
+    1
+   ],
+   "flaw": "Unfilmable action: the action line narrates memories and feelings the camera cannot show."
+  },
+  {
+   "id": "F7",
+   "lens": "production",
+   "scenes": [
+    7
+   ],
+   "flaw": "Expensive for a short: night storm at sea, ten boats, lightning, a boat wrecked; the protagonist is not in it."
+  },
+  {
+   "id": "F8",
+   "lens": "pacing",
+   "scenes": [
+    6
+   ],
+   "flaw": "Empty scene: Maryam lies on her bed; nothing changes."
+  },
+  {
+   "id": "F9",
+   "lens": "structure",
+   "scenes": [
+    12
+   ],
+   "flaw": "Stakes resolved too easily: one good catch clears the boat's debt."
+  }
+ ],
+ "strengths": [
+  "Clear visual bookends (scenes 1 and 13 mirror each other)",
+  "Engine repair is set up in scene 3 and paid off in scene 11"
+ ],
+ "format_issues": [
+  "Mixed heading styles (some 'مشهد N', some bare)",
+  "Inline 'الجدة: …' dialogue",
+  "One-off cue 'صياد'",
+  "'- قطع -' transition form"
+ ]
+}

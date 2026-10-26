@@ -1,0 +1,24 @@
+{
+ "note": "Screenplay words the parser recognises. Arabic list follows Hekaya (MIT, github.com/MichaelKMalak/hekaya), the Fountain extension made for Arabic writers, with Gulf spellings added. English follows Fountain (fountain.io).",
+ "int_ext": {
+  "ar": ["داخلي/خارجي", "خارجي/داخلي", "داخلي / خارجي", "خارجي / داخلي", "د/خ", "داخلي", "خارجي", "داخلى", "خارجى"],
+  "en": ["INT./EXT.", "INT/EXT", "EXT./INT.", "I/E", "INT.", "EXT.", "INT", "EXT", "EST."]
+ },
+ "time": {
+  "ar": ["قبل الفجر", "بعد الغروب", "منتصف الليل", "نهار", "ليل", "صباح", "ظهر", "ظهرا", "عصر", "مساء", "فجر", "غروب", "شروق", "الصباح", "الظهر", "العصر", "المساء", "الفجر", "الغروب", "ليلاً", "نهاراً", "لاحقاً", "مستمر", "متواصل", "في نفس الوقت"],
+  "en": ["DAY", "NIGHT", "MORNING", "AFTERNOON", "EVENING", "DAWN", "DUSK", "SUNSET", "SUNRISE", "LATER", "CONTINUOUS", "MOMENTS LATER", "SAME TIME"]
+ },
+ "transitions": {
+  "ar": ["قطع إلى", "قطع مباشر", "قطع متطابق", "قطع قافز", "قطع", "مزج إلى", "مزج", "تلاشي إلى أسود", "تلاشٍ إلى أسود", "تلاشي إلى أبيض", "تلاشي", "ظهور تدريجي", "مسح", "عودة إلى", "شاشة منقسمة", "تجميد الكادر", "النهاية"],
+  "en": ["CUT TO:", "SMASH CUT TO:", "MATCH CUT TO:", "JUMP CUT TO:", "DISSOLVE TO:", "FADE OUT.", "FADE TO BLACK.", "FADE IN:", "CUT TO BLACK.", "THE END"]
+ },
+ "extensions": {
+  "ar": ["صوت من خارج المشهد", "صوت خارجي", "خارج الكادر", "خارج المشهد", "تابع", "يتبع", "على الهاتف", "تعليق صوتي"],
+  "en": ["V.O.", "O.S.", "O.C.", "CONT'D", "CONT’D", "PRE-LAP", "ON PHONE"]
+ },
+ "title_keys": {
+  "title": ["Title", "العنوان"], "author": ["Author", "Authors", "Written by", "تأليف", "كتابة", "سيناريو"],
+  "draft": ["Draft", "مسودة"], "draft_date": ["Draft date", "Date", "تاريخ المسودة", "التاريخ"],
+  "contact": ["Contact", "بيانات الاتصال", "للتواصل"], "credit": ["Credit", "Source", "عن قصة"]
+ }
+}

@@ -1,0 +1,18 @@
+{
+ "script": "samples/script-desk/al-mirsah-draft2.txt",
+ "previous": "the blind reading of draft 1 (notes ids from compare.py)",
+ "note": "Expected status of draft-1 issues in draft 2. Never show this file to an agent under test.",
+ "expected": [
+  {"issue": "F1 passive protagonist", "status": "resolved", "why": "Maryam sneaks to the engine at night (S3) and decides herself in the hospital (S7)"},
+  {"issue": "F2 mother states subtext", "status": "resolved", "why": "S2 now shows it (smelling the father's thobe, hiding it)"},
+  {"issue": "F3 repeated refusal S3/S5", "status": "resolved", "why": "S5 cut; S3 is a new action scene"},
+  {"issue": "F4 grandmother dialect switch", "status": "resolved/dropped", "why": "old S9 cut"},
+  {"issue": "F5 compass never used", "status": "resolved", "why": "the scene where it is given (S4) is UNCHANGED, but it pays off in S7 and S9 (fog): tests that an unchanged scene's note is not kept open blindly"},
+  {"issue": "F6 action line narrates thoughts (S1)", "status": "open", "why": "S1 unchanged"},
+  {"issue": "F7 expensive storm", "status": "resolved", "why": "replaced by a fall on the wet dock (S6)"},
+  {"issue": "F8 empty scene (S6 of draft 1, now S5)", "status": "open", "why": "unchanged"},
+  {"issue": "F9 debt solved by one big catch", "status": "resolved/partly", "why": "small catch, 'بداية'"},
+  {"issue": "mother absent at the end (blind-run extra)", "status": "resolved/partly", "why": "she appears at the port in S10"},
+  {"issue": "17-year-old at sea with a 25-year-old man unremarked (blind-run extra)", "status": "partly/open", "why": "the mother objects in S7 but no one addresses Hamad"}
+ ]
+}

@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "mode": "brief",
+  "client": "rawaq",
+  "question": "References and 3-5 creative territories for Rawaq's Ramadan 2027 campaign (suhoor gatherings and the after-taraweeh coffee run).",
+  "category": "Specialty coffee / cafés",
+  "market": "Riyadh, Saudi Arabia",
+  "objective": "awareness",
+  "audience": "Riyadh professionals 22-35, mixed groups and families, out late in Ramadan",
+  "moment": "Ramadan 1448 (≈8 Feb–9 Mar 2027) + Eid al-Fitr",
+  "channels": [
+    "snapchat",
+    "tiktok",
+    "instagram",
+    "ooh",
+    "in-store"
+  ],
+  "competitors": [
+    "Barn's",
+    "Dose Café",
+    "Half Million",
+    "Overdose",
+    "Starbucks KSA"
+  ],
+  "avoid": [
+    "generic lanterns and crescents",
+    "camels at sunset",
+    "preachy tone",
+    "trivialising worship"
+  ],
+  "rings": [
+    "direct",
+    "category",
+    "adjacent",
+    "wildcard"
+  ],
+  "target_count": 25,
+  "outputs": [
+    "board"
+  ]
+}

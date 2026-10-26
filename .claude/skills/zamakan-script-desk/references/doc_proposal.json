@@ -1,0 +1,18 @@
+{
+ "note": "Sections of a documentary proposal / treatment, the ones funders and broadcasters usually ask for. Questions only; check each fund's current form and word limits before quoting them. (Consent and releases are left to the production's own legal process.)",
+ "sections": [
+  {"id": "logline", "name": "Logline", "name_ar": "الفكرة في سطر", "q": ["In one sentence: who or what is the film about, and what is at stake?"], "q_ar": ["في جملة: عن من أو عن ماذا الفيلم، وما الذي على المحك؟"]},
+  {"id": "synopsis", "name": "Synopsis", "name_ar": "الملخص", "q": ["What will the audience see unfold, beginning to end, as far as you can know it now?"], "q_ar": ["ماذا سيرى الجمهور يتكشّف من البداية إلى النهاية، بقدر ما تعرف الآن؟"]},
+  {"id": "question", "name": "The central question", "name_ar": "السؤال المركزي", "q": ["What question does the film ask that the audience will want answered?"], "q_ar": ["ما السؤال الذي يطرحه الفيلم ويريد الجمهور جوابه؟"]},
+  {"id": "subjects", "name": "Main subjects", "name_ar": "الشخصيات الرئيسية", "q": ["Who carries the film, and what do they want or face during the shoot?"], "q_ar": ["من يحمل الفيلم، وماذا يريد أو يواجه أثناء التصوير؟"]},
+  {"id": "access", "name": "Access", "name_ar": "الوصول", "q": ["What access do you already have, and what still depends on someone saying yes?"], "q_ar": ["ما الوصول المتاح لك فعلاً، وما الذي ما زال يعتمد على موافقة أحد؟"]},
+  {"id": "approach", "name": "Approach and style", "name_ar": "المقاربة والأسلوب", "q": ["Observational, interviews, narration, re-enactment, archive: which, and why for this story?"], "q_ar": ["رصد، مقابلات، تعليق صوتي، إعادة تمثيل، أرشيف: أيها، ولماذا لهذه القصة؟"]},
+  {"id": "why_now", "name": "Why now", "name_ar": "لماذا الآن", "q": ["What makes this the moment to film it?"], "q_ar": ["ما الذي يجعل هذه اللحظة لحظة تصويره؟"]},
+  {"id": "why_you", "name": "Why you", "name_ar": "لماذا أنت", "q": ["What connects you to this story that others don't have?"], "q_ar": ["ما الذي يربطك بهذه القصة ولا يملكه غيرك؟"]},
+  {"id": "visual", "name": "Visual approach", "name_ar": "المقاربة البصرية", "q": ["What will the film look like, and which images only this story has?"], "q_ar": ["كيف سيبدو الفيلم، وما الصور التي لا تملكها إلا هذه القصة؟"]},
+  {"id": "sound", "name": "Sound", "name_ar": "الصوت", "q": ["What will we hear: places, silence, music, voices?"], "q_ar": ["ماذا سنسمع: أماكن، صمت، موسيقى، أصوات؟"]},
+  {"id": "archive", "name": "Archive needs", "name_ar": "احتياجات الأرشيف", "q": ["Which archive, photos or documents do you need, and do you know who holds them?"], "q_ar": ["أي أرشيف أو صور أو وثائق تحتاج، وهل تعرف من يملكها؟"]},
+  {"id": "schedule", "name": "Schedule", "name_ar": "الجدول الزمني", "q": ["Which events must you be there for, and when?"], "q_ar": ["أي أحداث يجب أن تكون حاضراً فيها، ومتى؟"]},
+  {"id": "budget", "name": "Budget lines", "name_ar": "بنود الميزانية", "q": ["Which costs are certain (crew days, travel, archive, edit), and which depend on the story?"], "q_ar": ["أي تكاليف مؤكدة (أيام الطاقم، السفر، الأرشيف، المونتاج)، وأيها يعتمد على القصة؟"]}
+ ]
+}

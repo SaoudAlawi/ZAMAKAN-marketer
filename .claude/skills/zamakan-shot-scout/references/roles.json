@@ -1,0 +1,31 @@
+{
+ "version": "1.0",
+ "notes": "Inspire mode: what each craft watches for, and exercise patterns to turn watching into making. Write the actual notes for each film yourself, about that film; these are prompts, not copy.",
+ "roles": [
+  {"id": "writer", "name": "Writer", "name_ar": "كاتب", "words": ["writer", "screenwriter", "scriptwriter", "story", "كاتب", "سيناريست", "كاتبة", "قصة"],
+   "watch_for": ["Where the scene starts and ends (late in, early out)", "What characters want versus what they say (subtext)",
+                 "Information held back from the audience, and when it is released", "Silence and action doing the work of dialogue",
+                 "Structure: turning points, the midpoint, how the ending answers the opening", "Specific, surprising detail that makes a character real"],
+   "exercises": ["Rewrite the key scene with no dialogue at all", "Write the scene from the other character's point of view",
+                 "Cut every line that explains a feeling; keep only actions", "Write the conversation that happens off screen just before this scene",
+                 "Describe a person you know only through objects they own"]},
+  {"id": "dop", "name": "Cinematographer", "name_ar": "مدير تصوير", "words": ["cinematographer", "dop", "dp", "director of photography", "camera", "lighting", "مصور", "مدير تصوير", "مدير التصوير", "تصوير سينمائي"],
+   "watch_for": ["Where the key light comes from, and how hard or soft it is", "Lens choice: wide and close, or long and far; what it does to space",
+                 "When the camera moves, and when it refuses to", "Colour: a palette held across the film, and the moment it breaks",
+                 "Composition: negative space, frames within frames, the horizon line", "How night, practicals and motivated light are handled"],
+   "exercises": ["Light one corner of your room the way the key scene is lit; shoot it on your phone", "Recreate one frame with the lenses you own and compare",
+                 "Shoot the same action twice: once locked off, once handheld; note what each says", "Make a 5-colour palette from the film and dress a small scene in it",
+                 "Film 60 seconds using only one light source"]},
+  {"id": "director", "name": "Director", "name_ar": "مخرج", "words": ["director", "directing", "filmmaker", "مخرج", "مخرجة", "إخراج"],
+   "watch_for": ["Blocking: how people move in the space and what that reveals", "Performance: what the actors are allowed not to show",
+                 "Tone: how the film holds (or mixes) comedy, tension and tenderness", "Rhythm across the whole film: fast and slow passages",
+                 "Point of view: whose story the camera tells", "The one image the film is remembered by"],
+   "exercises": ["Block the key scene for two friends in your living room, with no dialogue changes", "Storyboard the scene in 6 frames from memory, then compare",
+                 "Tell the same 30-second moment in one shot and in eight shots", "Write a one-page director's statement for the film as if it were yours"]},
+  {"id": "editor", "name": "Editor / sound / design", "name_ar": "مونتاج / صوت / تصميم", "words": ["editor", "editing", "sound", "sound design", "production design", "designer", "colourist", "colorist", "composer", "music", "مونتير", "مونتاج", "صوت", "مصمم", "تصميم إنتاج", "موسيقى"],
+   "watch_for": ["Where the cuts fall: on action, on a look, on a sound", "How long a shot is held after you expect the cut", "Sound that carries emotion more than the picture (and silence)",
+                 "Transitions: match cuts, sound bridges, hard cuts to black", "Production design: rooms, colours and objects that tell the story", "Music: when it enters, and when it is withheld"],
+   "exercises": ["Re-cut a 1-minute scene from your own footage two ways: tight, and with held shots", "Watch the key scene with sound only, then picture only; write what each tells you",
+                 "Design a room for a character using three objects and one colour", "Replace the score of a scene with silence and room tone; what changes?"]}
+ ]
+}

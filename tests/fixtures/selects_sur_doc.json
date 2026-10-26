@@ -1,0 +1,17 @@
+{"schema": "zamakan-selects/1", "lang": "ar", "title": "آخر صانعي السفن", "target_minutes": 52,
+ "themes": {"craft": {"label": "الصنعة في الرأس"}, "end": {"label": "النهاية"}, "heir": {"label": "من يرث؟"}},
+ "sections": [
+  {"name": "الافتتاح", "purpose": "نعرّف سالم من يده قبل كلامه.", "items": [
+    {"picture": "يدا سالم على اللوح", "sound": "مطرقة، بحر"},
+    {"bite": "A005", "theme": "craft"},
+    {"bite": "A006", "theme": "craft"}]},
+  {"name": "من يرث؟", "items": [
+    {"bite": "A009", "theme": "heir"},
+    {"bite": "A010", "theme": "heir"},
+    {"bite": "B005", "theme": "heir", "note": "الوارث غير المتوقع؟"},
+    {"bite": "B008", "theme": "heir"},
+    {"gap": "لا شيء من الابن بعد: هل يوافق على الظهور؟"}]},
+  {"name": "الأخيرة", "items": [
+    {"bite": "A012", "theme": "end"},
+    {"bite": "A016", "theme": "end"},
+    {"bite": "A018", "theme": "end"}]}]}

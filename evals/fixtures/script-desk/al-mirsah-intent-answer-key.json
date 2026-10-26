@@ -1,0 +1,12 @@
+{
+ "script": "samples/script-desk/al-mirsah-draft.txt",
+ "intent": "samples/script-desk/al-mirsah-intent.docx",
+ "note": "What a reading WITH the intent sheet should do. Never show this file to an agent under test.",
+ "must": [
+  "Not flag the grandmother's switch to formal Arabic in S9 as a fault (declared deliberate: she blesses in MSA); at most question whether it lands",
+  "Still flag the mother's formal line in S2 (she is declared Gulf)",
+  "intent_check answers both 'unsure' points: the mother's fear (it is set up in S2 but she vanishes after S8: partly/no) and whether S7 is needed (Maryam is absent; expensive)",
+  "intent_check on 'grief turning into action': partly/no, because the decisive action in S8 is the uncle's",
+  "Not treat the open ending as a fault (declared deliberate)"
+ ]
+}

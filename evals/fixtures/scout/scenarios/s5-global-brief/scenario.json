@@ -1,0 +1,61 @@
+{
+ "title": "Global brief: Rawaq opens in London",
+ "mode": "brief",
+ "client": "rawaq",
+ "design_system": true,
+ "request": "The brief for Rawaq's London opening is in brief.md (in the working directory). Find us references for the kickoff and give us creative territories.",
+ "job": "clients/rawaq/jobs/2026-10-13-scout-london",
+ "checks": [
+  {
+   "type": "min_links",
+   "n": 15
+  },
+  {
+   "type": "alive_rate",
+   "min": 0.95
+  },
+  {
+   "type": "region_count",
+   "n": 3,
+   "label": "Global: references from ≥3 regions"
+  },
+  {
+   "type": "country_refs",
+   "codes": [
+    "GB"
+   ],
+   "rx": "london|\\buk\\b|united kingdom|british|england",
+   "n": 4,
+   "label": "≥4 references from the UK"
+  },
+  {
+   "type": "topic_ratio",
+   "rx": "open|opening|launch|arriv|first|new store|debut|expan|افتتاح|إطلاق",
+   "min": 0.4,
+   "context": true,
+   "label": "≥40% are openings/launches/market entries"
+  },
+  {
+   "type": "territories",
+   "min": 3,
+   "max": 5
+  },
+  {
+   "type": "avoid",
+   "rx": "camel|desert|arabian nights|orientalis|جمل|صحراء"
+  },
+  {
+   "type": "visual",
+   "min_images": 10
+  },
+  {
+   "type": "insights",
+   "n": 3
+  },
+  {
+   "type": "on_brand",
+   "client": "rawaq"
+  }
+ ],
+ "id": "s5-global-brief"
+}
