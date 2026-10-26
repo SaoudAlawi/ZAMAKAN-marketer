@@ -587,3 +587,31 @@ def test_paper_edit(tmp_path):
     PE.write_csv(sel, bites, tmp_path / "p.csv")
     rows = (tmp_path / "p.csv").read_text(encoding="utf-8-sig").splitlines()
     assert rows[0].startswith("order,section,bite") and len(rows) == 12 and "GAP:" in rows[8]
+
+
+# --- documentary: two-column A/V script ---
+import av_script as AV  # noqa: E402
+
+
+def test_av_script_text_docx_and_reader(tmp_path):
+    av = AV.read(DOCS / "sur-av-draft.txt", "آخر صانعي السفن")
+    assert av["lang"] == "ar" and len(av["rows"]) == 16 and len(AV.sections(av)) == 5
+    r = av["rows"][3]
+    assert r["section"] == "العالم: سفينة في الرأس" and r["sound"].startswith("سالم: الرسم")
+    words, sec = AV.spoken(av)
+    assert 80 < words < 110 and sec > 30  # ambience («موج خفيف») is not counted as speech
+    out = tmp_path / "av.docx"
+    AV.build_docx(av).save(out)
+    back = AV.read(out)  # its own Word file reads back the same
+    assert [(x["section"], x["picture"], x["sound"]) for x in back["rows"]] == [(x["section"], x["picture"], x["sound"]) for x in av["rows"]]
+    from docx import Document
+    nums = [t.rows[-1].cells[0].text for t in Document(out).tables]
+    assert nums[-1] == "١٦"  # numbered through the whole script
+    sc = AV.to_script(av)
+    assert sc["schema"] == "zamakan-script/1" and len(sc["scenes"]) == 5
+    names = {e["name"] for e in sc["elements"] if e["type"] == "character"}
+    assert {"سالم", "تعليق صوتي", "الابن", "الصوت"} <= names
+    txt = tmp_path / "en.txt"
+    txt.write_text("SEQUENCE 1: Dawn\nVIDEO: Harbour at night.\nAUDIO: Waves.\nVIDEO: Salem's hands.\nAUDIO: SALEM: The wood tells you.\n", encoding="utf-8")
+    en = AV.read(txt)
+    assert en["lang"] == "en" and en["rows"][0]["section"] == "1: Dawn" and en["rows"][1]["sound"] == "SALEM: The wood tells you."

@@ -25,7 +25,7 @@ def _run(p, text, lang, bold=False, color=None, size=None):
     return r
 
 
-def av_table(doc, rows, lang, head=None, widths=(2.85, 2.95), number=True, fills=None):
+def av_table(doc, rows, lang, head=None, widths=(2.85, 2.95), number=True, fills=None, start=1):
     """rows: [(picture text, sound text, extra)], extra = {"tc": "...", "speaker": "...", "label": "..."} (optional).
     Picture column first in reading order (right in Arabic). fills: per-row hex for the sound cell (theme tint)."""
     head = head or AV_HEAD[lang]
@@ -53,7 +53,7 @@ def av_table(doc, rows, lang, head=None, widths=(2.85, 2.95), number=True, fills
         k = 0
         if number:
             p = cells[0].paragraphs[0]
-            _run(p, S.digits(i, lang), lang, bold=True)
+            _run(p, S.digits(i + start - 1, lang), lang, bold=True)
             k = 1
         for j, (text, part) in enumerate(((pic, "pic"), (snd, "snd"))):
             cell = cells[k + j]
