@@ -689,3 +689,38 @@ def test_doc_to_script_paper_edit_and_treatment(tmp_path):
     pm = {}
     script_docx(t, pm)
     assert all(i in pm for i, e in enumerate(t["elements"]))  # every line can carry a comment
+
+
+# --- documentary helpers: archive log, shoot list ---
+import doc_helpers as DH  # noqa: E402
+
+
+def test_archive_log_and_merge(tmp_path):
+    sc = AV.to_script(AV.read(DOCS / "sur-av-draft.txt", "آخر صانعي السفن"))
+    items = DH.archive(sc)
+    assert [i["id"] for i in items] == ["AR01", "AR02"] and "صف 9" in items[0]["used_in"] and items[1]["rights"] == "للسؤال"
+    p = tmp_path / "log.csv"
+    items[0].update(owner="عائلة سالم", rights="مُصرّح بها")
+    items.append({"id": "AR03", "item": "أغنية قديمة", "used_in": "x", "rights": "طُلبت"})
+    DH.write_csv(items, DH.ARCHIVE_COLS, p)
+    again = DH.archive(sc, p)
+    assert again[0]["owner"] == "عائلة سالم" and again[0]["rights"] == "مُصرّح بها"  # filled-in status survives
+    assert again[2]["item"] == "أغنية قديمة" and "no longer in this draft" in again[2]["notes"]  # nothing silently dropped
+    DH.archive_docx(again, "ar", "x").save(tmp_path / "a.docx")
+
+
+def test_shoot_list(tmp_path):
+    av = AV.read(DOCS / "sur-av-draft.txt", "آخر صانعي السفن")
+    plan = DH.skeleton(av)
+    assert len(plan["items"]) == 16 and all(i["access"] == "pending" for i in plan["items"])
+    plan["items"] = plan["items"][:3]
+    plan["items"][0]["access"] = "confirmed"
+    plan["items"][2]["access"] = "no"
+    assert DH.check_plan(plan) == []
+    doc, items = DH.shoots_docx(plan)
+    assert [i["access"] for i in items] == ["pending", "no", "confirmed"]  # waiting on a yes comes first
+    out = tmp_path / "s.docx"
+    doc.save(out)
+    from docx import Document
+    assert "! بانتظار الموافقة" in [c.text for c in Document(out).tables[0].rows[1].cells]
+    assert DH.check_plan({"items": [{"what": "", "access": "maybe"}]})

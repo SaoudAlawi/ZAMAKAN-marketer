@@ -1,8 +1,8 @@
 ---
 name: zamakan-script-desk
-description: "Help a screenwriter write a film or short film (never write it for them), Arabic first and English too: from a story idea (a paragraph or voice note) to a template shaped around it, Word templates that scaffold a story structure with page targets (three acts, Save the Cat, hero's journey, story circle, eight sequences, kishōtenketsu, short-film shapes), a formatter that turns a rough draft (Word, Fountain or plain text) into a correctly laid-out screenplay (right-to-left Arabic, scene numbers, Word + PDF + Fountain), and a script reader that gives notes from ten viewpoints (premise, structure, character, dialogue and dialect, visual storytelling, pacing, theme, cultural truth, producibility, festival fit) with green/amber/red verdicts and colour-coded margin comments. Use this whenever someone shares a story idea and wants help shaping it («عندي فكرة فيلم»), wants to plan a screenplay, needs a script template or beat sheet, asks to format or clean up a script («نسّق السيناريو»), wants feedback, notes or coverage on a draft («قيّم السيناريو», «ملاحظات على النص»), or asks how their script is structured. For finding film references to watch, use zamakan-shot-scout instead."
+description: "Help a screenwriter or documentary maker write (never write it for them), Arabic first and English too: a story idea (paragraph or voice note) → a template shaped around it; Word templates for story structures with page targets (three acts, Save the Cat, hero's journey, story circle, kishōtenketsu, short-film shapes); a formatter (right-to-left Arabic screenplay, Word + PDF + Fountain); a script reader with notes from ten viewpoints, green/amber/red, as colour-coded margin comments. Documentaries: proposal/treatment templates, transcripts → bites index → paper edit (Word + CSV), two-column picture | sound scripts, a documentary reader (access, ethics, evidence, archive…), archive log, shoot list. Use whenever someone shares a story or doc idea («عندي فكرة فيلم»), plans a screenplay or treatment, needs a template or beat sheet, asks to format a script («نسّق السيناريو»), wants notes on a draft, treatment or paper edit («ملاحظات على النص»), has interview transcripts or SRTs to cut, an A/V script («صورة / صوت»), or archive or shoot planning. For film references to watch, use zamakan-shot-scout."
 metadata:
-  version: 0.5.0
+  version: 0.6.0
 ---
 
 # ZAMAKAN Script Desk
@@ -28,6 +28,7 @@ git-ignored: unpublished scripts stay private). Call that folder `$JOB`.
 | Notes / feedback / coverage / "is it working?" | **Read** below (formats first if needed) |
 | A new draft of a script you read before | **New draft** below (re-reads only what changed) |
 | Try a different scene order | **Scene cards** below |
+| Anything documentary: an idea, a proposal, transcripts, a paper edit, a two-column script, archive, a shoot list | **Documentary** below |
 
 **Read to the writer's intent.** Before a first full read, offer the intent sheet: a one-page Word form (what the film is
 about, the question it asks, what they are unsure of, deliberate choices, each character's dialect, where it should
@@ -221,9 +222,33 @@ text typed into the note, or Resolve. `replies.py` collects them (each Word comm
   (under pacing) as a question, not a fault: suggest timing a read-through, and ask whether the story needs more room or
   the film is shorter than planned.
 
+## Documentary
+
+A documentary is written three times: in the proposal, in the shoot and in the edit. Same rule: **you help, you never
+write it for them**, and here it matters twice, because the words belong to real people. Quotes are never typed: they
+come from transcripts by id. Ask once: running time (default 52 min for TV, 15 for a short) and where it should play.
+
+| Ask | Do |
+|---|---|
+| A doc idea → a template | **From a story idea** with `kind: "documentary"`, a `doc-` structure (`doc-character`, `doc-observational`, `doc-investigative`, `doc-journey`, `doc-portrait`, `doc-essay`, `doc-historical`), `heard` adding `subject`, `question`, `access`, `approach`, and `sections` placing their words on the proposal sections (`references/doc_proposal.json`: logline … access, approach, archive, schedule, budget). Always ask about access: who has said yes, and what the film is if someone says no (the checker warns when there's no `access` element). |
+| A blank proposal / treatment | `build_template.py --structure doc-character --minutes 52 --lang ar` (proposal sections, real people table, beats in minutes, a picture \| sound draft table) |
+| Transcripts → what did they say? | `transcripts.py ingest a.srt b.txt c.docx --interviewer "<name>" --out $JOB/bites.json` (SRT, VTT, timestamped text, Word incl. tables; `--map "Speaker 1=Salem"`). Then `transcripts.py index bites.json [--speaker X] [--grep word]` (one line per bite, cheap) and `show bites.json A004 A010-A014` for the full text. Read the index, not the raw files. |
+| A paper edit | Write `$JOB/selects.json` (bite ids only; `themes`; sections with a `purpose`; `{"picture","sound"}` rows for moments without words; `{"gap": "…?"}` for what's missing), `paper_edit.py selects.json bites.json --check`, then `--out $JOB --pdf`. Read every warning: interviewer lines, bites used twice, ✂ joins of one speaker's words from different moments (make sure the meaning stays theirs), running time against the target. Look at the "who speaks" table: is someone seen but never heard? |
+| A two-column script (A/V) | `av_script.py draft.docx\|draft.txt --title "<t>" --out $JOB` (Word table with a picture/sound header, or «صورة:»/«صوت:» lines, also VIDEO:/AUDIO:); writes av.json, a laid-out Word/PDF numbered through, and script.json. «name: words» in the sound column is that person speaking; «تعليق صوتي:» is narration. |
+| Notes on a treatment, A/V script or paper edit | `doc_to_script.py treatment.docx` / `draft.txt --av` / `selects.json --bites bites.json` → script.json, then **Read** as usual with two changes: notes.json gets `"lens_set": "documentary"` and `"kind": "documentary"`, and the viewpoints are `references/lenses_doc.json` (story, point of view, evidence, real people, ethics, access, visual, sound, archive, fit; same colours and verdict anchors). The digest lists narration lines, on-screen text, reconstructions, archive, superlatives to verify and people seen without a name: hints, not verdicts. Margin comments land in the picture \| sound table. Notes cite sections and rows ("section 3, row 10"). |
+| Archive log | `doc_helpers.py archive script.json [--merge archive-log.csv] --out $JOB` (Word + CSV; the team fills owner, rights, cost, credit; merging keeps what they filled and marks items no longer in the draft). |
+| Shoot list | `doc_helpers.py shoots --skeleton av.json` writes a plan.json to fill (where, who, when, access, needs); `doc_helpers.py shoots plan.json --out $JOB` (pending access first). |
+
+Documentary notes, beyond **How to write notes**: separate what the film **states** (narration, titles: must be
+sourced) from what a person **says** (their view, fine as theirs); ask how a reconstruction will be marked; ask who is
+seen but not heard; never suggest a line for a real person to say, or staging an event as if it happened. A consent or
+release checklist is not part of this skill (the user's choice); when access or permission is the issue, raise it as a
+question under access or ethics.
+
 ## Deliver
 Reply briefly: what you made, the overall verdict and the 3 priorities (for a Read), where the files are, and any
 unsure lines you decided (for a new draft: how many old notes are resolved, partly, open). Files: `<title>-template.docx`,
 `<title>.docx/.pdf/.fountain`, `<title>-notes.docx` (the writer's copy with margin comments and charts),
 `<title>-side-notes.pdf/.html` (the script with side comments), `<title>-report.html`, and when made
-`<title>-intent.docx`, `<title>-cards.html/.pdf`, `<title>-cards.docx`, `<title>-story-template.docx`, `<title>-story-map.html/.pdf`.
+`<title>-intent.docx`, `<title>-cards.html/.pdf`, `<title>-cards.docx`, `<title>-story-template.docx`, `<title>-story-map.html/.pdf`;
+for documentaries `bites.json`, `<title>-paper-edit.docx/.csv`, `<title>-av.docx/.pdf`, `<title>-archive-log.docx/.csv`, `<title>-shoot-list.docx/.csv`.
