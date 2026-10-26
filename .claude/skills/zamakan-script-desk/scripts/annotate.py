@@ -21,8 +21,21 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _screenplay as S  # noqa: E402
 import format_script as F  # noqa: E402
 
-LENSES = json.loads((S.SKILL / "references" / "lenses.json").read_text(encoding="utf-8"))
-LENS = {x["id"]: x for x in LENSES["lenses"]}
+LENS_FILES = {"film": "lenses.json", "documentary": "lenses_doc.json"}
+LENSES, LENS = {}, {}
+
+
+def use_lenses(name="film"):
+    """Switch the viewpoint set (film or documentary). Updates LENSES and LENS in place, so report.py and
+    side_notes.py, which import them, follow."""
+    data = json.loads((S.SKILL / "references" / LENS_FILES[name]).read_text(encoding="utf-8"))
+    LENSES.clear()
+    LENSES.update(data)
+    LENS.clear()
+    LENS.update({x["id"]: x for x in data["lenses"]})
+
+
+use_lenses("film")
 VERDICT = LENSES["verdicts"]
 UI = {"ar": {"notes": "ملاحظات القراءة", "story": "القصة كما فهمناها", "overall": "الحكم العام", "lens": "زاوية القراءة", "verdict": "الحكم",
              "summary": "الخلاصة", "next": "أولويات المسودة القادمة", "questions": "أسئلة للكاتب", "legend": "ألوان الملاحظات في الهامش", "since": "منذ المسودة السابقة", "intent": "هل يحقق النص ما تريده؟", "scene": "مشهد",
@@ -73,6 +86,7 @@ def check(sc, notes, intent=None):
         errs.append(f"schema: {'/'.join(map(str, e.path))}: {e.message[:140]}")
     if errs:
         return errs, warns
+    use_lenses(notes.get("lens_set", "film"))  # every tool checks the notes first, so this picks the viewpoints for all
     have = {x["id"]: x for x in notes["lenses"]}
     scope = notes.get("scope") or {"kind": "full"}
     required = list(LENS)
@@ -81,7 +95,7 @@ def check(sc, notes, intent=None):
         if not required:
             errs.append("scope lenses: name the viewpoints this pass covers")
     elif scope["kind"] == "first-pages":
-        required = ["premise", "character", "dialogue", "visual", "pacing"]  # what the opening pages can show
+        required = LENSES["first_pages"]  # what the opening pages can show
         if not scope.get("pages"):
             errs.append("scope first-pages: say how many pages were read")
     for lid in required:
@@ -227,6 +241,7 @@ def notes_page(doc, sc, notes, lang, images=()):
         pr.append(S._el("w:bidiVisual"))
     for c, h in zip(t.rows[0].cells, (u["lens"], u["verdict"], u["summary"])):
         cell_text(c, h, lang, bold=True)
+    use_lenses(notes.get("lens_set", "film"))  # every tool checks the notes first, so this picks the viewpoints for all
     have = {x["id"]: x for x in notes["lenses"]}
     for lid, L in LENS.items():
         x = have.get(lid)
@@ -334,7 +349,11 @@ def anchor_index(sc, note):
 
 def annotate(sc, notes, lang, images=()):
     pmap = {}
-    doc = F.build_docx(sc, pmap=pmap)
+    if sc.get("kind") == "documentary":  # a treatment, A/V script or paper edit keeps its own layout
+        from av_script import script_docx
+        doc = script_docx(sc, pmap)
+    else:
+        doc = F.build_docx(sc, pmap=pmap)
     u = UI[lang]
     heading_of = {s["n"]: s["start"] for s in sc["scenes"]}
     for k, n in enumerate(notes["notes"]):

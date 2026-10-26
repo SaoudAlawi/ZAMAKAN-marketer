@@ -171,8 +171,56 @@ def to_script(av):
                 els.append({"type": "character", "text": who, "name": who, "scene": k, "row": r["n"]})
                 els.append({"type": "dialogue", "text": said, "scene": k, "row": r["n"]})
         scenes.append({"n": k, "heading": heading, "int_ext": "", "location": heading, "time": "", "start": start, "end": len(els) - 1})
-    return {"schema": "zamakan-script/1", "source": av.get("source", ""), "lang": lang, "kind": "documentary",
+    return {"schema": "zamakan-script/1", "source": av.get("source", ""), "lang": lang, "kind": "documentary", "form": "av",
             "title_page": {"title": av["title"]}, "scenes": scenes, "elements": els, "unsure": []}
+
+
+def script_docx(sc, pmap=None):
+    """A documentary script.json laid out for reading notes: each section a heading, its rows in the picture | sound
+    table (prose with no rows, as in a treatment, as plain paragraphs). pmap gets element index → paragraph, so margin
+    comments land on the right line."""
+    lang = sc["lang"]
+    ar = lang == "ar"
+    pmap = {} if pmap is None else pmap
+    doc = S.new_document(lang)
+    S.add_page_numbers(doc, lang)
+    B.para(doc, sc.get("title_page", {}).get("title", ""), lang, style="Title")
+    els = sc["elements"]
+    n = 0
+    for scn in sc["scenes"]:
+        pmap[scn["start"]] = B.para(doc, scn["heading"], lang, style="Heading 2")
+        idx = list(range(scn["start"] + 1, scn["end"] + 1))
+        rows, order = {}, []
+        for i in idx:
+            r = els[i].get("row")
+            if r is None:  # prose
+                pmap[i] = B.para(doc, els[i]["text"], lang)
+                continue
+            if r not in rows:
+                rows[r] = {"pic": [], "snd": []}
+                order.append(r)
+            if els[i]["type"] == "action":
+                rows[r]["pic"].append(i)
+            elif els[i]["type"] == "dialogue":
+                rows[r]["snd"].append(i)
+        if not order:
+            continue
+        t = D.av_table(doc, [("", "", None)] * len(order), lang, start=n + 1)
+        n += len(order)
+        for k, r in enumerate(order, 1):
+            for col, key in ((1, "pic"), (2, "snd")):
+                cell = t.cell(k, col)
+                for j, i in enumerate(rows[r][key]):
+                    p = cell.paragraphs[0] if j == 0 else cell.add_paragraph()
+                    if j and ar:
+                        p._p.get_or_add_pPr().append(S._el("w:bidi"))
+                    who = els[i - 1]["name"] if key == "snd" and els[i - 1]["type"] == "character" else None
+                    if who and who not in (T["ar"]["sound"], T["en"]["sound"]):
+                        D._run(p, who + ": ", lang, bold=True, color="5E5A53")
+                        pmap[i - 1] = p
+                    D._run(p, els[i]["text"], lang)
+                    pmap[i] = p
+    return doc
 
 
 def main():

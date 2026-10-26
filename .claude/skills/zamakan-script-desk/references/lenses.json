@@ -311,5 +311,12 @@
    "hex": "#1baf7a",
    "hex_dark": "#199e70"
   }
- }
+ },
+ "first_pages": [
+  "premise",
+  "character",
+  "dialogue",
+  "visual",
+  "pacing"
+ ]
 }

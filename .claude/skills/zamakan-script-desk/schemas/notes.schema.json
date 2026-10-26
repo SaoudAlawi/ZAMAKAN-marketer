@@ -31,7 +31,8 @@
   "kind": {
    "enum": [
     "short",
-    "feature"
+    "feature",
+    "documentary"
    ]
   },
   "logline_read": {
@@ -326,6 +327,13 @@
      }
     }
    }
+  },
+  "lens_set": {
+   "enum": [
+    "film",
+    "documentary"
+   ],
+   "description": "which viewpoints: film (references/lenses.json, default) or documentary (references/lenses_doc.json) for a treatment, A/V script or paper edit"
   }
  }
 }

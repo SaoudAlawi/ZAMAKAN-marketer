@@ -615,3 +615,77 @@ def test_av_script_text_docx_and_reader(tmp_path):
     txt.write_text("SEQUENCE 1: Dawn\nVIDEO: Harbour at night.\nAUDIO: Waves.\nVIDEO: Salem's hands.\nAUDIO: SALEM: The wood tells you.\n", encoding="utf-8")
     en = AV.read(txt)
     assert en["lang"] == "en" and en["rows"][0]["section"] == "1: Dawn" and en["rows"][1]["sound"] == "SALEM: The wood tells you."
+
+
+# --- documentary reader: doc viewpoints on an A/V script, a paper edit and a treatment ---
+import doc_to_script as D2S  # noqa: E402
+
+DOC_NOTES = json.loads((ROOT / "tests" / "fixtures" / "notes_sur_av.json").read_text(encoding="utf-8"))
+
+
+@pytest.fixture
+def film_lenses_after():
+    yield
+    A.use_lenses("film")  # other tests expect the film viewpoints
+
+
+def test_doc_lenses_file():
+    doc = json.loads((S.SKILL / "references" / "lenses_doc.json").read_text(encoding="utf-8"))
+    film = json.loads((S.SKILL / "references" / "lenses.json").read_text(encoding="utf-8"))
+    assert len(doc["lenses"]) == 10 and doc["verdicts"] == film["verdicts"] and doc["families"] == film["families"]
+    for L in doc["lenses"]:
+        assert L["hex"] == doc["families"][L["family"]]["hex"] and set(L["anchors"]) == {"green", "amber", "red"} and L["name_ar"]
+    assert {"doc_ethics", "doc_access", "doc_archive", "doc_evidence"} <= {L["id"] for L in doc["lenses"]}
+    assert set(doc["first_pages"]) <= {L["id"] for L in doc["lenses"]}
+
+
+def test_doc_reader_on_av_script(tmp_path, film_lenses_after):
+    sc = AV.to_script(AV.read(DOCS / "sur-av-draft.txt", "آخر صانعي السفن"))
+    errs, warns = A.check(sc, DOC_NOTES)
+    assert errs == [] and "doc_access" in A.LENS and "premise" not in A.LENS
+    missing = json.loads(json.dumps(DOC_NOTES))
+    missing["lenses"] = [x for x in missing["lenses"] if x["id"] != "doc_archive"]
+    assert any("doc_archive" in e for e in A.check(sc, missing)[0])
+    film = json.loads(json.dumps(DOC_NOTES))
+    film.pop("lens_set")  # film viewpoints: doc ids are unknown there
+    assert any("unknown lens" in e for e in A.check(sc, film)[0])
+    d = D.digest(sc, "doc-character")
+    dd = d["doc"]
+    assert any("آخر صانع" in x for x in dd["superlative"]) and any("إعادة تمثيل" in x for x in dd["reconstruction"])
+    assert len(dd["narration"]) == 2 and len(dd["archive"]) == 2 and any("عامل" in x for x in dd["unnamed_people"])
+    assert not any("مثل أول" in x for x in dd["superlative"])  # colloquial «أول» is not a claim
+    shown = D.show(d)
+    assert "documentary (av)" in shown and "pages" not in shown.split("\n")[0] and "protagonist" not in shown
+    A.check(sc, DOC_NOTES)
+    doc = A.annotate(sc, DOC_NOTES, "ar")
+    out = tmp_path / "n.docx"
+    doc.save(out)
+    import zipfile
+    z = zipfile.ZipFile(out)
+    comments = z.read("word/comments.xml").decode("utf-8")
+    assert comments.count("<w:comment ") == len(DOC_NOTES["notes"]) and "الدقة والأدلة" in comments
+    body = z.read("word/document.xml").decode("utf-8")
+    first_tbl = body.index("<w:tbl>", body.index("الافتتاح"))
+    assert body.index("commentRangeStart", first_tbl) < body.index("</w:tbl>", first_tbl)  # comments sit inside the A/V table
+    import report as R
+    page = R.build(sc, DOC_NOTES, d, "ar")
+    assert "زمن الكلام" in page and "لوحة التصوير" not in page
+
+
+def test_doc_to_script_paper_edit_and_treatment(tmp_path):
+    bites = _bites()["bites"]
+    sel = json.loads((ROOT / "tests" / "fixtures" / "selects_sur_doc.json").read_text(encoding="utf-8"))
+    sc = PE.to_script(sel, bites)
+    assert sc["kind"] == "documentary" and len(sc["scenes"]) == 3
+    lines = [e for e in sc["elements"] if e["type"] == "dialogue" and e.get("bite") == "A016"]
+    assert lines and lines[0]["text"] == {b["id"]: b for b in bites}["A016"]["text"]
+    assert any(e["text"].startswith("[ينقصنا") for e in sc["elements"])
+    tr = tmp_path / "t.md"
+    tr.write_text("# صانعو السفن\nمقدمة قصيرة عن الفيلم.\n## الوصول\nسالم وافق.\nالابن لم يرد.\n## الأرشيف\nصور العائلة.\n", encoding="utf-8")
+    t = D2S.treatment(tr)
+    assert t["title_page"]["title"] == "صانعو السفن" and [s["heading"] for s in t["scenes"]] == ["المقدمة", "الوصول", "الأرشيف"]
+    assert [e["text"] for e in t["elements"] if e.get("scene") == 2 and e["type"] == "action"] == ["سالم وافق.", "الابن لم يرد."]
+    from av_script import script_docx
+    pm = {}
+    script_docx(t, pm)
+    assert all(i in pm for i, e in enumerate(t["elements"]))  # every line can carry a comment

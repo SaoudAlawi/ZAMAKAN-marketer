@@ -307,7 +307,8 @@ def all_charts(stats, notes, structure, marks, lang, prev=None):
     if (notes or {}).get("scope", {}).get("kind") == "first-pages":
         structure = None  # beats belong to the whole film
     return [c for c in (beat_map(stats, notes, structure, marks, lang), tension_curve(stats, notes, structure, lang, prev),
-                        arc_chart(stats, notes, lang), presence(stats, lang), dialect_map(stats, lang), voices_table(stats, lang), stripboard(stats, lang)) if c]
+                        arc_chart(stats, notes, lang), presence(stats, lang), dialect_map(stats, lang), voices_table(stats, lang),
+                        None if stats.get("doc") else stripboard(stats, lang)) if c]  # a documentary isn't scheduled from a stripboard
 
 
 def to_pngs(fragments, out_dir, lang, stem="chart"):

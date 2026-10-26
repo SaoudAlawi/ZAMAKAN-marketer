@@ -192,6 +192,35 @@ def write_csv(sel, bites, path):
                     w.writerow([n, s["name"], "", "", "", "", "", "", th, it.get("picture", ""), it.get("sound") or ("GAP: " + it["gap"] if "gap" in it else "")])
 
 
+def to_script(sel, bites):
+    """Paper edit → script.json (zamakan-script/1) so the documentary reader can comment on it: sections are scenes,
+    pictures are action, each bite is its speaker's line (with id and timecode), gaps are marked."""
+    lang = sel["lang"]
+    by = {b["id"]: b for b in bites}
+    els, scenes, row = [], [], 0
+    for k, s in enumerate(sel["sections"], 1):
+        start = len(els)
+        els.append({"type": "scene_heading", "text": s["name"], "scene": k})
+        for it in s["items"]:
+            row += 1
+            if it.get("picture"):
+                els.append({"type": "action", "text": it["picture"], "scene": k, "row": row})
+            b = by.get(it.get("bite"))
+            if b:
+                said = b["text"] or f"({'; '.join(b.get('direction', []))})"
+                els.append({"type": "character", "text": b["speaker"], "name": b["speaker"], "scene": k, "row": row, "bite": b["id"], "tc": b["tc_in"]})
+                els.append({"type": "dialogue", "text": said, "scene": k, "row": row, "bite": b["id"]})
+            elif "gap" in it:
+                els.append({"type": "action", "text": f"[{T[lang]['gap']}: {it['gap']}]", "scene": k, "row": row})
+            elif it.get("sound"):
+                snd = "الصوت" if lang == "ar" else "SOUND"
+                els.append({"type": "character", "text": snd, "name": snd, "scene": k, "row": row})
+                els.append({"type": "dialogue", "text": f"({it['sound']})", "scene": k, "row": row})
+        scenes.append({"n": k, "heading": s["name"], "int_ext": "", "location": s["name"], "time": "", "start": start, "end": len(els) - 1})
+    return {"schema": "zamakan-script/1", "source": "paper edit", "lang": lang, "kind": "documentary", "form": "paper-edit",
+            "title_page": {"title": sel.get("title", "")}, "scenes": scenes, "elements": els, "unsure": []}
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("selects")

@@ -48,7 +48,7 @@ def match(old, new):
         used_o.add(a)
         used_n.add(b)
         raw = sim(o[a]["text"], n[b]["text"])
-        m[b] = {"old": a, "similarity": round(raw, 2), "status": "same" if raw > 0.93 else "changed"}
+        m[b] = {"old": a, "similarity": round(raw, 2), "status": "same" if raw > 0.985 else "changed"}  # a changed line in a long scene still counts
     for b in n:
         m.setdefault(b, {"old": None, "similarity": 0, "status": "new"})
     cut = sorted(set(o) - used_o)

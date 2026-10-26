@@ -20,11 +20,11 @@ from side_notes import scene_marks  # noqa: E402
 
 E = html.escape
 T = {"ar": {"title": "قراءة النص", "story": "القصة كما فهمناها", "numbers": "بالأرقام", "pages": "صفحات", "scenes": "مشاهد",
-            "locations": "مواقع", "roles": "أدوار متكلمة", "dialogue": "نسبة الحوار", "strip": "أين تقع الملاحظات",
+            "locations": "مواقع", "roles": "أدوار متكلمة", "sections": "أقسام", "rows": "صفوف (صورة | صوت)", "spoken": "زمن الكلام", "voices": "أصوات", "dialogue": "نسبة الحوار", "strip": "أين تقع الملاحظات",
             "by_scene": "الملاحظات مشهداً مشهداً", "next": "أولويات المسودة القادمة", "questions": "أسئلة للكاتب",
             "works": "ما ينجح", "visuals": "النص بصرياً", "intent": "هل يحقق النص ما تريده؟", "why": "معنى هذا اللون", "side": "اقرأ النص مع الملاحظات على الجانب", "scene": "مشهد", "foot": "زمكان · مساعد الكتابة. ملاحظات وأسئلة، لا إعادة كتابة."},
      "en": {"title": "Script reading", "story": "The story as we read it", "numbers": "By the numbers", "pages": "pages", "scenes": "scenes",
-            "locations": "locations", "roles": "speaking roles", "dialogue": "dialogue share", "strip": "Where the notes fall",
+            "locations": "locations", "roles": "speaking roles", "sections": "sections", "rows": "rows (picture | sound)", "spoken": "spoken time", "voices": "voices", "dialogue": "dialogue share", "strip": "Where the notes fall",
             "by_scene": "Notes, scene by scene", "next": "Priorities for the next draft", "questions": "Questions for the writer",
             "works": "What works", "visuals": "The script at a glance", "intent": "Does the script do what you are going for?", "why": "What this colour means", "side": "Read the script with the notes on the side", "scene": "Scene", "foot": "ZAMAKAN · script desk. Notes and questions, not rewrites."}}
 
@@ -85,6 +85,11 @@ def build(sc, notes, stats, lang, side_link=None, prev=None):
     if stats:
         nums = [(stats.get("pages") or "?", t["pages"]), (stats["scenes"], t["scenes"]), (stats["locations"], t["locations"]),
                 (stats["speaking_roles"], t["roles"]), (f'{stats["dialogue_share"]}%', t["dialogue"])]
+        dd = stats.get("doc")
+        if dd:  # a documentary: sections, rows, spoken time and voices instead of pages and locations
+            sec = dd["spoken_seconds"]
+            nums = [(stats["scenes"], t["sections"]), (sum(dd["rows_per_section"].values()), t["rows"]),
+                    (f"{sec // 60}:{sec % 60:02d}", t["spoken"]), (len(dd["speakers"]), t["voices"])]
         h.append(f'<h2>{t["numbers"]}</h2><div class="nums">' + "".join(f'<div class="num"><b>{E(str(S.digits(v, lang) if isinstance(v, int) else v))}</b>{E(k)}</div>' for v, k in nums) + "</div>")
     ic = notes.get("intent_check") or []
     if ic:

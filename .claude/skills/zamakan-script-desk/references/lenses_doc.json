@@ -1,0 +1,321 @@
+{
+ "note": "The documentary reader's viewpoints (lens_set \"documentary\" in notes.json). Same colour families, verdicts and anchor method as lenses.json; built from documentary practice (Bernard, Documentary Storytelling; common commissioning criteria) plus ethics, access and archive, which fiction readers don't need. A consent/release checklist is out of scope by the user's choice; the ethics viewpoint still flags representation and marking of reconstructions.",
+ "verdicts": {
+  "green": {
+   "en": "Working",
+   "ar": "يعمل",
+   "hex": "#0ca30c",
+   "icon": "✓"
+  },
+  "amber": {
+   "en": "Needs work",
+   "ar": "يحتاج عملاً",
+   "hex": "#fab219",
+   "icon": "!"
+  },
+  "red": {
+   "en": "Holds it back",
+   "ar": "يعيق النص",
+   "hex": "#d03b3b",
+   "icon": "✕"
+  }
+ },
+ "families": {
+  "story": {
+   "en": "Story",
+   "ar": "الحكاية",
+   "hex": "#2a78d6",
+   "hex_dark": "#3987e5"
+  },
+  "people": {
+   "en": "People and voice",
+   "ar": "الشخصيات والصوت",
+   "hex": "#eb6834",
+   "hex_dark": "#d95926"
+  },
+  "screen": {
+   "en": "Screen and making",
+   "ar": "الشاشة والتنفيذ",
+   "hex": "#1baf7a",
+   "hex_dark": "#199e70"
+  }
+ },
+ "first_pages": [
+  "doc_story",
+  "doc_pov",
+  "doc_people",
+  "doc_visual"
+ ],
+ "lenses": [
+  {
+   "id": "doc_story",
+   "name": "Story and structure",
+   "name_ar": "القصة والبناء",
+   "hex": "#2a78d6",
+   "ask": [
+    "Is there a question or a want that pulls us through, and does each section move it?",
+    "Can the shoot deliver the ending this plan needs, and what if it doesn't (a fallback)?",
+    "Does the structure chosen fit what will really happen in front of the camera?"
+   ],
+   "evidence": "sections in order; what each one changes; the planned ending and whether it depends on events nobody controls",
+   "family": "story",
+   "anchors": {
+    "green": {
+     "en": "A clear question pulls through every section, and the ending holds even if events change.",
+     "ar": "هناك سؤال واضح يشدّ عبر كل الأقسام، والنهاية تصمد حتى لو تغيّرت الأحداث."
+    },
+    "amber": {
+     "en": "The drive is there but some sections stand still, or the ending depends on one event with no fallback.",
+     "ar": "الدافع موجود لكن بعض الأقسام تقف مكانها، أو النهاية معلّقة على حدث واحد دون بديل."
+    },
+    "red": {
+     "en": "No question or want pulls the film forward: it is a list of scenes about a topic.",
+     "ar": "لا سؤال ولا رغبة تدفع الفيلم: إنه قائمة مشاهد عن موضوع."
+    }
+   }
+  },
+  {
+   "id": "doc_pov",
+   "name": "Point of view and voice",
+   "name_ar": "وجهة النظر والصوت",
+   "hex": "#2a78d6",
+   "ask": [
+    "Whose film is this, and where does the filmmaker stand?",
+    "Do narration, titles and interviews follow the approach the filmmaker chose (e.g. no voice-over)?",
+    "Is the film's voice consistent from start to end?"
+   ],
+   "evidence": "narration lines, on-screen titles, interviewer presence; the filmmaker's stated approach (intent sheet or proposal)",
+   "family": "story",
+   "anchors": {
+    "green": {
+     "en": "One clear point of view; every voice device follows the chosen approach.",
+     "ar": "وجهة نظر واحدة واضحة؛ كل أدوات الصوت تتبع الأسلوب المختار."
+    },
+    "amber": {
+     "en": "The point of view is there but some devices (a narration line, a title) work against the chosen approach.",
+     "ar": "وجهة النظر موجودة لكن بعض الأدوات (سطر تعليق، عنوان) تعمل ضد الأسلوب المختار."
+    },
+    "red": {
+     "en": "The film doesn't know whose eyes we see through, or its voice contradicts what the filmmaker set out to do.",
+     "ar": "الفيلم لا يعرف بعين من نرى، أو صوته يناقض ما أراده صانعه."
+    }
+   }
+  },
+  {
+   "id": "doc_evidence",
+   "name": "Evidence and accuracy",
+   "name_ar": "الدقة والأدلة",
+   "hex": "#2a78d6",
+   "ask": [
+    "Which statements are presented as fact (titles, narration, captions), and is each one sourced or checkable?",
+    "Are numbers, dates and superlatives («the last», «the biggest») verified?",
+    "Does anything claim more than the footage or the sources can show?"
+   ],
+   "evidence": "every factual claim in titles, narration and captions; whether a source is named",
+   "family": "story",
+   "anchors": {
+    "green": {
+     "en": "Every factual claim is sourced, or phrased as the person's own view.",
+     "ar": "كل معلومة مقدَّمة كحقيقة لها مصدر، أو مصوغة كرأي صاحبها."
+    },
+    "amber": {
+     "en": "Some claims are unsourced, or a superlative needs checking.",
+     "ar": "بعض المعلومات بلا مصدر، أو هناك صيغة تفضيل («الأخير»، «الأكبر») تحتاج تحققاً."
+    },
+    "red": {
+     "en": "A central claim the film rests on is unverified or likely wrong.",
+     "ar": "معلومة مركزية يقوم عليها الفيلم غير متحقق منها أو على الأرجح خاطئة."
+    }
+   }
+  },
+  {
+   "id": "doc_people",
+   "name": "Real people",
+   "name_ar": "الأشخاص الحقيقيون",
+   "hex": "#eb6834",
+   "ask": [
+    "Are the subjects full people (wants, contradictions, humour), or illustrations of a point?",
+    "Do we see them do things, not only talk about them?",
+    "Who speaks, and who is only seen?"
+   ],
+   "evidence": "who speaks and how much (paper edit summary or sound column); what each person does on screen",
+   "family": "people",
+   "anchors": {
+    "green": {
+     "en": "The main people are full and active; we see them choose and change.",
+     "ar": "الأشخاص الرئيسيون كاملون وفاعلون؛ نراهم يختارون ويتغيّرون."
+    },
+    "amber": {
+     "en": "The main subject is full, but others are thin or only talk.",
+     "ar": "الشخصية الرئيسية كاملة، لكن الآخرين باهتون أو يتكلمون فقط."
+    },
+    "red": {
+     "en": "People are props for the topic: we never learn what they want.",
+     "ar": "الأشخاص أدوات للموضوع: لا نعرف أبداً ماذا يريدون."
+    }
+   }
+  },
+  {
+   "id": "doc_ethics",
+   "name": "Ethics and representation",
+   "name_ar": "الأخلاقيات والتمثيل",
+   "hex": "#eb6834",
+   "ask": [
+    "Are reconstructions, staged moments and joined quotes marked or true to what happened?",
+    "Is anyone shown in a way they might not recognise or accept (workers, migrants, women, minors, the vulnerable)?",
+    "Could the film harm someone in it, and has that been thought through?"
+   ],
+   "evidence": "reconstruction or staging in the picture column; who is unnamed or voiceless; ✂ joins in a paper edit",
+   "family": "people",
+   "anchors": {
+    "green": {
+     "en": "Reconstructions are marked, quotes keep their meaning, and everyone is shown fairly.",
+     "ar": "إعادة التمثيل معلنة، والاقتباسات تحفظ معناها، والجميع يُعرض بإنصاف."
+    },
+    "amber": {
+     "en": "A reconstruction is unmarked, or someone is shown without a name or voice where they had one.",
+     "ar": "إعادة تمثيل غير معلنة، أو شخص يُعرض بلا اسم أو صوت مع أن له صوتاً."
+    },
+    "red": {
+     "en": "The film misrepresents someone or could harm them, and the plan doesn't address it.",
+     "ar": "الفيلم يشوّه صورة أحد أو قد يؤذيه، والخطة لا تعالج ذلك."
+    }
+   }
+  },
+  {
+   "id": "doc_access",
+   "name": "Access",
+   "name_ar": "الوصول",
+   "hex": "#eb6834",
+   "ask": [
+    "Which planned scenes depend on someone's yes that hasn't been given?",
+    "What is the film if that person says no?",
+    "Is there access to the key moments (the launch, the decision), not only to interviews?"
+   ],
+   "evidence": "planned scenes with people whose agreement is unconfirmed (proposal, story map, intent)",
+   "family": "people",
+   "anchors": {
+    "green": {
+     "en": "Every key scene has access, or a fallback is planned.",
+     "ar": "كل مشهد أساسي له وصول مؤكد، أو بديل مخطط."
+    },
+    "amber": {
+     "en": "Some planned scenes depend on access not yet given, with no fallback.",
+     "ar": "بعض المشاهد المخططة تعتمد على وصول لم يُمنح بعد، دون بديل."
+    },
+    "red": {
+     "en": "The film's core depends on access that isn't there.",
+     "ar": "جوهر الفيلم يعتمد على وصول غير موجود."
+    }
+   }
+  },
+  {
+   "id": "doc_visual",
+   "name": "Visual approach",
+   "name_ar": "المقاربة البصرية",
+   "hex": "#1baf7a",
+   "ask": [
+    "Is the visual approach (observational, constructed, archive-led) clear and consistent?",
+    "Is there variety, or does one shot repeat?",
+    "Does each picture do work, or only illustrate the sound?"
+   ],
+   "evidence": "the picture column: shot kinds, repetition, what each image adds beyond the words",
+   "family": "screen",
+   "anchors": {
+    "green": {
+     "en": "A clear, consistent visual approach; pictures add meaning beyond the words.",
+     "ar": "مقاربة بصرية واضحة ومتسقة؛ الصور تضيف معنى يتجاوز الكلام."
+    },
+    "amber": {
+     "en": "The approach is clear but repetitive, or pictures mostly illustrate the words.",
+     "ar": "المقاربة واضحة لكنها مكررة، أو الصور في الغالب توضّح الكلام فقط."
+    },
+    "red": {
+     "en": "No visual idea: pictures are wallpaper under talk.",
+     "ar": "لا فكرة بصرية: الصور خلفية تحت الكلام."
+    }
+   }
+  },
+  {
+   "id": "doc_sound",
+   "name": "Sound",
+   "name_ar": "الصوت",
+   "hex": "#1baf7a",
+   "ask": [
+    "Does the sound plan carry the film (ambience, voices, silence, music)?",
+    "Is interview sound clean enough for the plan (workshops, sea, wind)?",
+    "Is music doing work, or covering gaps?"
+   ],
+   "evidence": "the sound column: ambience, speech, narration, music; locations that are noisy",
+   "family": "screen",
+   "anchors": {
+    "green": {
+     "en": "Sound is a full part of the storytelling and the plan is recordable.",
+     "ar": "الصوت جزء كامل من السرد، والخطة قابلة للتسجيل."
+    },
+    "amber": {
+     "en": "Sound is planned but thin, or a noisy location threatens the interviews.",
+     "ar": "الصوت مخطط لكنه قليل، أو موقع صاخب يهدد المقابلات."
+    },
+    "red": {
+     "en": "Sound is an afterthought; the film relies on narration or music to work.",
+     "ar": "الصوت فكرة لاحقة؛ الفيلم يعتمد على التعليق أو الموسيقى ليعمل."
+    }
+   }
+  },
+  {
+   "id": "doc_archive",
+   "name": "Archive and rights",
+   "name_ar": "الأرشيف والحقوق",
+   "hex": "#1baf7a",
+   "ask": [
+    "Which archive (photos, footage, music) is planned, and who owns each piece?",
+    "Is the cost and clearance time of archive realistic for the budget and schedule?",
+    "Is archive used truthfully (right place, right date)?"
+   ],
+   "evidence": "every archive item in the picture or sound column; its source and owner if named",
+   "family": "screen",
+   "anchors": {
+    "green": {
+     "en": "Every archive item has a known owner and a clearance plan.",
+     "ar": "لكل مادة أرشيفية مالك معروف وخطة لتصريحها."
+    },
+    "amber": {
+     "en": "Some archive has no known owner or rights plan, or may cost more than budgeted.",
+     "ar": "بعض الأرشيف بلا مالك معروف أو خطة حقوق، أو قد يكلّف أكثر من الميزانية."
+    },
+    "red": {
+     "en": "The film depends on archive it may not be able to clear.",
+     "ar": "الفيلم يعتمد على أرشيف قد لا يُصرَّح باستخدامه."
+    }
+   }
+  },
+  {
+   "id": "doc_fit",
+   "name": "Festival and broadcaster fit",
+   "name_ar": "الملاءمة للمهرجانات والقنوات",
+   "hex": "#1baf7a",
+   "ask": [
+    "What length and slot is this (TV hour, 52 minutes, feature, short)?",
+    "Which audiences and outlets fit (only name ones you know accept this kind of film)?",
+    "What would a commissioner or programmer ask first?"
+   ],
+   "evidence": "running time target; subject; approach; outlets only when you know them for certain",
+   "family": "screen",
+   "anchors": {
+    "green": {
+     "en": "Length, approach and subject fit a clear set of outlets.",
+     "ar": "الطول والأسلوب والموضوع تناسب جهات عرض واضحة."
+    },
+    "amber": {
+     "en": "It fits, but the length or approach narrows the outlets; say which.",
+     "ar": "يناسب، لكن الطول أو الأسلوب يضيّق جهات العرض؛ قل أيها."
+    },
+    "red": {
+     "en": "No clear outlet for this length and approach.",
+     "ar": "لا جهة عرض واضحة لهذا الطول والأسلوب."
+    }
+   }
+  }
+ ]
+}

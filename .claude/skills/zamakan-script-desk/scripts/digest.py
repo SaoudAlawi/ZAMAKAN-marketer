@@ -220,7 +220,52 @@ def digest(sc, structure=None, intent=None):
         "silent_scenes": [r["n"] for r in rows if not r["dialogue_lines"]],
         "telling_lines": telling, "production": dict(prod), "dialect_mix": mixed, "presence_grid": presence_grid, "voices": voice_rows, "similar_voices": alike, "dialect_grid": dialect_grid, "same_place_same_people": repeats,
         "beats": beats, "sections": sections, "scene_rows": rows, "intent": intent or None,
+        "doc": doc_digest(sc) if sc.get("kind") == "documentary" else None,
     }
+
+
+DOC_HINTS = {  # documentary flags for the doc viewpoints: hints to check, never verdicts
+    "narration": r"(?:تعليق صوتي|التعليق|الراوي|narrat|voice[- ]?over|\bvo\b)",
+    "on_screen_text": r"(?:عنوان على الشاشة|نص على الشاشة|كتابة على الشاشة|caption|title card|super\b|lower third|on-screen)",
+    "reconstruction": r"(?:إعادة تمثيل|إعادة بناء|مشهد ممثل|تمثيلي|reconstruct|re-?enact|staged|dramati[sz])",
+    "archive": r"(?:أرشيف|من وثائقي|لقطة من|صورة قديمة|صور قديمة|archive|archival|footage from|old photo|stock)",
+    "superlative": r"(?:\bآخر\b|أول من|أكبر|أقدم|الوحيد|لم يبق إلا|\blast\b|\bfirst\b|\bonly\b|biggest|oldest|largest)",
+    "unnamed_people": r"(?:\bعامل\b|\bعمال\b|رجل ما|امرأة ما|\bworkers?\b|a man\b|a woman\b|locals?\b)",
+}
+
+
+def doc_digest(sc):
+    """What the documentary viewpoints need first: who speaks vs who is only seen, narration and on-screen claims,
+    reconstructions, archive, superlatives to verify, rows per section and spoken time."""
+    els = sc["elements"]
+    found = {k: [] for k in DOC_HINTS}
+    for i, e in enumerate(els):
+        if e["type"] not in ("action", "dialogue", "character"):
+            continue
+        text = e["text"]
+        for k, pat in DOC_HINTS.items():
+            if re.search(pat, text, re.I):
+                where = f"S{e.get('scene')}" + (f"/r{e['row']}" if e.get("row") else "")
+                if k == "narration" and e["type"] == "character":
+                    nxt = els[i + 1]["text"] if i + 1 < len(els) else ""
+                    found[k].append(f"{where}: {nxt[:70]}")
+                elif k == "superlative":  # only in what the film states: narration and on-screen text
+                    voice = els[i - 1] if e["type"] == "dialogue" and i else None
+                    if (voice and re.search(DOC_HINTS["narration"], voice["text"], re.I)) or re.search(DOC_HINTS["on_screen_text"], text, re.I):
+                        found[k].append(f"{where}: {text[:70]}")
+                elif k != "narration":
+                    found[k].append(f"{where}: {text[:70]}")
+    speakers = Counter(e.get("name") for e in els if e["type"] == "character")
+    rows = {}
+    for e in els:
+        if e.get("row"):
+            rows.setdefault(e.get("scene"), set()).add(e["row"])
+    said = [els[i + 1]["text"] for i, e in enumerate(els) if e["type"] == "character" and i + 1 < len(els)
+            and e.get("name") not in ("الصوت", "SOUND")]
+    w = sum(len(re.sub(r"[\(\[][^\)\]]*[\)\]]", "", x).split()) for x in said)
+    pace = 2.0 if sc["lang"] == "ar" else 2.5
+    return {"form": sc.get("form", "documentary"), "rows_per_section": {str(k): len(v) for k, v in sorted(rows.items(), key=lambda kv: kv[0] or 0)},
+            "spoken_words": w, "spoken_seconds": round(w / pace), "speakers": speakers.most_common(), **found}
 
 
 def show(d):
@@ -233,6 +278,12 @@ def show(d):
            "characters: " + "; ".join(f"{c['name']} {c['lines']} lines/{c['words']}w/{c['scenes']} sc" for c in d["characters"][:8]),
            f"protagonist (in most scenes): {d['protagonist_guess']} · absent from scenes {d['scenes_without_protagonist'] or '-'}",
            ]
+    dd = d.get("doc")
+    if dd:  # a documentary has sections, rows and spoken time, not pages and locations
+        sec = dd["spoken_seconds"]
+        out[:2] = [f"# {d['title'] or 'film'} · {d['lang']} · documentary ({dd['form']}) · {d['scenes']} sections · rows per section {dd['rows_per_section'] or '-'} · "
+                   f"{dd['spoken_words']} spoken words ≈ {sec // 60}:{sec % 60:02d} of speech"]
+        out[3:] = []  # no protagonist guess: real people aren't scored by screen time
     it = d.get("intent")
     if it:
         out.append("## writer's intent (judge the script against this)")
@@ -251,6 +302,12 @@ def show(d):
                    f"{', '.join(r['speakers']) or '(silent)'} | {r['first']}")
     out.append("")
     out.append("## flags (hints to check, not verdicts)")
+    if dd:
+        labels = {"narration": "narration lines", "on_screen_text": "on-screen text (claims?)", "reconstruction": "reconstruction / staging (marked?)",
+                  "archive": "archive (owner, rights?)", "superlative": "superlatives to verify", "unnamed_people": "people seen without a name (heard?)"}
+        for k, lab in labels.items():
+            if dd[k]:
+                out.append(f"{lab}: " + " · ".join(dd[k][:6]))
     if d["telling_lines"]:
         out.append("action lines that narrate thoughts/feelings: " + " · ".join(f"S{t['scene']}: {t['text'][:60]}" for t in d["telling_lines"][:8]))
     if d["dialect_mix"]:
