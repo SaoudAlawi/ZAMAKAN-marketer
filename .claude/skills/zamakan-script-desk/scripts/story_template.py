@@ -270,12 +270,13 @@ def build_map(sm):
 .bh{display:flex;flex-direction:column;margin-bottom:6px}.bh span{font-size:11.5px;color:var(--muted)}
 .frag{background:var(--blue);border-radius:6px;padding:4px 7px;margin:4px 0;font-size:13px}.gap{background:var(--amber);border-radius:6px;padding:4px 7px;margin:4px 0;font-size:13px;font-weight:700}
 h2{font-size:17px;margin:18px 0 8px}.props{break-inside:avoid}.sec{flex:1 1 150px}.sec .gap{font-weight:400;color:var(--muted)}ul{margin:4px 0 0;padding-inline-start:16px;color:var(--muted);font-size:12.5px}
-@media (max-width:760px){.lane{flex-direction:column}}@page{size:A4 landscape;margin:10mm}"""
+@media (max-width:760px){.lane{flex-direction:column}}@media print{.wrap{padding:6px 8px}.beats{flex-wrap:nowrap}.beats .beat{min-width:0;padding:6px 8px;flex:1 1 0 !important}.story{font-size:12px;line-height:1.45;padding:8px 12px}
+.frag,.gap{font-size:12px;line-height:1.45}ul{font-size:11.5px;line-height:1.4}h1{font-size:22px}}@page{size:A4 landscape;margin:10mm}"""
     st_name = st["name_ar"] if ar else st["name"]
     return (f'<!doctype html><html lang="{lang}" dir="{"rtl" if ar else "ltr"}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
             f'<title>{E(title)} · {t["map"]}</title><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">'
             f'<style>{css}</style></head><body><div class="wrap"><h1>{E(title)} · {t["map"]}</h1><p class="sub">{E(st_name)} · {S.digits(sm["minutes"], lang)} {t["min"]} · {E(sm["why_structure"])}</p>'
-            f'<div class="story">{E(sm["story"])}</div><div class="legend">{E(t["legend"])}</div><div class="lane">{"".join(cols)}</div>{secs}</div></body></html>')
+            f'<div class="story">{E(sm["story"])}</div><div class="legend">{E(t["legend"])}</div><div class="lane beats">{"".join(cols)}</div>{secs}</div></body></html>')
 
 
 def main():
