@@ -462,3 +462,57 @@ def test_story_working_title_and_duplicate_fragments():
     d = json.loads(json.dumps(MAP))
     d["beats"]["turn"]["fragments"] = ["عمها يرفض"]
     assert any("two beats" in w for w in ST.check(d)[1])
+
+
+# --- documentary: structures, proposal template, story map ---
+import _doc as DOC  # noqa: E402
+
+DOC_MAP = json.loads((ROOT / "tests" / "fixtures" / "story_map_sur_doc.json").read_text(encoding="utf-8"))
+
+
+def test_documentary_structures_and_proposal():
+    docs = [s for s in S.STRUCTURES["structures"] if s["fits"] == ["documentary"]]
+    assert len(docs) == 7 and all(s["id"].startswith("doc-") and DOC.is_doc(s["id"]) for s in docs)
+    assert not DOC.is_doc("three-act")
+    ids = [x["id"] for x in DOC.PROPOSAL]
+    assert {"access", "approach", "archive", "why_now"} <= set(ids) and "consent" not in ids
+    assert all(x["q"] and x["q_ar"] and x["name_ar"] for x in DOC.PROPOSAL)
+
+
+def test_documentary_blank_template(tmp_path):
+    from docx import Document
+    out = tmp_path / "d.docx"
+    B.build("doc-character", 25, "ar").save(out)
+    d = Document(out)
+    texts = [p.text for p in d.paragraphs]
+    assert "الوصول" in texts and "الأساسات" not in texts  # proposal sections instead of fiction foundations
+    assert any("الدقائق" in c.text for t in d.tables for c in t.rows[0].cells)  # timed in minutes
+    av = d.tables[-1]
+    assert [c.text for c in av.rows[0].cells] == ["#", "الصورة", "الصوت"] and len(av.rows) == 9
+    assert av._tbl.tblPr.find(S.qn("w:bidiVisual")) is not None
+    assert not any(p.style.name.startswith("Scene") for p in d.paragraphs)  # no screenplay samples
+
+
+def test_documentary_story_map(tmp_path):
+    assert ST.check(DOC_MAP)[0] == []
+    bad = json.loads(json.dumps(DOC_MAP))
+    bad["sections"]["archive"]["fragments"] = ["أرشيف التلفزيون العماني"]  # not in the idea
+    bad["sections"]["consent"] = {}
+    errs = ST.check(bad)[0]
+    assert any("not the writer's words" in e for e in errs) and any("not a proposal section" in e for e in errs)
+    wrong = json.loads(json.dumps(DOC_MAP))
+    wrong["structure"] = "three-act"
+    assert any("does not match" in e for e in ST.check(wrong)[0])
+    noacc = json.loads(json.dumps(DOC_MAP))
+    noacc["heard"] = [h for h in noacc["heard"] if h["element"] != "access"]
+    assert any("access" in w for w in ST.check(noacc)[1])
+    assert ST.working_title(DOC_MAP) == "آخر صانعي السفن"
+    out = tmp_path / "m.docx"
+    ST.build_docx(DOC_MAP).save(out)
+    from docx import Document
+    d = Document(out)
+    texts = [p.text for p in d.paragraphs]
+    assert "«صور قديمة لجد سالم من أرشيف عائلي»" in texts and "الأشخاص الذين ذكرتهم" in texts
+    assert [c.text for c in d.tables[-1].rows[0].cells] == ["#", "الصورة", "الصوت"]
+    page = ST.build_map(DOC_MAP)
+    assert "المقترح" in page and "لم تذكرها قصتك بعد" in page and "دقيقة" in page

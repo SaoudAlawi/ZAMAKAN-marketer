@@ -18,6 +18,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from docx.enum.table import WD_TABLE_ALIGNMENT  # noqa: E402
 from docx.shared import Pt, RGBColor  # noqa: E402
 
+import _doc as D  # noqa: E402
 import _screenplay as S  # noqa: E402
 
 T = {  # interface text
@@ -35,7 +36,9 @@ T = {  # interface text
            "write": "Write here…", "draft_title": "Draft", "draft_hint": "Delete these sample lines and write your script in these styles.",
            "samples": [("scene_heading", "INT. PLACE - DAY"), ("action", "What we see and hear, in the present tense."),
                        ("character", "NAME"), ("parenthetical", "(how it is said, only if needed)"), ("dialogue", "What the character says."),
-                       ("transition", "CUT TO:")], "source": "Source", "fits": "Suits", "kinds": {"feature": "feature films", "short": "short films"}},
+                       ("transition", "CUT TO:")], "source": "Source", "fits": "Suits", "kinds": {"feature": "feature films", "short": "short films", "documentary": "documentaries"},
+           "proposal": "Proposal / treatment", "subjects": "Subjects", "subject_cols": ["Person", "Their part in the film", "Access", "What we film with them"],
+           "av_title": "Two-column script (picture | sound)", "av_hint": "One row per moment: what we see, and what we hear beside it. Add rows as you go."},
     "ar": {"written_by": "تأليف", "draft": "المسودة", "date": "التاريخ", "contact": "للتواصل", "how": "كيف تستخدم هذا القالب",
            "how_items": ["أجب عن الأسئلة بكلماتك أنت؛ لا شيء هنا مكتوب نيابة عنك.",
                          "أهداف الصفحات مبنية على صفحة تقريباً لكل دقيقة؛ هي دليل لا قاعدة.",
@@ -50,8 +53,19 @@ T = {  # interface text
            "write": "اكتب هنا…", "draft_title": "المسودة", "draft_hint": "احذف هذه الأسطر النموذجية واكتب نصك بهذه الأنماط.",
            "samples": [("scene_heading", "داخلي - المكان - نهار"), ("action", "ما نراه ونسمعه، بصيغة المضارع."),
                        ("character", "الاسم"), ("parenthetical", "(طريقة القول، عند الحاجة فقط)"), ("dialogue", "ما تقوله الشخصية."),
-                       ("transition", "قطع إلى:")], "source": "المصدر", "fits": "يناسب", "kinds": {"feature": "الأفلام الطويلة", "short": "الأفلام القصيرة"}},
+                       ("transition", "قطع إلى:")], "source": "المصدر", "fits": "يناسب", "kinds": {"feature": "الأفلام الطويلة", "short": "الأفلام القصيرة", "documentary": "الأفلام الوثائقية"},
+           "proposal": "المقترح / المعالجة", "subjects": "الشخصيات (أشخاص حقيقيون)", "subject_cols": ["الشخص", "دوره في الفيلم", "الوصول إليه", "ما نصوّره معه"],
+           "av_title": "سيناريو بعمودين (الصورة | الصوت)", "av_hint": "صف لكل لحظة: ما نراه وما نسمعه بجانبه. أضف صفوفاً كلما تقدمت."},
 }
+# a documentary is timed in screen minutes, not pages, and planned before (and again after) the shoot
+DOC_T = {"en": {"written_by": "Director", "tcols": ["Beat", "Minutes", "Share of the film"], "pages": "min",
+                "how_items": ["Answer the questions in your own words; nothing here is written for you.",
+                              "Minute targets are a guide: a documentary is found in the shoot and shaped in the edit, so expect to redo this after filming.",
+                              "Plan the film in the two-column table at the end (picture | sound); the paper edit and A/V tools read it back."]},
+         "ar": {"written_by": "إخراج", "tcols": ["المحطة", "الدقائق", "النسبة من الفيلم"], "pages": "دقيقة",
+                "how_items": ["أجب عن الأسئلة بكلماتك أنت؛ لا شيء هنا مكتوب نيابة عنك.",
+                              "أهداف الدقائق دليل: الوثائقي يُكتشف في التصوير ويتشكّل في المونتاج، فتوقّع أن تعيد هذا بعد التصوير.",
+                              "خطّط الفيلم في الجدول ذي العمودين في آخر الملف (الصورة | الصوت)؛ أدوات المونتاج الورقي والسيناريو بعمودين تقرؤه."]}}
 GREY = RGBColor(0x8A, 0x8A, 0x8A)
 
 
@@ -117,6 +131,9 @@ def build(structure_id, minutes, lang, title=None, paper=None):
         raise SystemExit(f"unknown structure {structure_id}; run --list")
     t, ar = T[lang], lang == "ar"
     name = st["name_ar"] if ar else st["name"]
+    documentary = D.is_doc(structure_id)
+    if documentary:
+        t = {**t, **DOC_T[lang]}
     doc = S.new_document(lang, paper)
     # title page
     for _ in range(8):
@@ -135,14 +152,24 @@ def build(structure_id, minutes, lang, title=None, paper=None):
     para(doc, name, lang, style="Heading 2")
     para(doc, st["summary_ar"] if ar else st["summary"], lang)
     para(doc, f"{t['source']}: {st['source']} · {t['fits']}: {', '.join(t['kinds'][k] for k in st['fits'])} · {S.digits(minutes, lang)} {t['min']}", lang, grey=True, size=10)
-    # foundations
-    para(doc, t["foundations"], lang, style="Heading 1")
-    for key in ("logline", "theme", "hero", "opp", "world"):
-        para(doc, t[key], lang, style="Heading 3")
-        para(doc, t[key + "_q"], lang, grey=True, italic=True)
-        write_box(doc, lang)
-    para(doc, t["characters"], lang, style="Heading 1")
-    table(doc, [t["cols"]] + [[""] * 5 for _ in range(4)], lang)
+    if documentary:  # the proposal / treatment sections funders ask for
+        para(doc, t["proposal"], lang, style="Heading 1")
+        for sec in D.PROPOSAL:
+            para(doc, sec["name_ar"] if ar else sec["name"], lang, style="Heading 3")
+            for q in (sec["q_ar"] if ar else sec["q"]):
+                para(doc, q, lang, grey=True, italic=True)
+            write_box(doc, lang)
+        para(doc, t["subjects"], lang, style="Heading 1")
+        table(doc, [t["subject_cols"]] + [[""] * 4 for _ in range(4)], lang)
+    else:
+        # foundations
+        para(doc, t["foundations"], lang, style="Heading 1")
+        for key in ("logline", "theme", "hero", "opp", "world"):
+            para(doc, t[key], lang, style="Heading 3")
+            para(doc, t[key + "_q"], lang, grey=True, italic=True)
+            write_box(doc, lang)
+        para(doc, t["characters"], lang, style="Heading 1")
+        table(doc, [t["cols"]] + [[""] * 5 for _ in range(4)], lang)
     S.page_break(doc)
     # beat sheet: timeline, then one block per beat
     para(doc, f"{t['beats']}: {name}", lang, style="Heading 1")
@@ -161,8 +188,13 @@ def build(structure_id, minutes, lang, title=None, paper=None):
         for q in (b["questions_ar"] if ar else b["questions"]):
             para(doc, q, lang, style="List Bullet")
         write_box(doc, lang)
-    # draft section in screenplay styles
     S.page_break(doc)
+    if documentary:  # a two-column picture | sound draft
+        para(doc, t["av_title"], lang, style="Heading 1")
+        para(doc, t["av_hint"], lang, grey=True, italic=True)
+        D.av_table(doc, [("", "", None)] * 8, lang)
+        return doc
+    # draft section in screenplay styles
     para(doc, t["draft_title"], lang, style="Heading 1")
     para(doc, t["draft_hint"], lang, grey=True, italic=True)
     for kind, text in t["samples"]:
@@ -186,7 +218,7 @@ def main():
             print(f"{s['id']:18s} {s['name']} / {s['name_ar']} · {len(s['beats'])} beats · fits {', '.join(s['fits'])}")
         return
     st = next((s for s in S.STRUCTURES["structures"] if s["id"] == a.structure), None)
-    minutes = a.minutes or (12 if st and st["fits"] == ["short"] else 90)
+    minutes = a.minutes or (12 if st and st["fits"] == ["short"] else 25 if st and st["fits"] == ["documentary"] else 90)
     out = Path(a.out or f"template-{a.structure}-{a.lang}.docx")
     build(a.structure, minutes, a.lang, a.title, a.paper).save(out)
     print(f"template → {out} ({a.structure}, {minutes} min, {a.lang})")

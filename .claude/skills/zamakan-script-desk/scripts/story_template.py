@@ -20,29 +20,32 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _doc as D  # noqa: E402
 import _screenplay as S  # noqa: E402
 import build_template as B  # noqa: E402
 
 E = html.escape
 BLUE, AMBER = "DBE8FB", "FDECC8"
 ELEMENT = {"ar": {"hero": "البطل", "want": "ما يريده", "obstacle": "ما يقف في الطريق", "turn": "نقطة التحوّل", "ending": "النهاية",
-                  "world": "العالم", "tone": "النبرة", "theme": "المعنى", "other": "أخرى"},
+                  "world": "العالم", "tone": "النبرة", "theme": "المعنى", "other": "أخرى",
+                  "subject": "الشخصية الحقيقية", "question": "سؤال الفيلم", "access": "الوصول", "approach": "الأسلوب"},
            "en": {"hero": "Protagonist", "want": "What they want", "obstacle": "What stands in the way", "turn": "The turn",
-                  "ending": "The ending", "world": "The world", "tone": "Tone", "theme": "Meaning", "other": "Other"}}
+                  "ending": "The ending", "world": "The world", "tone": "Tone", "theme": "Meaning", "other": "Other",
+                  "subject": "Subject", "question": "The film's question", "access": "Access", "approach": "Approach"}}
 T = {"ar": {"built": "مبني على فكرة قصتك", "yours": "قصتك بكلماتك", "yours_hint": "كما أرسلتها، دون أي تغيير.",
             "heard": "ما سمعناه، وما زال مفتوحاً", "cols": ["", "ما قلته", "ما زال مفتوحاً"], "gap": "— (لم تذكره قصتك بعد)",
             "fits": "البناء الذي يناسب قصتك", "alt": "بديل", "beats": "محطة بمحطة", "from_you": "من قصتك؟", "belongs": "هل مكانه هنا؟",
             "empty": "قصتك لا تقول هذا بعد.", "scenes": "مشاهد تقريباً", "chars": "الشخصيات التي ذكرتها", "char_cols": ["الشخصية", "تريد", "تخاف", "العيب", "كيف تتغيّر"],
             "places": "الأماكن وما يرفع الكلفة", "legend": "الألوان: الأزرق = كلماتك · الرمادي = أسئلتنا · الأصفر = ما لم تقله قصتك بعد",
             "promise": "لم نكتب شيئاً من قصتك: كل ما بالأزرق كلماتك، وكل ما أضفناه أسئلة.", "pages": "صفحات", "min": "دقيقة",
-            "map": "خريطة القصة", "map_sub": "محطات البناء، وكلماتك في المكان الذي يبدو أنها تنتمي إليه، والفراغات بالأصفر."},
+            "map": "خريطة القصة", "proposal": "المقترح: ما تقوله قصتك لكل قسم", "subjects": "الأشخاص الذين ذكرتهم", "seq": "مقاطع تقريباً", "not_yet": "لم تذكرها قصتك بعد:", "map_sub": "محطات البناء، وكلماتك في المكان الذي يبدو أنها تنتمي إليه، والفراغات بالأصفر."},
      "en": {"built": "Built on your story idea", "yours": "Your story, in your words", "yours_hint": "As you sent it, unchanged.",
             "heard": "What we heard, and what's still open", "cols": ["", "What you said", "Still open"], "gap": "— (not in your story yet)",
             "fits": "The structure that fits your story", "alt": "Alternative", "beats": "Beat by beat", "from_you": "From your story?", "belongs": "Does it belong here?",
             "empty": "Your story doesn't say this yet.", "scenes": "scenes, roughly", "chars": "The characters you mentioned", "char_cols": ["Character", "Wants", "Fears", "Flaw", "How they change"],
             "places": "Places and what drives cost", "legend": "Colours: blue = your words · grey = our questions · amber = not in your story yet",
             "promise": "We wrote nothing of your story: everything in blue is yours, everything we added is a question.", "pages": "pages", "min": "min",
-            "map": "Story map", "map_sub": "The structure's beats, your words where they seem to belong, the gaps in amber."}}
+            "map": "Story map", "proposal": "The proposal: what your story says for each section", "subjects": "The people you mentioned", "seq": "sequences, roughly", "not_yet": "Not in your story yet:", "map_sub": "The structure's beats, your words where they seem to belong, the gaps in amber."}}
 
 
 def working_title(sm):
@@ -50,7 +53,7 @@ def working_title(sm):
     if sm.get("title"):
         return sm["title"]
     words = re.findall(r"[\w\u0600-\u06FF]+", sm["story"])
-    skip = {"اممم", "امم", "يعني", "فكرة", "فيلم", "um", "so", "idea", "a", "an", "the"}
+    skip = {"اممم", "امم", "يعني", "فكرة", "فيلم", "أبغى", "ابغى", "أبي", "أسوي", "اسوي", "وثائقي", "عن", "documentary", "want", "make", "i", "um", "so", "idea", "a", "an", "the"}
     return " ".join([w for w in words if w.lower() not in skip][:3]) or "story"
 
 
@@ -73,6 +76,7 @@ def check(sm):
     if sm.get("alt_structure") and not any(x["id"] == sm["alt_structure"]["id"] for x in S.STRUCTURES["structures"]):
         errs.append(f"unknown alternative structure {sm['alt_structure']['id']}")
     quotes = [("heard", h.get("quote")) for h in sm["heard"]] + [(f"beat {b}", q) for b, v in sm["beats"].items() for q in v.get("fragments", [])] + \
+             [(f"section {k}", q) for k, v in sm.get("sections", {}).items() for q in v.get("fragments", [])] + \
              [("character", c.get("quote")) for c in sm.get("characters", [])] + [("place", p.get("quote")) for p in sm.get("places", [])]
     for where, q in quotes:
         if q and norm(q) not in story:
@@ -87,7 +91,18 @@ def check(sm):
     for b in sm["beats"]:
         if b not in ids:
             errs.append(f"beat '{b}' is not in {sm['structure']} ({', '.join(ids)})")
-    qs = [h["open_question"] for h in sm["heard"]] + [q for v in sm["beats"].values() for q in v.get("questions", [])]
+    doc = sm["kind"] == "documentary"
+    if doc != D.is_doc(sm["structure"]):
+        errs.append(f"kind '{sm['kind']}' does not match structure {sm['structure']} (documentary structures start with doc-)")
+    if sm.get("sections") and not doc:
+        errs.append("sections are for documentaries only")
+    secs = {x["id"] for x in D.PROPOSAL}
+    for k in sm.get("sections", {}):
+        if k not in secs:
+            errs.append(f"section '{k}' is not a proposal section ({', '.join(sorted(secs))})")
+    if doc and not any(h["element"] == "access" for h in sm["heard"]):
+        warns.append("documentary with no 'access' element: ask who has agreed to be filmed and what still depends on someone's yes")
+    qs = [h["open_question"] for h in sm["heard"]] + [q for v in list(sm["beats"].values()) + list(sm.get("sections", {}).values()) for q in v.get("questions", [])]
     for q in qs:
         if not re.search(r"[؟?]\s*$", q.strip()):
             warns.append(f"not a question: «{q[:60]}» (everything we add is a question)")
@@ -99,7 +114,7 @@ def check(sm):
 
 def scene_counts(st, minutes, kind):
     """A rough number of scenes per beat (a short runs about one scene per 1.2 minutes, a feature one per 2)."""
-    total = max(len(st["beats"]), round(minutes / (1.2 if kind == "short" else 2.0)))
+    total = max(len(st["beats"]), round(minutes / {"short": 1.2, "documentary": 2.5}.get(kind, 2.0)))
     return {b["id"]: max(1, round(total * (b["end"] - b["at"]) / 100)) for b in st["beats"]}
 
 
@@ -149,7 +164,10 @@ def build_docx(sm):
         alt = next(x for x in S.STRUCTURES["structures"] if x["id"] == sm["alt_structure"]["id"])
         B.para(doc, f"{t['alt']}: {alt['name_ar'] if ar else alt['name']}: {sm['alt_structure']['why']}", lang, grey=True)
     counts = scene_counts(st, sm["minutes"], sm["kind"])
-    trows = [B.T[lang]["tcols"][:2] + [t["scenes"]]]
+    if sm["kind"] == "documentary":
+        t = {**t, "pages": B.DOC_T[lang]["pages"]}
+    unit = t["seq"] if sm["kind"] == "documentary" else t["scenes"]
+    trows = [(B.DOC_T[lang] if sm["kind"] == "documentary" else B.T[lang])["tcols"][:2] + [unit]]
     for b in st["beats"]:
         a, z = B.beat_pages(b, sm["minutes"])
         trows.append([b["name_ar"] if ar else b["name"], f"{S.digits(a, lang)}–{S.digits(z, lang)}", f"≈ {S.digits(counts[b['id']], lang)}"])
@@ -160,7 +178,7 @@ def build_docx(sm):
     for b in st["beats"]:
         a, z = B.beat_pages(b, sm["minutes"])
         mine = sm["beats"].get(b["id"], {})
-        B.para(doc, f"{b['name_ar'] if ar else b['name']}  ({t['pages']} {S.digits(a, lang)}–{S.digits(z, lang)} · ≈ {S.digits(counts[b['id']], lang)} {t['scenes']})",
+        B.para(doc, f"{b['name_ar'] if ar else b['name']}  ({t['pages']} {S.digits(a, lang)}–{S.digits(z, lang)} · ≈ {S.digits(counts[b['id']], lang)} {unit})",
                lang, style="Heading 2")
         B.para(doc, b["purpose_ar"] if ar else b["purpose"], lang, italic=True, grey=True)
         if mine.get("fragments"):
@@ -172,10 +190,26 @@ def build_docx(sm):
         for qq in mine.get("questions") or (b["questions_ar"] if ar else b["questions"]):
             B.para(doc, qq, lang, style="List Bullet", grey=True)
         B.write_box(doc, lang)
-    # 5. characters and places
-    B.para(doc, t["chars"], lang, style="Heading 1")
+    documentary = sm["kind"] == "documentary"
+    if documentary:  # the proposal sections, with the writer's words where the story already answers
+        S.page_break(doc)
+        B.para(doc, t["proposal"], lang, style="Heading 1")
+        for sec in D.PROPOSAL:
+            mine = sm.get("sections", {}).get(sec["id"], {})
+            B.para(doc, sec["name_ar"] if ar else sec["name"], lang, style="Heading 3")
+            for f in mine.get("fragments", []):
+                shade(B.para(doc, f"«{f}»", lang), BLUE)
+            for qq in mine.get("questions") or (sec["q_ar"] if ar else sec["q"]):
+                B.para(doc, qq, lang, grey=True, italic=True)
+            B.write_box(doc, lang)
+    # 5. characters (subjects) and places
     chars = sm.get("characters") or []
-    B.table(doc, [t["char_cols"]] + [[c["name"]] + [""] * 4 for c in chars] + [[""] * 5], lang)
+    if documentary:
+        B.para(doc, t["subjects"], lang, style="Heading 1")
+        B.table(doc, [B.T[lang]["subject_cols"]] + [[c["name"]] + [""] * 3 for c in chars] + [[""] * 4], lang)
+    else:
+        B.para(doc, t["chars"], lang, style="Heading 1")
+        B.table(doc, [t["char_cols"]] + [[c["name"]] + [""] * 4 for c in chars] + [[""] * 5], lang)
     if sm.get("places"):
         B.para(doc, t["places"], lang, style="Heading 1")
         for pl in sm["places"]:
@@ -185,6 +219,11 @@ def build_docx(sm):
                 B.para(doc, pl["cost_note"], lang, grey=True, style="List Bullet")
     # 6. draft section
     S.page_break(doc)
+    if documentary:
+        B.para(doc, B.T[lang]["av_title"], lang, style="Heading 1")
+        B.para(doc, B.T[lang]["av_hint"], lang, grey=True, italic=True)
+        D.av_table(doc, [("", "", None)] * 8, lang)
+        return doc
     B.para(doc, B.T[lang]["draft_title"], lang, style="Heading 1")
     B.para(doc, B.T[lang]["draft_hint"], lang, grey=True, italic=True)
     for kind, text in B.T[lang]["samples"]:
@@ -198,6 +237,8 @@ def build_map(sm):
     t = T[lang]
     st = next(x for x in S.STRUCTURES["structures"] if x["id"] == sm["structure"])
     counts = scene_counts(st, sm["minutes"], sm["kind"])
+    if sm["kind"] == "documentary":
+        t = {**t, "pages": B.DOC_T[lang]["pages"]}
     cols = []
     for b in st["beats"]:
         a, z = B.beat_pages(b, sm["minutes"])
@@ -206,6 +247,18 @@ def build_map(sm):
         qs = "".join(f"<li>{E(q)}</li>" for q in (mine.get("questions") or [])[:2])
         cols.append(f'<div class="beat" style="flex:{max(b["end"] - b["at"], 12)} 1 0"><div class="bh"><b>{E(b["name_ar"] if ar else b["name"])}</b>'
                     f'<span>{t["pages"]} {S.digits(a, lang)}–{S.digits(z, lang)} · ≈{S.digits(counts[b["id"]], lang)}</span></div>{frags}<ul>{qs}</ul></div>')
+    secs = ""
+    if sm["kind"] == "documentary":  # the proposal sections the story already speaks to, and the ones it doesn't
+        cards, open_ = [], []
+        for sec in D.PROPOSAL:
+            frags = sm.get("sections", {}).get(sec["id"], {}).get("fragments", [])
+            name = E(sec["name_ar"] if ar else sec["name"])
+            if frags:
+                cards.append(f'<div class="beat sec"><div class="bh"><b>{name}</b></div>' + "".join(f'<div class="frag">«{E(f)}»</div>' for f in frags) + "</div>")
+            else:
+                open_.append(name)
+        gap = f'<div class="gap">{E(t["not_yet"])} {"، ".join(open_) if ar else ", ".join(open_)}</div>' if open_ else ""
+        secs = f'<h2>{E(t["proposal"])}</h2><div class="lane">{"".join(cards)}</div>{gap}'
     title = working_title(sm)
     css = """:root{--bg:#fcfcfb;--ink:#1d1b18;--muted:#5e5a53;--card:#fff;--line:#e4dfd5;--blue:#dbe8fb;--amber:#fdecc8}
 @media (prefers-color-scheme:dark){:root:where(:not([data-theme=light])){--bg:#1a1a19;--ink:#f0efec;--muted:#c3c2b7;--card:#222220;--line:#3a3935;--blue:#1f3550;--amber:#4a3a12}}
@@ -215,13 +268,13 @@ def build_map(sm):
 .lane{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}.beat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-width:150px;break-inside:avoid}
 .bh{display:flex;flex-direction:column;margin-bottom:6px}.bh span{font-size:11.5px;color:var(--muted)}
 .frag{background:var(--blue);border-radius:6px;padding:4px 7px;margin:4px 0;font-size:13px}.gap{background:var(--amber);border-radius:6px;padding:4px 7px;margin:4px 0;font-size:13px;font-weight:700}
-ul{margin:4px 0 0;padding-inline-start:16px;color:var(--muted);font-size:12.5px}
+h2{font-size:17px;margin:18px 0 8px}.sec{flex:1 1 150px}.sec .gap{font-weight:400;color:var(--muted)}ul{margin:4px 0 0;padding-inline-start:16px;color:var(--muted);font-size:12.5px}
 @media (max-width:760px){.lane{flex-direction:column}}@page{size:A4 landscape;margin:10mm}"""
     st_name = st["name_ar"] if ar else st["name"]
     return (f'<!doctype html><html lang="{lang}" dir="{"rtl" if ar else "ltr"}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
             f'<title>{E(title)} · {t["map"]}</title><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">'
             f'<style>{css}</style></head><body><div class="wrap"><h1>{E(title)} · {t["map"]}</h1><p class="sub">{E(st_name)} · {S.digits(sm["minutes"], lang)} {t["min"]} · {E(sm["why_structure"])}</p>'
-            f'<div class="story">{E(sm["story"])}</div><div class="legend">{E(t["legend"])}</div><div class="lane">{"".join(cols)}</div></div></body></html>')
+            f'<div class="story">{E(sm["story"])}</div><div class="legend">{E(t["legend"])}</div><div class="lane">{"".join(cols)}</div>{secs}</div></body></html>')
 
 
 def main():
