@@ -570,10 +570,14 @@ def test_paper_edit(tmp_path):
     sel = json.loads((ROOT / "tests" / "fixtures" / "selects_sur_doc.json").read_text(encoding="utf-8"))
     errs, warns = PE.check(sel, bites)
     assert errs == [] and any("A012→A016" in w for w in warns) and not any("A006→A009" in w for w in warns)
+    assert any("under half" in w for w in warns)  # 0.9 min of words against 52
     bad = json.loads(json.dumps(sel))
-    bad["sections"][0]["items"] += [{"bite": "A099"}, {"bite": "A001"}, {"bite": "A005", "sound": "typed words"}, {"bite": "A006", "text": "x"}]
+    typed = json.loads(json.dumps(sel))
+    typed["sections"][0]["items"].append({"bite": "A006", "text": "x"})  # typed quotes are refused by the schema
+    assert any("schema" in e and "text" in e for e in PE.check(typed, bites)[0])
+    bad["sections"][0]["items"] += [{"bite": "A099"}, {"bite": "A001"}, {"bite": "A005", "sound": "typed words"}]
     errs, warns = PE.check(bad, bites)
-    assert any("no bite A099" in e for e in errs) and any("remove 'sound'" in e for e in errs) and any("unknown fields" in e for e in errs)
+    assert any("no bite A099" in e for e in errs) and any("remove 'sound'" in e for e in errs)
     assert any("interviewer" in w for w in warns) and any("used twice" in w for w in warns)
     out = tmp_path / "p.docx"
     PE.build_docx(sel, bites).save(out)

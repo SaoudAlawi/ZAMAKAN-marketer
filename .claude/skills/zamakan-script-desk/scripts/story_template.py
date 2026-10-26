@@ -254,11 +254,12 @@ def build_map(sm):
             frags = sm.get("sections", {}).get(sec["id"], {}).get("fragments", [])
             name = E(sec["name_ar"] if ar else sec["name"])
             if frags:
-                cards.append(f'<div class="beat sec"><div class="bh"><b>{name}</b></div>' + "".join(f'<div class="frag">«{E(f)}»</div>' for f in frags) + "</div>")
+                qs = "".join(f"<li>{E(q)}</li>" for q in (sm.get("sections", {}).get(sec["id"], {}).get("questions") or [])[:1])
+                cards.append(f'<div class="beat sec"><div class="bh"><b>{name}</b></div>' + "".join(f'<div class="frag">«{E(f)}»</div>' for f in frags) + f"<ul>{qs}</ul></div>")
             else:
                 open_.append(name)
         gap = f'<div class="gap">{E(t["not_yet"])} {"، ".join(open_) if ar else ", ".join(open_)}</div>' if open_ else ""
-        secs = f'<h2>{E(t["proposal"])}</h2><div class="lane">{"".join(cards)}</div>{gap}'
+        secs = f'<div class="props"><h2>{E(t["proposal"])}</h2><div class="lane">{"".join(cards)}</div>{gap}</div>'  # kept together on one page
     title = working_title(sm)
     css = """:root{--bg:#fcfcfb;--ink:#1d1b18;--muted:#5e5a53;--card:#fff;--line:#e4dfd5;--blue:#dbe8fb;--amber:#fdecc8}
 @media (prefers-color-scheme:dark){:root:where(:not([data-theme=light])){--bg:#1a1a19;--ink:#f0efec;--muted:#c3c2b7;--card:#222220;--line:#3a3935;--blue:#1f3550;--amber:#4a3a12}}
@@ -268,7 +269,7 @@ def build_map(sm):
 .lane{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}.beat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-width:150px;break-inside:avoid}
 .bh{display:flex;flex-direction:column;margin-bottom:6px}.bh span{font-size:11.5px;color:var(--muted)}
 .frag{background:var(--blue);border-radius:6px;padding:4px 7px;margin:4px 0;font-size:13px}.gap{background:var(--amber);border-radius:6px;padding:4px 7px;margin:4px 0;font-size:13px;font-weight:700}
-h2{font-size:17px;margin:18px 0 8px}.sec{flex:1 1 150px}.sec .gap{font-weight:400;color:var(--muted)}ul{margin:4px 0 0;padding-inline-start:16px;color:var(--muted);font-size:12.5px}
+h2{font-size:17px;margin:18px 0 8px}.props{break-inside:avoid}.sec{flex:1 1 150px}.sec .gap{font-weight:400;color:var(--muted)}ul{margin:4px 0 0;padding-inline-start:16px;color:var(--muted);font-size:12.5px}
 @media (max-width:760px){.lane{flex-direction:column}}@page{size:A4 landscape;margin:10mm}"""
     st_name = st["name_ar"] if ar else st["name"]
     return (f'<!doctype html><html lang="{lang}" dir="{"rtl" if ar else "ltr"}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'

@@ -49,11 +49,13 @@ def load(sel_path, bites_path):
 
 
 def check(sel, bites):
+    import jsonschema
     errs, warns = [], []
-    if sel.get("schema") != "zamakan-selects/1":
-        errs.append("schema must be zamakan-selects/1")
-    if sel.get("lang") not in ("ar", "en"):
-        errs.append("lang must be ar or en")
+    schema = json.loads((S.SKILL / "schemas" / "selects.schema.json").read_text(encoding="utf-8"))
+    for e in jsonschema.Draft202012Validator(schema).iter_errors(sel):
+        errs.append(f"schema: {'/'.join(map(str, e.path))}: {e.message[:140]}")
+    if errs:
+        return errs, warns
     by = {b["id"]: b for b in bites}
     order = {b["id"]: i for i, b in enumerate(bites)}
     themes = sel.get("themes", {})
@@ -63,9 +65,6 @@ def check(sel, bites):
         if not s.get("name"):
             errs.append("a section has no name")
         for it in s.get("items", []):
-            extra = set(it) - {"bite", "theme", "picture", "note", "sound", "gap"}
-            if extra:
-                errs.append(f"{s.get('name')}: unknown fields {sorted(extra)} (quotes come from bite ids, never typed text)")
             if "bite" in it:
                 if "sound" in it:
                     errs.append(f"{it['bite']}: a bite row takes its sound from the transcript; remove 'sound'")
@@ -94,6 +93,8 @@ def check(sel, bites):
     total = runtime(sel, bites)[1]
     if sel.get("target_minutes") and total > sel["target_minutes"] * 60:
         warns.append(f"the bites alone run {total / 60:.1f} min, over the {sel['target_minutes']} min target")
+    elif sel.get("target_minutes") and total < sel["target_minutes"] * 30:
+        warns.append(f"the bites run {total / 60:.1f} min, under half the {sel['target_minutes']} min target: say what still has to be filmed (gap rows)")
     return errs, warns
 
 
@@ -107,7 +108,7 @@ def runtime(sel, bites):
     per = []
     for s in sel["sections"]:
         sec = [by[i["bite"]] for i in s["items"] if i.get("bite") in by]
-        per.append((s["name"], len(sec), sum(max(0, (b["out"] or 0) - (b["in"] or 0)) for b in sec)))
+        per.append((s["name"], len(sec), sum(max(0, (b["out"] or 0) - (b["in"] or 0)) for b in sec if b["text"])))  # a silence isn't speech
     return per, sum(x[2] for x in per)
 
 
@@ -165,7 +166,7 @@ def build_docx(sel, bites):
     for s in sel["sections"]:
         for it in s["items"]:
             b = by.get(it.get("bite"))
-            if b:
+            if b and b["text"]:
                 n, sec = sp.get(b["speaker"], (0, 0))
                 sp[b["speaker"]] = (n + 1, sec + max(0, (b["out"] or 0) - (b["in"] or 0)))
     B.para(doc, t["speakers"], lang, style="Heading 2")

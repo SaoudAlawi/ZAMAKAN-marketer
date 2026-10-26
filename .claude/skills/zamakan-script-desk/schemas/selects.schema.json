@@ -1,0 +1,101 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://zamakan.agency/schemas/selects/1",
+ "title": "Selects for a documentary paper edit (written by Claude or the editor, built by paper_edit.py). Quotes come from bite ids in bites.json, never typed text.",
+ "type": "object",
+ "required": [
+  "schema",
+  "lang",
+  "sections"
+ ],
+ "additionalProperties": false,
+ "properties": {
+  "schema": {
+   "const": "zamakan-selects/1"
+  },
+  "lang": {
+   "enum": [
+    "ar",
+    "en"
+   ]
+  },
+  "title": {
+   "type": "string"
+  },
+  "target_minutes": {
+   "type": "number",
+   "minimum": 1,
+   "description": "planned running time of the finished film"
+  },
+  "themes": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "object",
+    "required": [
+     "label"
+    ],
+    "additionalProperties": false,
+    "properties": {
+     "label": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "sections": {
+   "type": "array",
+   "minItems": 1,
+   "items": {
+    "type": "object",
+    "required": [
+     "name",
+     "items"
+    ],
+    "additionalProperties": false,
+    "properties": {
+     "name": {
+      "type": "string",
+      "minLength": 1
+     },
+     "purpose": {
+      "type": "string",
+      "description": "what this section does in the film"
+     },
+     "items": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "additionalProperties": false,
+       "description": "one row: a bite (by id, optionally with the picture over it), a moment without words (picture + sound description), or a gap (what is still missing, as a question)",
+       "properties": {
+        "bite": {
+         "type": "string",
+         "pattern": "^[A-Z]+\\d*\\d{3}$"
+        },
+        "theme": {
+         "type": "string"
+        },
+        "picture": {
+         "type": "string",
+         "description": "what we see (the filmmaker's footage or a question)"
+        },
+        "note": {
+         "type": "string",
+         "description": "why this bite is here; shown small under it"
+        },
+        "sound": {
+         "type": "string",
+         "description": "only on rows without a bite: ambience, music, silence"
+        },
+        "gap": {
+         "type": "string",
+         "description": "what is missing, as a question"
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}
