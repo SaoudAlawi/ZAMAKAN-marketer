@@ -516,3 +516,74 @@ def test_documentary_story_map(tmp_path):
     assert [c.text for c in d.tables[-1].rows[0].cells] == ["#", "الصورة", "الصوت"]
     page = ST.build_map(DOC_MAP)
     assert "المقترح" in page and "لم تذكرها قصتك بعد" in page and "دقيقة" in page
+
+
+# --- documentary: transcripts → bites → paper edit ---
+import paper_edit as PE  # noqa: E402
+import transcripts as TR  # noqa: E402
+
+DOCS = ROOT / "samples" / "script-desk" / "doc"
+
+
+def _bites():
+    return TR.ingest([DOCS / "salem-interview.srt", DOCS / "workshop-day.txt"], interviewer="المخرج")
+
+
+def test_transcripts_srt_and_txt():
+    data = _bites()
+    by = {b["id"]: b for b in data["bites"]}
+    assert [f["letter"] for f in data["files"]] == ["A", "B"]
+    assert by["A002"]["text"].endswith("أبغى أروح البحر مع العيال.")  # two cues of one sentence joined
+    assert by["A002"]["tc_in"] == "00:00:09" and by["A002"]["tc_out"] == "00:00:17"
+    assert by["A005"]["direction"] == ["يؤشر على راسه"] and "(" not in by["A005"]["text"]  # direction kept apart
+    assert by["A001"].get("interviewer") and not by["A003"].get("interviewer")
+    assert by["B004"]["speaker"] == "رحيم" and by["B004"]["in"] == 20
+    assert by["B009"]["text"] == "" and by["B009"]["direction"]  # a silence is a moment too
+    assert by["B008"]["out"] == 72  # out point = next line's in
+
+
+def test_transcripts_other_formats(tmp_path):
+    vtt = tmp_path / "a.vtt"
+    vtt.write_text("WEBVTT\n\n00:01.000 --> 00:03.500\n<v Salem>Speaker 1: The wood tells you\n\n00:03.600 --> 00:05.000\nwhere it wants to bend.\n", encoding="utf-8")
+    txt = tmp_path / "b.txt"
+    txt.write_text("Speaker 1  00:00:05\nWe start at dawn.\nBefore the heat.\n\nSpeaker 2 (00:00:12): And you?\n", encoding="utf-8")
+    from docx import Document
+    d = Document()
+    t = d.add_table(rows=3, cols=3)
+    for r, row in enumerate([("00:00:01", "سالم", "بسم الله"), ("٠٠:٠٠:٠٤", "سالم", "نبدأ."), ("00:00:09", "رحيم", "زين")]):
+        for c, v in enumerate(row):
+            t.cell(r, c).text = v
+    dx = tmp_path / "c.docx"
+    d.save(dx)
+    data = TR.ingest([vtt, txt, dx], names={"Speaker 1": "Salem"})
+    b = data["bites"]
+    assert b[0]["speaker"] == "Salem" and b[0]["text"] == "The wood tells you where it wants to bend."
+    txtb = [x for x in b if x["file"] == "b.txt"]
+    assert txtb[0]["text"] == "We start at dawn. Before the heat." and txtb[0]["speaker"] == "Salem" and txtb[1]["speaker"] == "Speaker 2"
+    dxb = [x for x in b if x["file"] == "c.docx"]
+    assert [x["speaker"] for x in dxb] == ["سالم", "سالم", "رحيم"] and dxb[1]["in"] == 4
+    assert TR.expand(["A001-A003", "B002"], _bites()["bites"]) == ["A001", "A002", "A003", "B002"]
+
+
+def test_paper_edit(tmp_path):
+    bites = _bites()["bites"]
+    sel = json.loads((ROOT / "tests" / "fixtures" / "selects_sur_doc.json").read_text(encoding="utf-8"))
+    errs, warns = PE.check(sel, bites)
+    assert errs == [] and any("A012→A016" in w for w in warns) and not any("A006→A009" in w for w in warns)
+    bad = json.loads(json.dumps(sel))
+    bad["sections"][0]["items"] += [{"bite": "A099"}, {"bite": "A001"}, {"bite": "A005", "sound": "typed words"}, {"bite": "A006", "text": "x"}]
+    errs, warns = PE.check(bad, bites)
+    assert any("no bite A099" in e for e in errs) and any("remove 'sound'" in e for e in errs) and any("unknown fields" in e for e in errs)
+    assert any("interviewer" in w for w in warns) and any("used twice" in w for w in warns)
+    out = tmp_path / "p.docx"
+    PE.build_docx(sel, bites).save(out)
+    from docx import Document
+    d = Document(out)
+    cells = [c.text for t in d.tables for r in t.rows for c in r.cells]
+    by = {b["id"]: b for b in bites}
+    assert any(f"«{by['A016']['text']}»" in c for c in cells)  # verbatim from the transcript
+    assert any("ينقصنا" in c for c in cells) and any("✂" in c for c in cells)
+    assert any(c == "0:54" for c in cells)  # total running time
+    PE.write_csv(sel, bites, tmp_path / "p.csv")
+    rows = (tmp_path / "p.csv").read_text(encoding="utf-8-sig").splitlines()
+    assert rows[0].startswith("order,section,bite") and len(rows) == 12 and "GAP:" in rows[8]
