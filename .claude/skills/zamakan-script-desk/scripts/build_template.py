@@ -11,11 +11,13 @@ Writing the draft in the template's styles (Scene Heading, Action, Character, Pa
 lets format_script.py and the reader read it with no guessing.
 """
 import argparse
+import re
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from docx.enum.table import WD_TABLE_ALIGNMENT  # noqa: E402
+from docx.enum.text import WD_ALIGN_PARAGRAPH  # noqa: E402
 from docx.shared import Pt, RGBColor  # noqa: E402
 
 import _doc as D  # noqa: E402
@@ -69,10 +71,26 @@ DOC_T = {"en": {"written_by": "Director", "tcols": ["Beat", "Minutes", "Share of
 GREY = RGBColor(0x8A, 0x8A, 0x8A)
 
 
+def latin_only(text, lang):
+    """An English line inside an Arabic document (the writer mixes languages): it reads left to right, or its full stop
+    and brackets land on the wrong side."""
+    return lang == "ar" and bool(re.search(r"[A-Za-z]", text or "")) and not re.search(r"[\u0600-\u06FF]", text or "")
+
+
+def ltr(p):
+    pr = p._p.get_or_add_pPr()
+    for old in pr.findall(S.qn("w:bidi")):
+        pr.remove(old)
+    pr.append(S._el("w:bidi", **{"w:val": "0"}))
+    p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+
+
 def para(doc, text, lang, style=None, grey=False, size=None, bold=False, italic=False):
     p = doc.add_paragraph(style=style)
     r = p.add_run(text)
-    if lang == "ar":
+    if latin_only(text, lang):
+        ltr(p)
+    elif lang == "ar":
         r._r.get_or_add_rPr().append(S._el("w:rtl"))
     if grey:
         r.font.color.rgb = GREY
@@ -97,10 +115,11 @@ def table(doc, rows, lang, header=True):
         for j, val in enumerate(row):
             cell = t.cell(i, j)
             p = cell.paragraphs[0]
-            if lang == "ar":
-                p._p.get_or_add_pPr().append(S._el("w:bidi"))
             r = p.add_run(val)
-            if lang == "ar":
+            if latin_only(val, lang):
+                ltr(p)
+            elif lang == "ar":
+                p._p.get_or_add_pPr().append(S._el("w:bidi"))
                 r._r.get_or_add_rPr().append(S._el("w:rtl"))
             r.bold = (header and i == 0) or None
     return t
