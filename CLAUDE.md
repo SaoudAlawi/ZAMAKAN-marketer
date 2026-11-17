@@ -42,7 +42,7 @@ Rendering uses Playwright with the preinstalled Chromium (`/opt/pw-browsers/chro
 ## Next step
 Everything up to here is shipped (README.md at the root explains the project for non-developers). Feature 3 (shot
 scout) was built 2026-10-18; next for it: a Vimeo developer key (direct search) and more Gulf sources.
-Feature 2 (reference scout) iteration 3 is built; its benchmark was stopped early to save tokens (scorecard:
+Feature 2 (reference scout) iteration 3 is built (+ `social.py` for TikTok/Instagram/Vimeo, public first, the user's login only on their computer); its benchmark was stopped early to save tokens (scorecard:
 https://claude.ai/artifact/Gmjx7ao4bA2inZKD9CKsDT; `evals/scorecard/`). Benchmark runs cost ~200k tokens each: never
 launch them without the user's go-ahead on cost. Open issues: `evals/scorecard/iteration-3-agent-feedback.md`.
 Feature 1 (design system) is still paused. Ask the user which to do next. Shared library = client-neutral; client notes

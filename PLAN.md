@@ -133,6 +133,7 @@ settings (title-bar environment menu → Edit → Network access). Either pick a
 | Meta's official Ads MCP (mcp.facebook.com/ads) | Managing *your own* ad accounts | Not for research; ignore |
 | Foreplay API, AdForum Creative Library, Cannes Lions "The Work" | Commercial ad/award archives | Optional paid connectors later |
 | Award/showcase research (Ads of the World, Vimeo, Love the Work, Dubai Lynx…) + Arabic/GCC lens + territories + shared library | **Nothing found** | **Build: this is ZAMAKAN's core** |
+| [Panniantong/agent-reach](https://github.com/Panniantong/agent-reach) (MIT, studied 2026-11-17) | Agents reaching walled platforms: public-first ladder, yt-dlp, honest error codes, a dedicated logged-in browser (OpenCLI + copied Chrome cookies) for Instagram/X/Reddit; no TikTok or Vimeo channel | **Adopted the design** in `social.py`: oEmbed → yt-dlp → the user's own login (`--browser`/`--cookies`), codes NEED_LOGIN/PLATFORM_BLOCKED/RATE_LIMITED, yt-dlp TLS fix; walled ≠ rejected in verify. Not adopted (yet): its browser-automation login and in-platform search |
 
 ### Source notes (tested live 2026-10-13)
 - **Ads of the World**: works with browser headers. Each campaign page has a standard sentence (country, month/year, brand,
@@ -141,6 +142,9 @@ settings (title-bar environment menu → Edit → Network access). Either pick a
 - **YouTube**: search page and oEmbed work; watch pages are bot-blocked from cloud IPs, so date/views come from search.
 - **Vimeo**: oEmbed works; vimeo.com search is bot-blocked, so find Vimeo links via web search.
 - **Campaign ME, LBB, Arabad, AdForum…**: read via Open Graph; discovered via web search.
+- **TikTok / Instagram (tested 2026-11-17 from the cloud):** TikTok accounts via oEmbed; TikTok posts IP-blocked;
+  Instagram login wall / rate limit. Vimeo account lists work through yt-dlp. On the user's computer with their
+  (secondary) browser login, yt-dlp reads TikTok and Instagram posts: `social.py ... --browser chrome`.
 
 ### Testing
 There is no fixed answer key (the web changes), so the grader checks **properties**:
@@ -393,6 +397,10 @@ The no-skill baseline did several generic things worth building into the skill:
 5. Sample on-brand renders → belongs to a future *social post designer* sub-skill.
 
 ## 6. Progress log
+
+- 2026-11-17: Scout: `social.py` for TikTok, Instagram, Vimeo and YouTube posts, after studying Agent Reach (MIT): public routes first, the user's own login only on their computer, honest wall codes; verify keeps walled posts unverified (not rejected); shot scout lists Vimeo accounts with it; yt-dlp added (optional). 298 tests pass.
+- 2026-11-11: Script desk: English lines in an Arabic template now read left to right.
+- 2026-10-27: Design system run on Waqteeh (user's own brand, local only); positioning scout run for it (21 verified references added to the shared library).
 
 - 2026-10-26: Script desk v0.7 (§3e): Word by default, asks the writer questions (structure choice first), writer's guide with every file and structure explained; plugin 1.7.0.
 - 2026-10-26: Script desk v0.6 (§3e): documentaries (doc structures + proposal, transcripts → bites → paper edit, A/V script, documentary reader, archive log, shoot list); 3 blind runs passed; plugin 1.6.0.

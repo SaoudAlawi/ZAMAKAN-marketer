@@ -208,8 +208,23 @@ python3 $SCOUT/scripts/competitors.py $JOB/brief.json --out $JOB --youtube     #
 python3 $SCOUT/scripts/discover.py youtube-channel @BrandHandle --since-months 12 --out $JOB/candidates.jsonl
 ```
 - **What can be read from here:** trade press (Campaign ME, Arab News, Arabad, LBB), brand websites and newsrooms, YouTube
-  channels (uploads with dates: often the freshest ads), award archives. **What can't:** Instagram, TikTok, Snapchat, X
-  and the Meta Ad Library (login walls, 403s). Don't spend searches or fetches on them.
+  channels (uploads with dates: often the freshest ads), award archives, Vimeo videos, and whether a TikTok account exists.
+  **TikTok and Instagram posts** go through `social.py` (below): from a cloud server they are usually walled, from the
+  user's own computer with their login they work. **What can't:** Snapchat, X and the Meta Ad Library. Don't spend
+  searches or fetches on them.
+- **Social posts (`social.py`, after Agent Reach):** public routes first, the user's login only by their choice.
+  ```bash
+  python3 $SCOUT/scripts/social.py doctor                                   # what works from this computer, now
+  python3 $SCOUT/scripts/social.py posts @brand --platform tiktok --since-months 12 --out $JOB/candidates.jsonl
+  python3 $SCOUT/scripts/social.py read <tiktok|instagram|vimeo url> ... --out $JOB/candidates.jsonl
+  python3 $SCOUT/scripts/social.py account @brand --platform tiktok        # the handle exists (public)
+  ```
+  A wall comes back as a code (`NEED_LOGIN`, `PLATFORM_BLOCKED`, `RATE_LIMITED`): it means *this computer* could not
+  see it, not that it's gone. `verify.py` keeps such references `unverified` with `walled`, never `rejected`. Then either
+  put them in `manual_checks` / `before_kickoff`, or ask the user to run the same command on their own computer with
+  `--browser chrome` (a browser where a **secondary** account is logged in) or `--cookies cookies.txt`. Never log in for the
+  user, never ask for a password, never save cookies in the repo or a client folder. Posts read this way are
+  `unwatched`: describe only the caption and numbers.
 - `competitors.py` suggests YouTube channels when you don't know the handle; **confirm a channel is the brand's own**
   (name, logo, upload history) before using it, then put it in `brief.competitor_handles`.
 - Per competitor in `competitor_summary`: `owns` (one line: their message, moment or territory), `last_seen` (date of

@@ -474,6 +474,14 @@
                   "video"
                 ],
                 "description": "Set by verify.py: content = page read and matches; title = page exists but has almost no readable text (login wall); video = video exists, not watched."
+              },
+              "walled": {
+                "enum": [
+                  "NEED_LOGIN",
+                  "PLATFORM_BLOCKED",
+                  "RATE_LIMITED"
+                ],
+                "description": "set by verify.py when the platform would not show this computer the post (social.py): unchecked, not dead"
               }
             }
           }

@@ -48,6 +48,11 @@ def check():
             lines.append(f"✗ Chromium won't start ({str(e).splitlines()[0][:80]}) → python3 -m playwright install chromium")
     lines.append("✓ pdftotext (reading PDF scripts)" if shutil.which("pdftotext") else
                  "· pdftotext not found (optional: needed to read PDF scripts) → brew install poppler / apt install poppler-utils")
+    try:
+        import yt_dlp  # noqa: F401
+        lines.append("✓ yt-dlp (TikTok, Instagram, Vimeo, YouTube posts)")
+    except ImportError:
+        lines.append("· yt-dlp not found (optional: social.py reads TikTok/Instagram/Vimeo/YouTube posts) → pip install yt-dlp")
     office = shutil.which("soffice") or shutil.which("libreoffice")
     lines.append("✓ LibreOffice (deck PDFs)" if office else
                  "· LibreOffice not found (optional: decks come as .pptx only) → https://www.libreoffice.org/download/")

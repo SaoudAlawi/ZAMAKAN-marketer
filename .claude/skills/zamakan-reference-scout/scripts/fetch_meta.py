@@ -58,6 +58,9 @@ def fetch_one(url, with_text=False):
 def _fetch(url, with_text=False):
     src = S.site_of(url)
     now = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    if src in ("tiktok", "instagram"):  # login walls and IP blocks: social.py tries public routes, then the user's login
+        import social
+        return social.read_one(url)
     video = re.search(r"youtube\.com/(watch|shorts/|embed/)|youtu\.be/|vimeo\.com/\d", url)
     if src in ("youtube", "vimeo") and video:  # oEmbed only knows videos; channel and playlist pages are fetched as pages
         api = ("https://www.youtube.com/oembed?format=json&url=" if src == "youtube"

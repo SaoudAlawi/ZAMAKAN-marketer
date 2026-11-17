@@ -60,6 +60,10 @@ python3 $SHOT/scripts/discover_shots.py vimeo <vimeo URLs> --out ... ; ... page 
 `references/sources.md` says what each source is good at and its quirks (read it the first time). Spend web searches
 (about 5–10) on what the scripts can't reach: Vimeo links, commercials with credits (shots.net, LBB, Campaign ME),
 Gulf/Arab work. Then pass the URLs to `vimeo`/`page`.
+For a director's, DOP's or production house's **Vimeo account** (who mode), list their latest videos without a search:
+`python3 <repo>/.claude/skills/zamakan-reference-scout/scripts/social.py posts <vimeo-user> --platform vimeo --limit 12`
+then pass the ones you want to `vimeo`. TikTok and Instagram references go through the same `social.py` (public
+first, the user's own login only on their computer: see the reference scout's `sources.md` §10).
 
 ## 3. Choose by eye
 ```bash

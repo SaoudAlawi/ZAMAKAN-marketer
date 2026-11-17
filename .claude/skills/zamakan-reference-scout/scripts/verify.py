@@ -9,11 +9,13 @@ name the campaign) the page's readable text. Each URL gets an `evidence` level:
   content  - the page was read and it matches (title, or campaign + brand in the body text)
   title    - the title matches but there is almost no readable text (login wall, award entry, empty shell):
              the page exists; details such as award level are NOT confirmed by it
-  video    - a YouTube/Vimeo video exists with this title; nobody has watched it
+  video    - a YouTube/Vimeo/TikTok/Instagram post exists with this title; nobody has watched it
 Then per reference:
   verified    - at least one URL is reachable AND matches (see `evidence` for how strongly)
   unverified  - reachable but no match (check by hand, fix the title, or drop it)
   rejected    - every URL is gone (404/410) or unreachable: never show it as a reference
+A TikTok/Instagram post the platform would not show this computer (login wall, IP block: see social.py) is not gone:
+it stays unverified with a note, so a person checks it by hand or reruns on their own computer with a login.
 Run it again after every edit of references.json (rebuilding the file resets statuses).
 --write updates the file in place (and sets run.web_access = "full"); otherwise it only reports.
 """
@@ -69,6 +71,7 @@ def text_match(ref, text):
 
 
 EVIDENCE_RANK = {"content": 3, "title": 2, "video": 1}
+WALLED = {"NEED_LOGIN", "PLATFORM_BLOCKED", "RATE_LIMITED"}  # social.py codes: the post may well exist
 
 
 def check(ref):
@@ -78,9 +81,14 @@ def check(ref):
         page = fetch_one(u["url"])
         status = page.get("http_status") or 0
         alive = 200 <= status < 400 and not page.get("error")
+        if page.get("error_code") in WALLED:
+            u["walled"] = page["error_code"]
+            any_alive = True  # unchecked, not dead
+        else:
+            u.pop("walled", None)
         m = alive and matches(ref, page)
         evidence = None
-        if alive and page.get("source") in ("youtube", "vimeo"):
+        if alive and page.get("source") in ("youtube", "vimeo", "tiktok", "instagram"):
             evidence = "video" if m else None
         elif alive:
             full = fetch_one(u["url"], with_text=True) if not m or page.get("text_chars") is None else page
@@ -116,6 +124,9 @@ def main():
         counts[after] = counts.get(after, 0) + 1
         if after != "verified":
             detail = "; ".join(f"{s} {'match' if m else 'no-match'} {u}" for u, s, m, _ in urls)
+            walled = [x.get("walled") for r in refs if r["id"] == rid for x in r["urls"] if x.get("walled")]
+            if walled:
+                detail += f"  ← {walled[0]}: the platform would not show this computer the post; check by hand or rerun social.py with --browser on your computer"
             print(f"  {after:<10} {rid}: {detail}")
             continue
         best = max((EVIDENCE_RANK.get(e, 0) for *_, e in urls), default=0)

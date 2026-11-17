@@ -12,6 +12,7 @@ Tested live from this environment (October 2026). Each source is listed with wha
 7. Query patterns per ring (English + Arabic)
 8. Scope: GCC, MENA or global
 9. Sparks from elsewhere
+10. TikTok, Instagram and logins (`social.py`)
 
 ---
 
@@ -69,7 +70,7 @@ discover via web search:
 - **Meta Ad Library**: web search `"<brand>" site:facebook.com/ads/library`, or ask for the exact URL. The page is
   script-heavy; if `fetch_meta.py` can't read it, record what web search shows and say coverage was limited.
 - **TikTok Creative Center**: top ads by country (Saudi Arabia) and industry; find through web search.
-- **Brands' own channels**: Instagram, TikTok, Snapchat and X profiles found through search. Note the dates of recent posts.
+- **Brands' own channels**: TikTok and Instagram through `social.py` (§10); Snapchat and X profiles found through search. Note the dates of recent posts.
 - Record only what you saw: `live_ad.first_seen/last_seen/format/copy`. Never estimate spend or reach.
 
 ## 7. Query patterns per ring
@@ -111,3 +112,25 @@ is a different conversation in the room, not more of the same. Where to look:
   "ritual", "waiting", "sound of".
 Rank with `score.py <candidates> --brief brief.json --sparks`. Verify like any reference. Don't use a spark the client's
 direct competitor in the region has already copied.
+
+## 10. TikTok, Instagram and logins (`social.py`)
+The design comes from Agent Reach (github.com/Panniantong/agent-reach, MIT): try public routes first, use yt-dlp as the
+extractor, return an honest code when a platform refuses, and let the user's own browser hold the login.
+
+| Platform | From a cloud server (tested Nov 2026) | From the user's computer with `--browser chrome` |
+|---|---|---|
+| Vimeo | ✓ videos via oEmbed (title, author, date, thumbnail) | ✓ also account video lists |
+| YouTube | ✓ oEmbed + channel lists via yt-dlp (views) | ✓ |
+| TikTok | account exists (oEmbed) only; posts → `PLATFORM_BLOCKED` (IP block) | ✓ posts: caption, date, views, likes |
+| Instagram | `NEED_LOGIN` / `RATE_LIMITED` | ✓ posts (secondary account recommended) |
+
+- **The login is the user's, on their machine.** `--browser chrome|firefox|safari|edge` reads the session that browser
+  already has; `--cookies cookies.txt` reads an exported file. Or set `ZAMAKAN_SOCIAL_BROWSER` / `ZAMAKAN_SOCIAL_COOKIES`.
+  Recommend a secondary account: platforms can flag accounts used by tools.
+- **Never** type a login, ask for a password, or keep cookies anywhere in the repo or `clients/`.
+- `doctor` runs one public probe per platform and says which routes work right now; run it once per session before
+  promising TikTok or Instagram coverage.
+- Search inside TikTok or Instagram is not offered (Agent Reach does it through a logged-in browser automation tool;
+  that's a bigger step, proposed separately). Find posts with web search (`site:tiktok.com <brand>`), then `read` them.
+- Accounts and posts read through any route are **unwatched**: use the caption and numbers, list the video in
+  `before_kickoff` to be watched.
